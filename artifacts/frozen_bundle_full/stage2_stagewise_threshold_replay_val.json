@@ -1,0 +1,67 @@
+{
+  "aggregate_proxy_metrics": {
+    "mean_stage_jaccard": 0.7875008781750997,
+    "product_exact_count_match_ratio": 6.714029645399016e-06,
+    "product_exact_mask_match_ratio": 0.7224291820961849
+  },
+  "bundle_dir": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1",
+  "constraints": {
+    "model_semantics_changed": false,
+    "report_is_read_only": true,
+    "topk_pruning_preserved": true
+  },
+  "data_path": "/home/yclcg/DynamicViT_exp_square/data/pneumoniamnist_imagefolder_subset/val",
+  "device": "cpu",
+  "sample_count": 524,
+  "stage_reports": [
+    {
+      "pruning_layer": 3,
+      "replay": {
+        "exact_count_match_ratio": 0.043893128633499146,
+        "exact_mask_match_ratio": 0.9295061826705933,
+        "mean_false_drop_count": 6.900763511657715,
+        "mean_false_keep_count": 6.916030406951904,
+        "mean_jaccard_vs_topk": 0.905981719493866,
+        "mean_threshold_keep_count": 137.01527404785156,
+        "mean_topk_keep_count": 137.0,
+        "std_threshold_keep_count": 17.755327224731445,
+        "threshold": -0.7294214963912964
+      },
+      "selection_mode": "jaccard",
+      "stage_index": 0
+    },
+    {
+      "pruning_layer": 6,
+      "replay": {
+        "exact_count_match_ratio": 0.02671755664050579,
+        "exact_mask_match_ratio": 0.9377531409263611,
+        "mean_false_drop_count": 6.097328186035156,
+        "mean_false_keep_count": 6.103053569793701,
+        "mean_jaccard_vs_topk": 0.8832035660743713,
+        "mean_threshold_keep_count": 96.00572204589844,
+        "mean_topk_keep_count": 96.0,
+        "std_threshold_keep_count": 14.858427047729492,
+        "threshold": -0.818925142288208
+      },
+      "selection_mode": "jaccard",
+      "stage_index": 1
+    },
+    {
+      "pruning_layer": 9,
+      "replay": {
+        "exact_count_match_ratio": 0.0057251909747719765,
+        "exact_mask_match_ratio": 0.8288090229034424,
+        "mean_false_drop_count": 16.776718139648438,
+        "mean_false_keep_count": 16.776718139648438,
+        "mean_jaccard_vs_topk": 0.5733173489570618,
+        "mean_threshold_keep_count": 67.0,
+        "mean_topk_keep_count": 67.0,
+        "std_threshold_keep_count": 36.735904693603516,
+        "threshold": -0.8988074064254761
+      },
+      "selection_mode": "jaccard",
+      "stage_index": 2
+    }
+  ],
+  "threshold_json": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1/stage2_stagewise_threshold_candidate_jaccard.json"
+}

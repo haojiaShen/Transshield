@@ -1,0 +1,76 @@
+{
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_candidates/margin_aware_full20_w10_20260417_205242_w10_t1em4_bundle",
+  "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+  "elapsed_sec": 11.21865963935852,
+  "input_pt": "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_input_smoke8.pt",
+  "manifest_json": "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_manifest.json",
+  "notes": [
+    "This bridge consumes Transshield masked_score inputs and the compare-network manifest.",
+    "The output is checker-compatible with DynamicViT_exp_square/tools/transshield_secure_network_kth_checker.py.",
+    "Compact odd-even schedule is used with manifest input_token_count=196 and manifest padded_token_count=196.",
+    "Later pruning stages compact masked_score to active tokens only before compare-network execution.",
+    "Phase3 lower-tail mode is experimental and opt-in; default flat odd-even bridge semantics are unchanged."
+  ],
+  "runtime": "spu",
+  "selection_mode": "flat_odd_even",
+  "stage_count": 3,
+  "stages": [
+    {
+      "effective_input_token_count": 196,
+      "effective_padded_token_count": 196,
+      "keep_count": 137,
+      "kth_threshold": {
+        "max": -0.354583740234375,
+        "mean": -0.5357181429862976,
+        "min": -1.3204498291015625,
+        "shape": [
+          524
+        ],
+        "std": 0.2321452796459198
+      },
+      "phase3_selection": null,
+      "pruning_layer": 3,
+      "selection_mode": "flat_odd_even",
+      "stage_index": 0,
+      "used_active_token_compaction": false
+    },
+    {
+      "effective_input_token_count": 137,
+      "effective_padded_token_count": 137,
+      "keep_count": 96,
+      "kth_threshold": {
+        "max": -0.05206298828125,
+        "mean": -2.454524040222168,
+        "min": -14.318344116210938,
+        "shape": [
+          524
+        ],
+        "std": 4.308812141418457
+      },
+      "phase3_selection": null,
+      "pruning_layer": 6,
+      "selection_mode": "flat_odd_even",
+      "stage_index": 1,
+      "used_active_token_compaction": true
+    },
+    {
+      "effective_input_token_count": 96,
+      "effective_padded_token_count": 96,
+      "keep_count": 67,
+      "kth_threshold": {
+        "max": -0.2801055908203125,
+        "mean": -0.34603896737098694,
+        "min": -0.4355621337890625,
+        "shape": [
+          524
+        ],
+        "std": 0.039409443736076355
+      },
+      "phase3_selection": null,
+      "pruning_layer": 9,
+      "selection_mode": "flat_odd_even",
+      "stage_index": 2,
+      "used_active_token_compaction": true
+    }
+  ]
+}

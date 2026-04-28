@@ -1,0 +1,2065 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Transfield 安全推理成果展示页</title>
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: #121933;
+        --panel-2: #1a2345;
+        --panel-3: #0f1730;
+        --text: #eaf0ff;
+        --muted: #aab6dc;
+        --accent: #6ea8fe;
+        --accent-2: #a78bfa;
+        --secure: #5ee0a0;
+        --warning: #ffd166;
+        --danger: #ff7a90;
+        --user: #2a3c78;
+        --border: #2a386c;
+        --border-soft: rgba(170, 182, 220, 0.16);
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.34);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 12% 12%, rgba(110, 168, 254, 0.22), transparent 34%),
+          radial-gradient(circle at 86% 8%, rgba(94, 224, 160, 0.12), transparent 28%),
+          radial-gradient(circle at 70% 92%, rgba(167, 139, 250, 0.18), transparent 32%),
+          linear-gradient(180deg, #070d1c 0%, #101936 100%);
+        color: var(--text);
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+        background-size: 42px 42px;
+        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 78%);
+      }
+      .app {
+        width: min(1320px, 100%);
+        margin: 0 auto;
+        padding: 24px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+      .card {
+        position: relative;
+        background: linear-gradient(180deg, rgba(18, 25, 51, 0.92), rgba(12, 18, 39, 0.94));
+        border: 1px solid var(--border-soft);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+      }
+      .hero {
+        padding: 26px;
+        overflow: hidden;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: auto -80px -120px auto;
+        width: 360px;
+        height: 360px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(94, 224, 160, 0.18), transparent 68%);
+        pointer-events: none;
+      }
+      .hero-layout {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr);
+        gap: 22px;
+        align-items: end;
+      }
+      .hero h1 {
+        margin: 10px 0 12px;
+        font-size: clamp(34px, 5vw, 58px);
+        line-height: 1.02;
+        letter-spacing: -0.05em;
+      }
+      .hero-lead {
+        max-width: 780px;
+        color: var(--muted);
+        line-height: 1.75;
+        font-size: 16px;
+      }
+      .hero-tags {
+        margin-top: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .kpi-card {
+        min-height: 132px;
+        padding: 16px;
+        border-radius: 20px;
+        background: rgba(15, 23, 48, 0.82);
+        border: 1px solid rgba(170, 182, 220, 0.13);
+      }
+      .kpi-card.primary {
+        background: linear-gradient(160deg, rgba(94, 224, 160, 0.16), rgba(15, 23, 48, 0.86));
+        border-color: rgba(94, 224, 160, 0.28);
+      }
+      .kpi-label {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .kpi-value {
+        margin-top: 10px;
+        color: var(--text);
+        font-size: 30px;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+      }
+      .kpi-card.primary .kpi-value { color: #b9ffd9; }
+      .kpi-sub {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .control-panel {
+        padding: 18px;
+      }
+      .control-grid {
+        display: grid;
+        grid-template-columns: 280px 360px minmax(0, 1fr);
+        gap: 16px;
+        align-items: start;
+      }
+      .control-copy h2 {
+        margin: 0 0 8px;
+        font-size: 20px;
+      }
+      .control-copy p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+      .control-panel .preview {
+        margin-top: 0;
+        aspect-ratio: 4 / 3;
+      }
+      .run-actions {
+        display: grid;
+        gap: 12px;
+      }
+      .run-actions .secure-actions,
+      .run-actions .reference-actions {
+        margin-top: 0;
+      }
+      .run-feedback {
+        min-width: 0;
+        display: grid;
+        gap: 12px;
+      }
+      .run-feedback .meta,
+      .run-feedback .compare-box {
+        margin-top: 0;
+      }
+      .feedback-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .feedback-head h3 {
+        margin: 2px 0 4px;
+        font-size: 18px;
+      }
+      .feedback-head p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+      .result-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 14px;
+      }
+      .result-column {
+        min-width: 0;
+        padding: 14px;
+        border-radius: 18px;
+        background: rgba(15, 23, 48, 0.72);
+        border: 1px solid rgba(170, 182, 220, 0.12);
+      }
+      .result-column h4,
+      .subcard-title {
+        margin: 0 0 10px;
+        color: #dce6ff;
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .section-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 14px;
+      }
+      .section-head h3 {
+        margin: 4px 0 0;
+        font-size: 20px;
+      }
+      .section-head p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .section-eyebrow {
+        color: var(--secure);
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, rgba(94, 224, 160, 0.95), rgba(110, 168, 254, 0.95));
+        color: #061120;
+        font-weight: 900;
+        box-shadow: 0 10px 28px rgba(94, 224, 160, 0.16);
+      }
+      .brand h1 { margin: 0; font-size: 23px; letter-spacing: -0.02em; }
+      .brand p { margin: 3px 0 0; font-size: 12px; color: var(--muted); }
+      .kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        padding: 5px 10px;
+        border: 1px solid rgba(110, 168, 254, 0.24);
+        border-radius: 999px;
+        background: rgba(110, 168, 254, 0.10);
+        color: #cfe0ff;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .preview {
+        margin-top: 16px;
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 18px;
+        background:
+          linear-gradient(135deg, rgba(110, 168, 254, 0.08), rgba(94, 224, 160, 0.04)),
+          #070c1a;
+        border: 1px dashed rgba(170, 182, 220, 0.28);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+      }
+      .preview img { width: 100%; height: 100%; object-fit: contain; display: none; background: #050916; }
+      .preview span { color: var(--muted); padding: 20px; text-align: center; }
+      .meta, .compare-box {
+        margin-top: 14px;
+        padding: 12px;
+        border-radius: 16px;
+        background: rgba(26, 35, 69, 0.78);
+        border: 1px solid rgba(170, 182, 220, 0.12);
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+      .section-title {
+        margin: 16px 0 8px;
+        color: #dce6ff;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+      .actions { margin-top: 16px; display: grid; gap: 10px; }
+      .secure-actions {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .reference-actions {
+        margin-top: 8px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      input[type="file"], button {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid rgba(170, 182, 220, 0.18);
+      }
+      input[type="file"] {
+        background: rgba(13, 20, 48, 0.86);
+        color: var(--muted);
+        padding: 10px;
+      }
+      button {
+        padding: 12px 14px;
+        border: 0;
+        background: linear-gradient(135deg, var(--accent), #94c5ff);
+        color: #08101f;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+        box-shadow: 0 10px 22px rgba(110, 168, 254, 0.16);
+      }
+      button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 26px rgba(110, 168, 254, 0.22);
+      }
+      button:disabled {
+        cursor: wait;
+        opacity: 0.62;
+      }
+      .ghost {
+        background: rgba(13, 20, 48, 0.92);
+        color: var(--text);
+        box-shadow: none;
+      }
+      .secure-primary {
+        background: linear-gradient(135deg, var(--secure), #a7f3d0);
+        color: #071322;
+        box-shadow: 0 12px 24px rgba(94, 224, 160, 0.16);
+      }
+      .small-button {
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+      input[type="file"]:focus {
+        border-color: rgba(110, 168, 254, 0.55);
+        box-shadow: 0 0 0 3px rgba(110, 168, 254, 0.12);
+      }
+      .pipeline-note {
+        margin-top: 14px;
+        padding: 12px;
+        border-radius: 16px;
+        background: rgba(94, 224, 160, 0.07);
+        border: 1px solid rgba(94, 224, 160, 0.22);
+        color: #dfffee;
+        font-size: 13px;
+        line-height: 1.65;
+      }
+      .privacy-flow {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .privacy-step {
+        min-height: 74px;
+        padding: 10px;
+        border-radius: 12px;
+        background: rgba(15, 23, 48, 0.72);
+        border: 1px solid rgba(170, 182, 220, 0.12);
+      }
+      .privacy-step b {
+        display: block;
+        color: #dce6ff;
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+      .privacy-step span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(110, 168, 254, 0.16);
+        color: #bcd6ff;
+        font-size: 12px;
+        margin-right: 6px;
+      }
+      .tag.secure { background: rgba(94, 224, 160, 0.16); color: #b9ffd9; }
+      .tag.ref { background: rgba(255, 209, 102, 0.14); color: #ffe8a3; }
+      .metric-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .metric {
+        min-width: 0;
+        padding: 10px;
+        border-radius: 14px;
+        background: rgba(15, 23, 48, 0.76);
+        border: 1px solid rgba(170, 182, 220, 0.10);
+      }
+      .metric.wide { grid-column: 1 / -1; }
+      .metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      .metric b {
+        display: block;
+        margin-top: 4px;
+        color: var(--text);
+        font-size: 14px;
+        overflow-wrap: anywhere;
+      }
+      .metric.secure b { color: #b9ffd9; }
+      .metric.warn b { color: #ffe8a3; }
+      .meta-note {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.55;
+      }
+      .meta-note code {
+        padding: 1px 6px;
+        border-radius: 999px;
+        background: rgba(110, 168, 254, 0.12);
+        color: #d7e6ff;
+      }
+      .result-note {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+      .result-note.secure { color: #b9ffd9; }
+      .result-note.warn { color: #ffe8a3; }
+      .empty-state {
+        color: var(--muted);
+        text-align: center;
+        padding: 8px;
+      }
+      .process {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        overflow: hidden;
+        min-height: auto;
+      }
+      .process-header {
+        padding: 20px 22px;
+        border-bottom: 1px solid rgba(170, 182, 220, 0.13);
+        background: linear-gradient(90deg, rgba(94, 224, 160, 0.10), transparent);
+      }
+      .process-header h2 { margin: 0; font-size: 20px; }
+      .process-header p { margin: 6px 0 0; color: var(--muted); line-height: 1.6; }
+      .process-body {
+        padding: 20px;
+        overflow: auto;
+        display: grid;
+        gap: 16px;
+        align-content: start;
+      }
+      .flow-card {
+        padding: 16px;
+        border-radius: 18px;
+        background: rgba(15, 23, 48, 0.72);
+        border: 1px solid rgba(170, 182, 220, 0.12);
+      }
+      .flow-card h3 {
+        margin: 0 0 10px;
+        font-size: 16px;
+        color: #eaf0ff;
+      }
+      .flow-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+      .panel-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .panel-item {
+        overflow: hidden;
+        border-radius: 18px;
+        border: 1px solid rgba(170, 182, 220, 0.12);
+        background: rgba(7, 12, 26, 0.55);
+      }
+      .panel-item img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .panel-item span {
+        display: block;
+        padding: 10px 12px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.5;
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+      .panel-item span b { color: #eaf0ff; }
+      .legend-note {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: rgba(26, 35, 69, 0.62);
+        border: 1px solid rgba(170, 182, 220, 0.12);
+      }
+      .legend-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: center;
+      }
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .legend-swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+      .legend-swatch.keep {
+        background: rgba(76, 175, 80, 0.35);
+        border-color: rgba(76, 175, 80, 0.8);
+      }
+      .legend-swatch.prune {
+        background: rgba(17, 24, 39, 0.85);
+        border-color: rgba(203, 213, 225, 0.65);
+      }
+      .flow-steps {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .flow-step {
+        padding: 14px;
+        border-radius: 16px;
+        background: rgba(18, 25, 51, 0.82);
+        border: 1px solid rgba(170, 182, 220, 0.12);
+      }
+      .flow-step strong {
+        display: block;
+        margin-bottom: 6px;
+        color: #dce6ff;
+      }
+      .flow-step span {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .stage-bars {
+        display: grid;
+        gap: 12px;
+      }
+      .stage-card-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+        gap: 14px;
+      }
+      .stage-explanations {
+        display: grid;
+        gap: 12px;
+      }
+      .stage-explanation {
+        padding: 14px;
+        border-radius: 16px;
+        background: rgba(18, 25, 51, 0.82);
+        border: 1px solid rgba(170, 182, 220, 0.12);
+      }
+      .stage-explanation b {
+        display: block;
+        margin-bottom: 6px;
+        color: #dce6ff;
+      }
+      .stage-explanation span {
+        display: block;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .stage-row {
+        display: grid;
+        grid-template-columns: 88px 1fr 100px;
+        gap: 12px;
+        align-items: center;
+      }
+      .stage-name { color: #dce6ff; font-weight: 700; }
+      .bar-track {
+        height: 12px;
+        border-radius: 999px;
+        background: rgba(170, 182, 220, 0.12);
+        overflow: hidden;
+      }
+      .bar-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--secure), var(--accent));
+      }
+      .stage-value {
+        color: var(--muted);
+        font-size: 13px;
+        text-align: right;
+      }
+      .insight-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .insight {
+        padding: 14px;
+        border-radius: 16px;
+        background: rgba(26, 35, 69, 0.62);
+        border: 1px solid rgba(170, 182, 220, 0.12);
+      }
+      .insight b { display: block; margin-bottom: 6px; color: #b9ffd9; }
+      .insight span { color: var(--muted); font-size: 13px; line-height: 1.55; }
+      .method-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .external-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+        gap: 14px;
+      }
+      .external-card {
+        padding: 16px;
+        border-radius: 18px;
+        background: rgba(15, 23, 48, 0.72);
+        border: 1px solid rgba(170, 182, 220, 0.12);
+      }
+      .external-card.highlight {
+        background: linear-gradient(160deg, rgba(94, 224, 160, 0.12), rgba(15, 23, 48, 0.82));
+        border-color: rgba(94, 224, 160, 0.24);
+      }
+      .external-card h4 {
+        margin: 0 0 10px;
+        color: #eaf0ff;
+        font-size: 16px;
+      }
+      .external-card p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.62;
+      }
+      .overview-table {
+        width: 100%;
+        margin-top: 12px;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      .overview-table th,
+      .overview-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(170, 182, 220, 0.12);
+        vertical-align: top;
+        text-align: left;
+      }
+      .overview-table th {
+        color: #dce6ff;
+        font-weight: 850;
+        background: rgba(26, 35, 69, 0.54);
+      }
+      .overview-table td {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+      .overview-table strong { color: var(--text); }
+      .summary-note strong,
+      .external-card strong {
+        color: #eaf0ff;
+      }
+      .method-card {
+        padding: 16px;
+        border-radius: 18px;
+        background: rgba(26, 35, 69, 0.62);
+        border: 1px solid rgba(170, 182, 220, 0.12);
+      }
+      .method-card b {
+        display: block;
+        margin-bottom: 10px;
+        color: #b9ffd9;
+        font-size: 15px;
+      }
+      .method-card span {
+        display: block;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.58;
+      }
+      .method-card span + span { margin-top: 6px; }
+      .summary-stack {
+        display: grid;
+        gap: 12px;
+      }
+      .summary-note {
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: rgba(26, 35, 69, 0.62);
+        border: 1px solid rgba(170, 182, 220, 0.12);
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.65;
+      }
+      .pill-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .seed-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .seed-card {
+        padding: 14px;
+        border-radius: 16px;
+        background: rgba(18, 25, 51, 0.82);
+        border: 1px solid rgba(170, 182, 220, 0.12);
+      }
+      .seed-card b {
+        display: block;
+        margin-bottom: 6px;
+        color: #dce6ff;
+      }
+      .seed-card span {
+        display: block;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .details-stack {
+        display: grid;
+        gap: 10px;
+      }
+      details.detail-panel {
+        border-radius: 16px;
+        background: rgba(15, 23, 48, 0.62);
+        border: 1px solid rgba(170, 182, 220, 0.12);
+        overflow: hidden;
+      }
+      details.detail-panel summary {
+        cursor: pointer;
+        padding: 14px 16px;
+        color: #dce6ff;
+        font-weight: 850;
+        list-style: none;
+      }
+      details.detail-panel summary::-webkit-details-marker { display: none; }
+      details.detail-panel summary::after {
+        content: "+";
+        float: right;
+        color: var(--muted);
+      }
+      details.detail-panel[open] summary::after { content: "−"; }
+      .detail-body {
+        padding: 0 16px 16px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.65;
+      }
+      .comparison-status {
+        padding: 14px;
+        border-radius: 16px;
+        background: rgba(94, 224, 160, 0.10);
+        border: 1px solid rgba(94, 224, 160, 0.25);
+        color: #b9ffd9;
+        font-weight: 800;
+        line-height: 1.55;
+      }
+      .comparison-status.warn {
+        background: rgba(255, 209, 102, 0.09);
+        border-color: rgba(255, 209, 102, 0.24);
+        color: #ffe8a3;
+      }
+      .log-tail {
+        max-height: 220px;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+        margin: 0;
+        padding: 12px;
+        border-radius: 12px;
+        background: rgba(7, 13, 28, 0.72);
+        color: #dce6ff;
+        font-size: 12px;
+        line-height: 1.55;
+      }
+      @media (max-width: 900px) {
+        .app { grid-template-columns: 1fr; padding: 14px; }
+        .process { min-height: 70vh; }
+        .hero-layout,
+        .control-grid,
+        .result-layout,
+        .stage-card-grid,
+        .external-grid,
+        .flow-steps,
+        .insight-grid,
+        .method-grid,
+        .panel-grid,
+        .kpi-grid { grid-template-columns: 1fr; }
+        .seed-grid { grid-template-columns: 1fr; }
+        .stage-row { grid-template-columns: 72px 1fr; }
+        .stage-value { grid-column: 2; text-align: left; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <section class="card hero">
+        <div class="hero-layout">
+          <div>
+            <div class="brand">
+              <div class="brand-mark">TS</div>
+              <div>
+                <h1>Transshield 成果展示</h1>
+                <p>医疗影像隐私保护推理演示</p>
+              </div>
+            </div>
+            <span class="kicker">结论先行</span>
+            <h1>面向医疗影像隐私保护的安全动态剪枝推理系统</h1>
+            <p class="hero-lead">
+              在保护患者影像隐私的前提下，通过安全掩码动态剪枝与安全友好算子替换，降低安全推理通信与计算开销，
+              同时保持接近明文模型的效果。
+            </p>
+            <div class="hero-tags">
+              <span class="tag secure">安全掩码动态剪枝</span>
+              <span class="tag">安全友好算子替换</span>
+              <span class="tag ref">同数据集外部基线对比</span>
+            </div>
+          </div>
+          <div class="kpi-grid" id="bestContentBox">
+            <p class="empty-state">正在读取默认 bundle 与最新稳定性摘要...</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card control-panel">
+        <div class="control-grid">
+          <div class="preview" id="previewBox">
+            <img id="previewImage" alt="preview" />
+            <span id="previewText">先上传一张图片，然后查看模型处理流程。</span>
+          </div>
+          <div class="control-copy">
+            <span class="section-eyebrow">交互演示</span>
+            <h2>选择一张图，浏览器本地生成密态 share 后做 E2E 隐私分析</h2>
+            <p>
+              原图只在浏览器本地读取和预处理；页面会把像素张量拆成两份 share，
+              后端只接收密态 share 并触发 E2E SPU 推理，最终只显示分析结果。
+            </p>
+            <div class="pipeline-note">
+              <span class="tag secure">主路径</span>浏览器本地分片 + E2E 全隐私近似推理。
+              <span class="tag ref">部署边界</span>当前网页是单进程演示，生产环境应拆成独立 P1/P2 服务。
+            </div>
+            <div class="pipeline-note">
+              当前网页演示不上传原图；若部署为两个独立 P1/P2 信任域，share0/share1 分别上传并由 SPU/2PC 联合计算，
+              即可实现服务端不接触原图或完整 pixel_values 的全程隐私推理。
+            </div>
+            <div class="privacy-flow">
+              <div class="privacy-step">
+                <b>1. 本地读图</b>
+                <span>图片只进入浏览器内存，不提交原文件。</span>
+              </div>
+              <div class="privacy-step">
+                <b>2. 本地分片</b>
+                <span>Canvas 预处理后生成 share0/share1。</span>
+              </div>
+              <div class="privacy-step">
+                <b>3. E2E 计算</b>
+                <span>SPU 在 share 上执行 full-depth 近似推理。</span>
+              </div>
+              <div class="privacy-step">
+                <b>4. 只出结果</b>
+                <span>最终只 reveal logits / prediction。</span>
+              </div>
+            </div>
+            <div class="run-actions">
+              <input id="imageInput" type="file" accept="image/*" />
+              <button id="uploadButton">本地生成密态 share 并开始分析</button>
+            </div>
+          </div>
+          <div class="run-feedback">
+            <div class="feedback-head">
+              <div>
+                <span class="section-eyebrow">本次运行结果</span>
+                <h3>操作后立即看结果</h3>
+                <p>这里显示浏览器本地分片状态、E2E 推理结果和隐私边界字段。</p>
+              </div>
+            </div>
+            <div class="result-layout">
+              <div class="result-column">
+                <h4>本地隐私准备</h4>
+                <div class="meta" id="metaBox">
+                  <div class="empty-state">选择图片后点击分析，浏览器会在本地生成两份 share；原图不会上传到后端。</div>
+                </div>
+              </div>
+              <div class="result-column">
+                <h4>E2E 推理结果</h4>
+                <div class="compare-box" id="compareBox">
+                  <div class="empty-state">E2E 推理完成后，会显示最终类别、概率和 candidate JSON。</div>
+                </div>
+              </div>
+            </div>
+            <div class="result-column">
+              <h4>本次安全推理开销</h4>
+              <div class="summary-stack" id="runtimeBox">
+                <div class="summary-note">运行后，这里会显示浏览器本地分片触发的 E2E SPU 耗时、隐私字段和通信证据。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card flow-card">
+        <div class="section-head">
+          <div>
+            <span class="section-eyebrow">外部比较</span>
+            <h3>与外部同数据集基线相比</h3>
+            <p>这里统一展示离线验证集效果与外部基线对比；通信 / 时间只有在同一 secure benchmark 口径下重新运行后才显示。</p>
+          </div>
+        </div>
+        <div class="external-grid" id="externalComparisonBox">
+          <div class="summary-note">正在读取外部 baseline 摘要...</div>
+        </div>
+      </section>
+
+      <section class="card flow-card">
+        <div class="section-head">
+          <div>
+            <span class="section-eyebrow">动态剪枝可视化</span>
+            <h3>原图 → 第一阶段 → 第二阶段 → 第三阶段</h3>
+            <p>绿色表示继续参与后续计算的 token，灰色表示在当前阶段被安全置零；这是计算路径可视化，不是病灶分割图。</p>
+          </div>
+        </div>
+        <div class="panel-grid" id="summaryBoard">
+          <p class="empty-state">上传图片后会显示原图和 3 张阶段叠加图。</p>
+        </div>
+        <div class="legend-note">
+          <div class="legend-row">
+            <span class="legend-item"><span class="legend-swatch keep"></span>继续保留的 token</span>
+            <span class="legend-item"><span class="legend-swatch prune"></span>本阶段被 masking 停用的 token</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card flow-card">
+        <div class="section-head">
+          <div>
+            <span class="section-eyebrow">Token 保留率变化</span>
+            <h3>三阶段逐步缩小后续安全推理的对象规模</h3>
+            <p>随着保留 token 数逐步下降，后续需要安全比较、传输和计算的对象规模也会继续下降，因此安全推理会更快。</p>
+          </div>
+        </div>
+        <div class="stage-card-grid">
+          <div class="stage-bars" id="stageBars">
+            <p>上传图片后会显示各 stage 的 token 保留数量和密度。</p>
+          </div>
+          <div class="stage-explanations" id="stageExplanations">
+            <p>上传图片后会显示每个 pruning stage 的简要解释。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card flow-card">
+        <div class="section-head">
+          <div>
+            <span class="section-eyebrow">核心方法设计</span>
+            <h3>三项核心设计：把明文动态剪枝改写成可执行的安全推理流程</h3>
+            <p>本项目的核心创新不是简单更换模型，而是将明文 Transformer 的动态剪枝思想改写为可在安全两方计算中执行的密态协议流程，并结合安全友好算子替换降低在线推理开销。</p>
+          </div>
+        </div>
+        <div class="summary-stack">
+          <div class="summary-note"><strong>创新点总结：</strong>本项目把动态 token 剪枝、激活函数改写和安全边界选择统一到同一套可验证的安全推理框架中，重点解决“能否在密态下执行”而不是只追求明文效果。</div>
+          <div class="summary-note"><strong>工程落地总结：</strong>本系统已完成从离线模型训练、算子改造，到浏览器本地分片触发 E2E SPU 隐私推理与通信量展示的演示闭环。</div>
+        </div>
+        <div class="method-grid" id="methodContentBox">
+          <div class="method-card">
+            <b>安全友好的激活替换</b>
+            <span>把复杂非线性激活替换成 square / quadratic 形式，减少安全协议中的高代价运算。</span>
+          </div>
+          <div class="method-card">
+            <b>安全掩码动态剪枝</b>
+            <span>不用直接删短张量，而是用 mask 表示保留 / 置零，让明文参考路径与安全 replay 更容易对齐。</span>
+          </div>
+          <div class="method-card">
+            <b>E2E 隐私输入执行</b>
+            <span>把输入隐私边界前移到浏览器本地分片，后端只处理 share 并只 reveal 最终 logits。</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card flow-card">
+        <div class="section-head">
+          <div>
+            <span class="section-eyebrow">附录</span>
+            <h3>附录（复现实验与工程细节）</h3>
+            <p>旧 bundle、多 seed 和工程细节都默认收起；历史 fastpath 与 archived profile 已从当前展示口径中移除。</p>
+          </div>
+        </div>
+        <div class="details-stack" id="detailsContentBox">
+          <p class="empty-state">正在读取详细摘要...</p>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const imageInput = document.getElementById('imageInput');
+      const uploadButton = document.getElementById('uploadButton');
+      const previewImage = document.getElementById('previewImage');
+      const previewText = document.getElementById('previewText');
+      const metaBox = document.getElementById('metaBox');
+      const compareBox = document.getElementById('compareBox');
+      const stageBars = document.getElementById('stageBars');
+      const summaryBoard = document.getElementById('summaryBoard');
+      const stageExplanations = document.getElementById('stageExplanations');
+      const bestContentBox = document.getElementById('bestContentBox');
+      const runtimeBox = document.getElementById('runtimeBox');
+      const methodContentBox = document.getElementById('methodContentBox');
+      const detailsContentBox = document.getElementById('detailsContentBox');
+      const externalComparisonBox = document.getElementById('externalComparisonBox');
+
+      let latestDemoSummary = null;
+      let latestLiveRunState = null;
+      let latestSecurePrediction = null;
+      const E2E_INPUT_SIZE = 224;
+      const E2E_RESIZE_SIZE = 256;
+      const E2E_CHANNELS = 3;
+      const E2E_FLOAT_COUNT = E2E_CHANNELS * E2E_INPUT_SIZE * E2E_INPUT_SIZE;
+      const IMAGENET_MEAN = [0.485, 0.456, 0.406];
+      const IMAGENET_STD = [0.229, 0.224, 0.225];
+
+      function escapeHtml(value) {
+        return String(value ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function metric(label, value, variant = '') {
+        return `<div class="metric ${variant}">
+          <span>${escapeHtml(label)}</span>
+          <b>${escapeHtml(value)}</b>
+        </div>`;
+      }
+
+      function kpi(label, value, subtext, variant = '') {
+        return `<div class="kpi-card ${variant}">
+          <div class="kpi-label">${escapeHtml(label)}</div>
+          <div class="kpi-value">${escapeHtml(value)}</div>
+          <div class="kpi-sub">${escapeHtml(subtext)}</div>
+        </div>`;
+      }
+
+      function detailPanel(title, bodyHtml, open = false) {
+        return `<details class="detail-panel"${open ? ' open' : ''}>
+          <summary>${escapeHtml(title)}</summary>
+          <div class="detail-body">${bodyHtml}</div>
+        </details>`;
+      }
+
+      function setButtonBusy(button, isBusy, busyText) {
+        if (!button) return;
+        if (isBusy) {
+          button.dataset.originalText = button.textContent;
+          button.textContent = busyText;
+          button.disabled = true;
+          return;
+        }
+        button.textContent = button.dataset.originalText || button.textContent;
+        button.disabled = false;
+      }
+
+      function setMainActionDisabled(disabled) {
+        uploadButton.disabled = disabled;
+      }
+
+      function updateSummaryBoard(assets, stages = []) {
+        if (!assets) {
+          summaryBoard.innerHTML = '<p class="empty-state">上传图片后会显示原图和 3 张阶段叠加图。</p>';
+          return;
+        }
+        const overlayCount = Array.isArray(assets.overlay_urls) ? assets.overlay_urls.length : 0;
+        if (!assets.original_panel_url || overlayCount < 3) {
+          summaryBoard.innerHTML = `
+            <div class="panel-item">
+              <span>四图资源未准备完整</span>
+              <code>original_panel_url=${escapeHtml(assets.original_panel_url || 'N/A')}</code>
+              <code>overlay_count=${escapeHtml(String(overlayCount))}</code>
+              <code>overlay_urls=${escapeHtml(JSON.stringify(assets.overlay_urls || []))}</code>
+            </div>
+          `;
+          return;
+        }
+        const panels = [
+          { title: '原图', subtitle: '输入影像', url: assets.original_panel_url },
+          ...assets.overlay_urls.slice(0, 3).map((url, index) => {
+            const stage = stages[index] || {};
+            const layer = stage.pruning_layer === undefined ? `第 ${index + 1} 阶段` : `第 ${stage.pruning_layer} 层`;
+            const keep = stage.keep_count === undefined ? '保留数量待生成' : `保留 ${stage.keep_count}/196`;
+            const density = stage.density_percent || '';
+            return {
+              title: `第 ${index + 1} 阶段`,
+              subtitle: `${layer} · ${keep}${density ? `（${density}）` : ''}`,
+              url,
+            };
+          }),
+        ];
+        summaryBoard.innerHTML = panels.map((panel) => `
+          <div class="panel-item">
+            <img src="${escapeHtml(panel.url)}" alt="${escapeHtml(panel.title)}" loading="lazy" />
+            <span><b>${escapeHtml(panel.title)}</b><br>${escapeHtml(panel.subtitle)}</span>
+          </div>
+        `).join('');
+      }
+
+      function updateStageBars(stages) {
+        if (!stages || stages.length === 0) {
+          stageBars.innerHTML = '<p>上传图片后会显示各 stage 的 token 保留数量和密度。</p>';
+          return;
+        }
+        stageBars.innerHTML = stages.map((stage) => {
+          const width = Math.max(0, Math.min(100, Number(stage.density || 0) * 100));
+          return `<div class="stage-row">
+            <div class="stage-name">第 ${escapeHtml(stage.stage_index)} 阶段</div>
+            <div class="bar-track"><div class="bar-fill" style="width:${width}%"></div></div>
+            <div class="stage-value">第 ${escapeHtml(stage.pruning_layer)} 层，保留 ${escapeHtml(stage.keep_count)}/196（${escapeHtml(stage.density_percent)}）</div>
+          </div>`;
+        }).join('');
+      }
+
+      function updateStageExplanations(items) {
+        if (!items || items.length === 0) {
+          stageExplanations.innerHTML = '<p>上传图片后会显示每个 pruning stage 的解释。</p>';
+          return;
+        }
+        stageExplanations.innerHTML = items.map((item, index) => {
+          const stageBenefit = index === 0
+            ? '收益：先把高贡献较低的 token 排除在后续安全比较之外，后面的协议只需要关注更小的集合。'
+            : (index === items.length - 1
+              ? '收益：最终只保留最关键的 token，后续安全推理的比较、传输和计算负担都降到更低水平。'
+              : '收益：在上一阶段基础上继续压缩活跃集合，使后续安全计算与通信对象继续减少。');
+          return `
+          <div class="stage-explanation">
+            <b>${escapeHtml(item.title)}</b>
+            <span>${escapeHtml(item.summary)}</span>
+            <span>${escapeHtml(item.reason)}</span>
+            <span>${escapeHtml(stageBenefit)}</span>
+          </div>
+        `;
+        }).join('');
+      }
+
+      function humanSeconds(value) {
+        return (value === null || value === undefined || Number.isNaN(Number(value))) ? 'N/A' : `${Number(value).toFixed(4)}s`;
+      }
+
+      function humanPercent(value, digits = 3) {
+        return (value === null || value === undefined) ? 'N/A' : `${Number(value).toFixed(digits)}%`;
+      }
+
+      function humanAuc(value, digits = 3) {
+        return (value === null || value === undefined) ? 'N/A' : Number(value).toFixed(digits);
+      }
+
+      function humanFixed(value, digits = 6) {
+        return (value === null || value === undefined || Number.isNaN(Number(value)))
+          ? 'N/A'
+          : Number(value).toFixed(digits);
+      }
+
+      function humanPoints(value, digits = 3) {
+        if (value === null || value === undefined) return 'N/A';
+        const number = Number(value);
+        return `${number >= 0 ? '+' : ''}${number.toFixed(digits)}`;
+      }
+
+      function humanRatioPercent(value, digits = 1) {
+        return (value === null || value === undefined) ? 'N/A' : `${(Number(value) * 100).toFixed(digits)}%`;
+      }
+
+      function humanBytes(value) {
+        if (value === null || value === undefined) return 'N/A';
+        const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        const sign = Number(value) < 0 ? '-' : '';
+        let size = Math.abs(Number(value));
+        let unit = 0;
+        while (size >= 1024 && unit < units.length - 1) {
+          size /= 1024;
+          unit += 1;
+        }
+        return `${sign}${size.toFixed(2)} ${units[unit]}`;
+      }
+
+      function loadImageElement(file) {
+        return new Promise((resolve, reject) => {
+          const url = URL.createObjectURL(file);
+          const image = new Image();
+          image.onload = () => {
+            URL.revokeObjectURL(url);
+            resolve(image);
+          };
+          image.onerror = () => {
+            URL.revokeObjectURL(url);
+            reject(new Error('浏览器无法读取这张图片。'));
+          };
+          image.src = url;
+        });
+      }
+
+      async function preprocessImageInBrowser(file) {
+        const image = await loadImageElement(file);
+        const shortSide = Math.min(image.naturalWidth, image.naturalHeight);
+        const scale = E2E_RESIZE_SIZE / shortSide;
+        const resizedWidth = Math.round(image.naturalWidth * scale);
+        const resizedHeight = Math.round(image.naturalHeight * scale);
+        const resizeCanvas = document.createElement('canvas');
+        resizeCanvas.width = resizedWidth;
+        resizeCanvas.height = resizedHeight;
+        const resizeCtx = resizeCanvas.getContext('2d');
+        resizeCtx.imageSmoothingEnabled = true;
+        resizeCtx.imageSmoothingQuality = 'high';
+        resizeCtx.drawImage(image, 0, 0, resizedWidth, resizedHeight);
+
+        const cropCanvas = document.createElement('canvas');
+        cropCanvas.width = E2E_INPUT_SIZE;
+        cropCanvas.height = E2E_INPUT_SIZE;
+        const cropCtx = cropCanvas.getContext('2d');
+        const cropX = Math.floor((resizedWidth - E2E_INPUT_SIZE) / 2);
+        const cropY = Math.floor((resizedHeight - E2E_INPUT_SIZE) / 2);
+        cropCtx.drawImage(
+          resizeCanvas,
+          cropX,
+          cropY,
+          E2E_INPUT_SIZE,
+          E2E_INPUT_SIZE,
+          0,
+          0,
+          E2E_INPUT_SIZE,
+          E2E_INPUT_SIZE,
+        );
+
+        const imageData = cropCtx.getImageData(0, 0, E2E_INPUT_SIZE, E2E_INPUT_SIZE).data;
+        const tensor = new Float32Array(E2E_FLOAT_COUNT);
+        const planeSize = E2E_INPUT_SIZE * E2E_INPUT_SIZE;
+        for (let y = 0; y < E2E_INPUT_SIZE; y += 1) {
+          for (let x = 0; x < E2E_INPUT_SIZE; x += 1) {
+            const hwIndex = y * E2E_INPUT_SIZE + x;
+            const rgbaIndex = hwIndex * 4;
+            tensor[hwIndex] = (imageData[rgbaIndex] / 255 - IMAGENET_MEAN[0]) / IMAGENET_STD[0];
+            tensor[planeSize + hwIndex] = (imageData[rgbaIndex + 1] / 255 - IMAGENET_MEAN[1]) / IMAGENET_STD[1];
+            tensor[planeSize * 2 + hwIndex] = (imageData[rgbaIndex + 2] / 255 - IMAGENET_MEAN[2]) / IMAGENET_STD[2];
+          }
+        }
+        return tensor;
+      }
+
+      function fillRandomUniformMinus2To2(target) {
+        const chunkSize = 16384;
+        const random = new Uint32Array(Math.min(chunkSize, target.length));
+        let offset = 0;
+        while (offset < target.length) {
+          const count = Math.min(chunkSize, target.length - offset);
+          const view = count === random.length ? random : new Uint32Array(count);
+          crypto.getRandomValues(view);
+          for (let i = 0; i < count; i += 1) {
+            target[offset + i] = (view[i] / 4294967296) * 4 - 2;
+          }
+          offset += count;
+        }
+      }
+
+      async function buildBrowserPrivateShares(file) {
+        const pixelTensor = await preprocessImageInBrowser(file);
+        const share0 = new Float32Array(pixelTensor.length);
+        const share1 = new Float32Array(pixelTensor.length);
+        fillRandomUniformMinus2To2(share0);
+        for (let i = 0; i < pixelTensor.length; i += 1) {
+          share1[i] = pixelTensor[i] - share0[i];
+        }
+        return { share0, share1 };
+      }
+
+      function boolStatus(value) {
+        return value ? '通过' : '未通过';
+      }
+
+      const configLabelMap = {
+        lr: '学习率（整体步长）',
+        lr_scale: '主干倍率（主网络步长）',
+        groupa_lr_scale: 'Group-A 倍率（局部参数步长）',
+        activation_lr_scale: '激活层倍率（激活相关参数步长）',
+        ratio_weight: '比例损失权重（保留率约束）',
+        train_sampler_mode: '采样器（类不平衡采样）',
+        warmup_steps: '预热步数（前期缓启动）',
+        clip_grad: '梯度裁剪（限制梯度峰值）',
+        use_mask_pruning: 'Mask 剪枝（用 masking 表达保留）',
+        use_square_gelu: 'Square GELU（激活开关）',
+        square_activation_mode: '激活形式（square 版本）',
+        freeze_patch_embed_proj: '冻结 Patch Embedding（前端投影层）',
+        pretrained_fix_step: '预训练冻结步数（起始锁定步数）',
+      };
+
+      function configLabel(key, value) {
+        return `${configLabelMap[key] || key} = ${value}`;
+      }
+
+      function communicationSourceLabel(raw) {
+        if (!raw) return 'N/A';
+        if (raw === 'Python distributed RPC/cloudpickle fastpath') {
+          return 'Python RPC fastpath';
+        }
+        return raw;
+      }
+
+      function renderRuntimePlaceholder() {
+        if (!runtimeBox) return;
+        runtimeBox.innerHTML = `<div class="metric-grid">
+          ${metric('E2E SPU 推理耗时', '等待运行', 'secure')}
+          ${metric('E2E SPU 通信量', '等待运行', 'secure')}
+          ${metric('浏览器本地分片', '等待选择图片', 'secure')}
+          ${metric('当前说明', '这里显示本次浏览器本地分片触发的 E2E live run。', 'wide')}
+        </div>
+        <div class="meta-note">点击主按钮后，页面才会显示本次 E2E approximate SPU 的耗时、隐私字段和通信证据；这些数字不是静态示例值。</div>`;
+      }
+
+      function runtimeModeLabel(mode) {
+        if (mode === 'spu') return 'SPU 安全推理（真实安全执行）';
+        if (mode === 'e2e') return 'E2E 全隐私近似路径（full-depth SPU）';
+        if (mode === 'cpu') return 'CPU reference（本地参考路径）';
+        if (mode === 'both') return 'CPU reference 与 SPU 安全推理对比';
+        return String(mode || 'secure pipeline');
+      }
+
+      function renderFailureDetails(details) {
+        if (!details) return '';
+        return `<details class="detail-panel">
+          <summary>查看失败日志尾部</summary>
+          <div class="detail-body"><pre class="log-tail">${escapeHtml(details)}</pre></div>
+        </details>`;
+      }
+
+      function setRunFailure(mode, message, details = '') {
+        const label = runtimeModeLabel(mode);
+        const safeMessage = message || 'secure 运行失败';
+        compareBox.innerHTML = `<div class="result-note warn">
+          ${escapeHtml(label)}失败：${escapeHtml(safeMessage)}
+        </div>
+        ${renderFailureDetails(details)}`;
+        runtimeBox.innerHTML = `<div class="metric-grid">
+          ${metric('当前状态', '运行失败', 'warn wide')}
+          ${metric('失败路径', label, 'warn wide')}
+          ${metric('本次通信量', '未生成')}
+          ${metric('建议处理', '检查后端日志、SPU 进程或重新上传后再运行', 'wide')}
+        </div>
+        ${renderFailureDetails(details)}`;
+      }
+
+      function setUploadFailure(message) {
+        const safeMessage = message || '上传或分析失败';
+        metaBox.innerHTML = `<div class="result-note warn">${escapeHtml(safeMessage)}</div>`;
+        compareBox.innerHTML = '<div class="empty-state">上传成功后才能运行 SPU 安全推理。</div>';
+        runtimeBox.innerHTML = `<div class="result-note warn">${escapeHtml(safeMessage)}</div>`;
+      }
+
+      function renderHeroCards(summary) {
+        if (!bestContentBox) return;
+        const currentArgmax = latestSecurePrediction?.argmax_label;
+        const currentThreshold = latestSecurePrediction?.threshold_label;
+        const currentProb1 = latestSecurePrediction?.prob_class_1;
+        const currentProbText = currentProb1 !== null && currentProb1 !== undefined
+          ? humanFixed(currentProb1)
+          : '等待上传';
+        const liveRunValue = latestLiveRunState?.hasLiveRun ? '已完成' : '待运行';
+        const liveRunSub = latestLiveRunState?.hasLiveRun
+          ? `本次图片已经完成 E2E SPU 隐私推理，通信量为 ${humanBytes(latestLiveRunState.totalBytes)}。`
+          : '这里展示当前图片是否已经完成本次 E2E SPU 隐私推理。';
+        bestContentBox.innerHTML = [
+          kpi(
+            '当前图片的 argmax 类别',
+            currentArgmax === null || currentArgmax === undefined ? '等待上传' : classValue(currentArgmax),
+            '这是当前浏览器选择图片在 E2E 隐私路径下直接取最大概率得到的类别。',
+            'primary',
+          ),
+          kpi(
+            '当前图片的阈值判定类别',
+            currentThreshold === null || currentThreshold === undefined ? '等待上传' : classValue(currentThreshold),
+            '这是当前浏览器选择图片在固定二分类阈值下得到的类别判定结果。',
+          ),
+          kpi(
+            '当前图片的类别 1 概率',
+            currentProbText,
+            '这是当前浏览器选择图片属于类别 1 的 E2E 隐私推理概率。',
+            'primary',
+          ),
+          kpi(
+            '当前图片的安全推理状态',
+            liveRunValue,
+            liveRunSub,
+          ),
+        ].join('') + `
+          <div class="summary-note" style="grid-column: 1 / -1;">
+            这里展示的是<strong>当前浏览器选择图片</strong>的即时结果，不是数据集级的准确率。
+            验证集上的最佳准确率、AUC 以及与外部基线的统一对比，放在下方“与外部同数据集基线相比”区统一展示。
+          </div>
+        `;
+      }
+
+      function renderStandardizedBenchmarkBlock(benchmark) {
+        const profiles = Array.isArray(benchmark?.profiles) ? benchmark.profiles : [];
+        const comparisons = Array.isArray(benchmark?.comparisons) ? benchmark.comparisons : [];
+        const roleLabel = (role) => {
+          if (role === 'current_project') return '本项目当前方案';
+          if (role === 'external_baseline') return '外部对照方案';
+          return '参考 profile';
+        };
+        const groupLabel = (group) => {
+          if (group === 'same_shape_operator_proxy') return '同形状算子替换收益';
+          if (group === 'architecture_proxy') return '不同结构规模 proxy 对比';
+          return group || 'benchmark';
+        };
+        const profileTitle = (profile) => {
+          if (profile?.profile_id === 'transshield_ops_same_shape_proxy') return '本项目安全友好算子配置';
+          if (profile?.profile_id === 'baseline_ops_same_shape_proxy') return '外部 baseline 算子配置';
+          if (profile?.profile_id === 'transshield_final_arch_proxy') return '本项目最终模型结构 proxy';
+          if (profile?.profile_id === 'mpcvit_vit_7_4_32_arch_proxy') return 'MPCViT 结构 proxy';
+          return profile?.display_name || profile?.profile_id || 'N/A';
+        };
+        const profileSourceText = (profile) => {
+          const source = String(profile?.model_source || '');
+          if (source.includes('MPCFormer baseline transformer ops proxy')) {
+            return '外部对照来自 MPCFormer benchmark 自带的 baseline transformer 算子配置，对应 ReLU + softmax。';
+          }
+          if (source.includes('Transshield operator replacement proxy')) {
+            return '本项目对照来自 Transshield 当前安全友好算子配置，对应 quad + softmax_2QUAD。';
+          }
+          if (source.includes('external_baselines/mpcvit')) {
+            return '外部对照来自 MPCViT 当前同数据集模型结构的 proxy，不是 full pipeline secure 复现。';
+          }
+          if (source.includes('frozen_bundle_verified_tracka_lr3e5_20260414')) {
+            return '本项目对照来自当前最终展示模型的 transformer 结构 proxy。';
+          }
+          return source ? `来源：${source}` : '来源信息未写入。';
+        };
+        const ratioReductionText = (ratio) => {
+          const number = Number(ratio);
+          if (!Number.isFinite(number)) return 'N/A';
+          return `${((1 - number) * 100).toFixed(1)}%`;
+        };
+        const currentProfile = profiles.find((profile) => profile?.role === 'current_project') || null;
+        const externalProfile = profiles.find((profile) => profile?.role === 'external_baseline') || null;
+        const primaryComparison = comparisons.find((comparison) => comparison?.comparison_group === 'same_shape_operator_proxy')
+          || comparisons[0]
+          || null;
+        if (!profiles.length) {
+          return `
+            <div class="external-card">
+              <h4>统一 secure benchmark（待运行）</h4>
+              <p><strong>当前状态：</strong>${escapeHtml(benchmark?.summary || '尚未写入统一 benchmark 数字。')}</p>
+              <p><strong>运行入口：</strong><code>${escapeHtml(benchmark?.run_entry || 'artifacts/server_inference_friendly_pack/run_standardized_secure_external_benchmark.sh')}</code></p>
+              <p><strong>口径：</strong>${escapeHtml(benchmark?.scope_note || '只用于同一 secure transformer harness 下的通信 / 时间对比，不等同于 full-val 医学图像 pipeline。')}</p>
+            </div>
+          `;
+        }
+        const profileRows = profiles.map((profile) => {
+          const config = profile.config || {};
+          const metrics = profile.metrics || {};
+          const shape = `固定结构：${config.num_hidden_layers ?? 'N/A'} 层，hidden ${config.hidden_size ?? 'N/A'}，seq ${config.sequence_length ?? 'N/A'}，heads ${config.num_attention_heads ?? 'N/A'}`;
+          return `
+            <tr>
+              <td>
+                <strong>${escapeHtml(profileTitle(profile))}</strong>
+                <br><span class="muted">${escapeHtml(profileSourceText(profile))}</span>
+              </td>
+              <td>${escapeHtml(roleLabel(profile.role))}</td>
+              <td>${escapeHtml(shape)}<br><span class="muted">算子配置：act=${escapeHtml(config.hidden_act || 'N/A')}，softmax=${escapeHtml(config.softmax_act || 'N/A')}</span></td>
+              <td>${escapeHtml(humanSeconds(metrics.total_time_mean_sec))}</td>
+              <td>${escapeHtml(humanBytes(metrics.module_comm_byte_mean))}</td>
+            </tr>
+          `;
+        }).join('');
+        const comparisonRows = comparisons.map((comparison) => `
+          <tr>
+            <td>${escapeHtml(groupLabel(comparison.comparison_group))}</td>
+            <td>${escapeHtml(profileTitle({ profile_id: comparison.left_profile_id, display_name: comparison.left_display_name }))}</td>
+            <td>${escapeHtml(profileTitle({ profile_id: comparison.right_profile_id, display_name: comparison.right_display_name }))}</td>
+            <td>${escapeHtml(humanBytes(comparison.module_comm_delta_bytes))}</td>
+            <td>${escapeHtml(humanFixed(comparison.module_comm_ratio_left_over_right, 3))}×</td>
+            <td>${escapeHtml(humanSeconds(comparison.time_delta_sec))}</td>
+            <td>${escapeHtml(humanFixed(comparison.time_ratio_left_over_right, 3))}×</td>
+          </tr>
+        `).join('');
+        return `
+          <div class="external-card">
+            <h4>统一 secure benchmark（同一 harness）</h4>
+            <p><strong>这部分在比较什么：</strong>这里对比的不是网页单图结果，也不是全验证集 secure pipeline，而是把两组 transformer proxy 放进同一个 <code>MPCFormer local 2PC benchmark</code> 中，专门观察<strong>安全友好算子替换</strong>对通信和时间的影响。</p>
+            <p><strong>具体外部对照是谁：</strong>${escapeHtml(externalProfile ? profileSourceText(externalProfile) : '当前没有读到外部对照 profile。')}</p>
+            <p><strong>本项目这边是谁：</strong>${escapeHtml(currentProfile ? profileSourceText(currentProfile) : '当前没有读到本项目 profile。')}</p>
+            ${primaryComparison ? `
+              <div class="summary-note">
+                <strong>${escapeHtml(groupLabel(primaryComparison.comparison_group))}：</strong>
+                在完全相同的 transformer 形状下，本项目安全友好算子配置把平均通信量压到外部 baseline 的 <strong>${escapeHtml(humanFixed(primaryComparison.module_comm_ratio_left_over_right, 3))}×</strong>，
+                也就是通信量约下降 <strong>${escapeHtml(ratioReductionText(primaryComparison.module_comm_ratio_left_over_right))}</strong>；
+                平均运行时间压到 <strong>${escapeHtml(humanFixed(primaryComparison.time_ratio_left_over_right, 3))}×</strong>，
+                也就是时间约下降 <strong>${escapeHtml(ratioReductionText(primaryComparison.time_ratio_left_over_right))}</strong>。
+              </div>
+            ` : ''}
+            <table class="overview-table">
+              <thead>
+                <tr>
+                  <th>对照项</th>
+                  <th>角色</th>
+                  <th>固定结构与算子</th>
+                  <th>平均时间</th>
+                  <th>平均通信</th>
+                </tr>
+              </thead>
+              <tbody>${profileRows}</tbody>
+            </table>
+            ${comparisonRows ? `
+              <table class="overview-table compact">
+                <thead>
+                  <tr>
+                    <th>分组</th>
+                    <th>本项目方案</th>
+                    <th>外部对照方案</th>
+                    <th>通信差值</th>
+                    <th>通信比例</th>
+                    <th>时间差值</th>
+                    <th>时间比例</th>
+                  </tr>
+                </thead>
+                <tbody>${comparisonRows}</tbody>
+              </table>
+            ` : ''}
+            <div class="meta-note">解读方式：如果这里显示的是“同形状算子替换收益”，它说明的是算子设计本身更适合安全计算；不能直接把这里的数字当成单图 live run 或 full-val sidecar 的真实通信量。</div>
+          </div>
+        `;
+      }
+
+      function renderExternalComparisonSection(summary) {
+        if (!externalComparisonBox) return;
+        const externalComparison = summary?.external_comparison;
+        const communication = summary?.communication_evidence;
+        const standardizedBenchmark = summary?.standardized_secure_benchmark;
+        const e2eDeploy = summary?.e2e_secure_approx_deploy;
+        const bundle = summary?.default_bundle;
+        const verified = externalComparison?.transshield_verified || {};
+        const mpcvit = externalComparison?.mpcvit_same_dataset || {};
+        const gaps = externalComparison?.gap_to_mpcvit_reference || externalComparison?.gap_to_mpcvit_best_by_argmax || {};
+        const externalReference = communication?.external_reference || {};
+        const secureMatch = Math.min(
+          Number(bundle?.argmax_match_ratio ?? 0),
+          Number(bundle?.threshold_match_ratio ?? 0),
+        );
+        const liveCommValue = latestLiveRunState?.hasLiveRun
+          ? humanBytes(latestLiveRunState.totalBytes)
+          : '等待本次 E2E SPU 隐私推理';
+        const liveCommConclusion = latestLiveRunState?.hasLiveRun
+          ? '这是本次浏览器分片触发的 E2E SPU 隐私推理通信量，不是历史平均值，也不是静态示例值。'
+          : '运行本次 E2E SPU 隐私推理后，这里会显示真实 live run 的通信量。';
+        externalComparisonBox.innerHTML = `
+          <div class="external-card highlight">
+            <h4>离线验证集效果对比表</h4>
+            <p><strong>说明：</strong>这里展示的是验证集上的已验证最佳成绩与外部基线对比，不是当前浏览器选择图片的单样本结果。</p>
+            <table class="overview-table">
+              <thead>
+                <tr>
+                  <th>指标</th>
+                  <th>本项目 Transfield</th>
+                  <th>对比对象</th>
+                  <th>结论</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>准确率</strong></td>
+                  <td><strong>${humanPercent(verified.threshold_accuracy)}</strong></td>
+                  <td>同数据集明文参考模型 MPCViT：${humanPercent(mpcvit.threshold_accuracy)}</td>
+                  <td>相对明文参考模型下降 ${Math.abs(Number(gaps.threshold_accuracy_gap ?? 0)).toFixed(3)} 个百分点，但整体效果保持接近强基线。</td>
+                </tr>
+                <tr>
+                  <td><strong>AUC</strong></td>
+                  <td><strong>${humanAuc(verified.auc)}</strong></td>
+                  <td>同数据集明文参考模型 MPCViT：${humanAuc(mpcvit.auc)}</td>
+                  <td>相对明文参考模型下降 ${Math.abs(Number(gaps.auc_gap ?? 0)).toFixed(3)}，说明判别能力仍保持在较高水平。</td>
+                </tr>
+                <tr>
+                  <td><strong>安全一致性</strong></td>
+                  <td><strong>${humanRatioPercent(secureMatch)}</strong></td>
+                  <td>与本次明文参考结果逐项对比</td>
+                  <td>表示安全推理输出与明文参考结果完全一致，结果可信。</td>
+                </tr>
+                <tr>
+                  <td><strong>Token 数变化</strong></td>
+                  <td><strong>196 → 137 → 96 → 67</strong></td>
+                  <td>原始 196 个 patch token</td>
+                  <td>三阶段逐步压缩后续计算对象，为后面的安全比较、通信和推理减负。</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="meta-note"><strong>当前单图 E2E SPU live run 通信量：</strong>${liveCommValue}。${liveCommConclusion}</div>
+            ${externalComparison?.fairness_note ? `<p><strong>公平性说明：</strong>${escapeHtml(externalComparison.fairness_note)}</p>` : ''}
+            <p><strong>结论：</strong>主页面只展示当前最终模型与外部 baseline；本项目的核心价值是让动态剪枝和算子改造能够进入可验证的安全推理流程。</p>
+          </div>
+          ${e2eDeploy ? `
+          <div class="external-card">
+            <h4>${escapeHtml(e2eDeploy.title || 'E2E 全隐私近似部署路径')}</h4>
+            <p><strong>当前状态：</strong>${escapeHtml(e2eDeploy.status || 'N/A')}</p>
+            <p><strong>部署口径：</strong>${escapeHtml(e2eDeploy.summary || '')}</p>
+            <table class="overview-table compact">
+              <thead>
+                <tr>
+                  <th>项目</th>
+                  <th>E2E 近似路径</th>
+                  <th>原始明文路径</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>验证集准确率</td>
+                  <td>${escapeHtml(e2eDeploy.accuracy_comparison?.e2e_accuracy_status || '尚未完成数据集级评测')}</td>
+                  <td>Argmax ${humanPercent(verified.argmax_accuracy)} / Threshold ${humanPercent(verified.threshold_accuracy)}</td>
+                </tr>
+                <tr>
+                  <td>当前已验证样本</td>
+                  <td>${escapeHtml(String(e2eDeploy.latest_validated_run?.sample_count ?? 'N/A'))} 张，${escapeHtml(e2eDeploy.latest_validated_run?.decision || 'N/A')}</td>
+                  <td>完整验证集离线评估</td>
+                </tr>
+                <tr>
+                  <td>隐私输入状态</td>
+                  <td>${escapeHtml(e2eDeploy.privacy_fields_summary || '')}</td>
+                  <td>明文 pixel_values 直接进入模型</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="meta-note">${escapeHtml(e2eDeploy.accuracy_comparison?.current_conclusion || '')}</div>
+            <div class="meta-note">评测入口：<code>${escapeHtml(e2eDeploy.eval_entry || 'artifacts/server_inference_friendly_pack/run_e2e_secure_approx_eval.sh')}</code></div>
+          </div>
+          ` : ''}
+          <div class="external-card">
+            <h4>为什么选这些对比对象</h4>
+            <p><strong>对比对象 1：MPCViT 同数据集明文基线。</strong> 选择它，是因为它能说明本项目相对强明文参考模型还有多少效果差距，帮助评委快速判断“效果是否接近可用”。</p>
+            <p><strong>对比对象 2：统一 secure benchmark。</strong> 只有当外部模型也在同一个 MPCFormer local 2PC benchmark harness 下重新运行后，才展示通信 / 时间数字。</p>
+            <p><strong>本项目主要优化的瓶颈：</strong> 激活函数、剪枝边界选择、密态下的 token 保留表达，以及只保护关键选择边界而不是整网全密态执行。</p>
+            <p><strong>外部比较结论：</strong> 本项目侧重点不是刷新明文 SOTA，而是把动态剪枝真正改写成可在安全两方计算中执行的流程，并给出在线 SPU 推理与通信量证据。</p>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <strong>1. 动态剪枝可视化</strong>
+                <span>展示哪些 token 被继续保留，哪些 token 被安全置零。</span>
+              </div>
+              <div class="flow-step">
+                <strong>2. Token 数逐层减少</strong>
+                <span>从 196 逐步减到 137、96、67，后续只在更小集合上继续处理。</span>
+              </div>
+              <div class="flow-step">
+                <strong>3. 安全开销继续下降</strong>
+                <span>后续需要安全比较、通信和计算的对象更少，因此推理负担变轻。</span>
+              </div>
+              <div class="flow-step">
+                <strong>4. 结果仍与明文一致</strong>
+                <span>最终 secure 输出与明文参考结果对齐，形成完整证据链闭环。</span>
+              </div>
+            </div>
+          </div>
+          ${renderStandardizedBenchmarkBlock(standardizedBenchmark)}
+        `;
+      }
+
+      function setBestContent(summary) {
+        latestDemoSummary = summary;
+        const bundle = summary?.default_bundle;
+        const externalComparison = summary?.external_comparison;
+        const pruning = summary?.pruning_targets;
+        const operatorReplacements = summary?.operator_replacements;
+        const communication = summary?.communication_evidence;
+        const standardizedBenchmark = summary?.standardized_secure_benchmark;
+        const e2eDeploy = summary?.e2e_secure_approx_deploy;
+        const closure = summary?.plaintext_stability_closure;
+        if (!bundle && !externalComparison && !pruning && !operatorReplacements && !communication && !standardizedBenchmark && !e2eDeploy && !closure) {
+          bestContentBox.innerHTML = '<p class="empty-state">当前没有可展示的最佳摘要。</p>';
+          if (detailsContentBox) detailsContentBox.innerHTML = '<p class="empty-state">当前没有可展示的详细摘要。</p>';
+          if (externalComparisonBox) externalComparisonBox.innerHTML = '<p class="empty-state">当前没有外部 baseline 摘要。</p>';
+          return;
+        }
+
+        const keyConfigs = Array.isArray(closure?.key_configs) ? closure.key_configs : [];
+        const configItems = keyConfigs.length > 0
+          ? keyConfigs.map((item) => `${item.label}=${item.value}${item.meaning ? `（${item.meaning}）` : ''}`)
+          : Object.entries(closure?.config || {}).map(([key, value]) => configLabel(key, value));
+        renderHeroCards(summary);
+        renderExternalComparisonSection(summary);
+        if (!latestLiveRunState) {
+          renderRuntimePlaceholder();
+        }
+
+        if (methodContentBox) {
+          const items = operatorReplacements?.items || [];
+          const findItem = (name) => items.find((item) => String(item.name || '').toLowerCase().includes(name));
+          const activation = findItem('activation');
+          const masking = findItem('mask');
+          const boundary = findItem('boundary') || findItem('pruning');
+          methodContentBox.innerHTML = `
+            <div class="method-card">
+              <b>安全友好的激活替换</b>
+              <span>做了什么：${escapeHtml(activation ? `${activation.before} → ${activation.after}` : 'GELU → 平方 / 二次近似激活')}</span>
+              <span>为什么适合安全推理：复杂非线性更少，密态协议实现更直接。</span>
+              <span>带来什么收益：${escapeHtml(activation?.effect || '减少高代价非线性环节，降低安全计算负担。')}</span>
+            </div>
+            <div class="method-card">
+              <b>安全掩码动态剪枝</b>
+              <span>做了什么：${escapeHtml(masking ? `${masking.before} → ${masking.after}` : '直接删 token → 用 mask 表达保留 / 置零')}</span>
+              <span>为什么适合安全推理：张量形状保持稳定，明文参考路径与安全 replay 更容易对齐。</span>
+              <span>带来什么收益：三阶段目标保留约 137 / 96 / 67 个 token，后续安全比较和传输对象持续减少。</span>
+            </div>
+            <div class="method-card">
+              <b>稀疏感知安全执行</b>
+              <span>做了什么：${escapeHtml(boundary ? `${boundary.before} → ${boundary.after}` : 'top-k 边界 → 阈值比较 + F_less / tie policy')}</span>
+              <span>为什么适合安全推理：只保护关键选择边界，而不是把整网全部放入安全协议。</span>
+              <span>带来什么收益：把在线安全执行重点集中在真正关键的 pruning 决策位置，主流程可验证且结果可信。</span>
+            </div>
+          `;
+        }
+
+        const verified = externalComparison?.transshield_verified || {};
+        const mpcvit = externalComparison?.mpcvit_same_dataset || {};
+        const gaps = externalComparison?.gap_to_mpcvit_reference || externalComparison?.gap_to_mpcvit_best_by_argmax || {};
+        const mpcvitSeedMean = externalComparison?.mpcvit_seed_mean || externalComparison?.mpcvit_3seed_mean || {};
+        const mpcvitSeedMeanLabel = mpcvitSeedMean?.label || 'MPCViT 多随机种子均值';
+
+        const bundleDetail = bundle ? `
+          <div class="summary-note">${escapeHtml(bundle.summary || '')}</div>
+          <div class="metric-grid">
+            ${metric('展示名称', bundle.display_name || bundle.title || 'N/A', 'wide')}
+            ${metric('Bundle', bundle.bundle_name || 'N/A', 'wide')}
+            ${metric('目录', bundle.bundle_dir || 'N/A', 'wide')}
+            ${metric('状态', bundle.status || 'N/A')}
+            ${metric('最佳轮次', bundle.best_epoch === null || bundle.best_epoch === undefined ? 'N/A' : `epoch ${bundle.best_epoch}`)}
+            ${metric('Argmax 准确率', humanPercent(externalComparison?.transshield_verified?.argmax_accuracy ?? bundle.argmax_accuracy), 'secure')}
+            ${metric('Threshold 准确率', humanPercent(externalComparison?.transshield_verified?.threshold_accuracy ?? bundle.threshold_accuracy), 'secure')}
+            ${metric('Argmax 一致率', humanRatioPercent(bundle.argmax_match_ratio))}
+            ${metric('Threshold 一致率', humanRatioPercent(bundle.threshold_match_ratio))}
+            ${metric('Secure 验证', bundle.spu_pipeline_overall_passed && bundle.spu_replay_overall_passed ? 'pipeline / replay 均通过' : '部分未通过', 'secure wide')}
+          </div>
+          <div class="meta-note">${escapeHtml(bundle.best_epoch_note || '')}</div>
+          <div class="meta-note">通信统计来源：<code>${escapeHtml(communicationSourceLabel(bundle.communication_source))}</code></div>
+        ` : '';
+
+        const externalDetail = externalComparison ? `
+          <div class="summary-note">${escapeHtml(externalComparison.summary || '')}</div>
+          <div class="metric-grid">
+            ${metric('本项目 argmax 准确率', humanPercent(verified.argmax_accuracy), 'secure')}
+            ${metric('外部基线 MPCViT argmax 准确率', humanPercent(mpcvit.argmax_accuracy))}
+            ${metric('argmax 差值（百分点）', `${humanPoints(-(gaps.argmax_accuracy_gap ?? 0))} pt`, 'warn')}
+            ${metric('本项目 threshold 准确率', humanPercent(verified.threshold_accuracy), 'secure')}
+            ${metric('外部基线 MPCViT threshold 准确率', humanPercent(mpcvit.threshold_accuracy))}
+            ${metric('threshold 差值（百分点）', `${humanPoints(-(gaps.threshold_accuracy_gap ?? 0))} pt`, 'warn')}
+            ${metric('本项目 AUC', humanAuc(verified.auc), 'secure')}
+            ${metric('外部基线 MPCViT AUC', humanAuc(mpcvit.auc))}
+            ${metric('AUC 差值', humanPoints(-(gaps.auc_gap ?? 0), 3), 'warn')}
+            ${metric(mpcvitSeedMeanLabel, humanPercent(mpcvitSeedMean?.argmax_accuracy), 'wide')}
+          </div>
+          <div class="meta-note">主比较对象：<code>${escapeHtml(mpcvit.status || 'same-dataset external baseline')}</code>。</div>
+          ${externalComparison?.source_run ? `<div class="meta-note">当前公平对比来源：<code>${escapeHtml(externalComparison.source_run)}</code></div>` : ''}
+          ${externalComparison?.fairness_note ? `<div class="meta-note">${escapeHtml(externalComparison.fairness_note)}</div>` : ''}
+          <div class="meta-note">${escapeHtml(externalComparison.note || '')}</div>
+        ` : '';
+
+        const pruningDetail = pruning ? `
+          <div class="summary-note">${escapeHtml(pruning.summary || '')}</div>
+          <div class="seed-grid">
+            ${(pruning.stages || []).map((stage) => `
+              <div class="seed-card">
+                <b>Stage ${escapeHtml(stage.stage)}</b>
+                <span>目标保留：${escapeHtml(humanRatioPercent(stage.keep_ratio))}</span>
+                <span>目标剪枝：${escapeHtml(humanRatioPercent(stage.prune_ratio))}</span>
+                <span>约 ${escapeHtml(stage.target_tokens_after)} / 196 tokens</span>
+              </div>
+            `).join('')}
+          </div>
+          ${pruning.visual_note ? `<div class="meta-note">${escapeHtml(pruning.visual_note)}</div>` : ''}
+        ` : '';
+
+        const operatorDetail = operatorReplacements ? `
+          <div class="summary-note">${escapeHtml(operatorReplacements.summary || '')}</div>
+          <div class="seed-grid">
+            ${(operatorReplacements.items || []).map((item) => `
+              <div class="seed-card">
+                <b>${escapeHtml(item.name)}</b>
+                <span>替换：${escapeHtml(item.before)} → ${escapeHtml(item.after)}</span>
+                <span>作用：${escapeHtml(item.effect)}</span>
+                ${item.scope ? `<span>范围：${escapeHtml(item.scope)}</span>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        ` : '';
+
+        const closureDetail = closure ? `
+          <div class="summary-note">${escapeHtml(closure.summary || '')}</div>
+          <div class="summary-note"><strong>这两个 Seed 是干什么的：</strong>它们表示两次独立训练，训练配置相同，只是随机种子不同。作用是检查这套训练方案换一次随机初始化后是否仍然稳定，而不是表示当前网页会同时调用两个模型做在线推理。</div>
+          <div class="seed-grid">
+            ${(closure.seed_results || []).map((item) => `
+              <div class="seed-card">
+                <b>独立训练 Seed ${escapeHtml(item.seed)}</b>
+                <span>最好准确率：${escapeHtml(humanPercent(item.best_acc1))}</span>
+                <span>最终准确率：${escapeHtml(humanPercent(item.final_acc1))}</span>
+                <span>差值：${escapeHtml(humanPercent(item.best_final_gap))}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="summary-note">
+            稳定判据：最好准确率 ≥ ${escapeHtml(humanPercent(closure.criterion?.min_best_acc1_percent))}，
+            最终准确率 ≥ ${escapeHtml(humanPercent(closure.criterion?.min_final_acc1_percent))}，
+            差值 ≤ ${escapeHtml(humanPercent(closure.criterion?.max_best_final_gap_percent))}；
+            判定结果：<code>${escapeHtml(boolStatus(closure.criterion?.achieved))}</code>。
+          </div>
+          <div class="meta-note">阅读方式：如果两次独立训练的最好准确率、最终准确率和最好-最终差值都落在可接受范围内，就说明这套训练方案不是“碰巧一次训得好”，而是具有可复现的稳定性。</div>
+          <div class="pill-list">
+            ${configItems.map((text) => `<span class="tag">${escapeHtml(text)}</span>`).join('')}
+          </div>
+          ${(closure.notes || []).map((note) => `<div class="meta-note">${escapeHtml(note)}</div>`).join('')}
+        ` : '';
+
+        const communicationDetail = communication ? `
+          <div class="summary-note">${escapeHtml(communication.summary || '')}</div>
+          <div class="seed-grid">
+            <div class="seed-card">
+              <b>本次同口径查看方式</b>
+              <span>上传图片后点击：Run SPU Secure</span>
+              <span>或点击：CPU/SPU 成本对比</span>
+              <span>页面会显示同一张图的 SPU live 通信量。</span>
+            </div>
+            <div class="seed-card">
+              <b>当前页面只认 live run</b>
+              <span>当前图片的通信量只来自本次 SPU 真实运行。</span>
+              <span>不再显示历史固定样本或旧 profile 的通信数字。</span>
+              <span>避免把不同样本量、不同阶段的数据混在一起比较。</span>
+            </div>
+            <div class="seed-card">
+              <b>外部 secure benchmark</b>
+              <span>${escapeHtml(communication.external_reference?.source || 'N/A')}</span>
+              <span>这里只作瓶颈背景说明，不作当前单图直接数字比较。</span>
+              <span>如果要做公平对比，必须重新跑同输入、同样本量、同协议口径。</span>
+            </div>
+          </div>
+          <div class="meta-note">${escapeHtml(communication.external_reference?.note || '')}</div>
+        ` : '';
+
+        const standardizedBenchmarkDetail = standardizedBenchmark ? `
+          <div class="summary-note">${escapeHtml(standardizedBenchmark.summary || '')}</div>
+          <div class="meta-note">运行入口：<code>${escapeHtml(standardizedBenchmark.run_entry || 'artifacts/server_inference_friendly_pack/run_standardized_secure_external_benchmark.sh')}</code></div>
+          <div class="meta-note">${escapeHtml(standardizedBenchmark.scope_note || standardizedBenchmark.scope?.summary || '')}</div>
+        ` : '';
+
+        const e2eDeployDetail = e2eDeploy ? `
+          <div class="summary-note">${escapeHtml(e2eDeploy.summary || '')}</div>
+          <div class="seed-grid">
+            ${(e2eDeploy.deploy_config || []).map((item) => `
+              <div class="seed-card">
+                <b>${escapeHtml(item.name)}</b>
+                <span>${escapeHtml(item.value)}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="meta-note">${escapeHtml(e2eDeploy.accuracy_comparison?.current_conclusion || '')}</div>
+          <div class="meta-note">评测入口：<code>${escapeHtml(e2eDeploy.eval_entry || 'artifacts/server_inference_friendly_pack/run_e2e_secure_approx_eval.sh')}</code></div>
+        ` : '';
+
+        if (detailsContentBox) {
+          detailsContentBox.innerHTML = [
+            bundleDetail ? detailPanel('展示模型与 secure 验证', bundleDetail) : '',
+            externalDetail ? detailPanel(externalComparison?.title || '外部项目对比', externalDetail) : '',
+            pruningDetail ? detailPanel(pruning?.title || '默认剪枝率', pruningDetail) : '',
+            operatorDetail ? detailPanel(operatorReplacements?.title || '算子替换完整列表', operatorDetail) : '',
+            closureDetail ? detailPanel(closure?.title || '多随机种子结果', closureDetail) : '',
+            communicationDetail ? detailPanel(communication?.title || '通信与瓶颈证据', communicationDetail) : '',
+            standardizedBenchmarkDetail ? detailPanel(standardizedBenchmark?.title || '统一 secure benchmark', standardizedBenchmarkDetail) : '',
+            e2eDeployDetail ? detailPanel(e2eDeploy?.title || 'E2E 全隐私近似部署路径', e2eDeployDetail) : '',
+          ].join('');
+        }
+      }
+
+      function classValue(value) {
+        return value === null || value === undefined ? 'N/A' : String(value);
+      }
+
+      function setBrowserPrivatePending() {
+        metaBox.innerHTML = `<div class="metric-grid">
+          ${metric('原图上传到后端', 'false', 'secure')}
+          ${metric('明文 pixel_values 上传到后端', 'false', 'secure')}
+          ${metric('浏览器本地预处理', 'resize + center crop + normalize', 'wide')}
+          ${metric('浏览器本地分片', 'Float32 share0 / share1', 'wide')}
+        </div>
+        <div class="meta-note">图片只在浏览器本地用于生成密态 share；提交给后端的是两份 Float32 share，不是原图。</div>`;
+        compareBox.innerHTML = '<div class="comparison-status warn">E2E 隐私推理正在运行，完成后会显示最终结果。</div>';
+        runtimeBox.innerHTML = `<div class="metric-grid">
+          ${metric('当前状态', '浏览器已生成 share，后端正在运行 E2E SPU', 'secure wide')}
+          ${metric('输入张量形状', '1 x 3 x 224 x 224')}
+          ${metric('上传数据', 'share0 + share1，约 1.2 MB', 'secure')}
+          ${metric('Reveal policy', 'final logits only', 'wide')}
+        </div>`;
+      }
+
+      function setBrowserPrivateResult(payload) {
+        const result = payload.result || {};
+        const prediction = result.prediction || {};
+        const e2e = result.e2e || {};
+        const profile = result.profile || {};
+        const comm = profile.communication || {};
+        const privacy = payload.privacy || {};
+        latestSecurePrediction = prediction;
+        latestLiveRunState = {
+          hasLiveRun: true,
+          totalBytes: comm.total_bytes,
+          runtimeLabel: 'E2E approximate SPU',
+        };
+        metaBox.innerHTML = `<div class="metric-grid">
+          ${metric('原图上传到后端', String(Boolean(privacy.server_received_plain_image)), privacy.server_received_plain_image ? 'warn' : 'secure')}
+          ${metric('明文 pixel_values 上传到后端', String(Boolean(privacy.server_received_plain_pixel_values)), privacy.server_received_plain_pixel_values ? 'warn' : 'secure')}
+          ${metric('浏览器本地生成 share', String(Boolean(privacy.browser_generated_shares)), 'secure')}
+          ${metric('Demo 单进程同时接收两份 share', String(Boolean(privacy.server_received_share0_and_share1_in_demo_process)), 'warn wide')}
+        </div>
+        <div class="meta-note">${escapeHtml(privacy.production_note || '生产部署需要把 P1/P2 share 分别上传到独立 party。')}</div>`;
+        compareBox.innerHTML = `<div class="comparison-status">
+          E2E 隐私推理完成：最终输出 class ${escapeHtml(classValue(prediction.threshold_label ?? prediction.argmax_label))}。
+        </div>
+        <div class="metric-grid">
+          ${metric('Argmax 类别', classValue(prediction.argmax_label), 'secure')}
+          ${metric('Threshold 类别', classValue(prediction.threshold_label), 'secure')}
+          ${metric('类别 0 概率', humanFixed(prediction.prob_class_0))}
+          ${metric('类别 1 概率', humanFixed(prediction.prob_class_1), 'secure')}
+          ${metric('finite logits', String(e2e.finite_logits), e2e.finite_logits ? 'secure' : 'warn')}
+          ${metric('输入模式', e2e.input_mode || 'N/A', 'secure wide')}
+        </div>
+        ${e2e.candidate_json ? `<div class="result-note">Candidate JSON：<code>${escapeHtml(e2e.candidate_json)}</code></div>` : ''}`;
+        runtimeBox.innerHTML = `<div class="metric-grid">
+          ${metric('本次运行路径', 'Browser shares -> E2E approx SPU', 'secure wide')}
+          ${metric('样本数', profile.sample_count ? `${profile.sample_count} 张` : '1 张')}
+          ${metric('E2E SPU 耗时', humanSeconds(profile.total_pipeline_duration_sec), 'secure')}
+          ${metric('通信量', humanBytes(comm.total_bytes), 'secure wide')}
+          ${metric('通信统计来源', `${comm.source || 'logs/spu_nodes'} · ${comm.status || 'unknown'}`, 'wide')}
+          ${comm.request_bytes !== null && comm.request_bytes !== undefined ? metric('发送方向通信量', humanBytes(comm.request_bytes)) : ''}
+          ${comm.response_bytes !== null && comm.response_bytes !== undefined ? metric('接收方向通信量', humanBytes(comm.response_bytes)) : ''}
+          ${metric('host 明文 pixel_values', e2e.host_plaintext_pixel_values_materialized === false ? 'false' : String(e2e.host_plaintext_pixel_values_materialized), 'secure')}
+          ${metric('host 私有 share tensor', e2e.host_private_share_tensors_loaded === false ? 'false' : String(e2e.host_private_share_tensors_loaded), 'secure')}
+          ${metric('近似配置', `depth=${e2e.effective_static_depth || 'N/A'}, LN=${e2e.layer_norm_policy || 'N/A'}, attn=${e2e.attention_policy || 'N/A'}, act=${e2e.activation_kind || 'N/A'}`, 'wide')}
+        </div>
+        ${e2e.privacy_note ? `<div class="result-note">${escapeHtml(e2e.privacy_note)}</div>` : ''}`;
+        if (latestDemoSummary) {
+          renderHeroCards(latestDemoSummary);
+          renderExternalComparisonSection(latestDemoSummary);
+        }
+      }
+
+      async function runBrowserPrivateAnalysis() {
+        const file = imageInput.files[0];
+        if (!file) {
+          alert('请先选择图片。');
+          return;
+        }
+        setButtonBusy(uploadButton, true, '本地分片并分析中...');
+        setMainActionDisabled(true);
+        setBrowserPrivatePending();
+        try {
+          previewImage.src = URL.createObjectURL(file);
+          previewImage.style.display = 'block';
+          previewText.style.display = 'none';
+          const { share0, share1 } = await buildBrowserPrivateShares(file);
+          const form = new FormData();
+          form.append('share0', new Blob([share0.buffer], { type: 'application/octet-stream' }), 'share0.bin');
+          form.append('share1', new Blob([share1.buffer], { type: 'application/octet-stream' }), 'share1.bin');
+          const response = await fetch('/api/e2e/analyze_private_shares', { method: 'POST', body: form });
+          const payload = await response.json();
+          if (!response.ok) {
+            setRunFailure('e2e', payload.error || 'E2E 隐私分析失败', payload.details || '');
+            return;
+          }
+          setBrowserPrivateResult(payload);
+        } catch (error) {
+          setRunFailure('e2e', error.message);
+        } finally {
+          setButtonBusy(uploadButton, false);
+          setMainActionDisabled(false);
+        }
+      }
+
+      uploadButton.addEventListener('click', async () => {
+        await runBrowserPrivateAnalysis();
+      });
+
+      imageInput.addEventListener('change', () => {
+        const file = imageInput.files[0];
+        if (file) {
+          latestLiveRunState = null;
+          latestSecurePrediction = null;
+          previewImage.src = URL.createObjectURL(file);
+          previewImage.style.display = 'block';
+          previewText.style.display = 'none';
+          metaBox.innerHTML = '<div class="empty-state">图片已在浏览器本地载入；点击主按钮后会生成 share 并启动 E2E 推理。</div>';
+          updateSummaryBoard(null);
+          updateStageBars(null);
+          updateStageExplanations(null);
+          compareBox.innerHTML = '<div class="empty-state">点击“本地生成密态 share 并开始分析”后，会显示 E2E 推理结果。</div>';
+          renderRuntimePlaceholder();
+          if (latestDemoSummary) {
+            renderHeroCards(latestDemoSummary);
+            renderExternalComparisonSection(latestDemoSummary);
+          }
+        }
+      });
+
+      async function loadDemoSummary() {
+        try {
+          const response = await fetch('/api/demo_summary');
+          const payload = await response.json();
+          if (!response.ok) {
+            throw new Error(payload.error || 'summary unavailable');
+          }
+          setBestContent(payload);
+        } catch (error) {
+          bestContentBox.innerHTML = `<div class="result-note warn">最佳摘要加载失败：${escapeHtml(error.message)}</div>`;
+          externalComparisonBox.innerHTML = `<div class="result-note warn">外部比较摘要加载失败：${escapeHtml(error.message)}</div>`;
+          detailsContentBox.innerHTML = `<div class="result-note warn">详细摘要加载失败：${escapeHtml(error.message)}</div>`;
+        }
+      }
+
+      loadDemoSummary();
+    </script>
+  </body>
+</html>

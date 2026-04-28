@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+TRANSHIELD_TMP_ROOT="${TRANSHIELD_TMP_ROOT:-/data/wyb/bazel_clean/tmp}"
+mkdir -p "$TRANSHIELD_TMP_ROOT"
+
+export TMPDIR="$TRANSHIELD_TMP_ROOT"
+export TEMP="$TRANSHIELD_TMP_ROOT"
+export TMP="$TRANSHIELD_TMP_ROOT"
+export TEST_TMPDIR="$TRANSHIELD_TMP_ROOT"

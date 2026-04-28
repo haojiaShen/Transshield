@@ -1,0 +1,153 @@
+{
+  "acceptance_gates_before_any_merge_or_promotion": {
+    "minimum_mean_stage_jaccard_target": 0.95,
+    "minimum_stage_exact_count_match_target": 0.8,
+    "minimum_stage_exact_mask_match_target": 0.9,
+    "must_compare_against_frozen_topk_reference_trace": true,
+    "must_verify_logits_probability_outputs_remain_finite": true,
+    "stagewise_mask_equivalence_required": false
+  },
+  "current_read_only_conclusion": {
+    "blocking_evidence": [
+      "Current read-only single-threshold replay has mean_stage_jaccard below the proposed 0.95 gate.",
+      "Current read-only exact-count match is far below the proposed gate, especially at stage 2.",
+      "A semantic-changing threshold-pruning branch must remain isolated and explicitly compared against the frozen top-k reference."
+    ],
+    "ready_for_direct_topk_replacement": false,
+    "ready_for_experiment_branch": true
+  },
+  "experiment_family": "threshold_pruning_design",
+  "frozen_baseline_protected": true,
+  "model_semantics_changed": false,
+  "next_step": "If threshold pruning is pursued next, start an isolated experiment branch that consumes this sidecar and reports checker/replay metrics without replacing the frozen baseline.",
+  "proposed_future_branch_rules": {
+    "must_be_single_variable_relative_to_frozen_stage2_baseline": true,
+    "must_keep_topk_reference_artifacts": true,
+    "must_not_replace_frozen_candidate": true,
+    "must_run_reference_checker_side_by_side": true,
+    "must_use_new_output_dir": true
+  },
+  "replay_evidence": {
+    "aggregate_proxy_metrics": {
+      "mean_stage_jaccard": 0.7875008781750997,
+      "product_exact_count_match_ratio": 6.714029645399016e-06,
+      "product_exact_mask_match_ratio": 0.7224291820961849
+    },
+    "stage_reports": [
+      {
+        "pruning_layer": 3,
+        "reference_keep_count": 137,
+        "replay_metrics": {
+          "exact_count_match_ratio": 0.043893128633499146,
+          "exact_mask_match_ratio": 0.9295061826705933,
+          "mean_false_drop_count": 6.900763511657715,
+          "mean_false_keep_count": 6.916030406951904,
+          "mean_jaccard_vs_topk": 0.905981719493866,
+          "mean_threshold_keep_count": 137.01527404785156,
+          "mean_topk_keep_count": 137.0,
+          "std_threshold_keep_count": 17.755327224731445,
+          "threshold": -0.7294214963912964
+        },
+        "selection_mode": "jaccard",
+        "stage_index": 0,
+        "threshold_candidate": -0.7294214963912964
+      },
+      {
+        "pruning_layer": 6,
+        "reference_keep_count": 96,
+        "replay_metrics": {
+          "exact_count_match_ratio": 0.02671755664050579,
+          "exact_mask_match_ratio": 0.9377531409263611,
+          "mean_false_drop_count": 6.097328186035156,
+          "mean_false_keep_count": 6.103053569793701,
+          "mean_jaccard_vs_topk": 0.8832035660743713,
+          "mean_threshold_keep_count": 96.00572204589844,
+          "mean_topk_keep_count": 96.0,
+          "std_threshold_keep_count": 14.858427047729492,
+          "threshold": -0.818925142288208
+        },
+        "selection_mode": "jaccard",
+        "stage_index": 1,
+        "threshold_candidate": -0.818925142288208
+      },
+      {
+        "pruning_layer": 9,
+        "reference_keep_count": 67,
+        "replay_metrics": {
+          "exact_count_match_ratio": 0.0057251909747719765,
+          "exact_mask_match_ratio": 0.8288090229034424,
+          "mean_false_drop_count": 16.776718139648438,
+          "mean_false_keep_count": 16.776718139648438,
+          "mean_jaccard_vs_topk": 0.5733173489570618,
+          "mean_threshold_keep_count": 67.0,
+          "mean_topk_keep_count": 67.0,
+          "std_threshold_keep_count": 36.735904693603516,
+          "threshold": -0.8988074064254761
+        },
+        "selection_mode": "jaccard",
+        "stage_index": 2,
+        "threshold_candidate": -0.8988074064254761
+      }
+    ]
+  },
+  "single_source_of_truth": {
+    "bundle_dir": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1"
+  },
+  "status": "design_only_not_executed",
+  "threshold_candidate_sidecar": {
+    "constraints": {
+      "candidate_for_future_threshold_pruning_experiments_only": true,
+      "model_semantics_changed": false,
+      "topk_pruning_reference_preserved": true
+    },
+    "selection_mode": "jaccard",
+    "source_report": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1",
+    "stages": [
+      {
+        "active_count_before_reference": 196,
+        "keep_count_reference": 137,
+        "pruning_layer": 3,
+        "selection_metrics": {
+          "exact_count_match_ratio": 0.043893128633499146,
+          "exact_mask_match_ratio": 0.9295061826705933,
+          "mean_jaccard_vs_topk": 0.905981719493866,
+          "mean_threshold_keep_count": 137.01527404785156,
+          "std_threshold_keep_count": 17.755327224731445
+        },
+        "selection_mode": "jaccard",
+        "stage_index": 0,
+        "threshold": -0.7294214963912964
+      },
+      {
+        "active_count_before_reference": 137,
+        "keep_count_reference": 96,
+        "pruning_layer": 6,
+        "selection_metrics": {
+          "exact_count_match_ratio": 0.02671755664050579,
+          "exact_mask_match_ratio": 0.9377531409263611,
+          "mean_jaccard_vs_topk": 0.8832035660743713,
+          "mean_threshold_keep_count": 96.00572204589844,
+          "std_threshold_keep_count": 14.858427047729492
+        },
+        "selection_mode": "jaccard",
+        "stage_index": 1,
+        "threshold": -0.818925142288208
+      },
+      {
+        "active_count_before_reference": 96,
+        "keep_count_reference": 67,
+        "pruning_layer": 9,
+        "selection_metrics": {
+          "exact_count_match_ratio": 0.0057251909747719765,
+          "exact_mask_match_ratio": 0.8288090229034424,
+          "mean_jaccard_vs_topk": 0.5733173489570618,
+          "mean_threshold_keep_count": 67.0,
+          "std_threshold_keep_count": 36.735904693603516
+        },
+        "selection_mode": "jaccard",
+        "stage_index": 2,
+        "threshold": -0.8988074064254761
+      }
+    ]
+  }
+}

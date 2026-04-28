@@ -1,0 +1,96 @@
+{
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_candidates/margin_aware_full20_w10_20260417_205242_w10_t1em4_bundle",
+  "constraints": {
+    "contains_masked_score_not_kth_threshold": true,
+    "exported_from_frozen_model_forward": true,
+    "input_sidecar_is_read_only": true,
+    "model_semantics_changed": false
+  },
+  "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+  "output_pt": "/data/wyb/Transshield_final/results/payload_boundary_window_w10_20260418_014656/stage2_secure_network_kth_input_val.pt",
+  "sample_count": 524,
+  "selection_mode": "imagefolder",
+  "stages": [
+    {
+      "active_before": {
+        "max_active_count": 196,
+        "mean_active_count": 196.0,
+        "min_active_count": 196,
+        "shape": [
+          524,
+          196
+        ],
+        "std_active_count": 0.0
+      },
+      "keep_count": 137,
+      "masked_score": {
+        "finite_max": -0.27644240856170654,
+        "finite_mean": -0.5179266929626465,
+        "finite_min": -1.3794885873794556,
+        "finite_std": 0.22028186917304993,
+        "finite_value_count": 102704,
+        "non_finite_value_count": 0,
+        "shape": [
+          524,
+          196
+        ]
+      },
+      "pruning_layer": 3,
+      "stage_index": 0
+    },
+    {
+      "active_before": {
+        "max_active_count": 137,
+        "mean_active_count": 137.0,
+        "min_active_count": 137,
+        "shape": [
+          524,
+          196
+        ],
+        "std_active_count": 0.0
+      },
+      "keep_count": 96,
+      "masked_score": {
+        "finite_max": -0.03802592307329178,
+        "finite_mean": -2.317042827606201,
+        "finite_min": -15.353134155273438,
+        "finite_std": 4.163703918457031,
+        "finite_value_count": 71788,
+        "non_finite_value_count": 30916,
+        "shape": [
+          524,
+          196
+        ]
+      },
+      "pruning_layer": 6,
+      "stage_index": 1
+    },
+    {
+      "active_before": {
+        "max_active_count": 96,
+        "mean_active_count": 96.0,
+        "min_active_count": 96,
+        "shape": [
+          524,
+          196
+        ],
+        "std_active_count": 0.0
+      },
+      "keep_count": 67,
+      "masked_score": {
+        "finite_max": -0.23437517881393433,
+        "finite_mean": -0.3363853096961975,
+        "finite_min": -0.47095397114753723,
+        "finite_std": 0.04437742382287979,
+        "finite_value_count": 50304,
+        "non_finite_value_count": 52400,
+        "shape": [
+          524,
+          196
+        ]
+      },
+      "pruning_layer": 9,
+      "stage_index": 2
+    }
+  ]
+}

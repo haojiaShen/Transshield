@@ -1,0 +1,19 @@
+{
+  "profile_id": "mpcvit_vit_7_4_32_arch_proxy",
+  "display_name": "MPCViT vit_7_4_32 proxy",
+  "role": "external_baseline",
+  "comparison_group": "architecture_proxy",
+  "model_source": "external_baselines/mpcvit · vit_7_4_32 / 32px",
+  "scope_note": "同一 MPCFormer local 2PC benchmark harness；使用 MPCViT 当前同数据集 baseline 的结构参数近似。",
+  "batch_size": 1,
+  "num_hidden_layers": 7,
+  "hidden_size": 256,
+  "intermediate_size": 512,
+  "sequence_length": 65,
+  "num_attention_heads": 4,
+  "hidden_act": "relu",
+  "softmax_act": "softmax_2RELU",
+  "warmup": 1,
+  "repeats": 3,
+  "world_size": 2
+}

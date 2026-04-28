@@ -1,0 +1,97 @@
+{
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_candidates/margin_aware_full20_w10_20260417_205242_w10_t1em4_bundle",
+  "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+  "elapsed_sec": 0.016898155212402344,
+  "input_pt": "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_input_smoke8.pt",
+  "kth_payload_pt": "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_candidate_from_server.pt",
+  "notes": [
+    "This bridge consumes Transshield masked_score inputs plus kth-threshold sidecar output.",
+    "The output is checker-compatible with tools/transshield_secure_tie_payload_checker.py."
+  ],
+  "stage_count": 3,
+  "stages": [
+    {
+      "keep_count": 137,
+      "pruning_layer": 3,
+      "selected_equal_mask": {
+        "max_true_count": 1,
+        "mean_true_count": 1.0,
+        "min_true_count": 1,
+        "shape": [
+          524,
+          196
+        ]
+      },
+      "stage_index": 0,
+      "threshold_snap": {
+        "max_distance": 1.519918441772461e-05,
+        "mean_distance": 7.69423149904469e-06,
+        "tolerance": 5e-05
+      },
+      "tie_keep_quota": {
+        "max": 1,
+        "mean": 1.0,
+        "min": 1,
+        "shape": [
+          524
+        ]
+      }
+    },
+    {
+      "keep_count": 96,
+      "pruning_layer": 6,
+      "selected_equal_mask": {
+        "max_true_count": 1,
+        "mean_true_count": 1.0,
+        "min_true_count": 1,
+        "shape": [
+          524,
+          196
+        ]
+      },
+      "stage_index": 1,
+      "threshold_snap": {
+        "max_distance": 1.519918441772461e-05,
+        "mean_distance": 7.381890100077726e-06,
+        "tolerance": 5e-05
+      },
+      "tie_keep_quota": {
+        "max": 1,
+        "mean": 1.0,
+        "min": 1,
+        "shape": [
+          524
+        ]
+      }
+    },
+    {
+      "keep_count": 67,
+      "pruning_layer": 9,
+      "selected_equal_mask": {
+        "max_true_count": 1,
+        "mean_true_count": 1.0,
+        "min_true_count": 1,
+        "shape": [
+          524,
+          196
+        ]
+      },
+      "stage_index": 2,
+      "threshold_snap": {
+        "max_distance": 1.5139579772949219e-05,
+        "mean_distance": 7.684961019549519e-06,
+        "tolerance": 5e-05
+      },
+      "tie_keep_quota": {
+        "max": 1,
+        "mean": 1.0,
+        "min": 1,
+        "shape": [
+          524
+        ]
+      }
+    }
+  ],
+  "threshold_tolerance": 5e-05,
+  "tie_policy": "lowest_index"
+}

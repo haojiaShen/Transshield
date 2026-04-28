@@ -1,0 +1,244 @@
+{
+  "comparison": {
+    "transshield_minus_mpcvit_argmax_accuracy_pt": -2.958012901189676,
+    "transshield_minus_mpcvit_auc": -0.021136818051985085,
+    "transshield_minus_mpcvit_threshold_accuracy_pt": -2.862594100355196
+  },
+  "external_baselines": {
+    "mpcvit": {
+      "aggregate": {
+        "argmax_accuracy": {
+          "max": 97.32824427480917,
+          "mean": 96.66030534351145,
+          "min": 95.99236641221374,
+          "std": 0.6679389312977122
+        },
+        "auc": {
+          "max": 0.9958392840140912,
+          "mean": 0.993449490621727,
+          "min": 0.991059697229363,
+          "std": 0.002389793392364059
+        },
+        "threshold_accuracy": {
+          "max": 97.51908396946565,
+          "mean": 96.94656488549619,
+          "min": 96.37404580152672,
+          "std": 0.5725190839694676
+        }
+      },
+      "fairness_metadata": {
+        "all_runs_same_train_dir": true,
+        "all_runs_same_train_sample_count": true,
+        "all_runs_same_val_dir": true,
+        "all_runs_same_val_sample_count": true,
+        "unique_train_dirs": [
+          "/data/wyb/pneumoniamnist_imagefolder_subset/train"
+        ],
+        "unique_train_sample_counts": [
+          4708
+        ],
+        "unique_val_dirs": [
+          "/data/wyb/pneumoniamnist_imagefolder_subset/val"
+        ],
+        "unique_val_sample_counts": [
+          524
+        ]
+      },
+      "metrics": {
+        "argmax_accuracy": 96.66030534351145,
+        "auc": 0.993449490621727,
+        "threshold_accuracy": 96.94656488549619
+      },
+      "output_root": "/data/wyb/Transshield_final/results/fair_external_comparison/fair_external_20260417_143051/mpcvit",
+      "runs": [
+        {
+          "elapsed_sec": 48.26436519622803,
+          "epoch": 11,
+          "metrics": {
+            "argmax_accuracy": 95.99236641221374,
+            "auc": 0.991059697229363,
+            "loss": 0.11956287921896873,
+            "threshold": 0.322,
+            "threshold_accuracy": 96.37404580152672
+          },
+          "seed": 1,
+          "summary_json": "/data/wyb/Transshield_final/results/fair_external_comparison/fair_external_20260417_143051/mpcvit/seed_1/summary.json",
+          "train_dir": "/data/wyb/pneumoniamnist_imagefolder_subset/train",
+          "train_dir_resolved": "/data/wyb/pneumoniamnist_imagefolder_subset/train",
+          "train_samples": 4708,
+          "val_dir": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+          "val_dir_resolved": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+          "val_samples": 524
+        },
+        {
+          "elapsed_sec": 49.46561098098755,
+          "epoch": 17,
+          "metrics": {
+            "argmax_accuracy": 97.32824427480917,
+            "auc": 0.9958392840140912,
+            "loss": 0.08329188504490916,
+            "threshold": 0.491,
+            "threshold_accuracy": 97.51908396946565
+          },
+          "seed": 2,
+          "summary_json": "/data/wyb/Transshield_final/results/fair_external_comparison/fair_external_20260417_143051/mpcvit/seed_2/summary.json",
+          "train_dir": "/data/wyb/pneumoniamnist_imagefolder_subset/train",
+          "train_dir_resolved": "/data/wyb/pneumoniamnist_imagefolder_subset/train",
+          "train_samples": 4708,
+          "val_dir": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+          "val_dir_resolved": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+          "val_samples": 524
+        }
+      ],
+      "sample_count": 524,
+      "summary_json": "/data/wyb/Transshield_final/results/fair_external_comparison/fair_external_20260417_143051/mpcvit/summary_multiseed.json",
+      "train_dir": "/data/wyb/pneumoniamnist_imagefolder_subset/train",
+      "train_dir_resolved": "/data/wyb/pneumoniamnist_imagefolder_subset/train",
+      "train_samples": 4708,
+      "type": "multi_seed",
+      "val_dir": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+      "val_dir_resolved": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+      "val_samples": 524
+    }
+  },
+  "fairness_checks": {
+    "accuracy_comparison_is_fair": true,
+    "accuracy_comparison_reason": "Transshield 与 MPCViT 都指向同一组 train/val 路径，样本量也一致，可做同数据集效果对比。",
+    "mpcvit": {
+      "matches_requested_train_path": true,
+      "matches_requested_train_sample_count": true,
+      "matches_requested_val_path": true,
+      "matches_requested_val_sample_count": true,
+      "multi_seed_consistency": {
+        "all_runs_same_train_dir": true,
+        "all_runs_same_train_sample_count": true,
+        "all_runs_same_val_dir": true,
+        "all_runs_same_val_sample_count": true,
+        "unique_train_dirs": [
+          "/data/wyb/pneumoniamnist_imagefolder_subset/train"
+        ],
+        "unique_train_sample_counts": [
+          4708
+        ],
+        "unique_val_dirs": [
+          "/data/wyb/pneumoniamnist_imagefolder_subset/val"
+        ],
+        "unique_val_sample_counts": [
+          524
+        ]
+      },
+      "train_path": "/data/wyb/pneumoniamnist_imagefolder_subset/train",
+      "train_sample_count": 4708,
+      "type": "multi_seed",
+      "val_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+      "val_sample_count": 524
+    },
+    "requested_dataset": {
+      "train_path": "/data/wyb/pneumoniamnist_imagefolder_subset/train",
+      "train_sample_count": 4708,
+      "train_sample_paths_sha256": "39ca670ffb6c571c41f242654f7bed55a36f3156056b6778372c6ba67630d1e7",
+      "val_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+      "val_sample_count": 524,
+      "val_sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610"
+    },
+    "transshield": {
+      "matches_requested_val_path": true,
+      "matches_requested_val_sample_count": true,
+      "matches_requested_val_sample_paths_sha256": true,
+      "sample_count": 524,
+      "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+      "val_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val"
+    }
+  },
+  "fairness_scope": {
+    "accuracy_comparison_reason": "Transshield 与 MPCViT 都指向同一组 train/val 路径，样本量也一致，可做同数据集效果对比。",
+    "communication_comparison_reason": "外部 MPCViT 当前没有同数据集、同输入、同 SPU/2PC 协议路径的 secure 通信结果；因此通信量只能展示 Transshield 自身 live/full-run 结果，不能和外部模型硬比。",
+    "dataset": "PneumoniaMNIST imagefolder subset",
+    "same_dataset_accuracy_comparison": true,
+    "same_protocol_secure_communication_comparison": false,
+    "train_data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/train",
+    "val_data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val"
+  },
+  "tables": {
+    "accuracy": [
+      {
+        "argmax_accuracy": 93.70229244232178,
+        "auc": 0.972312672569742,
+        "method": "Transshield modified + secure replay",
+        "sample_count": 524,
+        "scope": "当前项目",
+        "source": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/fair_external_20260417_143051/plaintext_modified_eval.json",
+        "threshold_accuracy": 94.08397078514099
+      },
+      {
+        "argmax_accuracy": 96.66030534351145,
+        "auc": 0.993449490621727,
+        "method": "MPCViT",
+        "sample_count": 524,
+        "scope": "外部同数据集明文 baseline",
+        "source": "/data/wyb/Transshield_final/results/fair_external_comparison/fair_external_20260417_143051/mpcvit/summary_multiseed.json",
+        "threshold_accuracy": 96.94656488549619
+      }
+    ],
+    "communication": [
+      {
+        "communication_status": "available_python_fastpath",
+        "comparable_to_external": false,
+        "method": "Transshield SPU secure sidecar",
+        "reason": "当前没有外部模型在同数据集、同输入、同协议路径下的 secure 通信结果。",
+        "rpc_total_bytes": 7686293,
+        "runtime": "spu",
+        "sample_count": 524,
+        "source": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/fair_external_20260417_143051/secure_profile_summary.json",
+        "total_pipeline_duration_sec": 16.5325870513916
+      },
+      {
+        "communication_status": "not_run_secure",
+        "comparable_to_external": false,
+        "method": "MPCViT",
+        "reason": "当前 MPCViT 只有同数据集明文训练/评估结果，没有同协议 secure 通信结果。",
+        "rpc_total_bytes": null,
+        "runtime": null,
+        "sample_count": 524,
+        "source": "/data/wyb/Transshield_final/results/fair_external_comparison/fair_external_20260417_143051/mpcvit/summary_multiseed.json",
+        "total_pipeline_duration_sec": null
+      }
+    ]
+  },
+  "title": "Transshield 公平外部对比",
+  "transshield": {
+    "available": true,
+    "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+    "data_path_resolved": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+    "metrics": {
+      "argmax_accuracy": 93.70229244232178,
+      "auc": 0.972312672569742,
+      "eval_loss": 0.47674864530563354,
+      "threshold": 0.4824983477592468,
+      "threshold_accuracy": 94.08397078514099
+    },
+    "plaintext_eval_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/fair_external_20260417_143051/plaintext_modified_eval.json",
+    "run_dir": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/fair_external_20260417_143051",
+    "sample_count": 524,
+    "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+    "score_compare_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/fair_external_20260417_143051/plaintext_vs_secure_score_compare.json",
+    "secure_consistency": {
+      "argmax_match_ratio": 1.0,
+      "logits_max_abs_error": 0.0008536204695701599,
+      "overall_passed": true,
+      "probabilities_max_abs_error": 0.0004038810729980469,
+      "replay_overall_passed": true,
+      "threshold_match_ratio": 1.0
+    },
+    "secure_profile_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/fair_external_20260417_143051/secure_profile_summary.json",
+    "secure_runtime": {
+      "communication_note": "Primary communication display uses Python distributed RPC/cloudpickle fastpath metrics; C++ LinkDetails remain available only as diagnostic counters.",
+      "communication_status": "available_python_fastpath",
+      "network_kth_bridge_sec": 11.262112140655518,
+      "rpc_total_bytes": 7686293,
+      "runtime": "spu",
+      "tie_bridge_sec": 0.017047405242919922,
+      "total_pipeline_duration_sec": 16.5325870513916
+    }
+  }
+}

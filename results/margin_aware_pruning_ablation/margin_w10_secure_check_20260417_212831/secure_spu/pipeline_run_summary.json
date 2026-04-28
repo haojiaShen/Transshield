@@ -1,0 +1,117 @@
+{
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_candidates/margin_aware_full20_w10_20260417_205242_w10_t1em4_bundle",
+  "dry_run": false,
+  "eval_max_samples": 0,
+  "eval_replay": false,
+  "output_dir": "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu",
+  "phase3_selection_manifest": "/data/wyb/Transshield_final/results/phase3_lower_tail_selection_manifest_20260416.json",
+  "repo_root": "/data/wyb/Transshield_final",
+  "runtime": "spu",
+  "selection_mode": "flat_odd_even",
+  "steps": [
+    {
+      "command": [
+        "/data/wyb/conda_envs/transshield/bin/python",
+        "/data/wyb/Transshield_final/integrations/openbumblebee/transshield_network_kth_bridge/transshield_network_kth_bridge.py",
+        "--manifest-json",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_manifest.json",
+        "--input-pt",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_input_smoke8.pt",
+        "--output-pt",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_candidate_from_server.pt",
+        "--output-json",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_candidate_from_server.json",
+        "--runtime",
+        "spu",
+        "--selection-mode",
+        "flat_odd_even",
+        "--config",
+        "/data/wyb/Transshield_final/configs/openbumblebee/2pc.json"
+      ],
+      "duration_sec": 12.444845199584961,
+      "log_path": "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/step_logs/00_network_kth_bridge.log",
+      "name": "network_kth_bridge",
+      "outputs": [
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_candidate_from_server.pt",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_candidate_from_server.json"
+      ],
+      "returncode": 0,
+      "status": "ok"
+    },
+    {
+      "command": [
+        "/data/wyb/conda_envs/transshield/bin/python",
+        "/data/wyb/Transshield_final/tools/transshield_secure_network_kth_checker.py",
+        "--reference-pt",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_reference_smoke8.pt",
+        "--candidate-pt",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_candidate_from_server.pt",
+        "--tolerance",
+        "5e-5",
+        "--output-json",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_candidate_check.json"
+      ],
+      "duration_sec": 1.1512563228607178,
+      "log_path": "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/step_logs/01_network_kth_checker.log",
+      "name": "network_kth_checker",
+      "outputs": [
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_candidate_check.json"
+      ],
+      "returncode": 0,
+      "status": "ok"
+    },
+    {
+      "command": [
+        "/data/wyb/conda_envs/transshield/bin/python",
+        "/data/wyb/Transshield_final/integrations/openbumblebee/transshield_tie_policy_bridge/transshield_tie_policy_bridge.py",
+        "--input-pt",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_input_smoke8.pt",
+        "--kth-payload-pt",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_candidate_from_server.pt",
+        "--output-pt",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_tie_candidate_from_server.pt",
+        "--output-json",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_tie_candidate_from_server.json",
+        "--tie-policy",
+        "lowest_index",
+        "--threshold-tolerance",
+        "5e-5"
+      ],
+      "duration_sec": 1.1537225246429443,
+      "log_path": "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/step_logs/02_tie_policy_bridge.log",
+      "name": "tie_policy_bridge",
+      "outputs": [
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_tie_candidate_from_server.pt",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_tie_candidate_from_server.json"
+      ],
+      "returncode": 0,
+      "status": "ok"
+    },
+    {
+      "command": [
+        "/data/wyb/conda_envs/transshield/bin/python",
+        "/data/wyb/Transshield_final/tools/transshield_secure_tie_payload_checker.py",
+        "--reference-pt",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_tie_policy_lowest_smoke8.pt",
+        "--candidate-pt",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_tie_candidate_from_server.pt",
+        "--input-pt",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_input_smoke8.pt",
+        "--kth-payload-pt",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_candidate_from_server.pt",
+        "--threshold-tolerance",
+        "5e-5",
+        "--output-json",
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_tie_candidate_check.json"
+      ],
+      "duration_sec": 1.766068696975708,
+      "log_path": "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/step_logs/03_tie_policy_checker.log",
+      "name": "tie_policy_checker",
+      "outputs": [
+        "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_tie_candidate_check.json"
+      ],
+      "returncode": 0,
+      "status": "ok"
+    }
+  ]
+}

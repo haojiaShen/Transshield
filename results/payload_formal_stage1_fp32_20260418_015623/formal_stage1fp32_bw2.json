@@ -1,0 +1,100 @@
+{
+  "all_exact_semantics_preserved": false,
+  "boundary_window": 2,
+  "default_dtype": "float16",
+  "input_pt": "/data/wyb/Transshield_final/artifacts/inference_ready_config/selection_mode_runtime_inputs_verified/stage2_secure_network_kth_input_smoke8.pt",
+  "next_step_hint": "If all_exact_semantics_preserved=true for the selected stage-dtype mix, the next engineering step is to add that mixed-precision payload path to the bridge and rerun secure profile / replay.",
+  "stage_count": 3,
+  "stage_dtype_overrides": {
+    "1": "float32"
+  },
+  "stage_reports": [
+    {
+      "boundary_float32_token_count": 2620,
+      "boundary_float32_token_mean_per_sample": 5.0,
+      "boundary_window": 2,
+      "byte_ratio_vs_float32": 0.5127551020408163,
+      "candidate_bytes": 210648,
+      "compact_shape": [
+        524,
+        196
+      ],
+      "dtype": "float16",
+      "exact_semantics_preserved": false,
+      "float32_bytes": 410816,
+      "keep_count": 137,
+      "kth_threshold_max_abs_error": 4.807114601135254e-05,
+      "kth_threshold_mean_abs_error": 9.173882631330343e-08,
+      "metrics": {
+        "exact_count_match_ratio": 1.0,
+        "exact_mask_match_ratio": 0.9999805092811584,
+        "mean_jaccard_vs_topk": 0.9999722838401794,
+        "mean_threshold_keep_count": 137.0,
+        "mean_topk_keep_count": 137.0
+      },
+      "pruning_layer": 3,
+      "reference_threshold_min_abs_margin": 4.470348358154297e-07,
+      "stage_index": 0,
+      "used_active_token_compaction": true
+    },
+    {
+      "boundary_float32_token_count": 2620,
+      "boundary_float32_token_mean_per_sample": 5.0,
+      "boundary_window": 2,
+      "byte_ratio_vs_float32": 1.0,
+      "candidate_bytes": 287152,
+      "compact_shape": [
+        524,
+        137
+      ],
+      "dtype": "float32",
+      "exact_semantics_preserved": true,
+      "float32_bytes": 287152,
+      "keep_count": 96,
+      "kth_threshold_max_abs_error": 0.0,
+      "kth_threshold_mean_abs_error": 0.0,
+      "metrics": {
+        "exact_count_match_ratio": 1.0,
+        "exact_mask_match_ratio": 1.0,
+        "mean_jaccard_vs_topk": 1.0,
+        "mean_threshold_keep_count": 96.0,
+        "mean_topk_keep_count": 96.0
+      },
+      "pruning_layer": 6,
+      "reference_threshold_min_abs_margin": 0.0,
+      "stage_index": 1,
+      "used_active_token_compaction": true
+    },
+    {
+      "boundary_float32_token_count": 2620,
+      "boundary_float32_token_mean_per_sample": 5.0,
+      "boundary_window": 2,
+      "byte_ratio_vs_float32": 0.5260416666666666,
+      "candidate_bytes": 105848,
+      "compact_shape": [
+        524,
+        96
+      ],
+      "dtype": "float16",
+      "exact_semantics_preserved": false,
+      "float32_bytes": 201216,
+      "keep_count": 67,
+      "kth_threshold_max_abs_error": 4.157423973083496e-05,
+      "kth_threshold_mean_abs_error": 3.628034619396203e-07,
+      "metrics": {
+        "exact_count_match_ratio": 1.0,
+        "exact_mask_match_ratio": 0.9999602437019348,
+        "mean_jaccard_vs_topk": 0.9999438524246216,
+        "mean_threshold_keep_count": 67.0,
+        "mean_topk_keep_count": 67.0
+      },
+      "pruning_layer": 9,
+      "reference_threshold_min_abs_margin": 1.4901161193847656e-07,
+      "stage_index": 2,
+      "used_active_token_compaction": true
+    }
+  ],
+  "total_byte_ratio_vs_float32": 0.6713286713286714,
+  "total_candidate_bytes": 603648,
+  "total_float32_bytes": 899184
+}

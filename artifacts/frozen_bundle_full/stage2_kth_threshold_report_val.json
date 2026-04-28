@@ -1,0 +1,171 @@
+{
+  "bundle_dir": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1",
+  "data_path": "/home/yclcg/DynamicViT_exp_square/data/pneumoniamnist_imagefolder_subset/val",
+  "design_status": {
+    "frozen_baseline_replaced": false,
+    "report_is_read_only": true,
+    "secure_kth_selection_still_required": true,
+    "topk_compatible_kth_threshold_reference_available": true
+  },
+  "design_summary": {
+    "current_best_use": "treat this as a stage-2 design reference for future secure selection work, not as a promoted replacement for the frozen top-k baseline",
+    "pruning_keep_generation_can_be_factored_as": [
+      "masked_score from predictor score and active mask",
+      "per-sample kth threshold extraction",
+      "pointwise compare against kth threshold",
+      "boundary tie handling when equal-score ties exist",
+      "mask application via F_mux-style token masking"
+    ]
+  },
+  "device": "cpu",
+  "sample_count": 524,
+  "stage_reports": [
+    {
+      "active_count_before": 196,
+      "design_contract": {
+        "boundary_compare": "score == kth_threshold",
+        "final_note": "plain score >= kth_threshold is already top-k-compatible enough for stage-2 design, but exact top-k reproduction still needs tie handling when boundary ties exist",
+        "kth_threshold_tensor": {
+          "definition": "per-sample kth kept score from the current top-k reference",
+          "shape": [
+            "B",
+            1
+          ]
+        },
+        "masked_score_source": "score.masked_fill(~active_before, -inf)",
+        "primary_compare": "score > kth_threshold",
+        "tie_keep_quota": "keep_count - count(score > kth_threshold)"
+      },
+      "keep_count": 137,
+      "kth_threshold_summary": {
+        "max": -0.7287998795509338,
+        "mean": -0.729408323764801,
+        "min": -0.7296730279922485,
+        "std": 0.00010035576997324824
+      },
+      "plain_score_ge_kth_metrics": {
+        "exact_count_match_ratio": 0.9942747950553894,
+        "exact_mask_match_ratio": 0.9999707937240601,
+        "mean_jaccard_vs_topk": 0.9999585151672363,
+        "mean_lhs_keep_count": 137.00572204589844,
+        "mean_rhs_keep_count": 137.0
+      },
+      "pruning_layer": 3,
+      "stage_index": 0,
+      "strict_score_gt_kth_metrics": {
+        "max_strict_keep_count": 136,
+        "mean_strict_keep_count": 135.9980926513672,
+        "min_strict_keep_count": 135
+      },
+      "tie_statistics": {
+        "boundary_tie_sample_ratio": 0.0057251909747719765,
+        "max_equal_token_count_at_boundary": 2,
+        "max_overflow_if_plain_ge": 1,
+        "max_tie_keep_quota": 2,
+        "mean_equal_token_count_at_boundary": 1.0076335668563843,
+        "mean_overflow_if_plain_ge": 0.0057251909747719765,
+        "mean_selected_equal_count_from_topk": 1.0019084215164185,
+        "mean_tie_keep_quota": 1.0019084215164185,
+        "min_tie_keep_quota": 1
+      }
+    },
+    {
+      "active_count_before": 137,
+      "design_contract": {
+        "boundary_compare": "score == kth_threshold",
+        "final_note": "plain score >= kth_threshold is already top-k-compatible enough for stage-2 design, but exact top-k reproduction still needs tie handling when boundary ties exist",
+        "kth_threshold_tensor": {
+          "definition": "per-sample kth kept score from the current top-k reference",
+          "shape": [
+            "B",
+            1
+          ]
+        },
+        "masked_score_source": "score.masked_fill(~active_before, -inf)",
+        "primary_compare": "score > kth_threshold",
+        "tie_keep_quota": "keep_count - count(score > kth_threshold)"
+      },
+      "keep_count": 96,
+      "kth_threshold_summary": {
+        "max": -0.8132154941558838,
+        "mean": -0.8187901377677917,
+        "min": -0.8195372819900513,
+        "std": 0.0005462056724354625
+      },
+      "plain_score_ge_kth_metrics": {
+        "exact_count_match_ratio": 1.0,
+        "exact_mask_match_ratio": 1.0,
+        "mean_jaccard_vs_topk": 1.0,
+        "mean_lhs_keep_count": 96.0,
+        "mean_rhs_keep_count": 96.0
+      },
+      "pruning_layer": 6,
+      "stage_index": 1,
+      "strict_score_gt_kth_metrics": {
+        "max_strict_keep_count": 95,
+        "mean_strict_keep_count": 94.99618530273438,
+        "min_strict_keep_count": 94
+      },
+      "tie_statistics": {
+        "boundary_tie_sample_ratio": 0.0,
+        "max_equal_token_count_at_boundary": 2,
+        "max_overflow_if_plain_ge": 0,
+        "max_tie_keep_quota": 2,
+        "mean_equal_token_count_at_boundary": 1.003816843032837,
+        "mean_overflow_if_plain_ge": 0.0,
+        "mean_selected_equal_count_from_topk": 1.003816843032837,
+        "mean_tie_keep_quota": 1.003816843032837,
+        "min_tie_keep_quota": 1
+      }
+    },
+    {
+      "active_count_before": 96,
+      "design_contract": {
+        "boundary_compare": "score == kth_threshold",
+        "final_note": "plain score >= kth_threshold is already top-k-compatible enough for stage-2 design, but exact top-k reproduction still needs tie handling when boundary ties exist",
+        "kth_threshold_tensor": {
+          "definition": "per-sample kth kept score from the current top-k reference",
+          "shape": [
+            "B",
+            1
+          ]
+        },
+        "masked_score_source": "score.masked_fill(~active_before, -inf)",
+        "primary_compare": "score > kth_threshold",
+        "tie_keep_quota": "keep_count - count(score > kth_threshold)"
+      },
+      "keep_count": 67,
+      "kth_threshold_summary": {
+        "max": -0.8430949449539185,
+        "mean": -0.8942589163780212,
+        "min": -0.9057033658027649,
+        "std": 0.008427144028246403
+      },
+      "plain_score_ge_kth_metrics": {
+        "exact_count_match_ratio": 1.0,
+        "exact_mask_match_ratio": 1.0,
+        "mean_jaccard_vs_topk": 1.0,
+        "mean_lhs_keep_count": 67.0,
+        "mean_rhs_keep_count": 67.0
+      },
+      "pruning_layer": 9,
+      "stage_index": 2,
+      "strict_score_gt_kth_metrics": {
+        "max_strict_keep_count": 66,
+        "mean_strict_keep_count": 65.99809265136719,
+        "min_strict_keep_count": 65
+      },
+      "tie_statistics": {
+        "boundary_tie_sample_ratio": 0.0,
+        "max_equal_token_count_at_boundary": 2,
+        "max_overflow_if_plain_ge": 0,
+        "max_tie_keep_quota": 2,
+        "mean_equal_token_count_at_boundary": 1.0019084215164185,
+        "mean_overflow_if_plain_ge": 0.0,
+        "mean_selected_equal_count_from_topk": 1.0019084215164185,
+        "mean_tie_keep_quota": 1.0019084215164185,
+        "min_tie_keep_quota": 1
+      }
+    }
+  ]
+}

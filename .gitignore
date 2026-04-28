@@ -1,0 +1,42 @@
+__pycache__/
+*.pyc
+.DS_Store
+.ipynb_checkpoints/
+data/
+pretrained/
+outputs/
+*.pth
+*.pth.tar
+*.pt
+*.log
+*.bak.*
+checkpoint-*
+checkpoint-best*
+train_stdout.log
+log.txt
+logs/
+backups/
+_server_debug_snapshot/
+OUT_DIR=*/
+artifacts/bazel_distdir_cache/
+artifacts/server_pipeline_run/
+artifacts/server_runs/
+artifacts/server_bundles/
+artifacts/server_profile_reports/
+artifacts/train_runs/
+artifacts/web_demo_runs/
+artifacts/web_demo_uploads/
+artifacts/server_inference_friendly_pack/final_compare_env.local.sh
+!artifacts/frozen_bundle_full/
+!artifacts/frozen_bundle_full/**
+!artifacts/baselines/
+!artifacts/baselines/**
+
+# Keep artifact metadata and small configs in Git, but never store tensor/checkpoint
+# binaries through the normal Git object database. Use Git LFS or external artifact
+# storage if these files need versioning.
+artifacts/**/*.pth
+artifacts/**/*.pth.tar
+artifacts/**/*.pt
+artifacts/**/*.log
+artifacts/**/*.bak.*

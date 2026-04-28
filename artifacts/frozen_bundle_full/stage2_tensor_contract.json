@@ -1,0 +1,380 @@
+{
+  "bundle_dir": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1",
+  "constraints": {
+    "checker_default_tolerance": 1e-06,
+    "final_optional_compare_keys": [
+      "logits",
+      "probabilities"
+    ],
+    "pruning_layers": [
+      3,
+      6,
+      9
+    ],
+    "stage_indices": [
+      0,
+      1,
+      2
+    ],
+    "stage_required_keys_for_checker_candidate_mode": [
+      "stage_0_prev_decision",
+      "stage_0_policy",
+      "stage_0_attn_policy",
+      "stage_0_masked_output",
+      "stage_1_prev_decision",
+      "stage_1_policy",
+      "stage_1_attn_policy",
+      "stage_1_masked_output",
+      "stage_2_prev_decision",
+      "stage_2_policy",
+      "stage_2_attn_policy",
+      "stage_2_masked_output"
+    ]
+  },
+  "format": {
+    "top_level_keys": [
+      "bundle_dir",
+      "image_path",
+      "trace_tensors"
+    ],
+    "trace_tensor_container_key": "trace_tensors"
+  },
+  "groups": {
+    "global": [
+      "input_tensor",
+      "patch_embed",
+      "seq_with_cls_pos",
+      "norm_output",
+      "pre_logits",
+      "logits",
+      "probabilities"
+    ],
+    "stage_optional_debug": [
+      "input_seq",
+      "masked_input_seq",
+      "pred_score",
+      "block_output"
+    ],
+    "stage_required": [
+      "prev_decision",
+      "policy",
+      "attn_policy",
+      "masked_output"
+    ]
+  },
+  "image_path": "/home/yclcg/DynamicViT_exp_square/data/pneumoniamnist_imagefolder_subset/val/0/00003.png",
+  "reference_pt": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1/stage2_forward_trace_00003.pt",
+  "tensors": {
+    "input_tensor": {
+      "description": "normalized model input tensor",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        3,
+        224,
+        224
+      ],
+      "stage_index": null
+    },
+    "logits": {
+      "description": "final classifier output",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        2
+      ],
+      "stage_index": null
+    },
+    "norm_output": {
+      "description": "final normalized token sequence before cls extraction",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": null
+    },
+    "patch_embed": {
+      "description": "patch embedding output before cls concat",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        196,
+        384
+      ],
+      "stage_index": null
+    },
+    "pre_logits": {
+      "description": "cls feature after pre_logits",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        384
+      ],
+      "stage_index": null
+    },
+    "probabilities": {
+      "description": "softmax(logits)",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        2
+      ],
+      "stage_index": null
+    },
+    "seq_with_cls_pos": {
+      "description": "token sequence after cls concat, position embedding, and pos_drop",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": null
+    },
+    "stage_0_attn_policy": {
+      "description": "attention gate built from policy with diagonal self-loop preservation",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        1,
+        197,
+        197
+      ],
+      "stage_index": 0
+    },
+    "stage_0_block_output": {
+      "description": "block output before post-block spatial remask",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": 0
+    },
+    "stage_0_input_seq": {
+      "description": "stage input sequence before pre-stage mask apply",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": 0
+    },
+    "stage_0_masked_input_seq": {
+      "description": "stage input sequence after applying prior spatial mask",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": 0
+    },
+    "stage_0_masked_output": {
+      "description": "block output after post-block spatial remask",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": 0
+    },
+    "stage_0_policy": {
+      "description": "concat(cls_policy, prev_decision)",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        1
+      ],
+      "stage_index": 0
+    },
+    "stage_0_pred_score": {
+      "description": "predictor raw output reshaped to [B, 196, 2]",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        196,
+        2
+      ],
+      "stage_index": 0
+    },
+    "stage_0_prev_decision": {
+      "description": "stage keep mask over spatial tokens",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        196,
+        1
+      ],
+      "stage_index": 0
+    },
+    "stage_1_attn_policy": {
+      "description": "attention gate built from policy with diagonal self-loop preservation",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        1,
+        197,
+        197
+      ],
+      "stage_index": 1
+    },
+    "stage_1_block_output": {
+      "description": "block output before post-block spatial remask",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": 1
+    },
+    "stage_1_input_seq": {
+      "description": "stage input sequence before pre-stage mask apply",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": 1
+    },
+    "stage_1_masked_input_seq": {
+      "description": "stage input sequence after applying prior spatial mask",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": 1
+    },
+    "stage_1_masked_output": {
+      "description": "block output after post-block spatial remask",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": 1
+    },
+    "stage_1_policy": {
+      "description": "concat(cls_policy, prev_decision)",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        1
+      ],
+      "stage_index": 1
+    },
+    "stage_1_pred_score": {
+      "description": "predictor raw output reshaped to [B, 196, 2]",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        196,
+        2
+      ],
+      "stage_index": 1
+    },
+    "stage_1_prev_decision": {
+      "description": "stage keep mask over spatial tokens",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        196,
+        1
+      ],
+      "stage_index": 1
+    },
+    "stage_2_attn_policy": {
+      "description": "attention gate built from policy with diagonal self-loop preservation",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        1,
+        197,
+        197
+      ],
+      "stage_index": 2
+    },
+    "stage_2_block_output": {
+      "description": "block output before post-block spatial remask",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": 2
+    },
+    "stage_2_input_seq": {
+      "description": "stage input sequence before pre-stage mask apply",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": 2
+    },
+    "stage_2_masked_input_seq": {
+      "description": "stage input sequence after applying prior spatial mask",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": 2
+    },
+    "stage_2_masked_output": {
+      "description": "block output after post-block spatial remask",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        384
+      ],
+      "stage_index": 2
+    },
+    "stage_2_policy": {
+      "description": "concat(cls_policy, prev_decision)",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        197,
+        1
+      ],
+      "stage_index": 2
+    },
+    "stage_2_pred_score": {
+      "description": "predictor raw output reshaped to [B, 196, 2]",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        196,
+        2
+      ],
+      "stage_index": 2
+    },
+    "stage_2_prev_decision": {
+      "description": "stage keep mask over spatial tokens",
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        196,
+        1
+      ],
+      "stage_index": 2
+    }
+  }
+}

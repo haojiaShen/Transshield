@@ -1,0 +1,74 @@
+{
+  "bundle_dir": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1",
+  "constraints": {
+    "checker_default_tolerance": 1e-06,
+    "sample_order_must_match_reference_dataset_order": true,
+    "stage_indices": [
+      0,
+      1,
+      2
+    ],
+    "stage_required_keys": [
+      "stage_index",
+      "pruning_layer",
+      "keep_count",
+      "kth_threshold"
+    ]
+  },
+  "data_path": "/home/yclcg/DynamicViT_exp_square/data/pneumoniamnist_imagefolder_subset/val",
+  "format": {
+    "stage_container_key": "stages",
+    "top_level_keys": [
+      "bundle_dir",
+      "data_path",
+      "sample_paths",
+      "stages",
+      "candidate_metadata"
+    ]
+  },
+  "reference_pt": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1/stage2_secure_network_kth_val.pt",
+  "stages": [
+    {
+      "keep_count": 137,
+      "pruning_layer": 3,
+      "stage_index": 0,
+      "tensors": {
+        "kth_threshold": {
+          "description": "per-sample kth kept score for the current stage",
+          "dtype": "torch.float32",
+          "shape": [
+            524
+          ]
+        }
+      }
+    },
+    {
+      "keep_count": 96,
+      "pruning_layer": 6,
+      "stage_index": 1,
+      "tensors": {
+        "kth_threshold": {
+          "description": "per-sample kth kept score for the current stage",
+          "dtype": "torch.float32",
+          "shape": [
+            524
+          ]
+        }
+      }
+    },
+    {
+      "keep_count": 67,
+      "pruning_layer": 9,
+      "stage_index": 2,
+      "tensors": {
+        "kth_threshold": {
+          "description": "per-sample kth kept score for the current stage",
+          "dtype": "torch.float32",
+          "shape": [
+            524
+          ]
+        }
+      }
+    }
+  ]
+}

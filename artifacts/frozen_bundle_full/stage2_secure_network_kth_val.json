@@ -1,0 +1,55 @@
+{
+  "bundle_dir": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1",
+  "constraints": {
+    "model_semantics_changed": false,
+    "sidecar_is_read_only_reference": true,
+    "source_reference_topk": true
+  },
+  "data_path": "/home/yclcg/DynamicViT_exp_square/data/pneumoniamnist_imagefolder_subset/val",
+  "output_pt": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1/stage2_secure_network_kth_val.pt",
+  "sample_count": 524,
+  "stages": [
+    {
+      "keep_count": 137,
+      "kth_threshold": {
+        "max": -0.7287998795509338,
+        "mean": -0.729408323764801,
+        "min": -0.7296730279922485,
+        "shape": [
+          524
+        ],
+        "std": 0.00010035576997324824
+      },
+      "pruning_layer": 3,
+      "stage_index": 0
+    },
+    {
+      "keep_count": 96,
+      "kth_threshold": {
+        "max": -0.8132154941558838,
+        "mean": -0.8187901377677917,
+        "min": -0.8195372819900513,
+        "shape": [
+          524
+        ],
+        "std": 0.0005462056724354625
+      },
+      "pruning_layer": 6,
+      "stage_index": 1
+    },
+    {
+      "keep_count": 67,
+      "kth_threshold": {
+        "max": -0.8430949449539185,
+        "mean": -0.8942589163780212,
+        "min": -0.9057033658027649,
+        "shape": [
+          524
+        ],
+        "std": 0.008427144028246403
+      },
+      "pruning_layer": 9,
+      "stage_index": 2
+    }
+  ]
+}

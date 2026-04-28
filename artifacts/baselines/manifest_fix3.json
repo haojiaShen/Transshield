@@ -1,0 +1,28 @@
+{
+  "files": {
+    "original_plaintext_args_snapshot_fix3.json": {
+      "sha256": "2de22a51404746685bbe10429fab8c964182ac5bfa3ab82046cbabc945bc36d0",
+      "size_bytes": 1785
+    },
+    "baseline_plaintext_eval_checkpoint_light.pth": {
+      "sha256": "3b9fae61bd9784ed26a680c335c814b6ec5e5ad0d9a2ad896ac7d23b88f6c53c",
+      "size_bytes": 89632205
+    },
+    "original_plaintext_threshold_best_fix3.json": {
+      "sha256": "4e2d2d95d8e0d33587bad6fea54fb474f943446d72314942078bdf8b3c03e619",
+      "size_bytes": 1335
+    },
+    "original_plaintext_threshold_search_fix3.csv": {
+      "sha256": "eae04248bd3f1673a350bc4122e5813884423d0ecef5061cc5beb0a7d2d437d9",
+      "size_bytes": 47078
+    }
+  },
+  "archived_files": {
+    "artifacts/archive/baselines/baseline_plaintext_training_checkpoint_full.pth": {
+      "sha256": "5e126018e56965ba1ba0f2099ce5b2eb6c054b36bf293bdf90cd665779caa319",
+      "size_bytes": 268299709
+    }
+  },
+  "source_run": "/data/wyb/DynamicViT_baseline/outputs/baseline_pneumoniamnist_deit_s_fix3",
+  "val_data": "/data/wyb/pneumoniamnist_imagefolder_subset/val"
+}

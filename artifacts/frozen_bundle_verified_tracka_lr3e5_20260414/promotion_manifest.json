@@ -1,0 +1,27 @@
+{
+  "bundle_name": "frozen_bundle_verified_tracka_lr3e5_20260414",
+  "notes": [
+    "Generated without modifying artifacts/frozen_bundle_full.",
+    "threshold_best.json is materialized as a regular file to avoid broken symlink issues on remote hosts.",
+    "modified_plaintext_eval_checkpoint_light.pth is rebuilt from args_snapshot + model_state_dict for repo-friendly evaluation.",
+    "Default fast-runtime communication display uses Python distributed RPC/cloudpickle fastpath metrics; C++ LinkDetails zero counters are diagnostic-only."
+  ],
+  "source_bundle_dir": "/home/yclcg/Transshield_final/artifacts/frozen_candidates/tracka_lr3e5_timm_best_20260414",
+  "source_manifest_path": "/home/yclcg/Transshield_final/artifacts/frozen_candidates/tracka_lr3e5_timm_best_20260414/manifest.json",
+  "status": "promotion_ready_verified_bundle",
+  "verified_metrics": {
+    "argmax_accuracy": 93.70229244232178,
+    "argmax_match_ratio": 1.0,
+    "best_epoch": 8,
+    "communication_source": "Python distributed RPC/cloudpickle fastpath",
+    "communication_status": "available_python_fastpath",
+    "python_fastpath_make_shares_input_bytes": 13732,
+    "python_fastpath_rpc_request_bytes": 1960526,
+    "python_fastpath_rpc_response_bytes": 32873,
+    "python_fastpath_rpc_total_bytes": 1993399,
+    "spu_pipeline_overall_passed": true,
+    "spu_replay_overall_passed": true,
+    "threshold_accuracy": 94.08397078514099,
+    "threshold_match_ratio": 1.0
+  }
+}

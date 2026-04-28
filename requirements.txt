@@ -1,0 +1,37 @@
+--extra-index-url https://download.pytorch.org/whl/cu117
+
+# Tested with Python 3.9.
+# The pinned CUDA wheels can still run the comparison scripts on CPU-only hosts;
+# GPU is only required for faster training or CUDA execution paths.
+
+# Core training / inference stack
+numpy==1.26.4
+Pillow==11.3.0
+scipy==1.13.1
+tensorboardX==2.6.5
+timm==0.3.2
+torch==1.13.1+cu117
+torchvision==0.14.1+cu117
+
+# Common supporting packages present in the current Transshield env.
+fvcore==0.1.5.post20221221
+iopath==0.1.10
+yacs==0.1.8
+
+# OpenBumbleBee / SPU runtime stack required by the secure pipeline.
+# This is required for:
+# - `tools/transshield_openbumblebee_pipeline.py run --runtime spu`
+# - `artifacts/server_inference_friendly_pack/run_secure_pipeline.sh spu`
+# - `artifacts/server_inference_friendly_pack/run_full_transshield_pipeline.sh spu`
+grpcio==1.80.0
+protobuf==4.25.9
+cloudpickle>=2.0.0
+multiprocess>=0.70.12.2
+cachetools>=5.0.0
+jax[cpu]==0.4.26
+jaxlib==0.4.26
+termcolor>=2.0.0
+spu==0.9.3b0
+
+# Optional extra, install separately only when needed:
+# - NVIDIA Apex: needed only for fused optimizers in `optim_factory.py`

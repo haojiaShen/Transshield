@@ -1,0 +1,16 @@
+{
+  "output_dir": "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu",
+  "overall_passed": true,
+  "required_checks": {
+    "network_kth_check": {
+      "exists": true,
+      "overall_passed": true,
+      "path": "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_network_kth_candidate_check.json"
+    },
+    "tie_policy_check": {
+      "exists": true,
+      "overall_passed": true,
+      "path": "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_w10_secure_check_20260417_212831/secure_spu/stage2_secure_tie_candidate_check.json"
+    }
+  }
+}

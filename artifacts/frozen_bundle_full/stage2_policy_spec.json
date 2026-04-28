@@ -1,0 +1,129 @@
+{
+  "attn_policy_spec": {
+    "broadcast_over_heads": true,
+    "builder": "Attention._build_attn_policy",
+    "construction": "policy.reshape(B,1,1,N) + (1-policy.reshape(B,1,1,N)) * eye(N)",
+    "inactive_token_diagonal_one": true,
+    "inactive_token_non_diagonal_zero": true,
+    "shape": [
+      1,
+      1,
+      197,
+      197
+    ]
+  },
+  "bundle_dir": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1",
+  "constraints": {
+    "attention_policy_not_reduced_to_plain_f_mux": true,
+    "model_semantics_changed": false,
+    "token_f_mux_handled_separately": true
+  },
+  "frozen_attention_config": {
+    "approx_attn_mode": "relu",
+    "fp32_attention": true,
+    "path": "softmax_with_policy",
+    "use_approx_attn": false
+  },
+  "policy_spec": {
+    "cls_prefix_value": 1.0,
+    "semantic_dtype": "boolean_as_float_0_1",
+    "shape": [
+      1,
+      197,
+      1
+    ],
+    "source": "concat(cls_policy, prev_decision)",
+    "spatial_suffix_shape": [
+      1,
+      196,
+      1
+    ]
+  },
+  "single_source_of_truth": {
+    "model_state_dict": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1/student_model_state_dict.pth",
+    "threshold_sidecar": "/home/yclcg/DynamicViT_exp_square/outputs/pneumonia_transshield_candidate_frozen_export_v1/threshold_best.json"
+  },
+  "stages": [
+    {
+      "attn_policy_shape": [
+        1,
+        1,
+        197,
+        197
+      ],
+      "cls_policy_prefix": 1.0,
+      "inactive_token_kept_self_loop": true,
+      "mask_value_range": [
+        0.0,
+        1.0
+      ],
+      "policy_shape": [
+        1,
+        197,
+        1
+      ],
+      "prev_decision_shape": [
+        1,
+        196,
+        1
+      ],
+      "pruning_layer": 3,
+      "shared_across_heads": true,
+      "stage_index": 0
+    },
+    {
+      "attn_policy_shape": [
+        1,
+        1,
+        197,
+        197
+      ],
+      "cls_policy_prefix": 1.0,
+      "inactive_token_kept_self_loop": true,
+      "mask_value_range": [
+        0.0,
+        1.0
+      ],
+      "policy_shape": [
+        1,
+        197,
+        1
+      ],
+      "prev_decision_shape": [
+        1,
+        196,
+        1
+      ],
+      "pruning_layer": 6,
+      "shared_across_heads": true,
+      "stage_index": 1
+    },
+    {
+      "attn_policy_shape": [
+        1,
+        1,
+        197,
+        197
+      ],
+      "cls_policy_prefix": 1.0,
+      "inactive_token_kept_self_loop": true,
+      "mask_value_range": [
+        0.0,
+        1.0
+      ],
+      "policy_shape": [
+        1,
+        197,
+        1
+      ],
+      "prev_decision_shape": [
+        1,
+        196,
+        1
+      ],
+      "pruning_layer": 9,
+      "shared_across_heads": true,
+      "stage_index": 2
+    }
+  ]
+}

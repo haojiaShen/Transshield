@@ -1,0 +1,170 @@
+{
+  "baseline_json": "/data/wyb/Transshield_final/results/stagewise_protocol_risk_tracka_lr3e5_verified_20260415.json",
+  "candidates": [
+    {
+      "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_candidates/margin_formal_hparams_soft_stage2_20260417_231946_w3_t1em4_bundle",
+      "bundle_metrics": {
+        "auc": 0.967475950717926,
+        "best_epoch_acc1": 80.72519124737222,
+        "default_argmax_acc1": 85.11450290679932,
+        "threshold": 0.6440486907958984,
+        "threshold_acc1": 91.60305261611938
+      },
+      "candidate_json": "/data/wyb/Transshield_final/results/margin_aware_pruning_ablation/margin_formal_hparams_soft_stage2_20260417_231946/margin_formal_hparams_soft_stage2_20260417_231946_w3_t1em4_stagewise_protocol_risk.json",
+      "label": "margin_formal_hparams_soft_stage2_20260417_231946_w3_t1em4_bundle",
+      "recommendation": {
+        "all_stage_margin_not_worse": false,
+        "next_step": "先不要替换默认 bundle；继续调小/调大 margin 权重或只保留为实验记录",
+        "stage2_boundary_improved": true
+      },
+      "sample_count": 524,
+      "stage_comparisons": [
+        {
+          "active_count_before": 196,
+          "baseline": {
+            "active_count_before": 196,
+            "boundary_tie_sample_ratio": 0.0,
+            "keep_count": 137,
+            "margin_mean": 0.000696791335940361,
+            "margin_p10": 5.0383805501041934e-05,
+            "margin_p50": 0.0003713369369506836,
+            "margin_p90": 0.0015417278045788407,
+            "mean_tie_excess_count": 0.0,
+            "payload_bytes_float32": 410816.0,
+            "pruning_layer": 3,
+            "small_margin_lte_1e_3": 0.7614504098892212,
+            "small_margin_lte_1e_4": 0.20801526308059692,
+            "small_margin_rel_lte_0p05_std": 0.9809160232543945,
+            "stage_index": 0
+          },
+          "candidate": {
+            "active_count_before": 196,
+            "boundary_tie_sample_ratio": 0.0,
+            "keep_count": 137,
+            "margin_mean": 0.0005715260049328208,
+            "margin_p10": 6.983578350627795e-05,
+            "margin_p50": 0.0003905445337295532,
+            "margin_p90": 0.0012382024433463812,
+            "mean_tie_excess_count": 0.0,
+            "payload_bytes_float32": 410816.0,
+            "pruning_layer": 3,
+            "small_margin_lte_1e_3": 0.8396946787834167,
+            "small_margin_lte_1e_4": 0.13549618422985077,
+            "small_margin_rel_lte_0p05_std": 0.9961832165718079,
+            "stage_index": 0
+          },
+          "delta": {
+            "boundary_tie_sample_ratio_delta": 0.0,
+            "margin_mean_ratio_candidate_over_baseline": 0.8202254756246542,
+            "small_margin_lte_1e_4_delta": -0.07251907885074615
+          },
+          "improved": {
+            "margin_mean_increased": false,
+            "small_margin_lte_1e_4_decreased": true,
+            "tie_ratio_not_worse": true
+          },
+          "keep_count": 137,
+          "pruning_layer": 3,
+          "stage_index": 0
+        },
+        {
+          "active_count_before": 137,
+          "baseline": {
+            "active_count_before": 137,
+            "boundary_tie_sample_ratio": 0.0019083969527855515,
+            "keep_count": 96,
+            "margin_mean": 1.8523964172345586e-05,
+            "margin_p10": 1.9073486328125e-06,
+            "margin_p50": 1.0877847671508789e-05,
+            "margin_p90": 4.315972182666883e-05,
+            "mean_tie_excess_count": 0.0019083969527855515,
+            "payload_bytes_float32": 287152.0,
+            "pruning_layer": 6,
+            "small_margin_lte_1e_3": 1.0,
+            "small_margin_lte_1e_4": 0.9866412281990051,
+            "small_margin_rel_lte_0p05_std": 0.9656488299369812,
+            "stage_index": 1
+          },
+          "candidate": {
+            "active_count_before": 137,
+            "boundary_tie_sample_ratio": 0.0,
+            "keep_count": 96,
+            "margin_mean": 0.0003710788441821933,
+            "margin_p10": 2.0018220311612822e-05,
+            "margin_p50": 0.00014109909534454346,
+            "margin_p90": 0.00105674855876714,
+            "mean_tie_excess_count": 0.0,
+            "payload_bytes_float32": 287152.0,
+            "pruning_layer": 6,
+            "small_margin_lte_1e_3": 0.8931297659873962,
+            "small_margin_lte_1e_4": 0.4255725145339966,
+            "small_margin_rel_lte_0p05_std": 0.9923664331436157,
+            "stage_index": 1
+          },
+          "delta": {
+            "boundary_tie_sample_ratio_delta": -0.0019083969527855515,
+            "margin_mean_ratio_candidate_over_baseline": 20.03236676176348,
+            "small_margin_lte_1e_4_delta": -0.5610687136650085
+          },
+          "improved": {
+            "margin_mean_increased": true,
+            "small_margin_lte_1e_4_decreased": true,
+            "tie_ratio_not_worse": true
+          },
+          "keep_count": 96,
+          "pruning_layer": 6,
+          "stage_index": 1
+        },
+        {
+          "active_count_before": 96,
+          "baseline": {
+            "active_count_before": 96,
+            "boundary_tie_sample_ratio": 0.0,
+            "keep_count": 67,
+            "margin_mean": 0.00019854027777910233,
+            "margin_p10": 1.665353738644626e-05,
+            "margin_p50": 0.00012090802192687988,
+            "margin_p90": 0.0004521995142567903,
+            "mean_tie_excess_count": 0.0,
+            "payload_bytes_float32": 201216.0,
+            "pruning_layer": 9,
+            "small_margin_lte_1e_3": 0.9923664331436157,
+            "small_margin_lte_1e_4": 0.4465648829936981,
+            "small_margin_rel_lte_0p05_std": 0.9961832165718079,
+            "stage_index": 2
+          },
+          "candidate": {
+            "active_count_before": 96,
+            "boundary_tie_sample_ratio": 0.0,
+            "keep_count": 67,
+            "margin_mean": 0.0005957819521427155,
+            "margin_p10": 2.2780895960750058e-05,
+            "margin_p50": 0.00020441412925720215,
+            "margin_p90": 0.0016667392337694764,
+            "mean_tie_excess_count": 0.0,
+            "payload_bytes_float32": 201216.0,
+            "pruning_layer": 9,
+            "small_margin_lte_1e_3": 0.847328245639801,
+            "small_margin_lte_1e_4": 0.34160304069519043,
+            "small_margin_rel_lte_0p05_std": 0.9389312863349915,
+            "stage_index": 2
+          },
+          "delta": {
+            "boundary_tie_sample_ratio_delta": 0.0,
+            "margin_mean_ratio_candidate_over_baseline": 3.000811516973839,
+            "small_margin_lte_1e_4_delta": -0.10496184229850769
+          },
+          "improved": {
+            "margin_mean_increased": true,
+            "small_margin_lte_1e_4_decreased": true,
+            "tie_ratio_not_worse": true
+          },
+          "keep_count": 67,
+          "pruning_layer": 9,
+          "stage_index": 2
+        }
+      ]
+    }
+  ],
+  "title": "Margin-aware pruning ablation 对比"
+}

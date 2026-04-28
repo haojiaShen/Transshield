@@ -1,0 +1,99 @@
+{
+  "comparisons": [
+    {
+      "comparison_group": "same_shape_operator_proxy",
+      "left_display_name": "Transshield secure-friendly ops same-shape proxy",
+      "left_profile_id": "transshield_ops_same_shape_proxy",
+      "module_comm_delta_bytes": -5282348544.0,
+      "module_comm_ratio_left_over_right": 0.1488588167339859,
+      "right_display_name": "External baseline ops same-shape proxy",
+      "right_profile_id": "baseline_ops_same_shape_proxy",
+      "scope_note": "同一模型形状、同一 2PC benchmark harness；主要用于观察算子配置导致的安全开销差异。",
+      "time_delta_sec": -6.8058665196100865,
+      "time_ratio_left_over_right": 0.549260654684939
+    }
+  ],
+  "output_root": "/data/wyb/Transshield_final/results/standardized_secure_benchmark/standardized_secure_ops_20260417_181805",
+  "profiles": [
+    {
+      "comparison_group": "same_shape_operator_proxy",
+      "config": {
+        "batch_size": 1,
+        "hidden_act": "relu",
+        "hidden_size": 384,
+        "intermediate_size": 1536,
+        "num_attention_heads": 6,
+        "num_hidden_layers": 12,
+        "repeats": 3,
+        "sequence_length": 197,
+        "softmax_act": "softmax",
+        "warmup": 1,
+        "world_size": 2
+      },
+      "display_name": "External baseline ops same-shape proxy",
+      "metrics": {
+        "communication_breakdown_byte_mean": {
+          "act_comm_byte": 1684832256.0,
+          "embed_comm_byte": 38076416.0,
+          "linear_comm_byte": 558739584.0,
+          "norm_comm_byte": 60825600.0,
+          "softmax_comm_byte": 3863721600.0
+        },
+        "measurement_count": 6,
+        "module_comm_byte_mean": 6206195456.0,
+        "module_comm_mib_mean": 5918.689208984375,
+        "total_time_mean_sec": 15.099339763323465
+      },
+      "model_source": "MPCFormer baseline transformer ops proxy",
+      "output_dir": "/data/wyb/Transshield_final/results/standardized_secure_benchmark/standardized_secure_ops_20260417_181805/baseline_ops_same_shape_proxy",
+      "profile_id": "baseline_ops_same_shape_proxy",
+      "role": "external_baseline",
+      "scope_note": "固定 DeiT-S 形状，使用外部 secure transformer benchmark 中的 baseline 非线性 / softmax 配置。",
+      "summary_json": "/data/wyb/Transshield_final/results/standardized_secure_benchmark/standardized_secure_ops_20260417_181805/baseline_ops_same_shape_proxy/summary.json"
+    },
+    {
+      "comparison_group": "same_shape_operator_proxy",
+      "config": {
+        "batch_size": 1,
+        "hidden_act": "quad",
+        "hidden_size": 384,
+        "intermediate_size": 1536,
+        "num_attention_heads": 6,
+        "num_hidden_layers": 12,
+        "repeats": 3,
+        "sequence_length": 197,
+        "softmax_act": "softmax_2QUAD",
+        "warmup": 1,
+        "world_size": 2
+      },
+      "display_name": "Transshield secure-friendly ops same-shape proxy",
+      "metrics": {
+        "communication_breakdown_byte_mean": {
+          "act_comm_byte": 116195328.0,
+          "embed_comm_byte": 38076416.0,
+          "linear_comm_byte": 558739584.0,
+          "norm_comm_byte": 60825600.0,
+          "softmax_comm_byte": 150009984.0
+        },
+        "measurement_count": 6,
+        "module_comm_byte_mean": 923846912.0,
+        "module_comm_mib_mean": 881.049072265625,
+        "total_time_mean_sec": 8.293473243713379
+      },
+      "model_source": "Transshield operator replacement proxy",
+      "output_dir": "/data/wyb/Transshield_final/results/standardized_secure_benchmark/standardized_secure_ops_20260417_181805/transshield_ops_same_shape_proxy",
+      "profile_id": "transshield_ops_same_shape_proxy",
+      "role": "current_project",
+      "scope_note": "固定 DeiT-S 形状，仅替换 secure-friendly activation / softmax proxy，用于观察算子配置开销。",
+      "summary_json": "/data/wyb/Transshield_final/results/standardized_secure_benchmark/standardized_secure_ops_20260417_181805/transshield_ops_same_shape_proxy/summary.json"
+    }
+  ],
+  "scope": {
+    "benchmark_harness": "MPCFormer local 2PC configurable transformer benchmark",
+    "is_full_val_image_pipeline": false,
+    "is_single_image_live_run": false,
+    "summary": "这些结果只表示同一 secure transformer benchmark harness 下的通信 / 时间 profile，不能和当前网页单图 live run 或 full-val Transshield SPU sidecar 通信量混为一谈。"
+  },
+  "title": "Transshield 统一 secure transformer benchmark",
+  "updated_at": "2026-04-17T18:19:56"
+}

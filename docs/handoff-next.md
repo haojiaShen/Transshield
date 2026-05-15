@@ -993,3 +993,21 @@ bash artifacts/server_inference_friendly_pack/run_e2e_secure_whole_forward.sh sp
   - 推理时间增加 17.0%（187.03s → 218.91s for 8 samples）
   - 精度保持 100%（argmax accuracy）
   - 下一步：为学生模型生成专门的校准参数，优化 SPU 执行配置
+
+- 2026-05-15 更新：
+  - PredictorLite SPU 验证已闭环：
+    - Shape bug 已修复：`_secure_build_keep_decision` 中 `top_k_indices` 广播形状不匹配，修复为 `top_k_indices[:, :, None] == pos[None, None, :]`
+    - PredictorLite smoke8 secret 模式：`elapsed_sec = 1619.40`，`per_sample = 202.43s`，`finite_logits = true`，`argmax_match = 1.0`
+    - PredictorLG smoke8 secret 模式（公平对比）：`elapsed_sec = 1594.96`，`per_sample = 199.37s`
+    - 结论：PredictorLite 在 SPU secret 模式下无显著端到端加速（predictor 计算占总时间极小比例），但参数量减少 59.3%
+    - 代码修复：`models/dyvit.py` PredictorLite/PredictorLG 已同步 `nonempty_keep_guard`，`tools/transshield_stage2_bundle.py` 已传入 `predictor_type` + `nonempty_keep_guard`
+    - `integrations/openbumblebee/e2e_secure_vit/spu_static_vit.py` 第 654 行 broadcast shape 已修复
+  - 创新点文档：`docs/transshield_innovation.md` 已追加创新点 8（PredictorLite）
+
+## 2026-05-16 追加：分解式 LRD 验证结果
+
+- **分解式 LRD 测试完成**：96.55s/sample，比 baseline 69.57s 慢 38.8%
+- **结论**：SPU 的 2PC/MPC 协议中，通信轮次比计算量更关键；两次小 matmul 的通信开销大于一次大 matmul
+- **当前最优配置**：batch12 + depth10 = 69.57s/sample（3.07x 加速）
+- **LRD 最佳实践**：使用 rank=192 merged 模式（权重合并回原尺寸），而非分解式
+- **创新点 7 更新**：SVD LRD 在 SPU 环境下需使用 merged 模式，分解式不适用于 MPC 协议

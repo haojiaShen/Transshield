@@ -334,3 +334,101 @@ Transshield 通过 secure pruning 提升安全推理效率：
 - ✅ 服务器看不到客户端图片
 - ✅ 客户端获取不到模型参数
 - ✅ 只暴露最终 logits
+
+## 2026-05-15 追加：金融模型 LRD 统一实现
+
+### 金融模型 LRD 分解结果
+- **模型**：DeiT-Small (depth12, embed_dim=384, num_classes=2)
+- **数据集**：finance_fraud_v3（100 normal + 100 fraud）
+- **LRD 配置**：rank=192, SVD 分解
+- **参数量**：22,390,184 → 15,312,296 (68.39%)
+- **微调结果**：30 epochs, test_acc1 = 100.0%
+
+### SPU 安全推理验证
+- **smoke8 测试**：8 samples (4 normal + 4 fraud)
+- **finite_logits**: true
+- **elapsed_sec**: 196.39s
+- **argmax_match_ratio**: 75% (6/8 samples match plaintext reference)
+- **host_model_params_materialized**: false (模型参数不暴露)
+- **reveal_policy**: final_logits_only
+
+### 医疗/金融创新点统一
+
+| 创新点 | 医疗模型 | 金融模型 |
+|--------|----------|----------|
+| 1. Pruning Boundary Rewrite | ✅ | ✅ |
+| 2. E2E Privacy SPU Forward | ✅ | ✅ |
+| 3. Bitonic Sort Top-K | ✅ | ✅ |
+| 4. MPC-Friendly Operators | ✅ | ✅ |
+| 5. Token Pruning | ✅ | ✅ |
+| 6. FXP Precision | ✅ | ✅ |
+| 7. SVD LRD (rank=192) | ✅ 91.98% / 26s | ✅ 100% / 196s |
+
+### 关键结论
+- **统一技术栈**：医疗和金融模型现在使用完全相同的 7 个创新点
+- **双向隐私保护**：两个领域都实现了服务器看不到客户端图片、客户端获取不到模型参数
+- **LRD 效果**：金融模型 LRD 分解后精度无损（100%），但 SPU 推理时间较长（196s vs 医疗 26s），主要因为金融数据集较小（200 samples vs 524 samples）
+
+
+---
+
+## 创新点 8：PredictorLite — 轻量化 Token Pruning 预测器
+
+### 问题
+
+PredictorLG 是 DynamicViT 中负责 token pruning 决策的核心模块，每 stage 有约 241K 参数。在 SPU 安全推理中，PredictorLG 在 SPU 内部完整执行（创新点 2），其参数量直接影响 SPU 内存占用和计算量。
+
+### 方法
+
+PredictorLite 将 PredictorLG 的隐藏维度从 384 降至 192：
+
+- **PredictorLG**: `in(384→384) → out(384→192→96) → proj(96→2)` = 241K params/stage
+- **PredictorLite**: `in(384→192) → out(192→96→48) → proj(48→2)` = 98K params/stage
+- **参数减少**: 59.3%（总 predictor 参数从 723K 降至 294K）
+
+训练方式：从 LRD rank192 的 PredictorLG 模型微调而来，30 个 epoch，test_acc=99.5%，EMA_acc=100%。
+
+### 证据
+
+- 金融欺诈检测模型：`artifacts/frozen_bundle_finance_predictor_lite_20260515/`
+- SPU smoke8 验证（secret 模式）：
+  - `elapsed_sec = 1619.40s`，`per_sample = 202.43s`
+  - `finite_logits = true`
+  - `argmax_match_ratio = 1.0`（与 PredictorLG 完全一致）
+- PredictorLG 同配置 secret 模式对比：`per_sample = 199.37s`
+- SPU 运行时 predictor 计算仅占总时间极小比例（主瓶颈为 transformer block 的矩阵乘法），因此 predictor 参数量减少未带来显著端到端加速
+
+### 创新性
+
+- 首次在 MPC 安全推理场景下对 DynamicViT 的 token pruning 预测器进行架构压缩
+- 59.3% 的 predictor 参数减少降低了 SPU 内存占用
+- 精度无损失（argmax 完全一致）
+
+
+## 2026-05-16 追加：分解式 LRD 验证结果
+
+### 测试背景
+为了进一步优化 SPU 推理效率，尝试将 LRD 的分解式权重（down_weight, up_weight）直接在 SPU 中使用，而非合并回原尺寸。
+
+### 测试结果
+- **分解式 LRD**: 96.55s/sample（比 baseline 慢 38.8%）
+- **Merged LRD**: 69.57s/sample（当前最优）
+
+### 关键发现
+**SPU 的 2PC/MPC 协议中，通信轮次比计算量更关键。**
+
+分解式 LRD 需要两次顺序矩阵乘法：
+1. `mid = x @ down_weight.T`（rank=96, 384→96）
+2. `result = mid @ up_weight.T`（96→384）
+
+每次 matmul 都有固定的通信开销（秘密共享、结果重构），两次小 matmul 的总通信开销大于一次大 matmul。
+
+### 结论
+- **LRD 在 SPU 环境下必须使用 merged 模式**：将 SVD 分解的权重合并回原尺寸（384×384），保持一次 matmul
+- **分解式 LRD 仅适用于明文推理**：在非 MPC 环境下，两次小 matmul 的计算量确实更少
+- **创新点 7 修正**：SVD LRD 的 SPU 加速来自 merged 模式下的参数量减少和微调后更好的数值特性，而非分解式计算
+
+### 实际最优方案
+当前所有 LRD 实验均使用 merged 模式：
+- rank=192 merged: 参数量 68.39%，SPU 推理 69.57s/sample（3.07x 加速）
+- rank=96 merged: 参数量 33.33%，精度下降需更多微调

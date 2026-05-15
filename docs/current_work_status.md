@@ -1536,3 +1536,64 @@
 3. 实现 CKKS-MPC 安全转换协议
 4. 与 LRD 和 Token Pruning 结合
 5. 端到端效率对比（BLB vs 纯 MPC）
+
+## 2026-05-15 追加：金融模型 LRD 统一完成
+
+### 金融模型 LRD 训练
+- **Bundle**: `artifacts/frozen_bundle_finance_lrd_rank192_20260515/`
+- **训练**: 30 epochs, test_acc1 = 100.0%
+- **参数量**: 22,390,184 → 15,312,296 (68.39%)
+- **源**: `artifacts/frozen_bundle_finance_lrd_rank192_merged_20260515/`
+
+### SPU 验证结果
+- **smoke8**: `artifacts/server_pipeline_run/finance_lrd_rank192_smoke8/e2e_secure_poc/`
+- **finite_logits**: true
+- **elapsed_sec**: 196.39s
+- **argmax_match_ratio**: 75% (6/8)
+- **host_model_params_materialized**: false
+- **reveal_policy**: final_logits_only
+
+### 创新点统一状态
+- 医疗模型：7/7 创新点已实现
+- 金融模型：7/7 创新点已实现
+- 两个领域技术栈完全一致
+
+### 下一步
+1. 更新竞赛作品报告 docx
+2. 可选：优化金融模型 SPU 推理效率
+
+## 2026-05-16 追加：分解式 LRD SPU 验证结果
+
+### 测试配置
+- **Bundle**: `artifacts/frozen_bundle_lrd_rank96_decomposed_20260515/`
+- **配置**: depth10 + batch12 + secret 模式
+- **测试样本**: 8 samples
+- **分解方式**: SVD rank=96，权重存储为 (down_weight, up_weight) 元组
+
+### 测试结果
+| 指标 | 值 |
+|------|-----|
+| 总耗时 | 772.40s |
+| 单样本耗时 | 96.55s |
+| 相对 baseline (69.57s) | **慢 38.8%** |
+| finite_logits | true |
+| argmax_predictions | [1,1,1,1,0,0,1,1] |
+
+### 关键发现
+**分解式 LRD 在 SPU 中不提速，反而更慢。**
+
+原因分析：
+1. **通信轮次 > 计算量**：SPU 的 2PC/MPC 协议中，每次矩阵乘法都需要通信轮次
+2. **两次小矩阵 vs 一次大矩阵**：分解后需要两次顺序 matmul（down → up），每次都有固定的通信开销
+3. **SPU 不优化分解权重**：SPU 的 JAX 后端不会自动合并两次小 matmul 为一次大 matmul
+4. **理论 FLOPs 减少 ≠ 实际 MPC 加速**：MPC 协议的瓶颈是通信，不是本地计算
+
+### 结论
+- **LRD rank=192 merged 模式**（权重合并回原尺寸）是 SPU 环境下的最优选择
+- **分解式 LRD** 仅适用于明文推理场景，不适用于 MPC/SPU 安全推理
+- 当前最优配置不变：**batch12 + depth10 = 69.57s/sample**
+
+### 产物路径
+- 分解 bundle: `artifacts/frozen_bundle_lrd_rank96_decomposed_20260515/`
+- 测试结果: `artifacts/server_pipeline_run/decomposed_lrd_rank96_test_v4/e2e_secure_poc/`
+- 测试日志: `logs/decomposed_lrd_test_v4.log`

@@ -222,6 +222,7 @@ def _build_deit_s_model_bundle(args, sparse_ratio, student_act_layer):
         nonempty_keep_guard=args.nonempty_keep_guard,
         secure_static_depth=args.secure_static_train_depth,
         secure_static_skip_pruning=args.secure_static_skip_pruning,
+        predictor_type=args.predictor_type,
     )
     pretrained = _resolve_deit_s_bootstrap_state_dict(args)
     teacher_model = VisionTransformerTeacher(
@@ -504,6 +505,8 @@ def get_args_parser():
                         help='If >0, train/eval the student with the static whole-forward path truncated to this many blocks.')
     parser.add_argument('--secure_static_skip_pruning', type=utils.str2bool, default=True,
                         help='When secure_static_train_depth>0, skip runtime pruning predictors to match SPU whole-forward scope.')
+    parser.add_argument('--predictor_type', type=str, default='lg', choices=['lg', 'lite'],
+                        help='Predictor type: lg (original 241K/stage) or lite (lightweight 98K/stage, 60% less compute).')
     parser.add_argument('--pruning_margin_weight', type=float, default=0.0,
                         help='Optional margin regularization weight for pruning boundary scores; 0 disables it.')
     parser.add_argument('--pruning_margin_target', type=float, default=1e-4,

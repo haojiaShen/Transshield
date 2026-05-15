@@ -1,0 +1,112 @@
+{
+  "backend": "jax_spu_static_whole_forward_backend_v0",
+  "created_at": "2026-05-07T11:25:04",
+  "effective_static_depth": 12,
+  "elapsed_sec": 203.24631357192993,
+  "finite_logits": true,
+  "input_pt": null,
+  "input_source": "isolated_per_sample_party_local_candidates",
+  "isolated_candidate_index_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke2_20260507_1/e2e_secure_poc/isolated_e2e_candidates/isolated_candidate_index.json",
+  "logits": {
+    "dtype": "torch.float32",
+    "max": 0.5607573986053467,
+    "mean": 0.0,
+    "min": -0.5607573986053467,
+    "shape": [
+      2,
+      2
+    ],
+    "std": 0.39751577377319336
+  },
+  "manifest_type": "transshield_e2e_static_whole_forward_candidate_summary_v0",
+  "max_samples": 2,
+  "output_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke2_20260507_1/e2e_secure_poc/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip3p0_eval.pt",
+  "prediction_preview": {
+    "argmax_predictions": [
+      0,
+      1
+    ],
+    "logits": [
+      [
+        0.5607573986053467,
+        -0.5607573986053467
+      ],
+      [
+        -0.03985902667045593,
+        0.03985902667045593
+      ]
+    ],
+    "probabilities": [
+      [
+        0.7542695999145508,
+        0.2457304298877716
+      ],
+      [
+        0.48008105158805847,
+        0.5199189782142639
+      ]
+    ],
+    "threshold_predictions": [
+      0,
+      1
+    ]
+  },
+  "privacy_note": "Eval-only aggregate built from isolated per-sample party-local SPU candidates. Each sample is inferred with the same final-logits-only reveal policy.",
+  "probabilities": {
+    "dtype": "torch.float32",
+    "max": 0.7542695999145508,
+    "mean": 0.5,
+    "min": 0.2457304298877716,
+    "shape": [
+      2,
+      2
+    ],
+    "std": 0.18034659326076508
+  },
+  "raw_logits_before_output_calibration": {
+    "dtype": "torch.float32",
+    "max": 0.803558349609375,
+    "mean": 0.13922119140625,
+    "min": -0.9031829833984375,
+    "shape": [
+      2,
+      2
+    ],
+    "std": 0.6571124196052551
+  },
+  "runtime": "spu",
+  "sample_count": 2,
+  "spu": {
+    "host_plaintext_pixel_values_materialized": false,
+    "host_private_share_tensors_loaded": false,
+    "input_mode": "party_local_debug_share_load",
+    "private_input_paths_redacted": true,
+    "spu_batch_size": 1,
+    "spu_layer_norm_calibration_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke2_20260507_1/e2e_secure_poc/e2e_public_layer_norm_calibration_depth12_uniform_fixed_square_clip3p0.json",
+    "spu_layer_norm_policy": "public_calibrated",
+    "static_forward_metadata": {
+      "activation_kind": "fixed_square",
+      "activation_override": "fixed_square",
+      "attention_policy": "uniform",
+      "attention_policy_eps": 1e-06,
+      "base_activation_kind": "fixed_square",
+      "depth": 12,
+      "embed_dim": 384,
+      "forward_scope": "student_patch_embed_blocks_head_without_runtime_pruning_predictor_path",
+      "full_depth": 12,
+      "head_dim": 64,
+      "layer_norm_eps": 1e-06,
+      "num_heads": 6,
+      "patch_size": 16,
+      "state_dict_path": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_model_state_dict.pth",
+      "static_depth_limit": 12,
+      "unsupported_currently_bypassed": [
+        "runtime pruning predictor path",
+        "intermediate feature reveal",
+        "dynamic masking-pruning inside secure forward"
+      ]
+    }
+  },
+  "static_depth_limit": 12,
+  "threshold": 0.5
+}

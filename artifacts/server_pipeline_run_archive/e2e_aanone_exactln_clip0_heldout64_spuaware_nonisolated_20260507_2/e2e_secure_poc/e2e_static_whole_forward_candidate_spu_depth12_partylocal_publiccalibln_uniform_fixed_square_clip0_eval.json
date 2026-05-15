@@ -1,0 +1,764 @@
+{
+  "backend": "jax_spu_static_whole_forward_backend_v0",
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+  "cls_features": null,
+  "effective_static_depth": 12,
+  "elapsed_sec": 1338.5611293315887,
+  "finite_logits": true,
+  "forward_scope": "student_patch_embed_blocks_head_without_runtime_pruning_predictor_path",
+  "include_intermediates": false,
+  "input_p1_share_manifest_json": "[redacted:p1_share_manifest]",
+  "input_p2_share_manifest_json": "[redacted:p2_share_manifest]",
+  "input_pt": null,
+  "input_share_manifest_json": null,
+  "input_share_public_manifest_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout64_spuaware_nonisolated_20260507_2/e2e_secure_poc/client_pixel_values_debug_share_public_manifest.json",
+  "input_source": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout64_spuaware_nonisolated_20260507_2/e2e_secure_poc/client_pixel_values_debug_share_public_manifest.json",
+  "logits": {
+    "dtype": "torch.float32",
+    "max": 0.762359619140625,
+    "mean": 0.0,
+    "min": -0.762359619140625,
+    "shape": [
+      64,
+      2
+    ],
+    "std": 0.35360559821128845
+  },
+  "manifest_type": "transshield_e2e_static_whole_forward_candidate_summary_v0",
+  "max_samples": 64,
+  "output_calibration": {
+    "bias": 0.3527068793773651,
+    "calibration_json": "/data/wyb/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_bias_spuaware_smoke32_threshold.json",
+    "manifest_type": "transshield_e2e_output_calibration_v0",
+    "note": "SPU-aware public logit-bias calibration: base static bias shifted by a public E2E smoke32 threshold sweep; validate on held-out/expanded E2E subsets before making default.",
+    "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+    "threshold": 0.5,
+    "weights": [
+      -1.0,
+      1.0
+    ]
+  },
+  "output_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout64_spuaware_nonisolated_20260507_2/e2e_secure_poc/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip0_eval.pt",
+  "prediction_preview": {
+    "argmax_predictions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "logits": [
+      [
+        0.0938568264245987,
+        -0.0938568264245987
+      ],
+      [
+        0.40023040771484375,
+        -0.40023040771484375
+      ],
+      [
+        0.2365722805261612,
+        -0.2365722805261612
+      ],
+      [
+        0.2250213772058487,
+        -0.2250213772058487
+      ],
+      [
+        0.12111665308475494,
+        -0.12111665308475494
+      ],
+      [
+        0.20909883081912994,
+        -0.20909883081912994
+      ],
+      [
+        -0.07149504125118256,
+        0.07149504125118256
+      ],
+      [
+        0.33277130126953125,
+        -0.33277130126953125
+      ],
+      [
+        0.18303681910037994,
+        -0.18303681910037994
+      ],
+      [
+        0.18601228296756744,
+        -0.18601228296756744
+      ],
+      [
+        0.4158172607421875,
+        -0.4158172607421875
+      ],
+      [
+        0.3223419189453125,
+        -0.3223419189453125
+      ],
+      [
+        0.3175811767578125,
+        -0.3175811767578125
+      ],
+      [
+        -0.1351623386144638,
+        0.1351623386144638
+      ],
+      [
+        0.400054931640625,
+        -0.400054931640625
+      ],
+      [
+        0.2812347412109375,
+        -0.2812347412109375
+      ],
+      [
+        0.1823578029870987,
+        -0.1823578029870987
+      ],
+      [
+        0.1642761379480362,
+        -0.1642761379480362
+      ],
+      [
+        0.30954742431640625,
+        -0.30954742431640625
+      ],
+      [
+        0.2215118557214737,
+        -0.2215118557214737
+      ],
+      [
+        0.33995819091796875,
+        -0.33995819091796875
+      ],
+      [
+        0.27434539794921875,
+        -0.27434539794921875
+      ],
+      [
+        0.1384582668542862,
+        -0.1384582668542862
+      ],
+      [
+        0.19573213160037994,
+        -0.19573213160037994
+      ],
+      [
+        0.3676910400390625,
+        -0.3676910400390625
+      ],
+      [
+        0.41623687744140625,
+        -0.41623687744140625
+      ],
+      [
+        0.1692962795495987,
+        -0.1692962795495987
+      ],
+      [
+        0.1311187893152237,
+        -0.1311187893152237
+      ],
+      [
+        0.37032318115234375,
+        -0.37032318115234375
+      ],
+      [
+        0.1603088527917862,
+        -0.1603088527917862
+      ],
+      [
+        0.37924957275390625,
+        -0.37924957275390625
+      ],
+      [
+        0.23424531519412994,
+        -0.23424531519412994
+      ],
+      [
+        0.06606294214725494,
+        -0.06606294214725494
+      ],
+      [
+        -0.27172088623046875,
+        0.27172088623046875
+      ],
+      [
+        -0.19100187718868256,
+        0.19100187718868256
+      ],
+      [
+        -0.032173141837120056,
+        0.032173141837120056
+      ],
+      [
+        -0.37229156494140625,
+        0.37229156494140625
+      ],
+      [
+        -0.2199401706457138,
+        0.2199401706457138
+      ],
+      [
+        -0.6757431030273438,
+        0.6757431030273438
+      ],
+      [
+        0.14499665796756744,
+        -0.14499665796756744
+      ],
+      [
+        -0.6444091796875,
+        0.6444091796875
+      ],
+      [
+        -0.62005615234375,
+        0.62005615234375
+      ],
+      [
+        -0.0774078220129013,
+        0.0774078220129013
+      ],
+      [
+        -0.16709135472774506,
+        0.16709135472774506
+      ],
+      [
+        0.2481689602136612,
+        -0.2481689602136612
+      ],
+      [
+        -0.15123747289180756,
+        0.15123747289180756
+      ],
+      [
+        -0.5460968017578125,
+        0.5460968017578125
+      ],
+      [
+        -0.36756134033203125,
+        0.36756134033203125
+      ],
+      [
+        -0.45017242431640625,
+        0.45017242431640625
+      ],
+      [
+        -0.30556488037109375,
+        0.30556488037109375
+      ],
+      [
+        -0.516632080078125,
+        0.516632080078125
+      ],
+      [
+        -0.52740478515625,
+        0.52740478515625
+      ],
+      [
+        -0.433990478515625,
+        0.433990478515625
+      ],
+      [
+        -0.6892776489257812,
+        0.6892776489257812
+      ],
+      [
+        -0.453369140625,
+        0.453369140625
+      ],
+      [
+        -0.38932037353515625,
+        0.38932037353515625
+      ],
+      [
+        -0.440673828125,
+        0.440673828125
+      ],
+      [
+        -0.434234619140625,
+        0.434234619140625
+      ],
+      [
+        -0.48873138427734375,
+        0.48873138427734375
+      ],
+      [
+        -0.762359619140625,
+        0.762359619140625
+      ],
+      [
+        -0.30643463134765625,
+        0.30643463134765625
+      ],
+      [
+        -0.34313201904296875,
+        0.34313201904296875
+      ],
+      [
+        -0.46552276611328125,
+        0.46552276611328125
+      ],
+      [
+        -0.2355499118566513,
+        0.2355499118566513
+      ]
+    ],
+    "probabilities": [
+      [
+        0.546791136264801,
+        0.45320892333984375
+      ],
+      [
+        0.6900730729103088,
+        0.30992695689201355
+      ],
+      [
+        0.6161277890205383,
+        0.38387227058410645
+      ],
+      [
+        0.6106494069099426,
+        0.38935062289237976
+      ],
+      [
+        0.5602639317512512,
+        0.4397360384464264
+      ],
+      [
+        0.6030519008636475,
+        0.3969481289386749
+      ],
+      [
+        0.46431323885917664,
+        0.535686731338501
+      ],
+      [
+        0.6605043411254883,
+        0.3394956588745117
+      ],
+      [
+        0.5905098915100098,
+        0.4094901382923126
+      ],
+      [
+        0.5919480919837952,
+        0.40805190801620483
+      ],
+      [
+        0.6967004537582397,
+        0.30329957604408264
+      ],
+      [
+        0.6558114886283875,
+        0.34418851137161255
+      ],
+      [
+        0.6536590456962585,
+        0.3463408946990967
+      ],
+      [
+        0.4328274130821228,
+        0.567172646522522
+      ],
+      [
+        0.6899980306625366,
+        0.31000202894210815
+      ],
+      [
+        0.6370237469673157,
+        0.3629762530326843
+      ],
+      [
+        0.5901814699172974,
+        0.40981853008270264
+      ],
+      [
+        0.5814071297645569,
+        0.4185929596424103
+      ],
+      [
+        0.6500126123428345,
+        0.34998732805252075
+      ],
+      [
+        0.6089792847633362,
+        0.3910207152366638
+      ],
+      [
+        0.6637200713157654,
+        0.336279958486557
+      ],
+      [
+        0.633831799030304,
+        0.36616820096969604
+      ],
+      [
+        0.568790078163147,
+        0.43120989203453064
+      ],
+      [
+        0.5966351628303528,
+        0.4033648669719696
+      ],
+      [
+        0.6759852170944214,
+        0.3240147829055786
+      ],
+      [
+        0.6968777179718018,
+        0.30312225222587585
+      ],
+      [
+        0.5838485956192017,
+        0.4161514341831207
+      ],
+      [
+        0.5651862621307373,
+        0.4348137378692627
+      ],
+      [
+        0.6771371364593506,
+        0.32286280393600464
+      ],
+      [
+        0.5794748067855835,
+        0.4205252230167389
+      ],
+      [
+        0.6810277700424194,
+        0.3189722001552582
+      ],
+      [
+        0.6150264739990234,
+        0.38497358560562134
+      ],
+      [
+        0.5329834818840027,
+        0.4670164883136749
+      ],
+      [
+        0.3673872947692871,
+        0.6326127052307129
+      ],
+      [
+        0.4056437015533447,
+        0.5943562984466553
+      ],
+      [
+        0.4839189946651459,
+        0.5160810351371765
+      ],
+      [
+        0.3220027685165405,
+        0.6779972910881042
+      ],
+      [
+        0.3917694389820099,
+        0.608230471611023
+      ],
+      [
+        0.20562750101089478,
+        0.7943724989891052
+      ],
+      [
+        0.5719944834709167,
+        0.42800551652908325
+      ],
+      [
+        0.21605288982391357,
+        0.7839471101760864
+      ],
+      [
+        0.22441644966602325,
+        0.7755835652351379
+      ],
+      [
+        0.4613732099533081,
+        0.5386267900466919
+      ],
+      [
+        0.4172232449054718,
+        0.5827767252922058
+      ],
+      [
+        0.6215983629226685,
+        0.37840166687965393
+      ],
+      [
+        0.42495256662368774,
+        0.5750474333763123
+      ],
+      [
+        0.2512054443359375,
+        0.7487946152687073
+      ],
+      [
+        0.32407161593437195,
+        0.6759284138679504
+      ],
+      [
+        0.2889796197414398,
+        0.7110203504562378
+      ],
+      [
+        0.3518015444278717,
+        0.6481984853744507
+      ],
+      [
+        0.26245176792144775,
+        0.7375482320785522
+      ],
+      [
+        0.25830259919166565,
+        0.7416974306106567
+      ],
+      [
+        0.2956746220588684,
+        0.7043254375457764
+      ],
+      [
+        0.2012411206960678,
+        0.798758864402771
+      ],
+      [
+        0.28766775131225586,
+        0.7123322486877441
+      ],
+      [
+        0.31461289525032043,
+        0.6853870749473572
+      ],
+      [
+        0.29289859533309937,
+        0.7071014046669006
+      ],
+      [
+        0.2955729067325592,
+        0.7044270634651184
+      ],
+      [
+        0.27339550852775574,
+        0.7266044616699219
+      ],
+      [
+        0.17876765131950378,
+        0.8212323784828186
+      ],
+      [
+        0.35140493512153625,
+        0.6485950350761414
+      ],
+      [
+        0.33486467599868774,
+        0.6651353240013123
+      ],
+      [
+        0.2827126383781433,
+        0.7172873616218567
+      ],
+      [
+        0.38435596227645874,
+        0.6156440377235413
+      ]
+    ],
+    "threshold_predictions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "privacy_note": "This candidate runs the static whole-forward function on SPU/JAX and reveals final logits only. In party-local share-load mode, the driver does not materialize plaintext pixel_values or private share tensors; P1/P2 device functions load their own share files before SPU recomposition. It is still a debug bridge until P1/P2 are launched as independent party processes.",
+  "probabilities": {
+    "dtype": "torch.float32",
+    "max": 0.8212323784828186,
+    "mean": 0.5,
+    "min": 0.17876765131950378,
+    "shape": [
+      64,
+      2
+    ],
+    "std": 0.16406890749931335
+  },
+  "raw_logits_before_output_calibration": {
+    "dtype": "torch.float32",
+    "max": 0.774139404296875,
+    "mean": 0.1471635103225708,
+    "min": -0.495758056640625,
+    "shape": [
+      64,
+      2
+    ],
+    "std": 0.3706281781196594
+  },
+  "runtime": "spu",
+  "sample_count": 64,
+  "spu": {
+    "config": "/data/wyb/Transshield_final/configs/openbumblebee/2pc.json",
+    "driver_private_share_manifest_paths_recorded": false,
+    "host_plaintext_pixel_values_materialized": false,
+    "host_private_share_tensors_loaded": false,
+    "input_mode": "party_local_debug_share_load",
+    "party_manifest_types": [
+      "transshield_e2e_debug_float_additive_share_party_manifest_v0",
+      "transshield_e2e_debug_float_additive_share_party_manifest_v0"
+    ],
+    "private_input_paths_redacted": true,
+    "share_manifest_type": "transshield_e2e_debug_float_additive_share_public_manifest_v0",
+    "share_semantics": "debug_float_additive_share_not_production_mpc_share",
+    "spu_activation_clip_value": 0.0,
+    "spu_batch_size": 1,
+    "spu_block_chunk_size": 0,
+    "spu_forward_graph_mode": "monolithic",
+    "spu_layer_norm_calibration_json": null,
+    "spu_layer_norm_chunk_size": 0,
+    "spu_layer_norm_policy": "exact",
+    "spu_params_mode": "public",
+    "static_forward_metadata": {
+      "activation_kind": "fixed_square",
+      "activation_override": "fixed_square",
+      "attention_policy": "uniform",
+      "attention_policy_eps": 1e-06,
+      "base_activation_kind": "fixed_square",
+      "depth": 12,
+      "embed_dim": 384,
+      "forward_scope": "student_patch_embed_blocks_head_without_runtime_pruning_predictor_path",
+      "full_depth": 12,
+      "head_dim": 64,
+      "layer_norm_eps": 1e-06,
+      "num_heads": 6,
+      "patch_size": 16,
+      "state_dict_path": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507/modified_plaintext_model_state_dict.pth",
+      "static_depth_limit": 12,
+      "unsupported_currently_bypassed": [
+        "runtime pruning predictor path",
+        "intermediate feature reveal",
+        "dynamic masking-pruning inside secure forward"
+      ]
+    }
+  },
+  "static_depth_limit": 12,
+  "threshold": 0.5,
+  "token_features": null
+}

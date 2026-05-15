@@ -1,0 +1,21 @@
+{
+  "manifest_type": "transshield_e2e_debug_float_additive_share_party_manifest_v0",
+  "party_id": "P1",
+  "privacy_status": "debug_party_share_manifest_only; this manifest must not include the other party share path",
+  "public_manifest_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke32_20260507_1/e2e_secure_poc/isolated_e2e_candidates/sample_000022/client_pixel_values_debug_share_public_manifest.json",
+  "sample_count": 1,
+  "sample_ids": [
+    "sample_000000"
+  ],
+  "share_count": 2,
+  "share_dtype": "torch.float32",
+  "share_path": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke32_20260507_1/e2e_secure_poc/isolated_e2e_candidates/sample_000022/client_pixel_values_debug_share_p1_share.pt",
+  "share_rank": 0,
+  "share_semantics": "debug_float_additive_share_not_production_mpc_share",
+  "share_shape": [
+    1,
+    3,
+    224,
+    224
+  ]
+}

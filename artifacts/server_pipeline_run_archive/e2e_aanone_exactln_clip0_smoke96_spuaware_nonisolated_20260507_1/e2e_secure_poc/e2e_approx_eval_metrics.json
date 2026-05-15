@@ -1,0 +1,68 @@
+{
+  "argmax_accuracy_gap_e2e_minus_plaintext_pp": 45.83333134651184,
+  "candidate_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke96_spuaware_nonisolated_20260507_1/e2e_secure_poc/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip0_eval.json",
+  "candidate_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke96_spuaware_nonisolated_20260507_1/e2e_secure_poc/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip0_eval.pt",
+  "comparison_scope": "same_image_list_same_targets_original_plaintext_vs_e2e_approx_spu",
+  "e2e_argmax_accuracy": 95.83333134651184,
+  "e2e_communication_from_spu_node_logs": {
+    "aggregate_recv_bytes": 863692857,
+    "aggregate_send_bytes": 900705315,
+    "aggregate_total_bytes": 1764398172,
+    "node_latest_nonzero_link_details": [
+      {
+        "log_path": "logs/spu_nodes/node_0.log",
+        "recv_actions": 13955,
+        "recv_bytes": 863692857,
+        "send_actions": 13955,
+        "send_bytes": 900705315
+      }
+    ],
+    "scope_note": "Parsed from latest nonzero Link details in logs/spu_nodes/node_*.log after the e2e run.",
+    "status": "available"
+  },
+  "e2e_elapsed_sec": 2028.8419852256775,
+  "e2e_threshold_accuracy": 95.83333134651184,
+  "finite_logits": true,
+  "image_list": null,
+  "manifest_type": "transshield_e2e_approx_eval_metrics_v0",
+  "original_plaintext_communication": {
+    "note": "Plaintext local reference has no 2PC/SPU communication.",
+    "status": "not_applicable",
+    "total_bytes": 0
+  },
+  "original_plaintext_full_val_reference": {
+    "argmax_accuracy": 93.70229244232178,
+    "note": "full-val reference is retained only for context; primary gap fields above use the same eval subset",
+    "threshold_accuracy": 94.08397078514099
+  },
+  "original_plaintext_same_subset_argmax_accuracy": 50.0,
+  "original_plaintext_same_subset_threshold_accuracy": 50.0,
+  "output_calibration": {
+    "bias": 0.3527068793773651,
+    "calibration_json": "/data/wyb/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_bias_spuaware_smoke32_threshold.json",
+    "manifest_type": "transshield_e2e_output_calibration_v0",
+    "note": "SPU-aware public logit-bias calibration: base static bias shifted by a public E2E smoke32 threshold sweep; validate on held-out/expanded E2E subsets before making default.",
+    "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+    "threshold": 0.5,
+    "weights": [
+      -1.0,
+      1.0
+    ]
+  },
+  "plaintext_reference_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke96_spuaware_nonisolated_20260507_1/e2e_secure_poc/plaintext_same_images_reference.json",
+  "prediction_match_vs_original_plaintext": {
+    "argmax_match_ratio": 0.4791666567325592,
+    "threshold_match_ratio": 0.4791666567325592
+  },
+  "privacy_fields": {
+    "host_plaintext_pixel_values_materialized": false,
+    "host_private_share_tensors_loaded": false,
+    "input_mode": "party_local_debug_share_load",
+    "input_pt": null,
+    "private_input_paths_redacted": true
+  },
+  "sample_count": 96,
+  "scope_note": "Primary metrics compare original plaintext and e2e approximate SPU on the same selected images and targets. Increase E2E_EVAL_MAX_SAMPLES for a more stable estimate; keep E2E_SPU_BATCH_SIZE=1.",
+  "target_count": 96,
+  "threshold_accuracy_gap_e2e_minus_plaintext_pp": 45.83333134651184
+}

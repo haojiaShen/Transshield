@@ -1,0 +1,18 @@
+{
+  "manifest_type": "transshield_e2e_debug_share_slice_result_v0",
+  "output_input_pt": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_probe_heldout238_idx121_20260508/e2e_secure_poc/client_pixel_values.pt",
+  "output_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_probe_heldout238_idx121_20260508/e2e_secure_poc/client_pixel_values_debug_share_manifest.json",
+  "output_party_manifest_dir": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_probe_heldout238_idx121_20260508/e2e_secure_poc/client_pixel_values_debug_share_party_manifests",
+  "output_public_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_probe_heldout238_idx121_20260508/e2e_secure_poc/client_pixel_values_debug_share_public_manifest.json",
+  "party_manifest_jsons": [
+    "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_probe_heldout238_idx121_20260508/e2e_secure_poc/client_pixel_values_debug_share_party_manifests/p1_share_manifest.json",
+    "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_probe_heldout238_idx121_20260508/e2e_secure_poc/client_pixel_values_debug_share_party_manifests/p2_share_manifest.json"
+  ],
+  "sample_count": 1,
+  "sample_ids": [
+    "sample_000121"
+  ],
+  "targets": [
+    1
+  ]
+}

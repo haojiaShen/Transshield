@@ -1,0 +1,161 @@
+{
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+  "cls_features": {
+    "dtype": "torch.float32",
+    "max": 2.81982421875,
+    "mean": -0.023867802694439888,
+    "min": -3.184465169906616,
+    "shape": [
+      8,
+      384
+    ],
+    "std": 0.7754577994346619
+  },
+  "device": "cpu",
+  "finite_logits": true,
+  "forward_scope": "student_patch_embed_blocks_head_without_runtime_pruning_predictor_path",
+  "input_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke8_accuracyfirst_20260508_1/e2e_secure_poc/plaintext_same_images_pixel_values.pt",
+  "logits": {
+    "dtype": "torch.float32",
+    "max": 0.7603256702423096,
+    "mean": 0.14463265240192413,
+    "min": -0.44448208808898926,
+    "shape": [
+      8,
+      2
+    ],
+    "std": 0.4897724986076355
+  },
+  "manifest_type": "transshield_e2e_static_whole_forward_reference_v0",
+  "output_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke8_accuracyfirst_20260508_1/e2e_secure_poc/static_whole_forward_reference.pt",
+  "per_sample": [
+    {
+      "argmax_prediction": 0,
+      "logits": [
+        0.7295883297920227,
+        -0.3698158860206604
+      ],
+      "probabilities": [
+        0.7501484751701355,
+        0.2498515546321869
+      ],
+      "sample_id": "sample_000000",
+      "target": 0,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_prediction": 0,
+      "logits": [
+        0.743573009967804,
+        -0.39453861117362976
+      ],
+      "probabilities": [
+        0.7573327422142029,
+        0.24266724288463593
+      ],
+      "sample_id": "sample_000001",
+      "target": 0,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_prediction": 0,
+      "logits": [
+        0.7603256702423096,
+        -0.39410263299942017
+      ],
+      "probabilities": [
+        0.7603188157081604,
+        0.2396811842918396
+      ],
+      "sample_id": "sample_000002",
+      "target": 0,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_prediction": 0,
+      "logits": [
+        0.7207903861999512,
+        -0.36178290843963623
+      ],
+      "probabilities": [
+        0.7469806671142578,
+        0.2530193626880646
+      ],
+      "sample_id": "sample_000003",
+      "target": 0,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4061793088912964,
+        0.592246949672699
+      ],
+      "probabilities": [
+        0.2692509591579437,
+        0.7307490110397339
+      ],
+      "sample_id": "sample_000004",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.44448208808898926,
+        0.6344001889228821
+      ],
+      "probabilities": [
+        0.2537176012992859,
+        0.7462823987007141
+      ],
+      "sample_id": "sample_000005",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.23064446449279785,
+        0.44315552711486816
+      ],
+      "probabilities": [
+        0.337646484375,
+        0.662353515625
+      ],
+      "sample_id": "sample_000006",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 0,
+      "logits": [
+        0.18707218766212463,
+        0.10451606661081314
+      ],
+      "probabilities": [
+        0.5206273198127747,
+        0.47937268018722534
+      ],
+      "sample_id": "sample_000007",
+      "target": 1,
+      "threshold_prediction": 1
+    }
+  ],
+  "privacy_note": "This is a plaintext static whole-forward reference for the future e2e SPU path. It keeps the student blocks/head but bypasses runtime pruning decisions.",
+  "sample_count": 8,
+  "status": "plaintext_static_whole_forward_reference_not_secure",
+  "threshold": 0.3577311038970947,
+  "token_features": {
+    "dtype": "torch.float32",
+    "max": 3.2801125049591064,
+    "mean": -0.0030582393519580364,
+    "min": -9.409124374389648,
+    "shape": [
+      8,
+      196,
+      384
+    ],
+    "std": 0.7904540300369263
+  }
+}

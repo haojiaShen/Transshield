@@ -125,28 +125,60 @@ def load_static_vit_spu_params(
             raise KeyError(f"missing state_dict key required by SPU static forward: {key}")
         return numpy_from_torch_tensor(state_dict[key])
 
+    # Detect decomposed LRD mode
+    lrd_decomposed = bool(args_snapshot.get("lrd_decomposed", False))
+
     block_params = []
     for block_index in range(depth):
         act_alpha, act_beta = resolve_block_activation_params(state_dict, block_index, activation_kind)
         prefix = f"blocks.{block_index}"
-        block_params.append(
-            (
-                required(f"{prefix}.norm1.weight"),
-                required(f"{prefix}.norm1.bias"),
-                required(f"{prefix}.attn.qkv.weight"),
-                required(f"{prefix}.attn.qkv.bias"),
-                required(f"{prefix}.attn.proj.weight"),
-                required(f"{prefix}.attn.proj.bias"),
-                required(f"{prefix}.norm2.weight"),
-                required(f"{prefix}.norm2.bias"),
-                required(f"{prefix}.mlp.fc1.weight"),
-                required(f"{prefix}.mlp.fc1.bias"),
-                act_alpha,
-                act_beta,
-                required(f"{prefix}.mlp.fc2.weight"),
-                required(f"{prefix}.mlp.fc2.bias"),
+
+        if lrd_decomposed:
+            # Decomposed weights: pack (down_weight, up_weight) as tuple
+            def _decomp_w(layer_prefix):
+                return (required(f"{layer_prefix}.0.weight"), required(f"{layer_prefix}.1.weight"))
+
+            def _decomp_b(layer_prefix):
+                bk = f"{layer_prefix}.1.bias"
+                return required(bk) if bk in state_dict else numpy_from_torch_tensor(torch.zeros(1))
+
+            block_params.append(
+                (
+                    required(f"{prefix}.norm1.weight"),
+                    required(f"{prefix}.norm1.bias"),
+                    _decomp_w(f"{prefix}.attn.qkv"),
+                    _decomp_b(f"{prefix}.attn.qkv"),
+                    _decomp_w(f"{prefix}.attn.proj"),
+                    _decomp_b(f"{prefix}.attn.proj"),
+                    required(f"{prefix}.norm2.weight"),
+                    required(f"{prefix}.norm2.bias"),
+                    _decomp_w(f"{prefix}.mlp.fc1"),
+                    _decomp_b(f"{prefix}.mlp.fc1"),
+                    act_alpha,
+                    act_beta,
+                    _decomp_w(f"{prefix}.mlp.fc2"),
+                    _decomp_b(f"{prefix}.mlp.fc2"),
+                )
             )
-        )
+        else:
+            block_params.append(
+                (
+                    required(f"{prefix}.norm1.weight"),
+                    required(f"{prefix}.norm1.bias"),
+                    required(f"{prefix}.attn.qkv.weight"),
+                    required(f"{prefix}.attn.qkv.bias"),
+                    required(f"{prefix}.attn.proj.weight"),
+                    required(f"{prefix}.attn.proj.bias"),
+                    required(f"{prefix}.norm2.weight"),
+                    required(f"{prefix}.norm2.bias"),
+                    required(f"{prefix}.mlp.fc1.weight"),
+                    required(f"{prefix}.mlp.fc1.bias"),
+                    act_alpha,
+                    act_beta,
+                    required(f"{prefix}.mlp.fc2.weight"),
+                    required(f"{prefix}.mlp.fc2.bias"),
+                )
+            )
 
     params = (
         required("patch_embed.proj.weight"),

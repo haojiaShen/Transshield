@@ -1,0 +1,28 @@
+{
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
+  "manifest_type": "transshield_e2e_client_pixel_values_v0_summary",
+  "next_secure_step": "replace plaintext package transport with real client-side secret sharing",
+  "output_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke2_20260507_1/e2e_secure_poc/plaintext_same_images_pixel_values.pt",
+  "pixel_values": {
+    "dtype": "torch.float32",
+    "max": 1.8731156587600708,
+    "mean": 0.1063472256064415,
+    "min": -1.5699118375778198,
+    "shape": [
+      2,
+      3,
+      224,
+      224
+    ],
+    "std": 0.5526500344276428
+  },
+  "privacy_status": "plaintext_client_tensor_not_yet_mpc_share",
+  "sample_count": 2,
+  "sample_ids": [
+    "sample_000000",
+    "sample_000001"
+  ],
+  "selection_mode": "explicit_paths",
+  "source_paths_included": false,
+  "targets_included": true
+}

@@ -1,0 +1,224 @@
+{
+  "backend": "jax_spu_static_whole_forward_backend_v0",
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
+  "cls_features": null,
+  "effective_static_depth": 12,
+  "elapsed_sec": 686.167946100235,
+  "finite_logits": true,
+  "forward_scope": "student_patch_embed_blocks_head_without_runtime_pruning_predictor_path",
+  "include_intermediates": false,
+  "input_p1_share_manifest_json": "[redacted:p1_share_manifest]",
+  "input_p2_share_manifest_json": "[redacted:p2_share_manifest]",
+  "input_pt": null,
+  "input_share_manifest_json": null,
+  "input_share_public_manifest_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_heldout238_selected_policy_probe_20260508_1/selected_slice/client_pixel_values_debug_share_public_manifest.json",
+  "input_source": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_heldout238_selected_policy_probe_20260508_1/selected_slice/client_pixel_values_debug_share_public_manifest.json",
+  "logits": {
+    "dtype": "torch.float32",
+    "max": 0.3641510009765625,
+    "mean": 0.0,
+    "min": -0.3641510009765625,
+    "shape": [
+      10,
+      2
+    ],
+    "std": 0.3151748478412628
+  },
+  "manifest_type": "transshield_e2e_static_whole_forward_candidate_summary_v0",
+  "max_samples": 10,
+  "output_calibration": {
+    "bias": 0.3527068793773651,
+    "calibration_json": "/data/wyb/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_bias_spuaware_smoke32_threshold.json",
+    "manifest_type": "transshield_e2e_output_calibration_v0",
+    "note": "SPU-aware public logit-bias calibration: base static bias shifted by a public E2E smoke32 threshold sweep; validate on held-out/expanded E2E subsets before making default.",
+    "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+    "threshold": 0.5,
+    "weights": [
+      -1.0,
+      1.0
+    ]
+  },
+  "output_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_heldout238_selected_policy_probe_20260508_1/exact_uniform_clip3/e2e_candidate_exact_uniform_clip3.pt",
+  "prediction_preview": {
+    "argmax_predictions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "logits": [
+      [
+        0.3504638671875,
+        -0.3504638671875
+      ],
+      [
+        0.3425445556640625,
+        -0.3425445556640625
+      ],
+      [
+        0.3641510009765625,
+        -0.3641510009765625
+      ],
+      [
+        0.33107757568359375,
+        -0.33107757568359375
+      ],
+      [
+        0.27918243408203125,
+        -0.27918243408203125
+      ],
+      [
+        0.2749786376953125,
+        -0.2749786376953125
+      ],
+      [
+        0.31172943115234375,
+        -0.31172943115234375
+      ],
+      [
+        0.32501983642578125,
+        -0.32501983642578125
+      ],
+      [
+        0.3032073974609375,
+        -0.3032073974609375
+      ],
+      [
+        0.250335693359375,
+        -0.250335693359375
+      ]
+    ],
+    "probabilities": [
+      [
+        0.6683934926986694,
+        0.33160659670829773
+      ],
+      [
+        0.6648736000061035,
+        0.33512642979621887
+      ],
+      [
+        0.6744325160980225,
+        0.32556745409965515
+      ],
+      [
+        0.6597443222999573,
+        0.34025564789772034
+      ],
+      [
+        0.6360741257667542,
+        0.36392590403556824
+      ],
+      [
+        0.6341257095336914,
+        0.365874320268631
+      ],
+      [
+        0.6510047912597656,
+        0.348995178937912
+      ],
+      [
+        0.6570193767547607,
+        0.3429805636405945
+      ],
+      [
+        0.6471225619316101,
+        0.3528774678707123
+      ],
+      [
+        0.6226171255111694,
+        0.37738290429115295
+      ]
+    ],
+    "threshold_predictions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "privacy_note": "This candidate runs the static whole-forward function on SPU/JAX and reveals final logits only. In party-local share-load mode, the driver does not materialize plaintext pixel_values or private share tensors; P1/P2 device functions load their own share files before SPU recomposition. It is still a debug bridge until P1/P2 are launched as independent party processes.",
+  "probabilities": {
+    "dtype": "torch.float32",
+    "max": 0.6744325160980225,
+    "mean": 0.5,
+    "min": 0.32556745409965515,
+    "shape": [
+      10,
+      2
+    ],
+    "std": 0.15235748887062073
+  },
+  "raw_logits_before_output_calibration": {
+    "dtype": "torch.float32",
+    "max": 0.6748199462890625,
+    "mean": 0.1346481293439865,
+    "min": -0.408721923828125,
+    "shape": [
+      10,
+      2
+    ],
+    "std": 0.4909590482711792
+  },
+  "runtime": "spu",
+  "sample_count": 10,
+  "spu": {
+    "config": "/data/wyb/Transshield_final/configs/openbumblebee/2pc.json",
+    "driver_private_share_manifest_paths_recorded": false,
+    "host_plaintext_pixel_values_materialized": false,
+    "host_private_share_tensors_loaded": false,
+    "input_mode": "party_local_debug_share_load",
+    "party_manifest_types": [
+      "transshield_e2e_debug_float_additive_share_party_manifest_v0",
+      "transshield_e2e_debug_float_additive_share_party_manifest_v0"
+    ],
+    "private_input_paths_redacted": true,
+    "share_manifest_type": "transshield_e2e_debug_float_additive_share_public_manifest_v0",
+    "share_semantics": "debug_float_additive_share_not_production_mpc_share",
+    "spu_activation_clip_value": 3.0,
+    "spu_batch_size": 1,
+    "spu_block_chunk_size": 0,
+    "spu_forward_graph_mode": "monolithic",
+    "spu_layer_norm_calibration_json": null,
+    "spu_layer_norm_chunk_size": 0,
+    "spu_layer_norm_policy": "exact",
+    "spu_params_mode": "public",
+    "static_forward_metadata": {
+      "activation_kind": "fixed_square",
+      "activation_override": "fixed_square",
+      "attention_policy": "uniform",
+      "attention_policy_eps": 1e-06,
+      "base_activation_kind": "fixed_square",
+      "depth": 12,
+      "embed_dim": 384,
+      "forward_scope": "student_patch_embed_blocks_head_without_runtime_pruning_predictor_path",
+      "full_depth": 12,
+      "head_dim": 64,
+      "layer_norm_eps": 1e-06,
+      "num_heads": 6,
+      "patch_size": 16,
+      "state_dict_path": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_model_state_dict.pth",
+      "static_depth_limit": 12,
+      "unsupported_currently_bypassed": [
+        "runtime pruning predictor path",
+        "intermediate feature reveal",
+        "dynamic masking-pruning inside secure forward"
+      ]
+    }
+  },
+  "static_depth_limit": 12,
+  "threshold": 0.5,
+  "token_features": null
+}

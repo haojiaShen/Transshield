@@ -93,6 +93,17 @@ def run_static_vit_forward_spu(
     def linear(x, weight, bias):
         return jnp.matmul(x, jnp.swapaxes(weight, -1, -2)) + bias
 
+    def decomposed_linear(x, down_weight, up_weight, bias):
+        """Two-step matmul for decomposed LRD weights.
+        down_weight: (rank, in_features), up_weight: (out_features, rank)
+        y = x @ down_weight.T @ up_weight.T + bias
+        """
+        mid = jnp.matmul(x, jnp.swapaxes(down_weight, -1, -2))
+        result = jnp.matmul(mid, jnp.swapaxes(up_weight, -1, -2))
+        if bias is not None:
+            result = result + bias
+        return result
+
     def feature_sum(x):
         feature_dim = int(x.shape[-1])
         if layer_norm_chunk_size <= 0 or layer_norm_chunk_size >= feature_dim:
@@ -220,6 +231,8 @@ def run_static_vit_forward_spu(
             fc2_weight,
             fc2_bias,
         ) = block_param
+        # Detect decomposed LRD weights (tuple of down_weight, up_weight)
+        _use_decomposed = isinstance(qkv_weight, tuple)
         block_input = x
         residual = x
         norm1_calibration = None if block_calibration is None else block_calibration[:2]
@@ -227,15 +240,25 @@ def run_static_vit_forward_spu(
         norm1_out = layer_norm(x, norm1_weight, norm1_bias, norm1_calibration)
         batch, token_count, channels = norm1_out.shape
         if attention_policy == "uniform":
-            value_weight = qkv_weight[2 * channels : 3 * channels, :]
-            value_bias = qkv_bias[2 * channels : 3 * channels]
-            value = linear(norm1_out, value_weight, value_bias)
+            if _use_decomposed:
+                # Slice up_weight to extract only V portion
+                up_weight_v = qkv_weight[1][2 * channels :, :]
+                down_weight_v = qkv_weight[0]
+                value_bias_v = qkv_bias[2 * channels : 3 * channels]
+                value = decomposed_linear(norm1_out, down_weight_v, up_weight_v, value_bias_v)
+            else:
+                value_weight = qkv_weight[2 * channels : 3 * channels, :]
+                value_bias = qkv_bias[2 * channels : 3 * channels]
+                value = linear(norm1_out, value_weight, value_bias)
             value = jnp.reshape(value, (batch, token_count, num_heads, head_dim))
             value = jnp.transpose(value, (0, 2, 1, 3))
             mean_value = jnp.mean(value, axis=2, keepdims=True)
             attn_out = jnp.broadcast_to(mean_value, (batch, num_heads, token_count, head_dim))
         else:
-            qkv = linear(norm1_out, qkv_weight, qkv_bias)
+            if _use_decomposed:
+                qkv = decomposed_linear(norm1_out, qkv_weight[0], qkv_weight[1], qkv_bias)
+            else:
+                qkv = linear(norm1_out, qkv_weight, qkv_bias)
             qkv = jnp.reshape(qkv, (batch, token_count, 3, num_heads, head_dim))
             qkv = jnp.transpose(qkv, (2, 0, 3, 1, 4))
             query, key, value = qkv[0], qkv[1], qkv[2]
@@ -247,13 +270,22 @@ def run_static_vit_forward_spu(
                 attn_out = jnp.matmul(attn, value)
         attn_out = jnp.transpose(attn_out, (0, 2, 1, 3))
         attn_out = jnp.reshape(attn_out, (batch, token_count, channels))
-        projected_attn_out = linear(attn_out, proj_weight, proj_bias)
+        if _use_decomposed:
+            projected_attn_out = decomposed_linear(attn_out, proj_weight[0], proj_weight[1], proj_bias)
+        else:
+            projected_attn_out = linear(attn_out, proj_weight, proj_bias)
         x = residual + projected_attn_out
 
         residual = x
         norm2_out = layer_norm(x, norm2_weight, norm2_bias, norm2_calibration)
-        mlp_hidden = activate(linear(norm2_out, fc1_weight, fc1_bias), act_alpha, act_beta)
-        mlp_out = linear(mlp_hidden, fc2_weight, fc2_bias)
+        if _use_decomposed:
+            mlp_hidden = activate(decomposed_linear(norm2_out, fc1_weight[0], fc1_weight[1], fc1_bias), act_alpha, act_beta)
+        else:
+            mlp_hidden = activate(linear(norm2_out, fc1_weight, fc1_bias), act_alpha, act_beta)
+        if _use_decomposed:
+            mlp_out = decomposed_linear(mlp_hidden, fc2_weight[0], fc2_weight[1], fc2_bias)
+        else:
+            mlp_out = linear(mlp_hidden, fc2_weight, fc2_bias)
         block_output = residual + mlp_out
         if capture_probe:
             return block_output, (
@@ -651,7 +683,7 @@ def run_static_vit_forward_spu(
         top_k_indices = sorted_indices[:, :keep_count]  # [B, keep_count]
         pos = jnp.arange(N, dtype=jnp.int32)  # [N]
         # keep_mask[b, n] = 1 iff position n appears in top_k_indices[b]
-        keep_mask = jnp.any(top_k_indices == pos[None, :, None], axis=2)  # [B, N]
+        keep_mask = jnp.any(top_k_indices[:, :, None] == pos[None, None, :], axis=1)  # [B, N]
         keep_mask = keep_mask[:, :N] & active_before
         return keep_mask[:, :, None]
 
@@ -1348,6 +1380,17 @@ def run_share_recomposition_audit_spu(
 
     def linear(x, weight, bias):
         return jnp.matmul(x, jnp.swapaxes(weight, -1, -2)) + bias
+
+    def decomposed_linear(x, down_weight, up_weight, bias):
+        """Two-step matmul for decomposed LRD weights.
+        down_weight: (rank, in_features), up_weight: (out_features, rank)
+        y = x @ down_weight.T @ up_weight.T + bias
+        """
+        mid = jnp.matmul(x, jnp.swapaxes(down_weight, -1, -2))
+        result = jnp.matmul(mid, jnp.swapaxes(up_weight, -1, -2))
+        if bias is not None:
+            result = result + bias
+        return result
 
     def patch_embed(pixel_values, patch_weight, patch_bias):
         batch, channels, height, width = pixel_values.shape

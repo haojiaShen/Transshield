@@ -1,0 +1,16 @@
+/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00003.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00072.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00164.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00215.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00295.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00378.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00455.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00522.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00000.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00076.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00144.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00230.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00303.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00373.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00447.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00523.png

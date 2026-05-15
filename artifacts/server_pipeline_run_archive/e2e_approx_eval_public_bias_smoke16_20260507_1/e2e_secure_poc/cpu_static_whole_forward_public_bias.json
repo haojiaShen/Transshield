@@ -1,0 +1,261 @@
+{
+  "backend": "cpu_plaintext_whole_forward_reference_backend",
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
+  "cls_features": {
+    "dtype": "torch.float32",
+    "max": 3.0615148544311523,
+    "mean": -0.02569332905113697,
+    "min": -3.1592295169830322,
+    "shape": [
+      16,
+      384
+    ],
+    "std": 0.8148931860923767
+  },
+  "effective_static_depth": 12,
+  "elapsed_sec": 0.7758924961090088,
+  "finite_logits": true,
+  "forward_scope": "student_patch_embed_blocks_head_without_runtime_pruning_predictor_path",
+  "include_intermediates": false,
+  "input_p1_share_manifest_json": null,
+  "input_p2_share_manifest_json": null,
+  "input_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke16_20260507_1/e2e_secure_poc/plaintext_same_images_pixel_values.pt",
+  "input_share_manifest_json": null,
+  "input_share_public_manifest_json": null,
+  "input_source": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke16_20260507_1/e2e_secure_poc/plaintext_same_images_pixel_values.pt",
+  "logits": {
+    "dtype": "torch.float32",
+    "max": 0.6299914121627808,
+    "mean": 0.0,
+    "min": -0.6299914121627808,
+    "shape": [
+      16,
+      2
+    ],
+    "std": 0.315303772687912
+  },
+  "manifest_type": "transshield_e2e_static_whole_forward_candidate_summary_v0",
+  "max_samples": 0,
+  "output_calibration": {
+    "bias": 0.5852264761924744,
+    "calibration_json": "/data/wyb/Transshield_final/results/accuracy_profile_imbalance/accprof_epoch8_20260507_default_vs_aanone_1/e2e_output_calibration_public_logit_bias.json",
+    "manifest_type": "transshield_e2e_output_calibration_v0",
+    "note": "Equivalent to adding the public scalar to class-1 logit before argmax; compatible with --output-calibration-json in the E2E OpenBumbleBee runner.",
+    "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+    "threshold": 0.5,
+    "weights": [
+      -1.0,
+      1.0
+    ]
+  },
+  "output_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke16_20260507_1/e2e_secure_poc/cpu_static_whole_forward_public_bias.pt",
+  "prediction_preview": {
+    "argmax_predictions": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "logits": [
+      [
+        0.007636219263076782,
+        -0.007636219263076782
+      ],
+      [
+        -0.2522878348827362,
+        0.2522878348827362
+      ],
+      [
+        0.009132802486419678,
+        -0.009132802486419678
+      ],
+      [
+        -0.19505169987678528,
+        0.19505169987678528
+      ],
+      [
+        0.04314976930618286,
+        -0.04314976930618286
+      ],
+      [
+        0.004121661186218262,
+        -0.004121661186218262
+      ],
+      [
+        -0.1830296814441681,
+        0.1830296814441681
+      ],
+      [
+        -0.16631600260734558,
+        0.16631600260734558
+      ],
+      [
+        -0.5872898101806641,
+        0.5872898101806641
+      ],
+      [
+        -0.25441429018974304,
+        0.25441429018974304
+      ],
+      [
+        -0.4296286106109619,
+        0.4296286106109619
+      ],
+      [
+        -0.34771984815597534,
+        0.34771984815597534
+      ],
+      [
+        -0.3586580753326416,
+        0.3586580753326416
+      ],
+      [
+        -0.4301950931549072,
+        0.4301950931549072
+      ],
+      [
+        -0.6299914121627808,
+        0.6299914121627808
+      ],
+      [
+        -0.008324950933456421,
+        0.008324950933456421
+      ]
+    ],
+    "probabilities": [
+      [
+        0.5038180351257324,
+        0.4961819648742676
+      ],
+      [
+        0.37646597623825073,
+        0.6235340237617493
+      ],
+      [
+        0.5045662522315979,
+        0.4954337179660797
+      ],
+      [
+        0.4036923944950104,
+        0.5963075757026672
+      ],
+      [
+        0.5215615034103394,
+        0.47843849658966064
+      ],
+      [
+        0.5020608305931091,
+        0.49793916940689087
+      ],
+      [
+        0.4094935655593872,
+        0.5905064344406128
+      ],
+      [
+        0.4176003634929657,
+        0.5823996663093567
+      ],
+      [
+        0.23602820932865143,
+        0.7639718651771545
+      ],
+      [
+        0.3754682242870331,
+        0.6245318651199341
+      ],
+      [
+        0.2974945604801178,
+        0.7025054693222046
+      ],
+      [
+        0.33282405138015747,
+        0.6671758890151978
+      ],
+      [
+        0.3279842436313629,
+        0.6720157265663147
+      ],
+      [
+        0.29725781083106995,
+        0.7027421593666077
+      ],
+      [
+        0.2209768444299698,
+        0.7790231704711914
+      ],
+      [
+        0.49583762884140015,
+        0.5041623711585999
+      ]
+    ],
+    "threshold_predictions": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "privacy_note": "This candidate uses the CPU reference backend to freeze the output contract. It is not a secure SPU execution result.",
+  "probabilities": {
+    "dtype": "torch.float32",
+    "max": 0.7790231704711914,
+    "mean": 0.5,
+    "min": 0.2209768444299698,
+    "shape": [
+      16,
+      2
+    ],
+    "std": 0.14635831117630005
+  },
+  "raw_logits_before_output_calibration": {
+    "dtype": "torch.float32",
+    "max": 0.4852205514907837,
+    "mean": 0.12673120200634003,
+    "min": -0.22875183820724487,
+    "shape": [
+      16,
+      2
+    ],
+    "std": 0.21692952513694763
+  },
+  "runtime": "cpu",
+  "sample_count": 16,
+  "static_depth_limit": 12,
+  "threshold": 0.5,
+  "token_features": {
+    "dtype": "torch.float32",
+    "max": 3.3290669918060303,
+    "mean": -0.0020141531713306904,
+    "min": -8.883591651916504,
+    "shape": [
+      16,
+      196,
+      384
+    ],
+    "std": 0.7674010396003723
+  }
+}

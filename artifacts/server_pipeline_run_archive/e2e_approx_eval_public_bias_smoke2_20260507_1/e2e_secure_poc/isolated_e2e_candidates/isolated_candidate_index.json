@@ -1,0 +1,14 @@
+[
+  {
+    "candidate_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke2_20260507_1/e2e_secure_poc/isolated_e2e_candidates/sample_000000/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip3p0_eval.json",
+    "candidate_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke2_20260507_1/e2e_secure_poc/isolated_e2e_candidates/sample_000000/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip3p0_eval.pt",
+    "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00003.png",
+    "index": 0
+  },
+  {
+    "candidate_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke2_20260507_1/e2e_secure_poc/isolated_e2e_candidates/sample_000001/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip3p0_eval.json",
+    "candidate_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke2_20260507_1/e2e_secure_poc/isolated_e2e_candidates/sample_000001/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip3p0_eval.pt",
+    "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00000.png",
+    "index": 1
+  }
+]

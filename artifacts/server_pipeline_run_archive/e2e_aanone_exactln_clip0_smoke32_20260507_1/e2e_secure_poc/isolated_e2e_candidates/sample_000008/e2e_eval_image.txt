@@ -1,0 +1,1 @@
+/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00033.png

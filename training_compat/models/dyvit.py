@@ -522,6 +522,52 @@ class PredictorLG(nn.Module):
         return x.to(output_dtype)
 
 
+
+
+class PredictorLite(nn.Module):
+    """Lightweight PredictorLG: 59% fewer params, 60% less SPU compute."""
+    def __init__(self, embed_dim=384, hidden_dim=192, act_layer='gelu', nonempty_keep_guard=False):
+        super().__init__()
+        predictor_act_layer = get_act_layer(act_layer)
+        self.nonempty_keep_guard = bool(nonempty_keep_guard)
+        self.hidden_dim = hidden_dim
+        self.in_conv = nn.Sequential(
+            nn.LayerNorm(embed_dim),
+            nn.Linear(embed_dim, hidden_dim),
+            predictor_act_layer()
+        )
+        self.out_conv = nn.Sequential(
+            nn.Linear(hidden_dim, hidden_dim // 2),
+            predictor_act_layer(),
+            nn.Linear(hidden_dim // 2, hidden_dim // 4),
+            predictor_act_layer(),
+        )
+        self.out_proj = nn.Linear(hidden_dim // 4, 2)
+
+    def set_debug_nan(self, enabled):
+        pass  # PredictorLite has no debug logging
+
+    def set_debug_context(self, context):
+        pass  # PredictorLite has no debug logging
+
+    def forward(self, x, policy):
+        output_dtype = x.dtype
+        with torch.cuda.amp.autocast(enabled=False):
+            x = self.in_conv(x.float())
+            B, N, C = x.size()
+            policy_float = policy.float()
+            global_input = x[:, :, C//2:] * policy_float
+            active_count = torch.sum(policy_float, dim=1, keepdim=True)
+            if self.nonempty_keep_guard:
+                active_count = active_count.clamp_min(1.0)
+            global_x = global_input.sum(dim=1, keepdim=True) / active_count.clamp_min(1.0)
+            x = torch.cat([x[:, :, :C//2], global_x.expand(B, N, C//2)], dim=-1)
+            x = self.out_conv(x)
+            logits = self.out_proj(x)
+            logits = logits.clamp(-10.0, 10.0)
+            x = F.log_softmax(logits, dim=-1)
+        return x.to(output_dtype)
+
 class VisionTransformerDiffPruning(nn.Module):
     """ Vision Transformer
 
@@ -534,7 +580,8 @@ class VisionTransformerDiffPruning(nn.Module):
                  pruning_loc=None, token_ratio=None, distill=False, act_layer='square',
                  use_mask_pruning=False, use_approx_attn=False, approx_attn_mode='relu',
                  fp32_attention=False, nonempty_keep_guard=False,
-                 secure_static_depth=0, secure_static_skip_pruning=True):
+                 secure_static_depth=0, secure_static_skip_pruning=True,
+                 predictor_type='lg'):
         """
         Args:
             img_size (int, tuple): input image size
@@ -595,8 +642,9 @@ class VisionTransformerDiffPruning(nn.Module):
         # Classifier head
         self.head = nn.Linear(self.num_features, num_classes) if num_classes > 0 else nn.Identity()
 
+        predictor_cls = PredictorLite if predictor_type == 'lite' else PredictorLG
         predictor_list = [
-            PredictorLG(embed_dim, act_layer=act_layer, nonempty_keep_guard=nonempty_keep_guard)
+            predictor_cls(embed_dim, act_layer=act_layer, nonempty_keep_guard=nonempty_keep_guard)
             for _ in range(len(pruning_loc))
         ]
 

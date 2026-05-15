@@ -1,0 +1,86 @@
+{
+  "argmax_accuracy_gap_e2e_minus_plaintext_pp": 40.625,
+  "argmax_accuracy_gap_e2e_minus_static_whole_forward_pp": 3.125,
+  "candidate_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout64_spuaware_nonisolated_20260507_2/e2e_secure_poc/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip0_eval.json",
+  "candidate_pt": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout64_spuaware_nonisolated_20260507_2/e2e_secure_poc/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip0_eval.pt",
+  "comparison_scope": "same_image_list_same_targets_full_model_and_static_whole_forward_vs_e2e_output_path",
+  "e2e_argmax_accuracy": 92.1875,
+  "e2e_communication_from_spu_node_logs": {
+    "aggregate_recv_bytes": null,
+    "aggregate_send_bytes": null,
+    "aggregate_total_bytes": null,
+    "node_latest_nonzero_link_details": [],
+    "scope_note": "Parsed from latest nonzero Link details in logs/spu_nodes/node_*.log after the e2e run.",
+    "status": "missing"
+  },
+  "e2e_elapsed_sec": 1338.5611293315887,
+  "e2e_threshold_accuracy": 92.1875,
+  "finite_logits": true,
+  "image_list": null,
+  "manifest_type": "transshield_e2e_approx_eval_metrics_v1",
+  "original_plaintext_communication": {
+    "note": "Plaintext local references have no 2PC/SPU communication.",
+    "status": "not_applicable",
+    "total_bytes": 0
+  },
+  "original_plaintext_full_val_reference": {
+    "argmax_accuracy": 93.70229244232178,
+    "note": "full-val reference is retained only for context; primary gap fields above use the same eval subset",
+    "threshold_accuracy": 94.08397078514099
+  },
+  "original_plaintext_same_subset_argmax_accuracy": 51.5625,
+  "original_plaintext_same_subset_threshold_accuracy": 50.0,
+  "output_calibration": {
+    "bias": 0.3527068793773651,
+    "calibration_json": "/data/wyb/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_bias_spuaware_smoke32_threshold.json",
+    "manifest_type": "transshield_e2e_output_calibration_v0",
+    "note": "SPU-aware public logit-bias calibration: base static bias shifted by a public E2E smoke32 threshold sweep; validate on held-out/expanded E2E subsets before making default.",
+    "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+    "threshold": 0.5,
+    "weights": [
+      -1.0,
+      1.0
+    ]
+  },
+  "plaintext_reference_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout64_spuaware_nonisolated_20260507_2/e2e_secure_poc/plaintext_same_images_reference.json",
+  "prediction_match_vs_original_plaintext": {
+    "argmax_match_ratio": 0.5,
+    "threshold_match_ratio": 0.484375
+  },
+  "prediction_match_vs_static_whole_forward": {
+    "argmax_match_ratio": 0.90625,
+    "threshold_match_ratio": 0.96875
+  },
+  "privacy_fields": {
+    "host_plaintext_pixel_values_materialized": false,
+    "host_private_share_tensors_loaded": false,
+    "input_mode": "party_local_debug_share_load",
+    "input_pt": null,
+    "private_input_paths_redacted": true
+  },
+  "raw_secure_graph_before_output_calibration": {
+    "logits_error_vs_static_whole_forward": {
+      "max_abs_error": 0.004039168357849121,
+      "mean_abs_error": 0.0021880031563341618
+    },
+    "prediction_match_vs_static_whole_forward": {
+      "argmax_match_ratio": 1.0,
+      "threshold_match_ratio": 1.0
+    },
+    "present": true,
+    "probabilities_error_vs_static_whole_forward": {
+      "max_abs_error": 0.0018984973430633545,
+      "mean_abs_error": 0.0009568941313773394
+    },
+    "same_subset_argmax_accuracy": 89.0625,
+    "same_subset_threshold_accuracy": 92.1875
+  },
+  "sample_count": 64,
+  "scope_note": "Use static_whole_forward_same_subset_* as the primary comparator for the secure-static whole-forward path. The original_plaintext_* fields are retained for context against the full bundle forward. If raw_secure_graph_before_output_calibration is present, it isolates secure-graph drift from public output calibration.",
+  "static_whole_forward_reference_pt": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout64_spuaware_nonisolated_20260507_2/e2e_secure_poc/static_whole_forward_reference.pt",
+  "static_whole_forward_same_subset_argmax_accuracy": 89.0625,
+  "static_whole_forward_same_subset_threshold_accuracy": 92.1875,
+  "target_count": 64,
+  "threshold_accuracy_gap_e2e_minus_plaintext_pp": 42.1875,
+  "threshold_accuracy_gap_e2e_minus_static_whole_forward_pp": 0.0
+}

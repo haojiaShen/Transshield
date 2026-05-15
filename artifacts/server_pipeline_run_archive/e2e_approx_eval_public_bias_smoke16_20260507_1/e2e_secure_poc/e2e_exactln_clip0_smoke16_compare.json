@@ -1,0 +1,294 @@
+{
+  "manifest_type": "transshield_e2e_exactln_clip0_smoke16_compare_v0",
+  "interpretation": {
+    "status": "spu_clip3_mlp_distortion_localized_exactln_clip0_matches_cpu_static",
+    "reason": "Block probe localizes the SPU-specific drift to fixed_square activation clipping in the first transformer block MLP. Full 16-sample exact-LN clip0 SPU output matches the CPU static/public-bias decision pattern; remaining mismatches are shared with CPU static and are therefore not SPU-specific.",
+    "next_step": "Treat exact-LN clip0 as the accuracy-first E2E reference, then improve CPU static approximation versus original plaintext threshold decisions or build clip-specific public LN calibration before re-enabling public_calibrated LN."
+  },
+  "summary": {
+    "publiccalib_ln_clip3": {
+      "threshold_match_ratio_vs_plain_threshold": 0.6875,
+      "target_accuracy": 0.6875,
+      "mismatch_indices_vs_plain_threshold": [
+        5,
+        6,
+        12,
+        13,
+        14
+      ],
+      "prob1": [
+        0.24569365,
+        0.3510378,
+        0.26425871,
+        0.47858366,
+        0.33870706,
+        0.54173237,
+        0.43133116,
+        0.49057269,
+        0.51992279,
+        0.5966146,
+        0.57554102,
+        0.5764392,
+        0.41541532,
+        0.24187364,
+        0.48028219,
+        0.45692238
+      ]
+    },
+    "exact_ln_clip0": {
+      "threshold_match_ratio_vs_plain_threshold": 0.75,
+      "target_accuracy": 0.75,
+      "mismatch_indices_vs_plain_threshold": [
+        1,
+        3,
+        7,
+        15
+      ],
+      "prob1": [
+        0.49635473,
+        0.62436295,
+        0.49622887,
+        0.59679085,
+        0.47973371,
+        0.49891815,
+        0.59096509,
+        0.58285242,
+        0.76401901,
+        0.62495327,
+        0.70244843,
+        0.66747427,
+        0.67188245,
+        0.70311135,
+        0.77933341,
+        0.50503296
+      ]
+    },
+    "cpu_static_public_bias": {
+      "threshold_match_ratio_vs_plain_threshold": 0.75,
+      "target_accuracy": 0.75,
+      "mismatch_indices_vs_plain_threshold": [
+        1,
+        3,
+        7,
+        15
+      ],
+      "prob1": [
+        0.49618196,
+        0.62353402,
+        0.49543372,
+        0.59630758,
+        0.4784385,
+        0.49793917,
+        0.59050643,
+        0.58239967,
+        0.76397187,
+        0.62453187,
+        0.70250547,
+        0.66717589,
+        0.67201573,
+        0.70274216,
+        0.77902317,
+        0.50416237
+      ]
+    }
+  },
+  "rows": [
+    {
+      "index": 0,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00003.png",
+      "target": 0,
+      "plaintext_threshold_prediction": 0,
+      "publiccalib_ln_clip3_prob1": 0.2456936538219452,
+      "publiccalib_ln_clip3_threshold_prediction": 0,
+      "exact_ln_clip0_prob1": 0.49635472893714905,
+      "exact_ln_clip0_threshold_prediction": 0,
+      "cpu_static_public_bias_prob1": 0.4961819648742676,
+      "cpu_static_public_bias_threshold_prediction": 0
+    },
+    {
+      "index": 1,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00007.png",
+      "target": 0,
+      "plaintext_threshold_prediction": 0,
+      "publiccalib_ln_clip3_prob1": 0.35103780031204224,
+      "publiccalib_ln_clip3_threshold_prediction": 0,
+      "exact_ln_clip0_prob1": 0.6243629455566406,
+      "exact_ln_clip0_threshold_prediction": 1,
+      "cpu_static_public_bias_prob1": 0.6235340237617493,
+      "cpu_static_public_bias_threshold_prediction": 1
+    },
+    {
+      "index": 2,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00011.png",
+      "target": 0,
+      "plaintext_threshold_prediction": 0,
+      "publiccalib_ln_clip3_prob1": 0.2642587125301361,
+      "publiccalib_ln_clip3_threshold_prediction": 0,
+      "exact_ln_clip0_prob1": 0.4962288737297058,
+      "exact_ln_clip0_threshold_prediction": 0,
+      "cpu_static_public_bias_prob1": 0.4954337179660797,
+      "cpu_static_public_bias_threshold_prediction": 0
+    },
+    {
+      "index": 3,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00014.png",
+      "target": 0,
+      "plaintext_threshold_prediction": 0,
+      "publiccalib_ln_clip3_prob1": 0.4785836637020111,
+      "publiccalib_ln_clip3_threshold_prediction": 0,
+      "exact_ln_clip0_prob1": 0.5967908501625061,
+      "exact_ln_clip0_threshold_prediction": 1,
+      "cpu_static_public_bias_prob1": 0.5963075757026672,
+      "cpu_static_public_bias_threshold_prediction": 1
+    },
+    {
+      "index": 4,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00022.png",
+      "target": 0,
+      "plaintext_threshold_prediction": 0,
+      "publiccalib_ln_clip3_prob1": 0.3387070596218109,
+      "publiccalib_ln_clip3_threshold_prediction": 0,
+      "exact_ln_clip0_prob1": 0.4797337055206299,
+      "exact_ln_clip0_threshold_prediction": 0,
+      "cpu_static_public_bias_prob1": 0.47843849658966064,
+      "cpu_static_public_bias_threshold_prediction": 0
+    },
+    {
+      "index": 5,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00028.png",
+      "target": 0,
+      "plaintext_threshold_prediction": 0,
+      "publiccalib_ln_clip3_prob1": 0.5417323708534241,
+      "publiccalib_ln_clip3_threshold_prediction": 1,
+      "exact_ln_clip0_prob1": 0.4989181458950043,
+      "exact_ln_clip0_threshold_prediction": 0,
+      "cpu_static_public_bias_prob1": 0.49793916940689087,
+      "cpu_static_public_bias_threshold_prediction": 0
+    },
+    {
+      "index": 6,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00030.png",
+      "target": 0,
+      "plaintext_threshold_prediction": 1,
+      "publiccalib_ln_clip3_prob1": 0.43133115768432617,
+      "publiccalib_ln_clip3_threshold_prediction": 0,
+      "exact_ln_clip0_prob1": 0.5909650921821594,
+      "exact_ln_clip0_threshold_prediction": 1,
+      "cpu_static_public_bias_prob1": 0.5905064344406128,
+      "cpu_static_public_bias_threshold_prediction": 1
+    },
+    {
+      "index": 7,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00031.png",
+      "target": 0,
+      "plaintext_threshold_prediction": 0,
+      "publiccalib_ln_clip3_prob1": 0.4905726909637451,
+      "publiccalib_ln_clip3_threshold_prediction": 0,
+      "exact_ln_clip0_prob1": 0.5828524231910706,
+      "exact_ln_clip0_threshold_prediction": 1,
+      "cpu_static_public_bias_prob1": 0.5823996663093567,
+      "cpu_static_public_bias_threshold_prediction": 1
+    },
+    {
+      "index": 8,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00000.png",
+      "target": 1,
+      "plaintext_threshold_prediction": 1,
+      "publiccalib_ln_clip3_prob1": 0.5199227929115295,
+      "publiccalib_ln_clip3_threshold_prediction": 1,
+      "exact_ln_clip0_prob1": 0.7640190124511719,
+      "exact_ln_clip0_threshold_prediction": 1,
+      "cpu_static_public_bias_prob1": 0.7639718651771545,
+      "cpu_static_public_bias_threshold_prediction": 1
+    },
+    {
+      "index": 9,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00001.png",
+      "target": 1,
+      "plaintext_threshold_prediction": 1,
+      "publiccalib_ln_clip3_prob1": 0.5966145992279053,
+      "publiccalib_ln_clip3_threshold_prediction": 1,
+      "exact_ln_clip0_prob1": 0.6249532699584961,
+      "exact_ln_clip0_threshold_prediction": 1,
+      "cpu_static_public_bias_prob1": 0.6245318651199341,
+      "cpu_static_public_bias_threshold_prediction": 1
+    },
+    {
+      "index": 10,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00002.png",
+      "target": 1,
+      "plaintext_threshold_prediction": 1,
+      "publiccalib_ln_clip3_prob1": 0.5755410194396973,
+      "publiccalib_ln_clip3_threshold_prediction": 1,
+      "exact_ln_clip0_prob1": 0.7024484276771545,
+      "exact_ln_clip0_threshold_prediction": 1,
+      "cpu_static_public_bias_prob1": 0.7025054693222046,
+      "cpu_static_public_bias_threshold_prediction": 1
+    },
+    {
+      "index": 11,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00004.png",
+      "target": 1,
+      "plaintext_threshold_prediction": 1,
+      "publiccalib_ln_clip3_prob1": 0.5764392018318176,
+      "publiccalib_ln_clip3_threshold_prediction": 1,
+      "exact_ln_clip0_prob1": 0.6674742698669434,
+      "exact_ln_clip0_threshold_prediction": 1,
+      "cpu_static_public_bias_prob1": 0.6671758890151978,
+      "cpu_static_public_bias_threshold_prediction": 1
+    },
+    {
+      "index": 12,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00005.png",
+      "target": 1,
+      "plaintext_threshold_prediction": 1,
+      "publiccalib_ln_clip3_prob1": 0.41541531682014465,
+      "publiccalib_ln_clip3_threshold_prediction": 0,
+      "exact_ln_clip0_prob1": 0.6718824505805969,
+      "exact_ln_clip0_threshold_prediction": 1,
+      "cpu_static_public_bias_prob1": 0.6720157265663147,
+      "cpu_static_public_bias_threshold_prediction": 1
+    },
+    {
+      "index": 13,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00006.png",
+      "target": 1,
+      "plaintext_threshold_prediction": 1,
+      "publiccalib_ln_clip3_prob1": 0.241873636841774,
+      "publiccalib_ln_clip3_threshold_prediction": 0,
+      "exact_ln_clip0_prob1": 0.7031113505363464,
+      "exact_ln_clip0_threshold_prediction": 1,
+      "cpu_static_public_bias_prob1": 0.7027421593666077,
+      "cpu_static_public_bias_threshold_prediction": 1
+    },
+    {
+      "index": 14,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00008.png",
+      "target": 1,
+      "plaintext_threshold_prediction": 1,
+      "publiccalib_ln_clip3_prob1": 0.480282187461853,
+      "publiccalib_ln_clip3_threshold_prediction": 0,
+      "exact_ln_clip0_prob1": 0.7793334126472473,
+      "exact_ln_clip0_threshold_prediction": 1,
+      "cpu_static_public_bias_prob1": 0.7790231704711914,
+      "cpu_static_public_bias_threshold_prediction": 1
+    },
+    {
+      "index": 15,
+      "image_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00009.png",
+      "target": 1,
+      "plaintext_threshold_prediction": 0,
+      "publiccalib_ln_clip3_prob1": 0.45692238211631775,
+      "publiccalib_ln_clip3_threshold_prediction": 0,
+      "exact_ln_clip0_prob1": 0.5050329566001892,
+      "exact_ln_clip0_threshold_prediction": 1,
+      "cpu_static_public_bias_prob1": 0.5041623711585999,
+      "cpu_static_public_bias_threshold_prediction": 1
+    }
+  ],
+  "inputs": {
+    "publiccalib_ln_clip3": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke16_20260507_1/e2e_secure_poc/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip3p0_eval.pt",
+    "exact_ln_clip0": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke16_20260507_1/e2e_secure_poc/e2e_static_whole_forward_candidate_spu_depth12_partylocal_exactln_uniform_fixed_square_clip0_eval.pt",
+    "cpu_static_public_bias": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_approx_eval_public_bias_smoke16_20260507_1/e2e_secure_poc/cpu_static_whole_forward_public_bias.pt"
+  }
+}

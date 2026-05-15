@@ -452,9 +452,10 @@ class HybridEmbed(nn.Module):
 class PredictorLG(nn.Module):
     """ Image to Patch Embedding
     """
-    def __init__(self, embed_dim=384, act_layer='gelu'):
+    def __init__(self, embed_dim=384, act_layer='gelu', nonempty_keep_guard=False):
         super().__init__()
         predictor_act_layer = get_act_layer(act_layer)
+        self.nonempty_keep_guard = bool(nonempty_keep_guard)
         self.debug_nan = False
         self.debug_context = ""
         self._debug_predictor_logged = set()
@@ -518,7 +519,10 @@ class PredictorLG(nn.Module):
                     f"[NaNDebug][{self.debug_context}] "
                     f"module=PredictorLG zero_active_policy_samples={zero_count}"
                 )
-            global_x = global_input.sum(dim=1, keepdim=True) / active_count.clamp_min(1.0)
+            if self.nonempty_keep_guard:
+                global_x = global_input.sum(dim=1, keepdim=True) / active_count.clamp_min(1.0)
+            else:
+                global_x = global_input.sum(dim=1, keepdim=True) / active_count
             self._debug_log('global_x', global_x)
             x = torch.cat([x[:, :, :C//2], global_x.expand(B, N, C//2)], dim=-1)
             self._debug_log('post_agg', x)
@@ -539,9 +543,10 @@ class VisionTransformerDiffPruning(nn.Module):
     def __init__(self, img_size=224, patch_size=16, in_chans=3, num_classes=1000, embed_dim=768, depth=12,
                  num_heads=12, mlp_ratio=4., qkv_bias=True, qk_scale=None, representation_size=None,
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0., hybrid_backbone=None, norm_layer=None, 
-                 pruning_loc=None, token_ratio=None, distill=False, act_layer='square',
+                 pruning_loc=None, token_ratio=None, distill=False, act_layer='square', predictor_type='lg',
                  use_mask_pruning=False, use_approx_attn=False, approx_attn_mode='relu',
-                 fp32_attention=False, eval_pruning_mode='topk_argsort', eval_tie_policy='lowest_index',
+                 fp32_attention=False, nonempty_keep_guard=False,
+                 eval_pruning_mode='topk_argsort', eval_tie_policy='lowest_index',
                  secure_static_depth=0, secure_static_skip_pruning=True, mixed_attn_split=0):
         """
         Args:
@@ -614,7 +619,8 @@ class VisionTransformerDiffPruning(nn.Module):
         # Classifier head
         self.head = nn.Linear(self.num_features, num_classes) if num_classes > 0 else nn.Identity()
 
-        predictor_list = [PredictorLG(embed_dim, act_layer=act_layer) for _ in range(len(pruning_loc))]
+        predictor_cls = PredictorLite if predictor_type == 'lite' else PredictorLG
+        predictor_list = [predictor_cls(embed_dim, act_layer=act_layer, nonempty_keep_guard=nonempty_keep_guard) for _ in range(len(pruning_loc))]
 
         self.score_predictor = nn.ModuleList(predictor_list)
 
@@ -1163,3 +1169,55 @@ def checkpoint_filter_fn(state_dict, model):
             v = resize_pos_embed(v, model.pos_embed)
         out_dict[k] = v
     return out_dict
+
+
+class PredictorLite(nn.Module):
+    """Lightweight PredictorLG: 59% fewer params, 60% less SPU compute.
+    
+    Architecture change:
+        PredictorLG:  in(384->384) -> out(384->192->96) -> proj(96->2) = 241K params
+        PredictorLite: in(384->192) -> out(192->96->48) -> proj(48->2)  = 98K params
+    
+    Same interface as PredictorLG: forward(x, policy) -> log_probs
+    """
+    def __init__(self, embed_dim=384, hidden_dim=192, act_layer='gelu', nonempty_keep_guard=False):
+        super().__init__()
+        predictor_act_layer = get_act_layer(act_layer)
+        self.nonempty_keep_guard = bool(nonempty_keep_guard)
+        self.hidden_dim = hidden_dim
+        self.in_conv = nn.Sequential(
+            nn.LayerNorm(embed_dim),
+            nn.Linear(embed_dim, hidden_dim),
+            predictor_act_layer()
+        )
+        self.out_conv = nn.Sequential(
+            nn.Linear(hidden_dim, hidden_dim // 2),
+            predictor_act_layer(),
+            nn.Linear(hidden_dim // 2, hidden_dim // 4),
+            predictor_act_layer(),
+        )
+        self.out_proj = nn.Linear(hidden_dim // 4, 2)
+
+    def set_debug_nan(self, enabled):
+        pass  # PredictorLite has no debug logging
+
+    def set_debug_context(self, context):
+        pass  # PredictorLite has no debug logging
+
+    def forward(self, x, policy):
+        output_dtype = x.dtype
+        with torch.cuda.amp.autocast(enabled=False):
+            x = self.in_conv(x.float())
+            B, N, C = x.size()
+            policy_float = policy.float()
+            global_input = x[:, :, C//2:] * policy_float
+            active_count = torch.sum(policy_float, dim=1, keepdim=True)
+            if self.nonempty_keep_guard:
+                active_count = active_count.clamp_min(1.0)
+            global_x = global_input.sum(dim=1, keepdim=True) / active_count.clamp_min(1.0)
+            x = torch.cat([x[:, :, :C//2], global_x.expand(B, N, C//2)], dim=-1)
+            x = self.out_conv(x)
+            logits = self.out_proj(x)
+            logits = logits.clamp(-10.0, 10.0)
+            x = F.log_softmax(logits, dim=-1)
+        return x.to(output_dtype)

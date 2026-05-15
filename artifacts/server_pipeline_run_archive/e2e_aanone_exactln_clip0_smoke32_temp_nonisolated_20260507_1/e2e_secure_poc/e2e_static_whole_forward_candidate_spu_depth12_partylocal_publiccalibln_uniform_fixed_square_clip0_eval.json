@@ -1,0 +1,444 @@
+{
+  "backend": "jax_spu_static_whole_forward_backend_v0",
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+  "cls_features": null,
+  "effective_static_depth": 12,
+  "elapsed_sec": 668.7254037857056,
+  "finite_logits": true,
+  "forward_scope": "student_patch_embed_blocks_head_without_runtime_pruning_predictor_path",
+  "include_intermediates": false,
+  "input_p1_share_manifest_json": "[redacted:p1_share_manifest]",
+  "input_p2_share_manifest_json": "[redacted:p2_share_manifest]",
+  "input_pt": null,
+  "input_share_manifest_json": null,
+  "input_share_public_manifest_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke32_temp_nonisolated_20260507_1/e2e_secure_poc/client_pixel_values_debug_share_public_manifest.json",
+  "input_source": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke32_temp_nonisolated_20260507_1/e2e_secure_poc/client_pixel_values_debug_share_public_manifest.json",
+  "logits": {
+    "dtype": "torch.float32",
+    "max": 5.849739074707031,
+    "mean": 0.0,
+    "min": -5.849739074707031,
+    "shape": [
+      32,
+      2
+    ],
+    "std": 3.0022592544555664
+  },
+  "manifest_type": "transshield_e2e_static_whole_forward_candidate_summary_v0",
+  "max_samples": 32,
+  "output_calibration": {
+    "bias": 3.8029727935791016,
+    "calibration_json": "/data/wyb/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_temperature.json",
+    "manifest_type": "transshield_e2e_output_calibration_v0",
+    "note": "Public temperature calibration that preserves the bias-only decision boundary exactly.",
+    "score_rule": "class1_score = scale * (logits @ [-1, 1] + public_bias)",
+    "threshold": 0.5,
+    "weights": [
+      -6.498303413391113,
+      6.498303413391113
+    ]
+  },
+  "output_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke32_temp_nonisolated_20260507_1/e2e_secure_poc/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip0_eval.pt",
+  "prediction_preview": {
+    "argmax_predictions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "logits": [
+      [
+        1.6542067527770996,
+        -1.6542067527770996
+      ],
+      [
+        1.1367599964141846,
+        -1.1367599964141846
+      ],
+      [
+        0.6483163833618164,
+        -0.6483163833618164
+      ],
+      [
+        0.624122142791748,
+        -0.624122142791748
+      ],
+      [
+        0.5685946941375732,
+        -0.5685946941375732
+      ],
+      [
+        1.7812259197235107,
+        -1.7812259197235107
+      ],
+      [
+        0.38039612770080566,
+        -0.38039612770080566
+      ],
+      [
+        1.709536075592041,
+        -1.709536075592041
+      ],
+      [
+        0.9216406345367432,
+        -0.9216406345367432
+      ],
+      [
+        0.2170858383178711,
+        -0.2170858383178711
+      ],
+      [
+        1.8317954540252686,
+        -1.8317954540252686
+      ],
+      [
+        1.0168306827545166,
+        -1.0168306827545166
+      ],
+      [
+        -0.24567627906799316,
+        0.24567627906799316
+      ],
+      [
+        -0.1090390682220459,
+        0.1090390682220459
+      ],
+      [
+        -0.7177095413208008,
+        0.7177095413208008
+      ],
+      [
+        1.6005136966705322,
+        -1.6005136966705322
+      ],
+      [
+        -5.145234107971191,
+        5.145234107971191
+      ],
+      [
+        -5.849739074707031,
+        5.849739074707031
+      ],
+      [
+        -2.730283737182617,
+        2.730283737182617
+      ],
+      [
+        -2.41853666305542,
+        2.41853666305542
+      ],
+      [
+        -1.4486398696899414,
+        1.4486398696899414
+      ],
+      [
+        -5.424557209014893,
+        5.424557209014893
+      ],
+      [
+        -5.245778560638428,
+        5.245778560638428
+      ],
+      [
+        -4.977511405944824,
+        4.977511405944824
+      ],
+      [
+        -5.4291181564331055,
+        5.4291181564331055
+      ],
+      [
+        0.7553060054779053,
+        -0.7553060054779053
+      ],
+      [
+        -4.100275993347168,
+        4.100275993347168
+      ],
+      [
+        -0.7932666540145874,
+        0.7932666540145874
+      ],
+      [
+        -3.8676059246063232,
+        3.8676059246063232
+      ],
+      [
+        -4.217429161071777,
+        4.217429161071777
+      ],
+      [
+        -5.27547550201416,
+        5.27547550201416
+      ],
+      [
+        -1.6490346193313599,
+        1.6490346193313599
+      ]
+    ],
+    "probabilities": [
+      [
+        0.9647163152694702,
+        0.03528368100523949
+      ],
+      [
+        0.9066601395606995,
+        0.09333989769220352
+      ],
+      [
+        0.78526771068573,
+        0.21473225951194763
+      ],
+      [
+        0.7769957780838013,
+        0.22300420701503754
+      ],
+      [
+        0.7571631669998169,
+        0.24283675849437714
+      ],
+      [
+        0.9724134206771851,
+        0.027586573734879494
+      ],
+      [
+        0.681525707244873,
+        0.31847429275512695
+      ],
+      [
+        0.9682952165603638,
+        0.031704697757959366
+      ],
+      [
+        0.8633363246917725,
+        0.13666367530822754
+      ],
+      [
+        0.6068693995475769,
+        0.3931306302547455
+      ],
+      [
+        0.9750007390975952,
+        0.024999286979436874
+      ],
+      [
+        0.8842862248420715,
+        0.11571374535560608
+      ],
+      [
+        0.3795750141143799,
+        0.6204250454902649
+      ],
+      [
+        0.4456954896450043,
+        0.5543044805526733
+      ],
+      [
+        0.19225572049617767,
+        0.8077442049980164
+      ],
+      [
+        0.9608729481697083,
+        0.039127081632614136
+      ],
+      [
+        3.395405656192452e-05,
+        0.999966025352478
+      ],
+      [
+        8.298079592350405e-06,
+        0.9999916553497314
+      ],
+      [
+        0.004233147017657757,
+        0.9957668781280518
+      ],
+      [
+        0.007867835462093353,
+        0.9921321272850037
+      ],
+      [
+        0.05228819698095322,
+        0.9477117657661438
+      ],
+      [
+        1.9421424440224655e-05,
+        0.9999805688858032
+      ],
+      [
+        2.7769148800871335e-05,
+        0.9999722242355347
+      ],
+      [
+        4.748625724459998e-05,
+        0.9999525547027588
+      ],
+      [
+        1.9245073417550884e-05,
+        0.9999808073043823
+      ],
+      [
+        0.8191519379615784,
+        0.1808481216430664
+      ],
+      [
+        0.0002744266530498862,
+        0.9997255206108093
+      ],
+      [
+        0.1698721945285797,
+        0.8301277756690979
+      ],
+      [
+        0.0004369687521830201,
+        0.9995630383491516
+      ],
+      [
+        0.00021711672889068723,
+        0.9997828602790833
+      ],
+      [
+        2.6167896066908725e-05,
+        0.9999737739562988
+      ],
+      [
+        0.03563748672604561,
+        0.9643625617027283
+      ]
+    ],
+    "threshold_predictions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "privacy_note": "This candidate runs the static whole-forward function on SPU/JAX and reveals final logits only. In party-local share-load mode, the driver does not materialize plaintext pixel_values or private share tensors; P1/P2 device functions load their own share files before SPU recomposition. It is still a debug bridge until P1/P2 are launched as independent party processes.",
+  "probabilities": {
+    "dtype": "torch.float32",
+    "max": 0.9999916553497314,
+    "mean": 0.5,
+    "min": 8.298079592350405e-06,
+    "shape": [
+      32,
+      2
+    ],
+    "std": 0.41593584418296814
+  },
+  "raw_logits_before_output_calibration": {
+    "dtype": "torch.float32",
+    "max": 0.7578887939453125,
+    "mean": 0.14435553550720215,
+    "min": -0.515777587890625,
+    "shape": [
+      32,
+      2
+    ],
+    "std": 0.4173012673854828
+  },
+  "runtime": "spu",
+  "sample_count": 32,
+  "spu": {
+    "config": "/data/wyb/Transshield_final/configs/openbumblebee/2pc.json",
+    "driver_private_share_manifest_paths_recorded": false,
+    "host_plaintext_pixel_values_materialized": false,
+    "host_private_share_tensors_loaded": false,
+    "input_mode": "party_local_debug_share_load",
+    "party_manifest_types": [
+      "transshield_e2e_debug_float_additive_share_party_manifest_v0",
+      "transshield_e2e_debug_float_additive_share_party_manifest_v0"
+    ],
+    "private_input_paths_redacted": true,
+    "share_manifest_type": "transshield_e2e_debug_float_additive_share_public_manifest_v0",
+    "share_semantics": "debug_float_additive_share_not_production_mpc_share",
+    "spu_activation_clip_value": 0.0,
+    "spu_batch_size": 1,
+    "spu_block_chunk_size": 0,
+    "spu_forward_graph_mode": "monolithic",
+    "spu_layer_norm_calibration_json": null,
+    "spu_layer_norm_chunk_size": 0,
+    "spu_layer_norm_policy": "exact",
+    "spu_params_mode": "public",
+    "static_forward_metadata": {
+      "activation_kind": "fixed_square",
+      "activation_override": "fixed_square",
+      "attention_policy": "uniform",
+      "attention_policy_eps": 1e-06,
+      "base_activation_kind": "fixed_square",
+      "depth": 12,
+      "embed_dim": 384,
+      "forward_scope": "student_patch_embed_blocks_head_without_runtime_pruning_predictor_path",
+      "full_depth": 12,
+      "head_dim": 64,
+      "layer_norm_eps": 1e-06,
+      "num_heads": 6,
+      "patch_size": 16,
+      "state_dict_path": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507/modified_plaintext_model_state_dict.pth",
+      "static_depth_limit": 12,
+      "unsupported_currently_bypassed": [
+        "runtime pruning predictor path",
+        "intermediate feature reveal",
+        "dynamic masking-pruning inside secure forward"
+      ]
+    }
+  },
+  "static_depth_limit": 12,
+  "threshold": 0.5,
+  "token_features": null
+}

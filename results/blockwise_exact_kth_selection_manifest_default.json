@@ -16,7 +16,7 @@
     "summary": "Run the bridge with selection-mode=blockwise_exact_kth, then compare checker / replay and SPU profile against flat_odd_even."
   },
   "production_bridge_replaced": false,
-  "source_current_manifest_json": "/home/yclcg/Transshield_final/artifacts/frozen_candidates/tracka_lr3e5_timm_best_20260414",
+  "source_current_manifest_json": "/home/yclcg/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
   "source_network_manifest_json": "/home/yclcg/Transshield_final/artifacts/inference_ready_config/selection_mode_runtime_inputs_verified/stage2_secure_network_kth_manifest.json",
   "stage_plan": [
     {

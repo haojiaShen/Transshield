@@ -15,7 +15,18 @@
 export REPO_ROOT="${REPO_ROOT:-$(pwd)}"
 unset PYTHONPATH
 export PYTHONNOUSERSITE=1
-export PYTHON_BIN="${PYTHON_BIN:-python}"
+if [[ -z "${PYTHON_BIN:-}" ]]; then
+  if [[ -x "${PYTHON_BIN:-python}" ]]; then
+    export PYTHON_BIN="${PYTHON_BIN:-python}"
+  elif [[ -x "/home/yclcg/miniconda3/envs/transshield/bin/python" ]]; then
+    export PYTHON_BIN="/home/yclcg/miniconda3/envs/transshield/bin/python"
+  else
+    export PYTHON_BIN="python"
+  fi
+else
+  export PYTHON_BIN
+fi
+export CURRENT_DELIVERY_BUNDLE_DIR="${CURRENT_DELIVERY_BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430}"
 
 cd "$REPO_ROOT"
 
@@ -23,7 +34,8 @@ export RUN_NAME="${RUN_NAME:-transshield_comp_full_compare_YYYYMMDD}"
 export TRAIN_DATA_PATH="${TRAIN_DATA_PATH:-/path/to/pneumoniamnist_imagefolder_subset/train}"
 export VAL_DATA_PATH="${VAL_DATA_PATH:-/path/to/pneumoniamnist_imagefolder_subset/val}"
 export RUN_DIR="${RUN_DIR:-$REPO_ROOT/artifacts/server_runs/${RUN_NAME}}"
-export BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_verified_tracka_lr3e5_20260414}"
+# 当前 compare / fairness / plaintext 主线默认跟随 current delivery bundle。
+export BUNDLE_DIR="${BUNDLE_DIR:-$CURRENT_DELIVERY_BUNDLE_DIR}"
 export SECURE_RUN_DIR="${SECURE_RUN_DIR:-$REPO_ROOT/artifacts/server_pipeline_run/${RUN_NAME}}"
 export CONFIG_PATH="${CONFIG_PATH:-$REPO_ROOT/configs/openbumblebee/2pc.json}"
 export KTH_SELECTION_MODE="${KTH_SELECTION_MODE:-blockwise_exact_kth}"
@@ -53,6 +65,8 @@ export BASELINE_THRESHOLD_JSON="${BASELINE_THRESHOLD_JSON:-$REPO_ROOT/artifacts/
 export BASELINE_LABEL=baseline_plaintext
 
 # Group 2：modified plaintext
+# 默认会直接评估 `BUNDLE_DIR` 内冻结的 pure state_dict；
+# 仅在你明确要切到另一份 checkpoint 时再覆盖 `MODIFIED_CHECKPOINT`。
 export MODIFIED_CHECKPOINT="${MODIFIED_CHECKPOINT:-$BUNDLE_DIR/modified_plaintext_eval_checkpoint_light.pth}"
 export MODIFIED_THRESHOLD_JSON="${MODIFIED_THRESHOLD_JSON:-$BUNDLE_DIR/threshold_best.json}"
 export MODIFIED_LABEL=modified_plaintext

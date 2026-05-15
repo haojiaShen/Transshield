@@ -1,0 +1,15 @@
+{
+  "auc": 0.9539369940757751,
+  "checkpoint_path": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_depth12_uniform_fixed_square_lr1e5_b8_gpu2_workers0_epoch8_20260430/checkpoint-best.pth",
+  "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+  "eval_acc1": 89.69465494155884,
+  "eval_binary_threshold": 0.5696036219596863,
+  "eval_loss": 0.5419613718986511,
+  "finite_logits": true,
+  "pred_counts": [
+    129,
+    395
+  ],
+  "sample_count": 524,
+  "threshold_json": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_depth12_uniform_fixed_square_lr1e5_b8_gpu2_workers0_epoch8_20260430/threshold_best.json"
+}

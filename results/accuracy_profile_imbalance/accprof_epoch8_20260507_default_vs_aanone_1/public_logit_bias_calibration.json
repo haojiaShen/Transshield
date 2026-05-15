@@ -1,0 +1,48 @@
+{
+  "class1_logit_bias": 0.5852254595359804,
+  "deployment_note": {
+    "changes_auc_ranking": false,
+    "operation": "add public scalar to class-1 logit before final argmax/threshold decision",
+    "requires_retraining": false,
+    "secure_friendly": true
+  },
+  "e2e_output_calibration": {
+    "bias": 0.5852264595359804,
+    "manifest_type": "transshield_e2e_output_calibration_v0",
+    "note": "Equivalent to adding the public scalar to class-1 logit before argmax; compatible with --output-calibration-json in the E2E OpenBumbleBee runner.",
+    "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+    "source_eval_binary_threshold": 0.3577311038970947,
+    "threshold": 0.5,
+    "weights": [
+      -1.0,
+      1.0
+    ]
+  },
+  "effective_class1_logit_bias": 0.5852264595359804,
+  "epsilon": 1e-06,
+  "inputs": {
+    "plaintext_eval_csv": "/home/yclcg/Transshield_final/results/accuracy_profile_imbalance/secure_static_accprof_epoch8_20260507_aanone_1/plaintext_eval.csv",
+    "plaintext_eval_json": "/home/yclcg/Transshield_final/results/accuracy_profile_imbalance/secure_static_accprof_epoch8_20260507_aanone_1/plaintext_eval.json",
+    "threshold_json": "/home/yclcg/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch8_20260507_aanone_1/threshold_eval.json"
+  },
+  "label": "secure_static_accprof_epoch8_20260507_aanone_1",
+  "metrics": {
+    "calibrated_argmax_accuracy": 91.98473282442748,
+    "calibrated_argmax_f1": 0.9455958549222798,
+    "calibrated_auc": 0.9678758449966676,
+    "calibrated_ce_loss": 0.4286648295761729,
+    "calibrated_minus_original_argmax_accuracy": 15.26717557251908,
+    "calibrated_minus_original_ce_loss": -0.10183639389928967,
+    "original_argmax_accuracy": 76.7175572519084,
+    "original_argmax_f1": 0.8140243902439025,
+    "original_auc": 0.9678758449966676,
+    "original_ce_loss": 0.5305012234754626,
+    "threshold_accuracy": 91.98473282442748,
+    "threshold_f1": 0.9455958549222798
+  },
+  "reason": "公开 class-1 logit bias 将最优 threshold 等价搬到 argmax 边界；该操作只需一次公开加法，不改变 token pruning / SPU 主体算子。",
+  "sample_count": 524,
+  "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+  "status": "public_bias_recovers_threshold_argmax",
+  "threshold": 0.3577311038970947
+}

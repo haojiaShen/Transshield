@@ -7,7 +7,7 @@ REPO_ROOT="${REPO_ROOT:-$(cd "$SCRIPT_DIR/../.." && pwd)}"
 cd "$REPO_ROOT"
 PYTHON_BIN="${PYTHON_BIN:-python}"
 RUN_NAME="${RUN_NAME:-transshield_profile_pair}"
-BUNDLE_DIR="${BUNDLE_DIR:-artifacts/frozen_bundle_verified_tracka_lr3e5_20260414}"
+BUNDLE_DIR="${BUNDLE_DIR:-artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430}"
 CONFIG_PATH="${CONFIG_PATH:-configs/openbumblebee/2pc.json}"
 PROFILE_REUSE_EXISTING="${PROFILE_REUSE_EXISTING:-0}"
 

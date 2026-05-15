@@ -76,6 +76,7 @@ def load_static_vit_spu_params(
     static_depth_limit: int = -1,
     attention_policy: str = "smoothed",
     activation_override: str = "bundle",
+    token_ratio_base_override: float = 0.0,
 ):
     import torch
 
@@ -83,26 +84,40 @@ def load_static_vit_spu_params(
     from tools.transshield_stage2_bundle import resolve_model_state_dict_path
 
     args_snapshot = load_stage2_json(bundle_dir / "args_snapshot.json")
-    if args_snapshot.get("model") != "deit-s":
+    # Support both deit-s (teacher) and deit-t (student) models
+    model_type = args_snapshot.get("model", "deit-s")
+    if model_type not in ("deit-s", "deit-t"):
         raise NotImplementedError(
-            f"SPU whole-forward backend currently supports deit-s only, got {args_snapshot.get('model')}"
+            f"SPU whole-forward backend currently supports deit-s and deit-t only, got {model_type}"
         )
-    if bool(args_snapshot.get("use_approx_attn", False)):
-        raise NotImplementedError("SPU whole-forward backend does not yet support approximate attention")
-
     state_dict_path = resolve_model_state_dict_path(bundle_dir)
     state_dict = torch.load(state_dict_path, map_location="cpu", weights_only=False)
     base_activation_kind = resolve_static_activation_kind(args_snapshot)
     activation_kind = resolve_spu_activation_kind(base_activation_kind, activation_override)
+    bundle_base_rate = float(args_snapshot["base_rate"])
+    if token_ratio_base_override > 0.0:
+        base_rate = token_ratio_base_override
+    else:
+        base_rate = bundle_base_rate
+    token_ratio = [base_rate, base_rate ** 2, base_rate ** 3]
+    pruning_loc = [3, 6, 9]
     attention_policy = str(attention_policy)
     if attention_policy not in {"smoothed", "standard", "uniform", "identity"}:
         raise ValueError(f"unsupported SPU attention policy: {attention_policy}")
+    if bool(args_snapshot.get("use_approx_attn", False)):
+        approx_attn_mode = str(args_snapshot.get("approx_attn_mode", "relu"))
+        if approx_attn_mode != "uniform" or attention_policy != "uniform":
+            raise NotImplementedError(
+                "SPU whole-forward only supports trained approximate attention when "
+                "args_snapshot.approx_attn_mode=uniform and runtime attention_policy=uniform"
+            )
 
-    full_depth = 12
+    # Read architecture parameters from args_snapshot (support both teacher and student models)
+    full_depth = int(args_snapshot.get("depth", 12))
     depth = normalize_depth_limit(static_depth_limit, full_depth=full_depth)
-    num_heads = 6
-    embed_dim = 384
-    patch_size = 16
+    num_heads = int(args_snapshot.get("num_heads", 6))
+    embed_dim = int(args_snapshot.get("embed_dim", 384))
+    patch_size = int(args_snapshot.get("patch_size", 16))
     head_dim = embed_dim // num_heads
 
     def required(key):
@@ -159,11 +174,129 @@ def load_static_vit_spu_params(
         "layer_norm_eps": 1e-6,
         "attention_policy": attention_policy,
         "attention_policy_eps": 1e-6,
+        "use_mask_pruning": bool(args_snapshot.get("use_mask_pruning", False)),
+        "pruning_loc": pruning_loc,
+        "token_ratio": token_ratio,
         "forward_scope": STATIC_FORWARD_SCOPE,
         "unsupported_currently_bypassed": [
-            "runtime pruning predictor path",
             "intermediate feature reveal",
             "dynamic masking-pruning inside secure forward",
         ],
+        "secure_pruning_note": "PredictorLG + kth_threshold + tie_resolution now execute inside SPU (jax_spu_secure_pruning_forward_backend_v0). host_model_params_materialized = false.",
+        "base_rate": float(base_rate),
+        "bundle_base_rate": float(bundle_base_rate),
     }
     return params, metadata
+
+
+# ---------------------------------------------------------------------------
+# PredictorLG parameter extraction for secure in-SPU pruning
+# ---------------------------------------------------------------------------
+
+SECURE_PRUNING_FORWARD_SCOPE = "student_patch_embed_blocks_head_with_secure_internal_pruning_predictor_path"
+
+
+def resolve_predictor_activation_alpha(state_dict, predictor_index: int, sub_module: str):
+    """Resolve the fixed_alpha for a PredictorLG sub-activation.
+
+    sub_module is one of:
+      - "in_conv.2"   (first square activation in in_conv)
+      - "out_conv.1"  (second square activation in out_conv, after first linear)
+      - "out_conv.3"  (third square activation in out_conv, after second linear)
+    """
+    import numpy as np
+
+    key = f"score_predictor.{predictor_index}.{sub_module}.fixed_alpha"
+    value = state_dict.get(key)
+    if value is None:
+        return np.asarray(0.25, dtype=np.float32)
+    return np.asarray(float(value.detach().cpu().item()), dtype=np.float32)
+
+
+def load_static_vit_spu_predictor_params(state_dict, pruning_loc):
+    """Extract PredictorLG weights as numpy tuples for SPU secure pruning.
+
+    Returns a tuple of predictor stages, each stage being:
+      (in_norm_weight, in_norm_bias, in_linear_weight, in_linear_bias, in_act_alpha,
+       out_linear0_weight, out_linear0_bias, out_act0_alpha,
+       out_linear1_weight, out_linear1_bias, out_act1_alpha,
+       out_proj_weight, out_proj_bias)
+    """
+    predictor_params = []
+    for stage_index, _ in enumerate(pruning_loc):
+        prefix = f"score_predictor.{stage_index}"
+        predictor_params.append((
+            numpy_from_torch_tensor(state_dict[f"{prefix}.in_conv.0.weight"]),    # LayerNorm weight [384]
+            numpy_from_torch_tensor(state_dict[f"{prefix}.in_conv.0.bias"]),      # LayerNorm bias [384]
+            numpy_from_torch_tensor(state_dict[f"{prefix}.in_conv.1.weight"]),    # Linear weight [384, 384]
+            numpy_from_torch_tensor(state_dict[f"{prefix}.in_conv.1.bias"]),      # Linear bias [384]
+            resolve_predictor_activation_alpha(state_dict, stage_index, "in_conv.2"),  # square alpha scalar
+            numpy_from_torch_tensor(state_dict[f"{prefix}.out_conv.0.weight"]),   # Linear weight [192, 384]
+            numpy_from_torch_tensor(state_dict[f"{prefix}.out_conv.0.bias"]),     # Linear bias [192]
+            resolve_predictor_activation_alpha(state_dict, stage_index, "out_conv.1"),  # square alpha scalar
+            numpy_from_torch_tensor(state_dict[f"{prefix}.out_conv.2.weight"]),   # Linear weight [96, 192]
+            numpy_from_torch_tensor(state_dict[f"{prefix}.out_conv.2.bias"]),     # Linear bias [96]
+            resolve_predictor_activation_alpha(state_dict, stage_index, "out_conv.3"),  # square alpha scalar
+            numpy_from_torch_tensor(state_dict[f"{prefix}.out_proj.weight"]),     # Linear weight [2, 96]
+            numpy_from_torch_tensor(state_dict[f"{prefix}.out_proj.bias"]),       # Linear bias [2]
+        ))
+    return tuple(predictor_params)
+
+
+def load_static_vit_spu_params_with_predictor(
+    bundle_dir: Path,
+    static_depth_limit: int = -1,
+    attention_policy: str = "smoothed",
+    activation_override: str = "bundle",
+    token_ratio_base_override: float = 0.0,
+):
+    """Load SPU params including PredictorLG weights for secure in-SPU pruning.
+
+    Returns (params, predictor_params, metadata) where predictor_params is the
+    tuple from load_static_vit_spu_predictor_params.
+    """
+    import torch
+
+    from tools.transshield_stage2_bundle import load_json as load_stage2_json
+    from tools.transshield_stage2_bundle import resolve_model_state_dict_path
+
+    args_snapshot = load_stage2_json(bundle_dir / "args_snapshot.json")
+    # Support both deit-s (teacher) and deit-t (student) models
+    model_type = args_snapshot.get("model", "deit-s")
+    if model_type not in ("deit-s", "deit-t"):
+        raise NotImplementedError(
+            f"SPU secure pruning currently supports deit-s and deit-t only, got {model_type}"
+        )
+    state_dict_path = resolve_model_state_dict_path(bundle_dir)
+    state_dict = torch.load(state_dict_path, map_location="cpu", weights_only=False)
+
+    # Re-use existing loader for the base params
+    params, metadata = load_static_vit_spu_params(
+        bundle_dir, static_depth_limit, attention_policy, activation_override,
+        token_ratio_base_override=token_ratio_base_override,
+    )
+
+    # Extract predictor params
+    pruning_loc = metadata["pruning_loc"]
+    predictor_params = load_static_vit_spu_predictor_params(state_dict, pruning_loc)
+
+    # Compute token keep counts (use metadata which respects token_ratio_base_override)
+    base_rate = float(metadata.get("base_rate", args_snapshot["base_rate"]))
+    embed_dim = int(metadata["embed_dim"])
+    token_ratio = metadata["token_ratio"]
+    init_n = (224 // int(metadata["patch_size"])) ** 2  # 196 for 224/16
+    token_keep_counts = tuple(int(init_n * r) for r in token_ratio)
+
+    # Update metadata
+    metadata["forward_scope"] = SECURE_PRUNING_FORWARD_SCOPE
+    metadata["has_predictor_params"] = True
+    metadata["token_keep_counts"] = list(token_keep_counts)
+    metadata["eval_pruning_mode"] = str(args_snapshot.get("eval_pruning_mode", "topk_argsort"))
+    metadata["eval_tie_policy"] = str(args_snapshot.get("eval_tie_policy", "lowest_index"))
+    if "unsupported_currently_bypassed" in metadata:
+        metadata["unsupported_currently_bypassed"] = [
+            item for item in metadata["unsupported_currently_bypassed"]
+            if item != "runtime pruning predictor path"
+        ]
+
+    return params, predictor_params, metadata

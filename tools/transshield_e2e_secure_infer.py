@@ -1,3 +1,16 @@
+# =============================================================================
+# Transshield E2E Secure Inference — "模型即服务"安全推理管线
+# =============================================================================
+# 角色映射（本文件中的内部术语与"模型即服务"业务角色的对应关系）：
+#   "client" / "client-side"  → 数据使用方（如医院），提交待推理数据，获取分析结果
+#   "server" / "server-side"  → 模型提供方的推理服务（内部含 P0/P1 两台 MPC 服务器）
+#   "client_pixel_package"    → 数据使用方提交的预处理后数据包
+#   "client_share"            → 数据使用方数据的秘密共享份额（由服务端自动完成拆分）
+#
+# 变量命名保持历史兼容（client_* / server_*），避免破坏运行中的管线。
+# 新增注释统一使用"数据使用方" / "模型提供方"术语。
+# =============================================================================
+
 import argparse
 import json
 import sys
@@ -5,7 +18,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_BUNDLE_DIR = REPO_ROOT / "artifacts/frozen_bundle_verified_tracka_lr3e5_20260414"
+DEFAULT_BUNDLE_DIR = REPO_ROOT / "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430"
 MANIFEST_TYPE = "transshield_e2e_client_pixel_values_v0"
 CONTRACT_TYPE = "transshield_e2e_secure_inference_contract_v0"
 DEBUG_SHARE_TYPE = "transshield_e2e_debug_float_additive_share_v0"
@@ -217,7 +230,7 @@ def build_debug_share_public_manifest(manifest):
             "debug_public_share_manifest_only; private share file paths are intentionally kept in party manifests"
         ),
         "server_boundary_note": (
-            "The server-side coordinator may read this public manifest, but each private share path should be "
+            "The model provider server coordinator may read this public manifest, but each private share path should be "
             "provided only to its owning party in a production deployment."
         ),
     }
@@ -274,6 +287,9 @@ def write_debug_share_public_and_party_manifests(
 
 
 def command_client_share_preprocess(args):
+    """数据使用方侧秘密共享预处理：将影像数据拆分为两份安全份额。
+    拆分后的两份份额分别发送至模型提供方推理服务的 P0/P1 服务器。
+    """
     import torch
 
     bundle_dir = resolve_bundle_dir(args.bundle_dir)
@@ -423,6 +439,9 @@ def command_reconstruct_debug_shares(args):
 
 
 def command_client_preprocess(args):
+    """数据使用方侧预处理：将原始影像转为推理所需格式。
+    在"模型即服务"架构中，此步骤由数据使用方本地完成。
+    """
     import torch
 
     bundle_dir = resolve_bundle_dir(args.bundle_dir)
@@ -457,8 +476,8 @@ def command_client_preprocess(args):
             "crop_pct": args_snapshot.get("crop_pct"),
             "privacy_note": (
                 "This package still contains plaintext pixel_values. "
-                "A real e2e secure deployment must create MPC/SPU shares on the client side "
-                "and avoid sending this plaintext package to an untrusted server."
+                "A real e2e secure deployment must create MPC/SPU shares on the data user side "
+                "and avoid sending this plaintext package to the model provider server in plaintext."
             ),
         },
     }
@@ -476,7 +495,7 @@ def command_client_preprocess(args):
         "targets_included": target_tensor is not None,
         "pixel_values": tensor_stats(pixel_values),
         "privacy_status": "plaintext_client_tensor_not_yet_mpc_share",
-        "next_secure_step": "replace plaintext package transport with real client-side secret sharing",
+        "next_secure_step": "replace plaintext package transport with real data-user-side secret sharing",
     }
     if args.debug_share_prefix:
         summary["debug_additive_shares"] = save_debug_additive_shares(
@@ -492,6 +511,10 @@ def command_client_preprocess(args):
 
 
 def load_client_pixel_package(input_pt: Path):
+    """加载数据使用方提交的数据包（预处理后的像素数据及元信息）。
+    Args:
+        input_pt: 数据使用方提交的数据包路径。
+    """
     import torch
 
     payload = torch.load(input_pt, map_location="cpu")
@@ -511,6 +534,7 @@ def command_plaintext_reference(args):
     bundle_dir = resolve_bundle_dir(args.bundle_dir)
     input_pt = Path(args.input_pt).expanduser().resolve()
     output_json = Path(args.output_json).expanduser().resolve()
+    output_pt = Path(args.output_pt).expanduser().resolve() if args.output_pt else None
     client_payload = load_client_pixel_package(input_pt)
     pixel_values = client_payload["pixel_values"].to(args.device)
     bundle = load_frozen_bundle(bundle_dir, device=args.device)
@@ -546,11 +570,30 @@ def command_plaintext_reference(args):
             row["threshold_prediction"] = int(threshold_predictions[index].item())
         per_sample.append(row)
 
+    if output_pt is not None:
+        output_pt.parent.mkdir(parents=True, exist_ok=True)
+        torch.save(
+            {
+                "manifest_type": "transshield_e2e_plaintext_reference_pt_v0",
+                "input_pt": str(input_pt),
+                "bundle_dir": str(bundle_dir),
+                "sample_ids": sample_ids,
+                "targets": targets,
+                "logits": logits_cpu,
+                "probabilities": probabilities_cpu,
+                "threshold": threshold,
+                "threshold_predictions": threshold_predictions,
+                "argmax_predictions": argmax_predictions,
+            },
+            output_pt,
+        )
+
     summary = {
         "manifest_type": "transshield_e2e_plaintext_reference_v0",
         "status": "plaintext_reference_not_secure",
         "bundle_dir": str(bundle_dir),
         "input_pt": str(input_pt),
+        "output_pt": str(output_pt) if output_pt is not None else None,
         "device": args.device,
         "sample_count": len(per_sample),
         "threshold": threshold,
@@ -608,6 +651,7 @@ def command_static_whole_forward_reference(args):
     import torch
 
     ensure_repo_import_path()
+    from integrations.openbumblebee.e2e_secure_vit.cpu_static_vit import run_static_student_whole_forward_limited
     from tools.transshield_stage2_bundle import load_frozen_bundle, resolve_threshold
 
     bundle_dir = resolve_bundle_dir(args.bundle_dir)
@@ -622,7 +666,10 @@ def command_static_whole_forward_reference(args):
     threshold = resolve_threshold(bundle_dir, None)
 
     with torch.no_grad():
-        outputs = run_static_student_whole_forward(model, pixel_values)
+        if args.static_depth_limit >= 0:
+            outputs = run_static_student_whole_forward_limited(model, pixel_values, args.static_depth_limit)
+        else:
+            outputs = run_static_student_whole_forward(model, pixel_values)
         logits = outputs["logits"]
         cls_features = outputs["cls_features"]
         token_features = outputs["token_features"]
@@ -684,6 +731,8 @@ def command_static_whole_forward_reference(args):
         "output_pt": str(output_pt) if output_pt is not None else None,
         "device": args.device,
         "sample_count": len(per_sample),
+        "static_depth_limit": int(args.static_depth_limit),
+        "effective_static_depth": int(outputs.get("static_depth", len(model.blocks))),
         "threshold": threshold,
         "finite_logits": bool(torch.isfinite(logits).all().item()),
         "forward_scope": (
@@ -702,6 +751,124 @@ def command_static_whole_forward_reference(args):
     print(json.dumps(summary, indent=2, sort_keys=True))
 
 
+def command_runtime_pruning_whole_forward_reference(args):
+    import torch
+
+    ensure_repo_import_path()
+    from integrations.openbumblebee.e2e_secure_vit.cpu_static_vit import (
+        run_runtime_pruning_student_whole_forward_limited,
+    )
+    from tools.transshield_stage2_bundle import load_frozen_bundle, resolve_threshold
+
+    bundle_dir = resolve_bundle_dir(args.bundle_dir)
+    input_pt = Path(args.input_pt).expanduser().resolve()
+    output_json = Path(args.output_json).expanduser().resolve()
+    output_pt = Path(args.output_pt).expanduser().resolve() if args.output_pt else None
+
+    client_payload = load_client_pixel_package(input_pt)
+    pixel_values = client_payload["pixel_values"].to(args.device)
+    bundle = load_frozen_bundle(bundle_dir, device=args.device)
+    model = bundle["model"]
+    threshold = resolve_threshold(bundle_dir, None)
+
+    with torch.no_grad():
+        outputs = run_runtime_pruning_student_whole_forward_limited(
+            model,
+            pixel_values,
+            args.static_depth_limit,
+        )
+        logits = outputs["logits"]
+        cls_features = outputs["cls_features"]
+        token_features = outputs["token_features"]
+        probabilities = torch.softmax(logits, dim=-1)
+
+    argmax_predictions = logits.argmax(dim=1).detach().cpu()
+    threshold_predictions = None
+    if threshold is not None and probabilities.shape[-1] == 2:
+        threshold_predictions = (probabilities[:, 1] >= float(threshold)).long().detach().cpu()
+
+    targets = client_payload.get("targets")
+    if targets is not None:
+        targets = targets.detach().cpu()
+
+    sample_ids = client_payload.get("sample_ids") or [f"sample_{index:06d}" for index in range(logits.shape[0])]
+    logits_cpu = logits.detach().cpu()
+    probabilities_cpu = probabilities.detach().cpu()
+    cls_features_cpu = cls_features.detach().cpu()
+    token_features_cpu = token_features.detach().cpu()
+    prev_decision_cpu = outputs["prev_decision"].detach().cpu()
+
+    per_sample = []
+    for index, sample_id in enumerate(sample_ids):
+        row = {
+            "sample_id": sample_id,
+            "target": None if targets is None else int(targets[index].item()),
+            "logits": [float(value) for value in logits_cpu[index].tolist()],
+            "probabilities": [float(value) for value in probabilities_cpu[index].tolist()],
+            "argmax_prediction": int(argmax_predictions[index].item()),
+        }
+        if threshold_predictions is not None:
+            row["threshold_prediction"] = int(threshold_predictions[index].item())
+        per_sample.append(row)
+
+    if output_pt is not None:
+        output_pt.parent.mkdir(parents=True, exist_ok=True)
+        stage_keep_masks_cpu = [mask.detach().cpu().squeeze(-1).bool() for mask in outputs["stage_keep_masks"]]
+        torch.save(
+            {
+                "manifest_type": "transshield_e2e_runtime_pruning_whole_forward_reference_pt_v0",
+                "input_pt": str(input_pt),
+                "bundle_dir": str(bundle_dir),
+                "sample_ids": sample_ids,
+                "targets": targets,
+                "logits": logits_cpu,
+                "probabilities": probabilities_cpu,
+                "cls_features": cls_features_cpu,
+                "token_features": token_features_cpu,
+                "final_prev_decision": prev_decision_cpu,
+                "pruning_trace": outputs["pruning_trace"],
+                "stage_keep_masks": stage_keep_masks_cpu,
+                "threshold": threshold,
+                "threshold_predictions": threshold_predictions,
+                "argmax_predictions": argmax_predictions,
+            },
+            output_pt,
+        )
+
+    summary = {
+        "manifest_type": "transshield_e2e_runtime_pruning_whole_forward_reference_v0",
+        "status": "plaintext_runtime_pruning_whole_forward_reference_not_secure",
+        "bundle_dir": str(bundle_dir),
+        "input_pt": str(input_pt),
+        "output_pt": str(output_pt) if output_pt is not None else None,
+        "device": args.device,
+        "sample_count": len(per_sample),
+        "static_depth_limit": int(args.static_depth_limit),
+        "effective_static_depth": int(outputs.get("static_depth", len(model.blocks))),
+        "threshold": threshold,
+        "finite_logits": bool(torch.isfinite(logits).all().item()),
+        "forward_scope": (
+            "student_patch_embed_blocks_head_with_runtime_pruning_predictor_path"
+        ),
+        "logits": tensor_stats(logits_cpu),
+        "cls_features": tensor_stats(cls_features_cpu),
+        "token_features": tensor_stats(token_features_cpu),
+        "final_active_token_count": {
+            "min": int(prev_decision_cpu.squeeze(-1).sum(dim=1).min().item()),
+            "max": int(prev_decision_cpu.squeeze(-1).sum(dim=1).max().item()),
+            "mean": float(prev_decision_cpu.squeeze(-1).sum(dim=1).float().mean().item()),
+        },
+        "pruning_trace": outputs["pruning_trace"],
+        "privacy_note": (
+            "This is a plaintext runtime-pruning whole-forward reference for migrating DyViT pruning semantics "
+            "into the future secure whole-forward path."
+        ),
+        "per_sample": per_sample,
+    }
+    write_json(output_json, summary)
+    print(json.dumps(summary, indent=2, sort_keys=True))
+
+
 def load_tensor_payload(path: Path):
     import torch
 
@@ -709,6 +876,225 @@ def load_tensor_payload(path: Path):
     if not isinstance(payload, dict):
         raise ValueError(f"expected dict payload in {path}")
     return payload
+
+
+def command_export_runtime_pruning_keep_mask_payload(args):
+    import torch
+
+    ensure_repo_import_path()
+    from integrations.openbumblebee.e2e_secure_vit.cpu_static_vit import (
+        run_runtime_pruning_student_whole_forward_limited,
+    )
+    from tools.transshield_stage2_bundle import load_frozen_bundle
+
+    bundle_dir = resolve_bundle_dir(args.bundle_dir)
+    input_pt = Path(args.input_pt).expanduser().resolve()
+    output_json = Path(args.output_json).expanduser().resolve()
+    output_pt = Path(args.output_pt).expanduser().resolve()
+
+    client_payload = load_client_pixel_package(input_pt)
+    pixel_values = client_payload["pixel_values"].to(args.device)
+    bundle = load_frozen_bundle(bundle_dir, device=args.device)
+    model = bundle["model"]
+
+    with torch.no_grad():
+        outputs = run_runtime_pruning_student_whole_forward_limited(
+            model,
+            pixel_values,
+            args.static_depth_limit,
+        )
+
+    targets = client_payload.get("targets")
+    if targets is not None:
+        targets = targets.detach().cpu()
+    sample_ids = client_payload.get("sample_ids") or [f"sample_{index:06d}" for index in range(pixel_values.shape[0])]
+    stage_keep_masks_cpu = [mask.detach().cpu().squeeze(-1).bool() for mask in outputs["stage_keep_masks"]]
+
+    output_pt.parent.mkdir(parents=True, exist_ok=True)
+    torch.save(
+        {
+            "manifest_type": "transshield_e2e_runtime_pruning_keep_mask_payload_pt_v0",
+            "input_pt": str(input_pt),
+            "bundle_dir": str(bundle_dir),
+            "sample_ids": sample_ids,
+            "targets": targets,
+            "static_depth_limit": int(args.static_depth_limit),
+            "effective_static_depth": int(outputs.get("static_depth", len(model.blocks))),
+            "pruning_trace": outputs["pruning_trace"],
+            "stage_keep_masks": stage_keep_masks_cpu,
+        },
+        output_pt,
+    )
+
+    summary_stages = []
+    for stage_item, keep_mask in zip(outputs["pruning_trace"], stage_keep_masks_cpu):
+        active_count = keep_mask.sum(dim=1).float()
+        summary_stages.append(
+            {
+                **stage_item,
+                "sample_count": int(keep_mask.shape[0]),
+                "token_count": int(keep_mask.shape[1]),
+                "active_count_after_mean": float(active_count.mean().item()),
+                "active_count_after_min": int(active_count.min().item()),
+                "active_count_after_max": int(active_count.max().item()),
+            }
+        )
+
+    summary = {
+        "manifest_type": "transshield_e2e_runtime_pruning_keep_mask_payload_v0",
+        "status": "plaintext_runtime_pruning_keep_mask_payload_not_secure",
+        "bundle_dir": str(bundle_dir),
+        "input_pt": str(input_pt),
+        "output_pt": str(output_pt),
+        "device": args.device,
+        "sample_count": len(sample_ids),
+        "static_depth_limit": int(args.static_depth_limit),
+        "effective_static_depth": int(outputs.get("static_depth", len(model.blocks))),
+        "stage_count": len(stage_keep_masks_cpu),
+        "stages": summary_stages,
+        "privacy_note": (
+            "This payload contains plaintext-exported runtime pruning keep masks for whole-forward replay research. "
+            "It is a migration oracle, not a secure artifact."
+        ),
+    }
+    write_json(output_json, summary)
+    print(json.dumps(summary, indent=2, sort_keys=True))
+
+
+def load_runtime_pruning_keep_mask_payload(path: Path):
+    payload = load_tensor_payload(path)
+    stage_keep_masks = payload.get("stage_keep_masks")
+    if not isinstance(stage_keep_masks, list) or not stage_keep_masks:
+        raise ValueError(f"keep-mask payload missing non-empty stage_keep_masks: {path}")
+    return payload
+
+
+def command_external_keep_mask_whole_forward_reference(args):
+    import torch
+
+    ensure_repo_import_path()
+    from integrations.openbumblebee.e2e_secure_vit.cpu_static_vit import (
+        run_external_keep_mask_student_whole_forward_limited,
+    )
+    from tools.transshield_stage2_bundle import load_frozen_bundle, resolve_threshold
+
+    bundle_dir = resolve_bundle_dir(args.bundle_dir)
+    input_pt = Path(args.input_pt).expanduser().resolve()
+    keep_mask_pt = Path(args.keep_mask_pt).expanduser().resolve()
+    output_json = Path(args.output_json).expanduser().resolve()
+    output_pt = Path(args.output_pt).expanduser().resolve() if args.output_pt else None
+
+    client_payload = load_client_pixel_package(input_pt)
+    keep_mask_payload = load_runtime_pruning_keep_mask_payload(keep_mask_pt)
+    payload_sample_ids = keep_mask_payload.get("sample_ids")
+    client_sample_ids = client_payload.get("sample_ids")
+    if payload_sample_ids is not None and client_sample_ids is not None:
+        if list(payload_sample_ids) != list(client_sample_ids):
+            raise ValueError("keep-mask payload sample_ids do not match input_pt sample_ids")
+
+    pixel_values = client_payload["pixel_values"].to(args.device)
+    bundle = load_frozen_bundle(bundle_dir, device=args.device)
+    model = bundle["model"]
+    threshold = resolve_threshold(bundle_dir, None)
+    stage_keep_masks = keep_mask_payload["stage_keep_masks"]
+
+    with torch.no_grad():
+        outputs = run_external_keep_mask_student_whole_forward_limited(
+            model,
+            pixel_values,
+            stage_keep_masks,
+            args.static_depth_limit,
+        )
+        logits = outputs["logits"]
+        cls_features = outputs["cls_features"]
+        token_features = outputs["token_features"]
+        probabilities = torch.softmax(logits, dim=-1)
+
+    argmax_predictions = logits.argmax(dim=1).detach().cpu()
+    threshold_predictions = None
+    if threshold is not None and probabilities.shape[-1] == 2:
+        threshold_predictions = (probabilities[:, 1] >= float(threshold)).long().detach().cpu()
+
+    targets = client_payload.get("targets")
+    if targets is not None:
+        targets = targets.detach().cpu()
+
+    sample_ids = client_payload.get("sample_ids") or [f"sample_{index:06d}" for index in range(logits.shape[0])]
+    logits_cpu = logits.detach().cpu()
+    probabilities_cpu = probabilities.detach().cpu()
+    cls_features_cpu = cls_features.detach().cpu()
+    token_features_cpu = token_features.detach().cpu()
+    prev_decision_cpu = outputs["prev_decision"].detach().cpu()
+
+    per_sample = []
+    for index, sample_id in enumerate(sample_ids):
+        row = {
+            "sample_id": sample_id,
+            "target": None if targets is None else int(targets[index].item()),
+            "logits": [float(value) for value in logits_cpu[index].tolist()],
+            "probabilities": [float(value) for value in probabilities_cpu[index].tolist()],
+            "argmax_prediction": int(argmax_predictions[index].item()),
+        }
+        if threshold_predictions is not None:
+            row["threshold_prediction"] = int(threshold_predictions[index].item())
+        per_sample.append(row)
+
+    if output_pt is not None:
+        output_pt.parent.mkdir(parents=True, exist_ok=True)
+        torch.save(
+            {
+                "manifest_type": "transshield_e2e_external_keep_mask_whole_forward_reference_pt_v0",
+                "input_pt": str(input_pt),
+                "keep_mask_pt": str(keep_mask_pt),
+                "bundle_dir": str(bundle_dir),
+                "sample_ids": sample_ids,
+                "targets": targets,
+                "logits": logits_cpu,
+                "probabilities": probabilities_cpu,
+                "cls_features": cls_features_cpu,
+                "token_features": token_features_cpu,
+                "final_prev_decision": prev_decision_cpu,
+                "pruning_trace": outputs["pruning_trace"],
+                "threshold": threshold,
+                "threshold_predictions": threshold_predictions,
+                "argmax_predictions": argmax_predictions,
+            },
+            output_pt,
+        )
+
+    summary = {
+        "manifest_type": "transshield_e2e_external_keep_mask_whole_forward_reference_v0",
+        "status": "plaintext_external_keep_mask_whole_forward_reference_not_secure",
+        "bundle_dir": str(bundle_dir),
+        "input_pt": str(input_pt),
+        "keep_mask_pt": str(keep_mask_pt),
+        "output_pt": str(output_pt) if output_pt is not None else None,
+        "device": args.device,
+        "sample_count": len(per_sample),
+        "static_depth_limit": int(args.static_depth_limit),
+        "effective_static_depth": int(outputs.get("static_depth", len(model.blocks))),
+        "threshold": threshold,
+        "finite_logits": bool(torch.isfinite(logits).all().item()),
+        "forward_scope": (
+            "student_patch_embed_blocks_head_with_external_runtime_pruning_keep_masks"
+        ),
+        "logits": tensor_stats(logits_cpu),
+        "cls_features": tensor_stats(cls_features_cpu),
+        "token_features": tensor_stats(token_features_cpu),
+        "final_active_token_count": {
+            "min": int(prev_decision_cpu.squeeze(-1).sum(dim=1).min().item()),
+            "max": int(prev_decision_cpu.squeeze(-1).sum(dim=1).max().item()),
+            "mean": float(prev_decision_cpu.squeeze(-1).sum(dim=1).float().mean().item()),
+        },
+        "pruning_trace": outputs["pruning_trace"],
+        "privacy_note": (
+            "This is a plaintext whole-forward replay using externally provided runtime pruning keep masks. "
+            "It is the immediate contract candidate for future SPU keep-mask injection."
+        ),
+        "per_sample": per_sample,
+    }
+    write_json(output_json, summary)
+    print(json.dumps(summary, indent=2, sort_keys=True))
 
 
 def compare_prediction_match(lhs, rhs):
@@ -931,6 +1317,7 @@ def build_parser():
     reference_parser.add_argument("--input-pt", required=True)
     reference_parser.add_argument("--device", default="cpu")
     reference_parser.add_argument("--output-json", required=True)
+    reference_parser.add_argument("--output-pt", default="")
     reference_parser.set_defaults(func=command_plaintext_reference)
 
     static_reference_parser = subparsers.add_parser(
@@ -942,7 +1329,45 @@ def build_parser():
     static_reference_parser.add_argument("--device", default="cpu")
     static_reference_parser.add_argument("--output-json", required=True)
     static_reference_parser.add_argument("--output-pt", default="")
+    static_reference_parser.add_argument("--static-depth-limit", type=int, default=-1)
     static_reference_parser.set_defaults(func=command_static_whole_forward_reference)
+
+    runtime_reference_parser = subparsers.add_parser(
+        "runtime-pruning-whole-forward-reference",
+        help="run a plaintext runtime-pruning whole-forward reference using student blocks/head plus DyViT eval pruning",
+    )
+    runtime_reference_parser.add_argument("--bundle-dir", default=str(DEFAULT_BUNDLE_DIR))
+    runtime_reference_parser.add_argument("--input-pt", required=True)
+    runtime_reference_parser.add_argument("--device", default="cpu")
+    runtime_reference_parser.add_argument("--output-json", required=True)
+    runtime_reference_parser.add_argument("--output-pt", default="")
+    runtime_reference_parser.add_argument("--static-depth-limit", type=int, default=-1)
+    runtime_reference_parser.set_defaults(func=command_runtime_pruning_whole_forward_reference)
+
+    keep_mask_export_parser = subparsers.add_parser(
+        "export-runtime-pruning-keep-mask-payload",
+        help="export plaintext runtime pruning keep masks as an explicit whole-forward replay payload",
+    )
+    keep_mask_export_parser.add_argument("--bundle-dir", default=str(DEFAULT_BUNDLE_DIR))
+    keep_mask_export_parser.add_argument("--input-pt", required=True)
+    keep_mask_export_parser.add_argument("--device", default="cpu")
+    keep_mask_export_parser.add_argument("--output-json", required=True)
+    keep_mask_export_parser.add_argument("--output-pt", required=True)
+    keep_mask_export_parser.add_argument("--static-depth-limit", type=int, default=-1)
+    keep_mask_export_parser.set_defaults(func=command_export_runtime_pruning_keep_mask_payload)
+
+    external_keep_mask_parser = subparsers.add_parser(
+        "external-keep-mask-whole-forward-reference",
+        help="run a plaintext whole-forward replay using externally provided runtime pruning keep masks",
+    )
+    external_keep_mask_parser.add_argument("--bundle-dir", default=str(DEFAULT_BUNDLE_DIR))
+    external_keep_mask_parser.add_argument("--input-pt", required=True)
+    external_keep_mask_parser.add_argument("--keep-mask-pt", required=True)
+    external_keep_mask_parser.add_argument("--device", default="cpu")
+    external_keep_mask_parser.add_argument("--output-json", required=True)
+    external_keep_mask_parser.add_argument("--output-pt", default="")
+    external_keep_mask_parser.add_argument("--static-depth-limit", type=int, default=-1)
+    external_keep_mask_parser.set_defaults(func=command_external_keep_mask_whole_forward_reference)
 
     compare_static_parser = subparsers.add_parser(
         "compare-static-whole-forward",

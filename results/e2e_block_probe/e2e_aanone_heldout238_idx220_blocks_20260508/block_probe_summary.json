@@ -1,0 +1,421 @@
+{
+  "blocks": [
+    {
+      "block_ordinal": 1,
+      "compare_json": "/data/wyb/Transshield_final/results/e2e_block_probe/e2e_aanone_heldout238_idx220_blocks_20260508/block1_probe_compare.json",
+      "debug_prediction_match": {
+        "argmax_match_ratio": 1.0,
+        "threshold_match_ratio": 1.0
+      },
+      "debug_prediction_match_is_full_candidate_safe": false,
+      "key_stage_errors": {
+        "attn_out_cls": {
+          "cosine_similarity": 0.9999982714653015,
+          "l2_error": 0.027454625815153122,
+          "max_abs_error": 0.006813168525695801,
+          "mean_abs_error": 0.0010498824995011091,
+          "reference_l2_norm": 10.802000999450684,
+          "relative_l2_error": 0.0025416240765529716
+        },
+        "attn_residual_out_cls": {
+          "cosine_similarity": 0.999999463558197,
+          "l2_error": 0.02757279947400093,
+          "max_abs_error": 0.0067920684814453125,
+          "mean_abs_error": 0.0010560114169493318,
+          "reference_l2_norm": 27.072072982788086,
+          "relative_l2_error": 0.0010184960527969615
+        },
+        "block_input_cls": {
+          "cosine_similarity": 0.9999999403953552,
+          "l2_error": 0.00031211820896714926,
+          "max_abs_error": 2.841651439666748e-05,
+          "mean_abs_error": 1.4515916518575978e-05,
+          "reference_l2_norm": 23.887096405029297,
+          "relative_l2_error": 1.306639382513793e-05
+        },
+        "block_output_cls": {
+          "cosine_similarity": 0.9999996423721313,
+          "l2_error": 1.4001195430755615,
+          "max_abs_error": 0.35253143310546875,
+          "mean_abs_error": 0.054430823773145676,
+          "reference_l2_norm": 347.5476379394531,
+          "relative_l2_error": 0.004028568720468412
+        },
+        "final_logits": {
+          "cosine_similarity": 0.9999991655349731,
+          "l2_error": 0.0020958269014954567,
+          "max_abs_error": 0.0016883611679077148,
+          "mean_abs_error": 0.0014650523662567139,
+          "reference_l2_norm": 0.7467049956321716,
+          "relative_l2_error": 0.002806766947797233
+        },
+        "final_norm_cls": {
+          "cosine_similarity": 0.9999979138374329,
+          "l2_error": 0.050425704568624496,
+          "max_abs_error": 0.010545134544372559,
+          "mean_abs_error": 0.0019760415889322758,
+          "reference_l2_norm": 14.275676727294922,
+          "relative_l2_error": 0.0035322812033289574
+        },
+        "final_probabilities": {
+          "cosine_similarity": 0.9999995231628418,
+          "l2_error": 0.0008161526639014482,
+          "max_abs_error": 0.0005771517753601074,
+          "mean_abs_error": 0.0005771070718765259,
+          "reference_l2_norm": 0.7786915898323059,
+          "relative_l2_error": 0.0010481077162746931
+        },
+        "mlp_out_cls": {
+          "cosine_similarity": 0.9999997615814209,
+          "l2_error": 1.3985685110092163,
+          "max_abs_error": 0.3532867431640625,
+          "mean_abs_error": 0.05445977672934532,
+          "reference_l2_norm": 350.1402587890625,
+          "relative_l2_error": 0.0039943093543315334
+        },
+        "norm1_out_cls": {
+          "cosine_similarity": 0.999999463558197,
+          "l2_error": 0.013443696312606335,
+          "max_abs_error": 0.011372089385986328,
+          "mean_abs_error": 0.0002918006794061512,
+          "reference_l2_norm": 6.342451095581055,
+          "relative_l2_error": 0.0021196373625920265
+        },
+        "norm2_out_cls": {
+          "cosine_similarity": 0.9999997615814209,
+          "l2_error": 0.0455692857503891,
+          "max_abs_error": 0.04428291320800781,
+          "mean_abs_error": 0.0004554901097435504,
+          "reference_l2_norm": 21.56245231628418,
+          "relative_l2_error": 0.0021133628532583335
+        }
+      },
+      "largest_stage": {
+        "cosine_similarity": 0.9999997615814209,
+        "l2_error": 1.3985685110092163,
+        "max_abs_error": 0.3532867431640625,
+        "mean_abs_error": 0.05445977672934532,
+        "name": "mlp_out_cls",
+        "reference_l2_norm": 350.1402587890625,
+        "relative_l2_error": 0.0039943093543315334
+      }
+    },
+    {
+      "block_ordinal": 6,
+      "compare_json": "/data/wyb/Transshield_final/results/e2e_block_probe/e2e_aanone_heldout238_idx220_blocks_20260508/block6_probe_compare.json",
+      "debug_prediction_match": {
+        "argmax_match_ratio": 1.0,
+        "threshold_match_ratio": 1.0
+      },
+      "debug_prediction_match_is_full_candidate_safe": false,
+      "key_stage_errors": {
+        "attn_out_cls": {
+          "cosine_similarity": 0.9999973773956299,
+          "l2_error": 0.0476207472383976,
+          "max_abs_error": 0.013031482696533203,
+          "mean_abs_error": 0.0018866123864427209,
+          "reference_l2_norm": 20.008798599243164,
+          "relative_l2_error": 0.0023799903328628066
+        },
+        "attn_residual_out_cls": {
+          "cosine_similarity": 0.9999993443489075,
+          "l2_error": 1.2579023838043213,
+          "max_abs_error": 0.268585205078125,
+          "mean_abs_error": 0.04851168394088745,
+          "reference_l2_norm": 363.1564025878906,
+          "relative_l2_error": 0.003463803404925197
+        },
+        "block_input_cls": {
+          "cosine_similarity": 0.9999994039535522,
+          "l2_error": 1.2632567882537842,
+          "max_abs_error": 0.26406097412109375,
+          "mean_abs_error": 0.04881967604160309,
+          "reference_l2_norm": 360.2106018066406,
+          "relative_l2_error": 0.003506995024349379
+        },
+        "block_output_cls": {
+          "cosine_similarity": 0.9999991655349731,
+          "l2_error": 1.249810814857483,
+          "max_abs_error": 0.27425384521484375,
+          "mean_abs_error": 0.04819953441619873,
+          "reference_l2_norm": 362.0129699707031,
+          "relative_l2_error": 0.0034523923685900737
+        },
+        "final_logits": {
+          "cosine_similarity": 0.9999983310699463,
+          "l2_error": 0.0031497986055910587,
+          "max_abs_error": 0.002466559410095215,
+          "mean_abs_error": 0.002212733030319214,
+          "reference_l2_norm": 0.7467049956321716,
+          "relative_l2_error": 0.00421826373737381
+        },
+        "final_norm_cls": {
+          "cosine_similarity": 0.9999969005584717,
+          "l2_error": 0.05149011313915253,
+          "max_abs_error": 0.010697722434997559,
+          "mean_abs_error": 0.002024897141382098,
+          "reference_l2_norm": 14.275676727294922,
+          "relative_l2_error": 0.0036068421919854803
+        },
+        "final_probabilities": {
+          "cosine_similarity": 0.999998927116394,
+          "l2_error": 0.0012330904137343168,
+          "max_abs_error": 0.0008719563484191895,
+          "mean_abs_error": 0.0008719265460968018,
+          "reference_l2_norm": 0.7786915898323059,
+          "relative_l2_error": 0.0015835414557384233
+        },
+        "mlp_out_cls": {
+          "cosine_similarity": 0.9999982714653015,
+          "l2_error": 0.03914279863238335,
+          "max_abs_error": 0.005751490592956543,
+          "mean_abs_error": 0.001560561708174646,
+          "reference_l2_norm": 19.74589729309082,
+          "relative_l2_error": 0.0019823256472664623
+        },
+        "norm1_out_cls": {
+          "cosine_similarity": 0.9999995231628418,
+          "l2_error": 0.02324611321091652,
+          "max_abs_error": 0.006847858428955078,
+          "mean_abs_error": 0.0009158957400359213,
+          "reference_l2_norm": 16.12911033630371,
+          "relative_l2_error": 0.0014412520421906794
+        },
+        "norm2_out_cls": {
+          "cosine_similarity": 0.9999990463256836,
+          "l2_error": 0.03208407387137413,
+          "max_abs_error": 0.017553210258483887,
+          "mean_abs_error": 0.0010787065839394927,
+          "reference_l2_norm": 19.522510528564453,
+          "relative_l2_error": 0.001643439957398418
+        }
+      },
+      "largest_stage": {
+        "cosine_similarity": 0.9999991655349731,
+        "l2_error": 1.249810814857483,
+        "max_abs_error": 0.27425384521484375,
+        "mean_abs_error": 0.04819953441619873,
+        "name": "block_output_cls",
+        "reference_l2_norm": 362.0129699707031,
+        "relative_l2_error": 0.0034523923685900737
+      }
+    },
+    {
+      "block_ordinal": 9,
+      "compare_json": "/data/wyb/Transshield_final/results/e2e_block_probe/e2e_aanone_heldout238_idx220_blocks_20260508/block9_probe_compare.json",
+      "debug_prediction_match": {
+        "argmax_match_ratio": 1.0,
+        "threshold_match_ratio": 1.0
+      },
+      "debug_prediction_match_is_full_candidate_safe": false,
+      "key_stage_errors": {
+        "attn_out_cls": {
+          "cosine_similarity": 0.9999992251396179,
+          "l2_error": 0.05378923937678337,
+          "max_abs_error": 0.014854192733764648,
+          "mean_abs_error": 0.0021188652608543634,
+          "reference_l2_norm": 38.55229949951172,
+          "relative_l2_error": 0.0013952277834287066
+        },
+        "attn_residual_out_cls": {
+          "cosine_similarity": 0.9999982714653015,
+          "l2_error": 1.4981334209442139,
+          "max_abs_error": 0.3603954315185547,
+          "mean_abs_error": 0.05721097066998482,
+          "reference_l2_norm": 386.4488220214844,
+          "relative_l2_error": 0.0038766670657904762
+        },
+        "block_input_cls": {
+          "cosine_similarity": 0.9999983310699463,
+          "l2_error": 1.4997870922088623,
+          "max_abs_error": 0.35936737060546875,
+          "mean_abs_error": 0.05733700469136238,
+          "reference_l2_norm": 382.7998962402344,
+          "relative_l2_error": 0.003917940174329719
+        },
+        "block_output_cls": {
+          "cosine_similarity": 0.9999974370002747,
+          "l2_error": 2.1091232299804688,
+          "max_abs_error": 0.8582305908203125,
+          "mean_abs_error": 0.07696125656366348,
+          "reference_l2_norm": 454.0759582519531,
+          "relative_l2_error": 0.0046448687530163835
+        },
+        "final_logits": {
+          "cosine_similarity": 0.999997615814209,
+          "l2_error": 0.0035942040849477053,
+          "max_abs_error": 0.002863287925720215,
+          "mean_abs_error": 0.002517908811569214,
+          "reference_l2_norm": 0.7467049956321716,
+          "relative_l2_error": 0.00481341909585699
+        },
+        "final_norm_cls": {
+          "cosine_similarity": 0.9999951720237732,
+          "l2_error": 0.06317408382892609,
+          "max_abs_error": 0.013581633567810059,
+          "mean_abs_error": 0.00248205685056746,
+          "reference_l2_norm": 14.275676727294922,
+          "relative_l2_error": 0.004425295209167773
+        },
+        "final_probabilities": {
+          "cosine_similarity": 0.9999986886978149,
+          "l2_error": 0.0014033635379746556,
+          "max_abs_error": 0.0009923577308654785,
+          "mean_abs_error": 0.0009923279285430908,
+          "reference_l2_norm": 0.7786915898323059,
+          "relative_l2_error": 0.0018022071334774209
+        },
+        "mlp_out_cls": {
+          "cosine_similarity": 0.999997079372406,
+          "l2_error": 1.3355151414871216,
+          "max_abs_error": 0.6932601928710938,
+          "mean_abs_error": 0.04760931804776192,
+          "reference_l2_norm": 175.7541961669922,
+          "relative_l2_error": 0.00759876674704362
+        },
+        "norm1_out_cls": {
+          "cosine_similarity": 0.9999985694885254,
+          "l2_error": 0.037557899951934814,
+          "max_abs_error": 0.007844686508178711,
+          "mean_abs_error": 0.0014908136799931526,
+          "reference_l2_norm": 19.119373321533203,
+          "relative_l2_error": 0.0019643896962687167
+        },
+        "norm2_out_cls": {
+          "cosine_similarity": 0.9999987483024597,
+          "l2_error": 0.13570918142795563,
+          "max_abs_error": 0.03732776641845703,
+          "mean_abs_error": 0.005181203130632639,
+          "reference_l2_norm": 49.493892669677734,
+          "relative_l2_error": 0.002741937926234228
+        }
+      },
+      "largest_stage": {
+        "cosine_similarity": 0.9999974370002747,
+        "l2_error": 2.1091232299804688,
+        "max_abs_error": 0.8582305908203125,
+        "mean_abs_error": 0.07696125656366348,
+        "name": "block_output_cls",
+        "reference_l2_norm": 454.0759582519531,
+        "relative_l2_error": 0.0046448687530163835
+      }
+    },
+    {
+      "block_ordinal": 12,
+      "compare_json": "/data/wyb/Transshield_final/results/e2e_block_probe/e2e_aanone_heldout238_idx220_blocks_20260508/block12_probe_compare.json",
+      "debug_prediction_match": {
+        "argmax_match_ratio": 1.0,
+        "threshold_match_ratio": 1.0
+      },
+      "debug_prediction_match_is_full_candidate_safe": false,
+      "key_stage_errors": {
+        "attn_out_cls": {
+          "cosine_similarity": 0.9999984502792358,
+          "l2_error": 0.039839744567871094,
+          "max_abs_error": 0.008398056030273438,
+          "mean_abs_error": 0.0016176648205146194,
+          "reference_l2_norm": 21.773347854614258,
+          "relative_l2_error": 0.0018297482240163707
+        },
+        "attn_residual_out_cls": {
+          "cosine_similarity": 0.9999980926513672,
+          "l2_error": 3.492434024810791,
+          "max_abs_error": 2.17681884765625,
+          "mean_abs_error": 0.11192793399095535,
+          "reference_l2_norm": 729.7255859375,
+          "relative_l2_error": 0.004785955285265156
+        },
+        "block_input_cls": {
+          "cosine_similarity": 0.9999979138374329,
+          "l2_error": 3.498577833175659,
+          "max_abs_error": 2.185211181640625,
+          "mean_abs_error": 0.11201765388250351,
+          "reference_l2_norm": 722.83251953125,
+          "relative_l2_error": 0.004840094681191784
+        },
+        "block_output_cls": {
+          "cosine_similarity": 0.9999983310699463,
+          "l2_error": 3.710557460784912,
+          "max_abs_error": 2.46856689453125,
+          "mean_abs_error": 0.11385180801153183,
+          "reference_l2_norm": 903.7521362304688,
+          "relative_l2_error": 0.004105724691574804
+        },
+        "final_logits": {
+          "cosine_similarity": 0.9999984502792358,
+          "l2_error": 0.0035852999426424503,
+          "max_abs_error": 0.002634406089782715,
+          "mean_abs_error": 0.002533167600631714,
+          "reference_l2_norm": 0.7467049956321716,
+          "relative_l2_error": 0.00480149451739918
+        },
+        "final_norm_cls": {
+          "cosine_similarity": 0.9999964237213135,
+          "l2_error": 0.05084492266178131,
+          "max_abs_error": 0.011247038841247559,
+          "mean_abs_error": 0.002006626222282648,
+          "reference_l2_norm": 14.275676727294922,
+          "relative_l2_error": 0.0035616471031854084
+        },
+        "final_probabilities": {
+          "cosine_similarity": 0.9999986290931702,
+          "l2_error": 0.0014118561521172523,
+          "max_abs_error": 0.000998377799987793,
+          "mean_abs_error": 0.0009983330965042114,
+          "reference_l2_norm": 0.7786915898323059,
+          "relative_l2_error": 0.001813113395023697
+        },
+        "mlp_out_cls": {
+          "cosine_similarity": 0.9999997615814209,
+          "l2_error": 0.4433279037475586,
+          "max_abs_error": 0.3046417236328125,
+          "mean_abs_error": 0.0069820270873606205,
+          "reference_l2_norm": 247.50064086914062,
+          "relative_l2_error": 0.0017912192153957146
+        },
+        "norm1_out_cls": {
+          "cosine_similarity": 0.9999958276748657,
+          "l2_error": 0.04837708920240402,
+          "max_abs_error": 0.011921882629394531,
+          "mean_abs_error": 0.0018653530860319734,
+          "reference_l2_norm": 11.6713228225708,
+          "relative_l2_error": 0.004144953398842598
+        },
+        "norm2_out_cls": {
+          "cosine_similarity": 0.9999971389770508,
+          "l2_error": 0.0614984929561615,
+          "max_abs_error": 0.014786720275878906,
+          "mean_abs_error": 0.002388547407463193,
+          "reference_l2_norm": 17.076004028320312,
+          "relative_l2_error": 0.003601456924826623
+        }
+      },
+      "largest_stage": {
+        "cosine_similarity": 0.9999983310699463,
+        "l2_error": 3.710557460784912,
+        "max_abs_error": 2.46856689453125,
+        "mean_abs_error": 0.11385180801153183,
+        "name": "block_output_cls",
+        "reference_l2_norm": 903.7521362304688,
+        "relative_l2_error": 0.004105724691574804
+      }
+    }
+  ],
+  "input_dir": "/data/wyb/Transshield_final/results/e2e_block_probe/e2e_aanone_heldout238_idx220_blocks_20260508",
+  "interpretation": {
+    "block_output_max_abs_growth_first_to_last": 7.002402233427835,
+    "debug_graph_warning": "Probe prediction_match fields describe only the debug probe graph and are not full candidate decisions.",
+    "max_debug_final_logits_abs_error": 0.002863287925720215,
+    "min_attn_out_cls_cosine": 0.9999973773956299,
+    "reason": "Block sweep on the selected sample shows high cosine alignment at every probed block, while block_output_cls max-abs drift grows toward late blocks. This supports cumulative numeric offset/amplitude drift plus insufficient boundary robustness, not a large attention-direction mismatch.",
+    "status": "late_block_cumulative_numeric_drift_with_high_cosine_alignment"
+  },
+  "label": "e2e_aanone_heldout238_idx220_high_margin_wrong_block_probe_20260508",
+  "manifest_type": "transshield_e2e_block_sweep_summary_v0",
+  "sample": {
+    "bias_score": -0.6412200927734375,
+    "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00445.png",
+    "label": "heldout238_idx220_spuaware_high_margin_wrong",
+    "target": 1
+  }
+}

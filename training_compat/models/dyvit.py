@@ -301,6 +301,14 @@ class Attention(nn.Module):
         qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]   # make torchscript happy (cannot use tensor as tuple)
 
+        if self.use_approx_attn and self.approx_attn_mode == 'uniform':
+            mean_value = v.mean(dim=2, keepdim=True)
+            attn_out = mean_value.expand(B, self.num_heads, N, C // self.num_heads)
+            x = attn_out.transpose(1, 2).reshape(B, N, C)
+            x = self.proj(x)
+            x = self.proj_drop(x)
+            return x
+
         attn = (q @ k.transpose(-2, -1)) * self.scale
 
         if self.use_approx_attn:
@@ -525,7 +533,8 @@ class VisionTransformerDiffPruning(nn.Module):
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0., hybrid_backbone=None, norm_layer=None, 
                  pruning_loc=None, token_ratio=None, distill=False, act_layer='square',
                  use_mask_pruning=False, use_approx_attn=False, approx_attn_mode='relu',
-                 fp32_attention=False, nonempty_keep_guard=False):
+                 fp32_attention=False, nonempty_keep_guard=False,
+                 secure_static_depth=0, secure_static_skip_pruning=True):
         """
         Args:
             img_size (int, tuple): input image size
@@ -601,6 +610,8 @@ class VisionTransformerDiffPruning(nn.Module):
         self.use_approx_attn = use_approx_attn
         self.approx_attn_mode = approx_attn_mode
         self.nonempty_keep_guard = bool(nonempty_keep_guard)
+        self.secure_static_depth = int(secure_static_depth or 0)
+        self.secure_static_skip_pruning = bool(secure_static_skip_pruning)
         self.debug_nan = False
         self.debug_context = ""
         self._debug_tensor_logged = set()
@@ -804,13 +815,18 @@ class VisionTransformerDiffPruning(nn.Module):
 
         p_count = 0
         out_pred_prob = []
+        pruning_stage_reports = []
         init_n = 14 * 14
         prev_decision = torch.ones(B, init_n, 1, dtype=x.dtype, device=x.device)
         policy = torch.ones(B, init_n + 1, 1, dtype=x.dtype, device=x.device)
         self._check_finite('prev_decision_init', prev_decision)
         self._check_finite('policy_init', policy)
-        for i, blk in enumerate(self.blocks):
-            if i in self.pruning_loc:
+        block_limit = len(self.blocks)
+        secure_static_mode = self.secure_static_depth > 0
+        if secure_static_mode:
+            block_limit = max(0, min(self.secure_static_depth, len(self.blocks)))
+        for i, blk in enumerate(list(self.blocks)[:block_limit]):
+            if (not secure_static_mode or not self.secure_static_skip_pruning) and i in self.pruning_loc:
                 if self.use_mask_pruning:
                     x = self._apply_spatial_mask(x, prev_decision)
                     self._check_finite(f'block_{i}_masked_input', x)
@@ -820,6 +836,16 @@ class VisionTransformerDiffPruning(nn.Module):
                 self._debug_log_tensor(f'predictor_{p_count}_pred_score', pred_score)
                 self._check_finite(f'predictor_{p_count}_pred_score', pred_score)
                 if self.training:
+                    if getattr(self, 'collect_pruning_diagnostics', False):
+                        pruning_stage_reports.append(
+                            {
+                                'stage_index': p_count,
+                                'pruning_layer': i,
+                                'keep_count': int(init_n * self.token_ratio[p_count]),
+                                'keep_log_score': pred_score[:, :, 0],
+                                'active_before': prev_decision.squeeze(-1) > 0,
+                            }
+                        )
                     hard_keep_decision = F.gumbel_softmax(pred_score, hard=True)[:, :, 0:1] * prev_decision
                     hard_keep_decision = self._ensure_non_empty_keep_decision(
                         hard_keep_decision, pred_score, prev_decision, p_count
@@ -883,9 +909,16 @@ class VisionTransformerDiffPruning(nn.Module):
         x = self.head(x)
         self._check_finite('head_output', x)
         if self.training:
+            pruning_diagnostics = None
+            if getattr(self, 'collect_pruning_diagnostics', False):
+                pruning_diagnostics = {'stage_reports': pruning_stage_reports}
             if self.distill:
+                if pruning_diagnostics is not None:
+                    return x, features, prev_decision.detach(), out_pred_prob, pruning_diagnostics
                 return x, features, prev_decision.detach(), out_pred_prob
             else:
+                if pruning_diagnostics is not None:
+                    return x, out_pred_prob, pruning_diagnostics
                 return x, out_pred_prob
         else:
             return x

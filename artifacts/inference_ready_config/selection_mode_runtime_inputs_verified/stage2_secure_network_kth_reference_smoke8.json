@@ -1,26 +1,27 @@
 {
-  "bundle_dir": "/home/yclcg/Transshield_final/artifacts/frozen_candidates/tracka_lr3e5_timm_best_20260414",
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
   "constraints": {
+    "export_suite_single_forward_pass": true,
     "model_semantics_changed": false,
     "sidecar_is_read_only_reference": true,
     "source_compare_network": false,
     "source_reference_topk": true
   },
-  "data_path": "/home/yclcg/DynamicViT_exp_square/data/pneumoniamnist_imagefolder_subset/val",
-  "output_pt": "/home/yclcg/Transshield_final/artifacts/inference_ready_config/selection_mode_runtime_inputs_verified/stage2_secure_network_kth_reference_smoke8.pt",
+  "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+  "output_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/delivery_line_suite_20260505_clean/stage2_secure_network_kth_reference_smoke8.pt",
   "sample_count": 524,
   "selection_mode": "imagefolder",
   "stages": [
     {
       "keep_count": 137,
       "kth_threshold": {
-        "max": -0.29254230856895447,
-        "mean": -0.3931889235973358,
-        "min": -0.5813710689544678,
+        "max": -0.69109708070755,
+        "mean": -0.6910973787307739,
+        "min": -0.6910982131958008,
         "shape": [
           524
         ],
-        "std": 0.06549137085676193
+        "std": 2.940265630968497e-07
       },
       "pruning_layer": 3,
       "stage_index": 0
@@ -28,13 +29,13 @@
     {
       "keep_count": 96,
       "kth_threshold": {
-        "max": -0.6815307140350342,
-        "mean": -0.6838375926017761,
-        "min": -0.6877274513244629,
+        "max": -0.6924898624420166,
+        "mean": -0.6924898028373718,
+        "min": -0.6924898624420166,
         "shape": [
           524
         ],
-        "std": 0.0012783701531589031
+        "std": 5.960464477539063e-08
       },
       "pruning_layer": 6,
       "stage_index": 1
@@ -42,13 +43,13 @@
     {
       "keep_count": 67,
       "kth_threshold": {
-        "max": -0.31268543004989624,
-        "mean": -0.34670892357826233,
-        "min": -0.40869230031967163,
+        "max": -0.690166711807251,
+        "mean": -0.6901673674583435,
+        "min": -0.6901677846908569,
         "shape": [
           524
         ],
-        "std": 0.022110046818852425
+        "std": 2.4633490625092236e-07
       },
       "pruning_layer": 9,
       "stage_index": 2

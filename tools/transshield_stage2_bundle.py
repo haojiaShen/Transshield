@@ -25,22 +25,43 @@ def load_json(path: Path):
 def build_model_from_args_snapshot(args_snapshot: dict):
     base_rate = float(args_snapshot['base_rate'])
     keep_rate = [base_rate, base_rate ** 2, base_rate ** 3]
+    
+    # Read architecture parameters from args_snapshot (support both teacher and student models)
+    embed_dim = int(args_snapshot.get('embed_dim', 384))
+    depth = int(args_snapshot.get('depth', 12))
+    num_heads = int(args_snapshot.get('num_heads', 6))
+    mlp_ratio = int(args_snapshot.get('mlp_ratio', 4))
+    
+    # Calculate pruning_loc based on depth (default: every 3 blocks)
+    default_pruning_loc = list(range(3, depth, 3))
+    pruning_loc = args_snapshot.get('pruning_loc', default_pruning_loc)
+    if isinstance(pruning_loc, list) and len(pruning_loc) > 3:
+        pruning_loc = pruning_loc[:3]
+    
+    # Handle token_ratio - use fixed ratios if specified, otherwise use base_rate
+    token_ratio = args_snapshot.get('token_ratio', keep_rate)
+    if isinstance(token_ratio, list) and len(token_ratio) == 3 and all(r == 1.0 for r in token_ratio):
+        # Student model with no pruning (token_ratio=[1.0, 1.0, 1.0])
+        pass
+    else:
+        token_ratio = keep_rate
+    
     return VisionTransformerDiffPruning(
-        patch_size=16,
-        embed_dim=384,
-        depth=12,
-        num_heads=6,
-        mlp_ratio=4,
-        qkv_bias=True,
+        patch_size=int(args_snapshot.get('patch_size', 16)),
+        embed_dim=embed_dim,
+        depth=depth,
+        num_heads=num_heads,
+        mlp_ratio=mlp_ratio,
+        qkv_bias=bool(args_snapshot.get('qkv_bias', True)),
         num_classes=int(args_snapshot['nb_classes']),
-        pruning_loc=[3, 6, 9],
-        token_ratio=keep_rate,
-        distill=True,
-        act_layer=args_snapshot['square_activation_mode'] if args_snapshot['use_square_gelu'] else 'gelu',
-        use_mask_pruning=bool(args_snapshot['use_mask_pruning']),
-        use_approx_attn=bool(args_snapshot['use_approx_attn']),
-        approx_attn_mode=args_snapshot['approx_attn_mode'],
-        fp32_attention=True,
+        pruning_loc=pruning_loc,
+        token_ratio=token_ratio,
+        distill=bool(args_snapshot.get('distill', True)),
+        act_layer=args_snapshot.get('square_activation_mode', 'fixed_square') if args_snapshot.get('use_square_gelu', True) else 'gelu',
+        use_mask_pruning=bool(args_snapshot.get('use_mask_pruning', False)),
+        use_approx_attn=bool(args_snapshot.get('use_approx_attn', True)),
+        approx_attn_mode=args_snapshot.get('approx_attn_mode', 'uniform'),
+        fp32_attention=bool(args_snapshot.get('fp32_attention', True)),
         eval_pruning_mode=args_snapshot.get('eval_pruning_mode', 'topk_argsort'),
         eval_tie_policy=args_snapshot.get('eval_tie_policy', 'lowest_index'),
     )
@@ -61,8 +82,27 @@ def build_eval_transform_from_args_snapshot(args_snapshot: dict):
     return build_transform(is_train=False, args=transform_args)
 
 
+def resolve_threshold_payload(bundle_dir: Path):
+    bundle_dir = Path(bundle_dir).resolve()
+    threshold_path = bundle_dir / 'threshold_best.json'
+    if threshold_path.exists() and not threshold_path.is_symlink():
+        return load_json(threshold_path)
+    if threshold_path.exists():
+        try:
+            return load_json(threshold_path.resolve())
+        except FileNotFoundError:
+            pass
+    manifest_path = bundle_dir / 'manifest.json'
+    if manifest_path.exists():
+        manifest = load_json(manifest_path)
+        threshold_metrics = ((manifest.get('primary') or {}).get('threshold_metrics') or {})
+        if threshold_metrics:
+            return threshold_metrics
+    raise FileNotFoundError(f'Cannot resolve threshold_best.json from {bundle_dir}')
+
+
 def resolve_threshold(bundle_dir: Path, threshold_override=None):
-    threshold_json = load_json(bundle_dir / 'threshold_best.json')
+    threshold_json = resolve_threshold_payload(bundle_dir)
     if threshold_override is None:
         return threshold_json.get('eval_binary_threshold')
     return threshold_override
@@ -148,6 +188,7 @@ def load_frozen_bundle(bundle_dir, device='cpu'):
     return {
         'bundle_dir': bundle_dir,
         'args_snapshot': args_snapshot,
+        'model_state_dict_path': state_dict_path,
         'model': model,
         'transform': transform,
     }

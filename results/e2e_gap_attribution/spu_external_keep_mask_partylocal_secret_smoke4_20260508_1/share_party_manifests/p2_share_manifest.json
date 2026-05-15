@@ -1,0 +1,24 @@
+{
+  "manifest_type": "transshield_e2e_debug_float_additive_share_party_manifest_v0",
+  "party_id": "P2",
+  "privacy_status": "debug_party_share_manifest_only; this manifest must not include the other party share path",
+  "public_manifest_json": "/data/wyb/Transshield_final/results/e2e_gap_attribution/spu_external_keep_mask_partylocal_secret_smoke4_20260508_1/client_pixel_values_debug_share_public_manifest.json",
+  "sample_count": 4,
+  "sample_ids": [
+    "sample_000000",
+    "sample_000001",
+    "sample_000002",
+    "sample_000003"
+  ],
+  "share_count": 2,
+  "share_dtype": "torch.float32",
+  "share_path": "/data/wyb/Transshield_final/results/e2e_gap_attribution/spu_external_keep_mask_partylocal_secret_smoke4_20260508_1/client_pixel_values_debug_share_p2_share.pt",
+  "share_rank": 1,
+  "share_semantics": "debug_float_additive_share_not_production_mpc_share",
+  "share_shape": [
+    4,
+    3,
+    224,
+    224
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "configured_objective": {
+    "batch_size": "32",
+    "debug_max_steps": "0",
+    "epochs": "5",
+    "pruning_margin_mode": "hinge",
+    "pruning_margin_stage_weights": null,
+    "pruning_margin_start_epoch": "0",
+    "pruning_margin_target": "1e-4",
+    "pruning_margin_weight": "0.0",
+    "secure_static_skip_pruning": "false",
+    "secure_static_train_depth": "12"
+  },
+  "global_status_counts": {},
+  "inputs": {
+    "command_sh": "/data/wyb/Transshield_final/artifacts/train_runs/protocol_aware_pair_epoch5_20260506_focused5_baseline/command.sh",
+    "recipe_json": null,
+    "selected_profile": null,
+    "train_log": "/data/wyb/Transshield_final/artifacts/train_runs/protocol_aware_pair_epoch5_20260506_focused5_baseline/train_stdout.log"
+  },
+  "interpretation": {
+    "reason": "loss info lines exist, but margin_stats is empty/none in the parsed window.",
+    "status": "loss_info_present_but_no_stage_margin_stats"
+  },
+  "log_summary": {
+    "loss_info_line_count": 7,
+    "max_pruning_margin": 0.0,
+    "mean_pruning_margin": 0.0,
+    "nonzero_pruning_margin_line_count": 0,
+    "stage_margin_line_count": 0
+  },
+  "manifest_type": "transshield_pruning_margin_log_report_v0",
+  "recipe_comparison": null,
+  "stage_summaries": {}
+}

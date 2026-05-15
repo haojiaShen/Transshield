@@ -1,0 +1,21 @@
+{
+  "bias": 0.5852264595359804,
+  "manifest_type": "transshield_e2e_output_calibration_v0",
+  "note": "Equivalent to adding the public scalar to class-1 logit before argmax; compatible with --output-calibration-json in the E2E OpenBumbleBee runner.",
+  "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+  "source_eval_binary_threshold": 0.3577311038970947,
+  "source_public_logit_bias_report": {
+    "label": "secure_static_accprof_epoch8_20260507_aanone_1",
+    "plaintext_eval_csv": "/home/yclcg/Transshield_final/results/accuracy_profile_imbalance/secure_static_accprof_epoch8_20260507_aanone_1/plaintext_eval.csv",
+    "plaintext_eval_json": "/home/yclcg/Transshield_final/results/accuracy_profile_imbalance/secure_static_accprof_epoch8_20260507_aanone_1/plaintext_eval.json",
+    "sample_count": 524,
+    "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+    "status": "public_bias_recovers_threshold_argmax",
+    "threshold_json": "/home/yclcg/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch8_20260507_aanone_1/threshold_eval.json"
+  },
+  "threshold": 0.5,
+  "weights": [
+    -1.0,
+    1.0
+  ]
+}

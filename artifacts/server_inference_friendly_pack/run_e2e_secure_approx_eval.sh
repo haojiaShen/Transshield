@@ -9,13 +9,16 @@ REPO_ROOT="${REPO_ROOT:-$(cd "$SCRIPT_DIR/../.." && pwd)}"
 cd "$REPO_ROOT"
 
 PYTHON_BIN="${PYTHON_BIN:-python}"
-BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_verified_tracka_lr3e5_20260414}"
+BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430}"
 RUN_NAME="${RUN_NAME:-transshield_e2e_approx_eval_$(date +%Y%m%d_%H%M%S)}"
-E2E_EVAL_DATASET_DIR="${E2E_EVAL_DATASET_DIR:-/data/wyb/pneumoniamnist_imagefolder_subset/val}"
+E2E_EVAL_DATASET_DIR="${E2E_EVAL_DATASET_DIR:-${DATA_ROOT:-/data/wyb/pneumoniamnist_imagefolder_subset}/val}"
 E2E_EVAL_MAX_SAMPLES="${E2E_EVAL_MAX_SAMPLES:-8}"
 E2E_RUN_DIR="${E2E_RUN_DIR:-$REPO_ROOT/artifacts/server_pipeline_run/$RUN_NAME/e2e_secure_poc}"
 E2E_EVAL_IMAGE_LIST="${E2E_EVAL_IMAGE_LIST:-$E2E_RUN_DIR/e2e_eval_images.txt}"
+E2E_EVAL_LIST_STRATEGY="${E2E_EVAL_LIST_STRATEGY:-balanced_head}"
 E2E_EVAL_METRICS_JSON="${E2E_EVAL_METRICS_JSON:-$E2E_RUN_DIR/e2e_approx_eval_metrics.json}"
+E2E_PLAINTEXT_STATIC_GAP_JSON="${E2E_PLAINTEXT_STATIC_GAP_JSON:-$E2E_RUN_DIR/plaintext_static_gap.json}"
+E2E_PLAINTEXT_STATIC_GAP_MD="${E2E_PLAINTEXT_STATIC_GAP_MD:-$E2E_RUN_DIR/plaintext_static_gap.md}"
 E2E_PREPROCESS_TIMEOUT_SEC="${E2E_PREPROCESS_TIMEOUT_SEC:-180}"
 E2E_PLAINTEXT_TIMEOUT_SEC="${E2E_PLAINTEXT_TIMEOUT_SEC:-300}"
 E2E_SHARE_PREPROCESS_TIMEOUT_SEC="${E2E_SHARE_PREPROCESS_TIMEOUT_SEC:-180}"
@@ -108,14 +111,86 @@ generate_eval_image_list() {
     class1_list="${E2E_EVAL_IMAGE_LIST}.class1.tmp"
     find "$E2E_EVAL_DATASET_DIR/0" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) | sort > "$class0_list"
     find "$E2E_EVAL_DATASET_DIR/1" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) | sort > "$class1_list"
-    head -n "$half" "$class0_list" > "$E2E_EVAL_IMAGE_LIST"
-    head -n "$remainder" "$class1_list" >> "$E2E_EVAL_IMAGE_LIST"
+    case "$E2E_EVAL_LIST_STRATEGY" in
+      balanced_head)
+        head -n "$half" "$class0_list" > "$E2E_EVAL_IMAGE_LIST"
+        head -n "$remainder" "$class1_list" >> "$E2E_EVAL_IMAGE_LIST"
+        ;;
+      balanced_evenly_spaced)
+        "$PYTHON_BIN" - "$class0_list" "$class1_list" "$half" "$remainder" "$E2E_EVAL_IMAGE_LIST" <<'PY'
+import sys
+from pathlib import Path
+
+
+def select_evenly(items, count):
+    if count <= 0:
+        return []
+    if count >= len(items):
+        return items[:]
+    if count == 1:
+        return [items[len(items) // 2]]
+    positions = [round(index * (len(items) - 1) / (count - 1)) for index in range(count)]
+    selected = []
+    seen = set()
+    for pos in positions:
+        pos = max(0, min(len(items) - 1, int(pos)))
+        while pos in seen and pos + 1 < len(items):
+            pos += 1
+        while pos in seen and pos - 1 >= 0:
+            pos -= 1
+        if pos not in seen:
+            seen.add(pos)
+            selected.append(items[pos])
+    return selected[:count]
+
+
+class0 = Path(sys.argv[1]).read_text(encoding="utf-8").splitlines()
+class1 = Path(sys.argv[2]).read_text(encoding="utf-8").splitlines()
+half = int(sys.argv[3])
+remainder = int(sys.argv[4])
+out = Path(sys.argv[5])
+items = select_evenly(class0, half) + select_evenly(class1, remainder)
+out.write_text("\n".join(items) + ("\n" if items else ""), encoding="utf-8")
+PY
+        ;;
+      *)
+        echo "[e2e-approx-eval] unsupported E2E_EVAL_LIST_STRATEGY=$E2E_EVAL_LIST_STRATEGY" >&2
+        exit 2
+        ;;
+    esac
     rm -f "$class0_list" "$class1_list"
   else
     local all_list
     all_list="${E2E_EVAL_IMAGE_LIST}.all.tmp"
     find "$E2E_EVAL_DATASET_DIR" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) | sort > "$all_list"
-    head -n "$E2E_EVAL_MAX_SAMPLES" "$all_list" > "$E2E_EVAL_IMAGE_LIST"
+    case "$E2E_EVAL_LIST_STRATEGY" in
+      balanced_head|head)
+        head -n "$E2E_EVAL_MAX_SAMPLES" "$all_list" > "$E2E_EVAL_IMAGE_LIST"
+        ;;
+      balanced_evenly_spaced|evenly_spaced)
+        "$PYTHON_BIN" - "$all_list" "$E2E_EVAL_MAX_SAMPLES" "$E2E_EVAL_IMAGE_LIST" <<'PY'
+import sys
+from pathlib import Path
+
+items = Path(sys.argv[1]).read_text(encoding="utf-8").splitlines()
+count = int(sys.argv[2])
+out = Path(sys.argv[3])
+if count <= 0:
+    selected = []
+elif count >= len(items):
+    selected = items
+elif count == 1:
+    selected = [items[len(items) // 2]]
+else:
+    selected = [items[round(index * (len(items) - 1) / (count - 1))] for index in range(count)]
+out.write_text("\n".join(selected) + ("\n" if selected else ""), encoding="utf-8")
+PY
+        ;;
+      *)
+        echo "[e2e-approx-eval] unsupported E2E_EVAL_LIST_STRATEGY=$E2E_EVAL_LIST_STRATEGY" >&2
+        exit 2
+        ;;
+    esac
     rm -f "$all_list"
   fi
 }
@@ -131,6 +206,7 @@ if [[ "$sample_count" -le 0 ]]; then
 fi
 echo "[e2e-approx-eval] image_list=$E2E_EVAL_IMAGE_LIST"
 echo "[e2e-approx-eval] sample_count=$sample_count"
+echo "[e2e-approx-eval] list_strategy=$E2E_EVAL_LIST_STRATEGY"
 cat "$E2E_EVAL_IMAGE_LIST"
 
 SHARE_PREFIX="$E2E_RUN_DIR/client_pixel_values_debug_share"
@@ -140,6 +216,8 @@ SHARE_PARTY_DIR="$E2E_RUN_DIR/client_pixel_values_debug_share_party_manifests"
 PLAINTEXT_INPUT_PT="$E2E_RUN_DIR/plaintext_same_images_pixel_values.pt"
 PLAINTEXT_INPUT_JSON="$E2E_RUN_DIR/plaintext_same_images_pixel_values.json"
 PLAINTEXT_REFERENCE_JSON="$E2E_RUN_DIR/plaintext_same_images_reference.json"
+STATIC_REFERENCE_JSON="$E2E_RUN_DIR/static_whole_forward_reference.json"
+STATIC_REFERENCE_PT="$E2E_RUN_DIR/static_whole_forward_reference.pt"
 CALIB_JSON="${E2E_SPU_LAYER_NORM_CALIBRATION_JSON:-$E2E_RUN_DIR/e2e_public_layer_norm_calibration_depth12_${E2E_SPU_ATTENTION_POLICY}_${E2E_SPU_ACTIVATION_OVERRIDE}_${E2E_SPU_ACTIVATION_CLIP_TAG}.json}"
 CANDIDATE_PT="${E2E_CANDIDATE_PT:-$E2E_RUN_DIR/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_${E2E_SPU_ATTENTION_POLICY}_${E2E_SPU_ACTIVATION_OVERRIDE}_${E2E_SPU_ACTIVATION_CLIP_TAG}_eval.pt}"
 CANDIDATE_JSON="${E2E_CANDIDATE_JSON:-$E2E_RUN_DIR/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_${E2E_SPU_ATTENTION_POLICY}_${E2E_SPU_ACTIVATION_OVERRIDE}_${E2E_SPU_ACTIVATION_CLIP_TAG}_eval.json}"
@@ -160,6 +238,14 @@ run_step_with_timeout "original plaintext reference" "$E2E_PLAINTEXT_TIMEOUT_SEC
   --device "${PLAINTEXT_EVAL_DEVICE:-cpu}" \
   --output-json "$PLAINTEXT_REFERENCE_JSON"
 
+run_step_with_timeout "static whole-forward reference" "$E2E_PLAINTEXT_TIMEOUT_SEC" \
+  "$PYTHON_BIN" tools/transshield_e2e_secure_infer.py static-whole-forward-reference \
+  --bundle-dir "$BUNDLE_DIR" \
+  --input-pt "$PLAINTEXT_INPUT_PT" \
+  --device "${PLAINTEXT_EVAL_DEVICE:-cpu}" \
+  --output-json "$STATIC_REFERENCE_JSON" \
+  --output-pt "$STATIC_REFERENCE_PT"
+
 run_step_with_timeout "client-share-preprocess debug shares" "$E2E_SHARE_PREPROCESS_TIMEOUT_SEC" \
   "$PYTHON_BIN" tools/transshield_e2e_secure_infer.py client-share-preprocess \
   --bundle-dir "$BUNDLE_DIR" \
@@ -172,7 +258,7 @@ run_step_with_timeout "client-share-preprocess debug shares" "$E2E_SHARE_PREPROC
   --include-targets \
   --share-seed "${E2E_SHARE_SEED:-0}"
 
-if [[ ! -f "$CALIB_JSON" ]]; then
+if [[ "$E2E_SPU_LAYER_NORM_POLICY" == "public_calibrated" && ! -f "$CALIB_JSON" ]]; then
   RUN_NAME="$RUN_NAME" \
   E2E_RUN_DIR="$E2E_RUN_DIR" \
   E2E_SPU_LAYER_NORM_CALIBRATION_JSON="$CALIB_JSON" \
@@ -181,7 +267,7 @@ if [[ ! -f "$CALIB_JSON" ]]; then
   E2E_SPU_ACTIVATION_CLIP_VALUE="$E2E_SPU_ACTIVATION_CLIP_VALUE" \
   E2E_SPU_BLOCK_CHUNK_SIZE="$E2E_SPU_BLOCK_CHUNK_SIZE" \
   E2E_SPU_LAYER_NORM_CHUNK_SIZE="$E2E_SPU_LAYER_NORM_CHUNK_SIZE" \
-  PUBLIC_CALIB_DATASET_DIR="${PUBLIC_CALIB_DATASET_DIR:-/data/wyb/pneumoniamnist_imagefolder_subset}" \
+  PUBLIC_CALIB_DATASET_DIR="${PUBLIC_CALIB_DATASET_DIR:-${DATA_ROOT:-/data/wyb/pneumoniamnist_imagefolder_subset}}" \
     bash "$SCRIPT_DIR/run_e2e_secure_approx_deploy.sh" make-calib-pixels
 
   RUN_NAME="$RUN_NAME" \
@@ -324,6 +410,10 @@ if all(payload.get("raw_logits_before_output_calibration") is not None for paylo
         [payload["raw_logits_before_output_calibration"].detach().cpu().float()[:1] for payload in payloads],
         dim=0,
     )
+first_spu_summary = summaries[0].get("spu", {}) if summaries else {}
+output_calibration = payloads[0].get("output_calibration")
+if output_calibration is None:
+    output_calibration = summaries[0].get("output_calibration")
 threshold = payloads[0].get("threshold")
 argmax_predictions = logits.argmax(dim=1)
 threshold_predictions = None
@@ -391,6 +481,7 @@ summary = {
             "std": float(raw_logits.std(unbiased=False).item()),
         }
     ),
+    "output_calibration": output_calibration,
     "prediction_preview": {
         "logits": [[float(value) for value in row] for row in logits.tolist()],
         "probabilities": [[float(value) for value in row] for row in probabilities.tolist()],
@@ -405,9 +496,13 @@ summary = {
         "host_private_share_tensors_loaded": False,
         "private_input_paths_redacted": True,
         "spu_batch_size": 1,
-        "spu_layer_norm_policy": "public_calibrated",
+        "spu_params_mode": first_spu_summary.get("spu_params_mode"),
+        "spu_layer_norm_policy": first_spu_summary.get("spu_layer_norm_policy"),
         "spu_layer_norm_calibration_json": calib_json,
-        "static_forward_metadata": summaries[0].get("spu", {}).get("static_forward_metadata"),
+        "spu_attention_policy": first_spu_summary.get("spu_attention_policy"),
+        "spu_activation_override": first_spu_summary.get("spu_activation_override"),
+        "spu_activation_clip_value": first_spu_summary.get("spu_activation_clip_value"),
+        "static_forward_metadata": first_spu_summary.get("static_forward_metadata"),
     },
     "privacy_note": (
         "Eval-only aggregate built from isolated per-sample party-local SPU candidates. "
@@ -439,159 +534,23 @@ else
     bash "$SCRIPT_DIR/run_e2e_secure_approx_deploy.sh" infer
 fi
 
-run_step_with_timeout "write e2e vs plaintext metrics" "$E2E_METRICS_TIMEOUT_SEC" \
-  "$PYTHON_BIN" - "$SHARE_MANIFEST_JSON" "$PLAINTEXT_REFERENCE_JSON" "$CANDIDATE_PT" "$CANDIDATE_JSON" "$E2E_EVAL_METRICS_JSON" logs/spu_nodes <<'PY'
-import json
-import re
-import sys
-from pathlib import Path
+run_step_with_timeout "write e2e vs plaintext/static metrics" "$E2E_METRICS_TIMEOUT_SEC" \
+  "$PYTHON_BIN" tools/transshield_e2e_approx_eval_metrics.py \
+  --share-manifest-json "$SHARE_MANIFEST_JSON" \
+  --plaintext-reference-json "$PLAINTEXT_REFERENCE_JSON" \
+  --static-reference-pt "$STATIC_REFERENCE_PT" \
+  --candidate-pt "$CANDIDATE_PT" \
+  --candidate-json "$CANDIDATE_JSON" \
+  --spu-log-dir logs/spu_nodes \
+  --output-json "$E2E_EVAL_METRICS_JSON"
 
-import torch
-
-share_manifest = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-plaintext_reference = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))
-candidate_pt = Path(sys.argv[3])
-candidate_json = json.loads(Path(sys.argv[4]).read_text(encoding="utf-8"))
-output_json = Path(sys.argv[5])
-spu_log_dir = Path(sys.argv[6])
-
-payload = torch.load(candidate_pt, map_location="cpu")
-targets = share_manifest.get("targets")
-if targets is None:
-    raise SystemExit("share manifest does not include targets; rerun with --include-targets")
-targets = torch.tensor(targets, dtype=torch.long)
-logits = payload["logits"].detach().cpu().float()
-probabilities = payload.get("probabilities")
-if probabilities is None:
-    probabilities = torch.softmax(logits, dim=-1)
-else:
-    probabilities = probabilities.detach().cpu().float()
-count = min(int(targets.numel()), int(logits.shape[0]))
-targets = targets[:count]
-argmax_predictions = logits.argmax(dim=1)[:count]
-threshold = payload.get("threshold")
-threshold_predictions = payload.get("threshold_predictions")
-if threshold_predictions is None and threshold is not None and probabilities.shape[-1] == 2:
-    threshold_predictions = (probabilities[:, 1] >= float(threshold)).long()
-if threshold_predictions is not None:
-    threshold_predictions = threshold_predictions.detach().cpu()[:count]
-
-argmax_acc = float((argmax_predictions == targets).float().mean().item() * 100.0)
-threshold_acc = None
-if threshold_predictions is not None:
-    threshold_acc = float((threshold_predictions == targets).float().mean().item() * 100.0)
-
-plaintext_rows = plaintext_reference.get("per_sample") or []
-plaintext_rows = plaintext_rows[:count]
-plaintext_argmax_predictions = torch.tensor([int(row["argmax_prediction"]) for row in plaintext_rows], dtype=torch.long)
-plaintext_threshold_values = [
-    row.get("threshold_prediction")
-    for row in plaintext_rows
-]
-plaintext_threshold_predictions = None
-if all(value is not None for value in plaintext_threshold_values):
-    plaintext_threshold_predictions = torch.tensor([int(value) for value in plaintext_threshold_values], dtype=torch.long)
-
-plaintext_argmax_acc = float((plaintext_argmax_predictions == targets).float().mean().item() * 100.0)
-plaintext_threshold_acc = None
-if plaintext_threshold_predictions is not None:
-    plaintext_threshold_acc = float((plaintext_threshold_predictions == targets).float().mean().item() * 100.0)
-
-argmax_match_vs_plaintext = float((argmax_predictions == plaintext_argmax_predictions).float().mean().item())
-threshold_match_vs_plaintext = None
-if threshold_predictions is not None and plaintext_threshold_predictions is not None:
-    threshold_match_vs_plaintext = float((threshold_predictions == plaintext_threshold_predictions).float().mean().item())
-
-LINK_RE = re.compile(
-    r"Link details: total send bytes (?P<send>\d+), recv bytes (?P<recv>\d+), "
-    r"send actions (?P<send_actions>\d+), recv actions (?P<recv_actions>\d+)"
-)
-
-def latest_nonzero_link(path: Path):
-    if not path.exists():
-        return None
-    latest = None
-    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
-        match = LINK_RE.search(line)
-        if not match:
-            continue
-        item = {
-            "log_path": str(path),
-            "send_bytes": int(match.group("send")),
-            "recv_bytes": int(match.group("recv")),
-            "send_actions": int(match.group("send_actions")),
-            "recv_actions": int(match.group("recv_actions")),
-        }
-        if item["send_bytes"] or item["recv_bytes"] or item["send_actions"] or item["recv_actions"]:
-            latest = item
-    return latest
-
-node_link_details = []
-for log_path in sorted(spu_log_dir.glob("node_*.log")):
-    item = latest_nonzero_link(log_path)
-    if item is not None:
-        node_link_details.append(item)
-
-aggregate_send = sum(item["send_bytes"] for item in node_link_details)
-aggregate_recv = sum(item["recv_bytes"] for item in node_link_details)
-aggregate_total = aggregate_send + aggregate_recv
-
-result = {
-    "manifest_type": "transshield_e2e_approx_eval_metrics_v0",
-    "image_list": str(Path(share_manifest.get("source_image_list", ""))) if share_manifest.get("source_image_list") else None,
-    "plaintext_reference_json": str(Path(sys.argv[2])),
-    "candidate_json": str(Path(sys.argv[4])),
-    "candidate_pt": str(candidate_pt),
-    "sample_count": count,
-    "target_count": int(targets.numel()),
-    "comparison_scope": "same_image_list_same_targets_original_plaintext_vs_e2e_approx_spu",
-    "original_plaintext_same_subset_argmax_accuracy": plaintext_argmax_acc,
-    "original_plaintext_same_subset_threshold_accuracy": plaintext_threshold_acc,
-    "e2e_argmax_accuracy": argmax_acc,
-    "e2e_threshold_accuracy": threshold_acc,
-    "argmax_accuracy_gap_e2e_minus_plaintext_pp": argmax_acc - plaintext_argmax_acc,
-    "threshold_accuracy_gap_e2e_minus_plaintext_pp": (
-        None if threshold_acc is None or plaintext_threshold_acc is None else threshold_acc - plaintext_threshold_acc
-    ),
-    "prediction_match_vs_original_plaintext": {
-        "argmax_match_ratio": argmax_match_vs_plaintext,
-        "threshold_match_ratio": threshold_match_vs_plaintext,
-    },
-    "original_plaintext_full_val_reference": {
-        "argmax_accuracy": 93.70229244232178,
-        "threshold_accuracy": 94.08397078514099,
-        "note": "full-val reference is retained only for context; primary gap fields above use the same eval subset",
-    },
-    "finite_logits": bool(torch.isfinite(logits).all().item()),
-    "e2e_elapsed_sec": candidate_json.get("elapsed_sec"),
-    "e2e_communication_from_spu_node_logs": {
-        "status": "available" if node_link_details else "missing",
-        "node_latest_nonzero_link_details": node_link_details,
-        "aggregate_send_bytes": aggregate_send if node_link_details else None,
-        "aggregate_recv_bytes": aggregate_recv if node_link_details else None,
-        "aggregate_total_bytes": aggregate_total if node_link_details else None,
-        "scope_note": "Parsed from latest nonzero Link details in logs/spu_nodes/node_*.log after the e2e run.",
-    },
-    "original_plaintext_communication": {
-        "status": "not_applicable",
-        "total_bytes": 0,
-        "note": "Plaintext local reference has no 2PC/SPU communication.",
-    },
-    "privacy_fields": {
-        "input_pt": candidate_json.get("input_pt"),
-        "input_mode": (candidate_json.get("spu") or {}).get("input_mode"),
-        "host_plaintext_pixel_values_materialized": (candidate_json.get("spu") or {}).get("host_plaintext_pixel_values_materialized"),
-        "host_private_share_tensors_loaded": (candidate_json.get("spu") or {}).get("host_private_share_tensors_loaded"),
-        "private_input_paths_redacted": (candidate_json.get("spu") or {}).get("private_input_paths_redacted"),
-    },
-    "scope_note": (
-        "Primary metrics compare original plaintext and e2e approximate SPU on the same selected images and targets. "
-        "Increase E2E_EVAL_MAX_SAMPLES for a more stable estimate; keep E2E_SPU_BATCH_SIZE=1."
-    ),
-}
-output_json.parent.mkdir(parents=True, exist_ok=True)
-output_json.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
-print(json.dumps(result, indent=2, sort_keys=True))
-PY
+run_step_with_timeout "write plaintext-vs-static gap report" "$E2E_METRICS_TIMEOUT_SEC" \
+  "$PYTHON_BIN" tools/transshield_e2e_plaintext_static_gap_report.py \
+  --label "${RUN_NAME}_plaintext_static_gap" \
+  --plaintext-json "$PLAINTEXT_REFERENCE_JSON" \
+  --static-json "$STATIC_REFERENCE_JSON" \
+  --output-json "$E2E_PLAINTEXT_STATIC_GAP_JSON" \
+  --output-md "$E2E_PLAINTEXT_STATIC_GAP_MD"
 
 echo "[e2e-approx-eval] metrics_json=$E2E_EVAL_METRICS_JSON"
+echo "[e2e-approx-eval] plaintext_static_gap_json=$E2E_PLAINTEXT_STATIC_GAP_JSON"

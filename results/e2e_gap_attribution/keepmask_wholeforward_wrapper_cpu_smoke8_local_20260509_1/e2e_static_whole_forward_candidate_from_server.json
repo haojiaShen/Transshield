@@ -1,0 +1,163 @@
+{
+  "backend": "cpu_plaintext_external_keep_mask_whole_forward_reference_backend",
+  "bundle_dir": "/home/yclcg/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+  "cls_features": {
+    "dtype": "torch.float32",
+    "max": 2.6268327236175537,
+    "mean": -0.025688014924526215,
+    "min": -3.080744981765747,
+    "shape": [
+      8,
+      384
+    ],
+    "std": 0.7944812774658203
+  },
+  "cpu_forward_mode": "static_no_pruning",
+  "effective_static_depth": 12,
+  "elapsed_sec": 0.39768123626708984,
+  "finite_logits": true,
+  "forward_scope": "student_patch_embed_blocks_head_with_external_runtime_pruning_keep_masks",
+  "include_intermediates": false,
+  "input_p1_share_manifest_json": null,
+  "input_p2_share_manifest_json": null,
+  "input_pt": "/home/yclcg/Transshield_final/results/e2e_gap_attribution/keepmask_bridge_smoke8_partylocal_secret_20260508_1/share_input_pixel_values.pt",
+  "input_share_manifest_json": null,
+  "input_share_public_manifest_json": null,
+  "input_source": "/home/yclcg/Transshield_final/results/e2e_gap_attribution/keepmask_bridge_smoke8_partylocal_secret_20260508_1/share_input_pixel_values.pt",
+  "logits": {
+    "dtype": "torch.float32",
+    "max": 0.4199013113975525,
+    "mean": 0.12586581707000732,
+    "min": -0.2122325897216797,
+    "shape": [
+      8,
+      2
+    ],
+    "std": 0.18752643465995789
+  },
+  "manifest_type": "transshield_e2e_static_whole_forward_candidate_summary_v0",
+  "max_samples": 0,
+  "output_calibration": null,
+  "output_pt": "/home/yclcg/Transshield_final/results/e2e_gap_attribution/keepmask_wholeforward_wrapper_cpu_smoke8_local_20260509_1/e2e_static_whole_forward_candidate_from_server.pt",
+  "prediction_preview": {
+    "argmax_predictions": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1
+    ],
+    "logits": [
+      [
+        0.039338741451501846,
+        0.22443507611751556
+      ],
+      [
+        -0.12260068207979202,
+        0.36049020290374756
+      ],
+      [
+        0.054485756903886795,
+        0.2085810899734497
+      ],
+      [
+        -0.15268057584762573,
+        0.3830370306968689
+      ],
+      [
+        0.06595657020807266,
+        0.200419619679451
+      ],
+      [
+        0.16187778115272522,
+        0.129685178399086
+      ],
+      [
+        -0.2122325897216797,
+        0.4199013113975525
+      ],
+      [
+        -0.049179431051015854,
+        0.30233800411224365
+      ]
+    ],
+    "probabilities": [
+      [
+        0.4538576304912567,
+        0.5461424589157104
+      ],
+      [
+        0.3815225064754486,
+        0.618477463722229
+      ],
+      [
+        0.4615521728992462,
+        0.5384477376937866
+      ],
+      [
+        0.36918434500694275,
+        0.6308156251907349
+      ],
+      [
+        0.4664348363876343,
+        0.5335652232170105
+      ],
+      [
+        0.5080474615097046,
+        0.4919525682926178
+      ],
+      [
+        0.34702685475349426,
+        0.6529731750488281
+      ],
+      [
+        0.4130144715309143,
+        0.5869854688644409
+      ]
+    ],
+    "threshold_predictions": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "privacy_note": "This candidate uses the CPU reference backend to freeze the output contract. It is not a secure SPU execution result.",
+  "probabilities": {
+    "dtype": "torch.float32",
+    "max": 0.6529731750488281,
+    "mean": 0.5,
+    "min": 0.34702685475349426,
+    "shape": [
+      8,
+      2
+    ],
+    "std": 0.09145739674568176
+  },
+  "raw_logits_before_output_calibration": null,
+  "runtime": "cpu",
+  "runtime_pruning_keep_mask_pt": "/home/yclcg/Transshield_final/results/e2e_gap_attribution/keepmask_wholeforward_wrapper_cpu_smoke8_local_20260509_1/runtime_pruning_keep_mask_payload.pt",
+  "runtime_pruning_keep_mask_stage_count": 3,
+  "sample_count": 8,
+  "static_depth_limit": -1,
+  "threshold": 0.3577311038970947,
+  "token_features": {
+    "dtype": "torch.float32",
+    "max": 3.0126051902770996,
+    "mean": -0.004719139076769352,
+    "min": -8.694457054138184,
+    "shape": [
+      8,
+      196,
+      384
+    ],
+    "std": 0.46305859088897705
+  }
+}

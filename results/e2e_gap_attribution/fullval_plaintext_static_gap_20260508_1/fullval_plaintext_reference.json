@@ -1,0 +1,7360 @@
+{
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+  "device": "cpu",
+  "finite_logits": true,
+  "input_pt": "/data/wyb/Transshield_final/results/e2e_gap_attribution/fullval_plaintext_static_gap_20260508_1/fullval_pixel_values.pt",
+  "logits": {
+    "dtype": "torch.float32",
+    "max": 0.8367182612419128,
+    "mean": 0.10954403877258301,
+    "min": -0.5963889360427856,
+    "shape": [
+      524,
+      2
+    ],
+    "std": 0.4283459186553955
+  },
+  "manifest_type": "transshield_e2e_plaintext_reference_v0",
+  "per_sample": [
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.03933867812156677,
+        0.22443510591983795
+      ],
+      "probabilities": [
+        0.45385757088661194,
+        0.5461424589157104
+      ],
+      "sample_id": "sample_000000",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.1226007416844368,
+        0.3604905307292938
+      ],
+      "probabilities": [
+        0.38152244687080383,
+        0.6184775829315186
+      ],
+      "sample_id": "sample_000001",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.05448586493730545,
+        0.2085808962583542
+      ],
+      "probabilities": [
+        0.4615522623062134,
+        0.5384476780891418
+      ],
+      "sample_id": "sample_000002",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.1526804268360138,
+        0.38303712010383606
+      ],
+      "probabilities": [
+        0.36918434500694275,
+        0.6308156251907349
+      ],
+      "sample_id": "sample_000003",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.06595650315284729,
+        0.20041948556900024
+      ],
+      "probabilities": [
+        0.4664348363876343,
+        0.5335652232170105
+      ],
+      "sample_id": "sample_000004",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 0,
+      "logits": [
+        0.16187748312950134,
+        0.12968522310256958
+      ],
+      "probabilities": [
+        0.5080474019050598,
+        0.49195265769958496
+      ],
+      "sample_id": "sample_000005",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2122325748205185,
+        0.4199013411998749
+      ],
+      "probabilities": [
+        0.34702685475349426,
+        0.6529731750488281
+      ],
+      "sample_id": "sample_000006",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.049179356545209885,
+        0.3023374378681183
+      ],
+      "probabilities": [
+        0.413014680147171,
+        0.5869853496551514
+      ],
+      "sample_id": "sample_000007",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.10973471403121948,
+        0.1611693799495697
+      ],
+      "probabilities": [
+        0.4871441721916199,
+        0.5128558278083801
+      ],
+      "sample_id": "sample_000008",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.0011710711987689137,
+        0.2612368166446686
+      ],
+      "probabilities": [
+        0.43477189540863037,
+        0.5652281045913696
+      ],
+      "sample_id": "sample_000009",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.06063244119286537,
+        0.3029036819934845
+      ],
+      "probabilities": [
+        0.41010385751724243,
+        0.5898962020874023
+      ],
+      "sample_id": "sample_000010",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.04197059944272041,
+        0.219952791929245
+      ],
+      "probabilities": [
+        0.45562154054641724,
+        0.5443784594535828
+      ],
+      "sample_id": "sample_000011",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.1331280618906021,
+        0.3626084327697754
+      ],
+      "probabilities": [
+        0.3785431385040283,
+        0.6214568614959717
+      ],
+      "sample_id": "sample_000012",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.10052291303873062,
+        0.3340515196323395
+      ],
+      "probabilities": [
+        0.39303454756736755,
+        0.6069654822349548
+      ],
+      "sample_id": "sample_000013",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.07999963313341141,
+        0.17954681813716888
+      ],
+      "probabilities": [
+        0.4751337468624115,
+        0.5248662829399109
+      ],
+      "sample_id": "sample_000014",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.0007327301427721977,
+        0.26639610528945923
+      ],
+      "probabilities": [
+        0.433972030878067,
+        0.5660279393196106
+      ],
+      "sample_id": "sample_000015",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.07752306759357452,
+        0.19363819062709808
+      ],
+      "probabilities": [
+        0.4710037410259247,
+        0.5289961695671082
+      ],
+      "sample_id": "sample_000016",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2009272277355194,
+        0.41982340812683105
+      ],
+      "probabilities": [
+        0.34961074590682983,
+        0.6503892540931702
+      ],
+      "sample_id": "sample_000017",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.09409062564373016,
+        0.3341924250125885
+      ],
+      "probabilities": [
+        0.39453640580177307,
+        0.6054636240005493
+      ],
+      "sample_id": "sample_000018",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.006835120730102062,
+        0.25939878821372986
+      ],
+      "probabilities": [
+        0.4338318705558777,
+        0.5661680698394775
+      ],
+      "sample_id": "sample_000019",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.06517213582992554,
+        0.3049224019050598
+      ],
+      "probabilities": [
+        0.4085181951522827,
+        0.5914818048477173
+      ],
+      "sample_id": "sample_000020",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.02354244515299797,
+        0.24107226729393005
+      ],
+      "probabilities": [
+        0.44583097100257874,
+        0.5541689991950989
+      ],
+      "sample_id": "sample_000021",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.058135680854320526,
+        0.3077652156352997
+      ],
+      "probabilities": [
+        0.4095318615436554,
+        0.5904681086540222
+      ],
+      "sample_id": "sample_000022",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.07271572202444077,
+        0.31391969323158264
+      ],
+      "probabilities": [
+        0.4045275151729584,
+        0.595472514629364
+      ],
+      "sample_id": "sample_000023",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.22968101501464844,
+        0.4596627950668335
+      ],
+      "probabilities": [
+        0.3341790735721588,
+        0.6658209562301636
+      ],
+      "sample_id": "sample_000024",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.014518477022647858,
+        0.24498306214809418
+      ],
+      "probabilities": [
+        0.44263753294944763,
+        0.5573624968528748
+      ],
+      "sample_id": "sample_000025",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.23643727600574493,
+        0.4621526598930359
+      ],
+      "probabilities": [
+        0.3321249186992645,
+        0.6678750514984131
+      ],
+      "sample_id": "sample_000026",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.09056254476308823,
+        0.33143535256385803
+      ],
+      "probabilities": [
+        0.3960387706756592,
+        0.6039612293243408
+      ],
+      "sample_id": "sample_000027",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.1834976226091385,
+        0.40038150548934937
+      ],
+      "probabilities": [
+        0.3580405116081238,
+        0.6419594883918762
+      ],
+      "sample_id": "sample_000028",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.13936147093772888,
+        0.14551199972629547
+      ],
+      "probabilities": [
+        0.49846237897872925,
+        0.5015376210212708
+      ],
+      "sample_id": "sample_000029",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.034456461668014526,
+        0.2837214469909668
+      ],
+      "probabilities": [
+        0.42111989855766296,
+        0.5788801312446594
+      ],
+      "sample_id": "sample_000030",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.0492599755525589,
+        0.2808343172073364
+      ],
+      "probabilities": [
+        0.41821765899658203,
+        0.5817822813987732
+      ],
+      "sample_id": "sample_000031",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.13480424880981445,
+        0.3610811233520508
+      ],
+      "probabilities": [
+        0.3785081207752228,
+        0.6214919090270996
+      ],
+      "sample_id": "sample_000032",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.07528644800186157,
+        0.324735164642334
+      ],
+      "probabilities": [
+        0.4013071656227112,
+        0.5986928939819336
+      ],
+      "sample_id": "sample_000033",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.0816739946603775,
+        0.32593488693237305
+      ],
+      "probabilities": [
+        0.39948558807373047,
+        0.6005143523216248
+      ],
+      "sample_id": "sample_000034",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.03607210889458656,
+        0.29457035660743713
+      ],
+      "probabilities": [
+        0.4180842936038971,
+        0.5819156765937805
+      ],
+      "sample_id": "sample_000035",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.1433487832546234,
+        0.3731941878795624
+      ],
+      "probabilities": [
+        0.37366098165512085,
+        0.6263390779495239
+      ],
+      "sample_id": "sample_000036",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.05122470483183861,
+        0.3065803647041321
+      ],
+      "probabilities": [
+        0.4114910066127777,
+        0.5885090231895447
+      ],
+      "sample_id": "sample_000037",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.014506885781884193,
+        0.26595303416252136
+      ],
+      "probabilities": [
+        0.43034103512763977,
+        0.5696589946746826
+      ],
+      "sample_id": "sample_000038",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.09209243208169937,
+        0.3323421776294708
+      ],
+      "probabilities": [
+        0.39545607566833496,
+        0.604543924331665
+      ],
+      "sample_id": "sample_000039",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.0036521919537335634,
+        0.2532880902290344
+      ],
+      "probabilities": [
+        0.43791311979293823,
+        0.5620868802070618
+      ],
+      "sample_id": "sample_000040",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.07336238026618958,
+        0.32482287287712097
+      ],
+      "probabilities": [
+        0.4017484486103058,
+        0.5982515811920166
+      ],
+      "sample_id": "sample_000041",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2851249575614929,
+        0.48777246475219727
+      ],
+      "probabilities": [
+        0.31585264205932617,
+        0.684147298336029
+      ],
+      "sample_id": "sample_000042",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.07290806621313095,
+        0.19416074454784393
+      ],
+      "probabilities": [
+        0.4697239100933075,
+        0.5302760601043701
+      ],
+      "sample_id": "sample_000043",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.01227741502225399,
+        0.26809781789779663
+      ],
+      "probabilities": [
+        0.4303617775440216,
+        0.569638192653656
+      ],
+      "sample_id": "sample_000044",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.07138743996620178,
+        0.19179286062717438
+      ],
+      "probabilities": [
+        0.46993497014045715,
+        0.5300650596618652
+      ],
+      "sample_id": "sample_000045",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3077758550643921,
+        0.5049967765808105
+      ],
+      "probabilities": [
+        0.307299941778183,
+        0.6926999688148499
+      ],
+      "sample_id": "sample_000046",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.08434388786554337,
+        0.1919681876897812
+      ],
+      "probabilities": [
+        0.4731198847293854,
+        0.526880145072937
+      ],
+      "sample_id": "sample_000047",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.03530053421854973,
+        0.2330426126718521
+      ],
+      "probabilities": [
+        0.4507249891757965,
+        0.5492751002311707
+      ],
+      "sample_id": "sample_000048",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 0,
+      "logits": [
+        0.1496729701757431,
+        0.13614627718925476
+      ],
+      "probabilities": [
+        0.503381609916687,
+        0.4966183602809906
+      ],
+      "sample_id": "sample_000049",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.004029879812151194,
+        0.25604501366615295
+      ],
+      "probabilities": [
+        0.43534529209136963,
+        0.5646547079086304
+      ],
+      "sample_id": "sample_000050",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.15152570605278015,
+        0.3827070891857147
+      ],
+      "probabilities": [
+        0.36953020095825195,
+        0.630469799041748
+      ],
+      "sample_id": "sample_000051",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.004104339051991701,
+        0.2570912539958954
+      ],
+      "probabilities": [
+        0.43506985902786255,
+        0.5649302005767822
+      ],
+      "sample_id": "sample_000052",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2527111768722534,
+        0.46571093797683716
+      ],
+      "probabilities": [
+        0.32774052023887634,
+        0.6722594499588013
+      ],
+      "sample_id": "sample_000053",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.08562859892845154,
+        0.32893097400665283
+      ],
+      "probabilities": [
+        0.39781931042671204,
+        0.6021806597709656
+      ],
+      "sample_id": "sample_000054",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.028802979737520218,
+        0.27058839797973633
+      ],
+      "probabilities": [
+        0.42570626735687256,
+        0.5742937326431274
+      ],
+      "sample_id": "sample_000055",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.362560898065567,
+        0.5613409876823425
+      ],
+      "probabilities": [
+        0.28416353464126587,
+        0.7158365249633789
+      ],
+      "sample_id": "sample_000056",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.25900524854660034,
+        0.46673518419265747
+      ],
+      "probabilities": [
+        0.3261301517486572,
+        0.6738698482513428
+      ],
+      "sample_id": "sample_000057",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.04228132218122482,
+        0.2830016016960144
+      ],
+      "probabilities": [
+        0.4193888008594513,
+        0.5806112289428711
+      ],
+      "sample_id": "sample_000058",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.1062074527144432,
+        0.3354305028915405
+      ],
+      "probabilities": [
+        0.39135074615478516,
+        0.6086492538452148
+      ],
+      "sample_id": "sample_000059",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.03710450604557991,
+        0.2654091417789459
+      ],
+      "probabilities": [
+        0.42494311928749084,
+        0.5750569105148315
+      ],
+      "sample_id": "sample_000060",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.37959691882133484,
+        0.573363184928894
+      ],
+      "probabilities": [
+        0.27828991413116455,
+        0.7217100858688354
+      ],
+      "sample_id": "sample_000061",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.07027504593133926,
+        0.319206178188324
+      ],
+      "probabilities": [
+        0.40384218096733093,
+        0.5961577892303467
+      ],
+      "sample_id": "sample_000062",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.07956641167402267,
+        0.19306974112987518
+      ],
+      "probabilities": [
+        0.47165459394454956,
+        0.5283454060554504
+      ],
+      "sample_id": "sample_000063",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.0729300007224083,
+        0.32804062962532043
+      ],
+      "probabilities": [
+        0.4010791480541229,
+        0.5989208221435547
+      ],
+      "sample_id": "sample_000064",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.0431332141160965,
+        0.29520002007484436
+      ],
+      "probabilities": [
+        0.41621437668800354,
+        0.5837855935096741
+      ],
+      "sample_id": "sample_000065",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.025268174707889557,
+        0.26964712142944336
+      ],
+      "probabilities": [
+        0.4268009662628174,
+        0.5731990337371826
+      ],
+      "sample_id": "sample_000066",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.1122610867023468,
+        0.34575745463371277
+      ],
+      "probabilities": [
+        0.3874560296535492,
+        0.612544059753418
+      ],
+      "sample_id": "sample_000067",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.0661587119102478,
+        0.3205242455005646
+      ],
+      "probabilities": [
+        0.4045160412788391,
+        0.5954838991165161
+      ],
+      "sample_id": "sample_000068",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.07718246430158615,
+        0.3218091130256653
+      ],
+      "probabilities": [
+        0.4015546143054962,
+        0.5984452962875366
+      ],
+      "sample_id": "sample_000069",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.10441029816865921,
+        0.35221433639526367
+      ],
+      "probabilities": [
+        0.387786865234375,
+        0.612213134765625
+      ],
+      "sample_id": "sample_000070",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.054184433072805405,
+        0.29817697405815125
+      ],
+      "probabilities": [
+        0.41280990839004517,
+        0.5871900916099548
+      ],
+      "sample_id": "sample_000071",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.009667146019637585,
+        0.2709955871105194
+      ],
+      "probabilities": [
+        0.4302912950515747,
+        0.5697087049484253
+      ],
+      "sample_id": "sample_000072",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.15658386051654816,
+        0.3967401087284088
+      ],
+      "probabilities": [
+        0.36509355902671814,
+        0.6349064111709595
+      ],
+      "sample_id": "sample_000073",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.10648196935653687,
+        0.34458860754966736
+      ],
+      "probabilities": [
+        0.38910624384880066,
+        0.610893726348877
+      ],
+      "sample_id": "sample_000074",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.08997472375631332,
+        0.33125945925712585
+      ],
+      "probabilities": [
+        0.39622145891189575,
+        0.6037785410881042
+      ],
+      "sample_id": "sample_000075",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.04322429746389389,
+        0.28942880034446716
+      ],
+      "probabilities": [
+        0.4175952076911926,
+        0.5824047923088074
+      ],
+      "sample_id": "sample_000076",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.026832647621631622,
+        0.2461114376783371
+      ],
+      "probabilities": [
+        0.4453989267349243,
+        0.5546011328697205
+      ],
+      "sample_id": "sample_000077",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.049088381230831146,
+        0.22122222185134888
+      ],
+      "probabilities": [
+        0.4570724666118622,
+        0.5429275035858154
+      ],
+      "sample_id": "sample_000078",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.029804639518260956,
+        0.2863525152206421
+      ],
+      "probabilities": [
+        0.42161256074905396,
+        0.578387439250946
+      ],
+      "sample_id": "sample_000079",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.14379149675369263,
+        0.37392982840538025
+      ],
+      "probabilities": [
+        0.3733852207660675,
+        0.6266148090362549
+      ],
+      "sample_id": "sample_000080",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2872883081436157,
+        0.5025871992111206
+      ],
+      "probabilities": [
+        0.31219539046287537,
+        0.6878045797348022
+      ],
+      "sample_id": "sample_000081",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.10863614827394485,
+        0.3443380892276764
+      ],
+      "probabilities": [
+        0.38865381479263306,
+        0.6113461256027222
+      ],
+      "sample_id": "sample_000082",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.036592282354831696,
+        0.22332488000392914
+      ],
+      "probabilities": [
+        0.4534519910812378,
+        0.5465479493141174
+      ],
+      "sample_id": "sample_000083",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.15803863108158112,
+        0.3873308598995209
+      ],
+      "probabilities": [
+        0.36693939566612244,
+        0.6330606341362
+      ],
+      "sample_id": "sample_000084",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.08411713689565659,
+        0.3237806558609009
+      ],
+      "probabilities": [
+        0.3994162976741791,
+        0.6005837321281433
+      ],
+      "sample_id": "sample_000085",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.025366034358739853,
+        0.2341345101594925
+      ],
+      "probabilities": [
+        0.4479966163635254,
+        0.5520033836364746
+      ],
+      "sample_id": "sample_000086",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.01795077882707119,
+        0.2518913149833679
+      ],
+      "probabilities": [
+        0.441780149936676,
+        0.558219850063324
+      ],
+      "sample_id": "sample_000087",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.1144370511174202,
+        0.3517287075519562
+      ],
+      "probabilities": [
+        0.3855241537094116,
+        0.6144758462905884
+      ],
+      "sample_id": "sample_000088",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.11977639049291611,
+        0.16143780946731567
+      ],
+      "probabilities": [
+        0.4895861744880676,
+        0.5104138851165771
+      ],
+      "sample_id": "sample_000089",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.132299542427063,
+        0.3657572567462921
+      ],
+      "probabilities": [
+        0.3779974579811096,
+        0.6220026016235352
+      ],
+      "sample_id": "sample_000090",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.023537451401352882,
+        0.23923452198505402
+      ],
+      "probabilities": [
+        0.44628381729125977,
+        0.5537161231040955
+      ],
+      "sample_id": "sample_000091",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.0986386090517044,
+        0.17452719807624817
+      ],
+      "probabilities": [
+        0.4810369312763214,
+        0.5189630389213562
+      ],
+      "sample_id": "sample_000092",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.02623457834124565,
+        0.2779447138309479
+      ],
+      "probabilities": [
+        0.4245361387729645,
+        0.5754638314247131
+      ],
+      "sample_id": "sample_000093",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.11445317417383194,
+        0.35740789771080017
+      ],
+      "probabilities": [
+        0.3841758668422699,
+        0.6158241629600525
+      ],
+      "sample_id": "sample_000094",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.17160849273204803,
+        0.39195340871810913
+      ],
+      "probabilities": [
+        0.362723708152771,
+        0.637276291847229
+      ],
+      "sample_id": "sample_000095",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.03812801465392113,
+        0.2921006679534912
+      ],
+      "probabilities": [
+        0.4181849956512451,
+        0.5818150639533997
+      ],
+      "sample_id": "sample_000096",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.07978486269712448,
+        0.31990987062454224
+      ],
+      "probabilities": [
+        0.40138569474220276,
+        0.5986143350601196
+      ],
+      "sample_id": "sample_000097",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.05139428377151489,
+        0.2946855425834656
+      ],
+      "probabilities": [
+        0.41433337330818176,
+        0.5856666564941406
+      ],
+      "sample_id": "sample_000098",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.0160349253565073,
+        0.24357344210147858
+      ],
+      "probabilities": [
+        0.44335952401161194,
+        0.5566404461860657
+      ],
+      "sample_id": "sample_000099",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.05434253066778183,
+        0.308274507522583
+      ],
+      "probabilities": [
+        0.410326212644577,
+        0.5896738171577454
+      ],
+      "sample_id": "sample_000100",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.015300455503165722,
+        0.27403026819229126
+      ],
+      "probabilities": [
+        0.4281677305698395,
+        0.5718322992324829
+      ],
+      "sample_id": "sample_000101",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.07565321773290634,
+        0.31323713064193726
+      ],
+      "probabilities": [
+        0.4039844572544098,
+        0.5960155725479126
+      ],
+      "sample_id": "sample_000102",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.04250701889395714,
+        0.2813628017902374
+      ],
+      "probabilities": [
+        0.419732928276062,
+        0.580267071723938
+      ],
+      "sample_id": "sample_000103",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.13214388489723206,
+        0.3671385645866394
+      ],
+      "probabilities": [
+        0.377709299325943,
+        0.6222906708717346
+      ],
+      "sample_id": "sample_000104",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.08708204329013824,
+        0.17626149952411652
+      ],
+      "probabilities": [
+        0.47771990299224854,
+        0.5222800970077515
+      ],
+      "sample_id": "sample_000105",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.03862733021378517,
+        0.30101871490478516
+      ],
+      "probabilities": [
+        0.4158954620361328,
+        0.5841045379638672
+      ],
+      "sample_id": "sample_000106",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.05376782268285751,
+        0.3174249827861786
+      ],
+      "probabilities": [
+        0.4082528054714203,
+        0.5917471647262573
+      ],
+      "sample_id": "sample_000107",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.12727196514606476,
+        0.15132883191108704
+      ],
+      "probabilities": [
+        0.4939860701560974,
+        0.5060139298439026
+      ],
+      "sample_id": "sample_000108",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.09927663952112198,
+        0.17540384829044342
+      ],
+      "probabilities": [
+        0.4809773564338684,
+        0.5190225839614868
+      ],
+      "sample_id": "sample_000109",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.012812831439077854,
+        0.2806987762451172
+      ],
+      "probabilities": [
+        0.4271444082260132,
+        0.5728556513786316
+      ],
+      "sample_id": "sample_000110",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.05295107513666153,
+        0.2980121672153473
+      ],
+      "probabilities": [
+        0.4131488502025604,
+        0.5868511199951172
+      ],
+      "sample_id": "sample_000111",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.08940333127975464,
+        0.3337816298007965
+      ],
+      "probabilities": [
+        0.395754873752594,
+        0.604245126247406
+      ],
+      "sample_id": "sample_000112",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.038669146597385406,
+        0.29093897342681885
+      ],
+      "probabilities": [
+        0.4183359742164612,
+        0.5816640257835388
+      ],
+      "sample_id": "sample_000113",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.11924836784601212,
+        0.3521633744239807
+      ],
+      "probabilities": [
+        0.3842821717262268,
+        0.615717887878418
+      ],
+      "sample_id": "sample_000114",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.013972433283925056,
+        0.25262176990509033
+      ],
+      "probabilities": [
+        0.44061923027038574,
+        0.5593807697296143
+      ],
+      "sample_id": "sample_000115",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.09655144065618515,
+        0.3472273349761963
+      ],
+      "probabilities": [
+        0.39084094762802124,
+        0.6091591119766235
+      ],
+      "sample_id": "sample_000116",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.15141351521015167,
+        0.37926796078681946
+      ],
+      "probabilities": [
+        0.3703579604625702,
+        0.6296420693397522
+      ],
+      "sample_id": "sample_000117",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.07609327137470245,
+        0.3193127512931824
+      ],
+      "probabilities": [
+        0.4024166166782379,
+        0.5975834131240845
+      ],
+      "sample_id": "sample_000118",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.09846600890159607,
+        0.17166396975517273
+      ],
+      "probabilities": [
+        0.4817086458206177,
+        0.5182912945747375
+      ],
+      "sample_id": "sample_000119",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.09135646373033524,
+        0.3292408287525177
+      ],
+      "probabilities": [
+        0.39637383818626404,
+        0.6036261916160583
+      ],
+      "sample_id": "sample_000120",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.08165876567363739,
+        0.19321772456169128
+      ],
+      "probabilities": [
+        0.4721391499042511,
+        0.5278608798980713
+      ],
+      "sample_id": "sample_000121",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.07573665678501129,
+        0.32648688554763794
+      ],
+      "probabilities": [
+        0.40077823400497437,
+        0.5992217659950256
+      ],
+      "sample_id": "sample_000122",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.006843377370387316,
+        0.2517634332180023
+      ],
+      "probabilities": [
+        0.43907424807548523,
+        0.5609257817268372
+      ],
+      "sample_id": "sample_000123",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.15110144019126892,
+        0.374584823846817
+      ],
+      "probabilities": [
+        0.37152358889579773,
+        0.6284764409065247
+      ],
+      "sample_id": "sample_000124",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2570509910583496,
+        0.47046858072280884
+      ],
+      "probabilities": [
+        0.3257392644882202,
+        0.6742607355117798
+      ],
+      "sample_id": "sample_000125",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.06229068711400032,
+        0.3014165759086609
+      ],
+      "probabilities": [
+        0.41006243228912354,
+        0.5899375677108765
+      ],
+      "sample_id": "sample_000126",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.06257489323616028,
+        0.30884429812431335
+      ],
+      "probabilities": [
+        0.40819814801216125,
+        0.5918018817901611
+      ],
+      "sample_id": "sample_000127",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.018061239272356033,
+        0.2702101469039917
+      ],
+      "probabilities": [
+        0.4284270703792572,
+        0.5715728402137756
+      ],
+      "sample_id": "sample_000128",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.022948896512389183,
+        0.23112520575523376
+      ],
+      "probabilities": [
+        0.44814303517341614,
+        0.5518569350242615
+      ],
+      "sample_id": "sample_000129",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.036776378750801086,
+        0.23336829245090485
+      ],
+      "probabilities": [
+        0.45100972056388855,
+        0.5489903092384338
+      ],
+      "sample_id": "sample_000130",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.009534571319818497,
+        0.24210789799690247
+      ],
+      "probabilities": [
+        0.4421173334121704,
+        0.5578826665878296
+      ],
+      "sample_id": "sample_000131",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.17409315705299377,
+        0.3886338472366333
+      ],
+      "probabilities": [
+        0.3629167377948761,
+        0.6370832920074463
+      ],
+      "sample_id": "sample_000132",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.042016979306936264,
+        0.2920656204223633
+      ],
+      "probabilities": [
+        0.41724756360054016,
+        0.5827524065971375
+      ],
+      "sample_id": "sample_000133",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        0.02760474383831024,
+        0.23409269750118256
+      ],
+      "probabilities": [
+        0.4485606253147125,
+        0.5514393448829651
+      ],
+      "sample_id": "sample_000134",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5324922204017639,
+        0.7338488101959229
+      ],
+      "probabilities": [
+        0.2198842465877533,
+        0.7801157236099243
+      ],
+      "sample_id": "sample_000135",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.29997193813323975,
+        0.4967847168445587
+      ],
+      "probabilities": [
+        0.31071972846984863,
+        0.6892802119255066
+      ],
+      "sample_id": "sample_000136",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4336931109428406,
+        0.6276389956474304
+      ],
+      "probabilities": [
+        0.2570549547672272,
+        0.7429450154304504
+      ],
+      "sample_id": "sample_000137",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.33800074458122253,
+        0.5384841561317444
+      ],
+      "probabilities": [
+        0.29390671849250793,
+        0.7060932517051697
+      ],
+      "sample_id": "sample_000138",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.33002588152885437,
+        0.5291928648948669
+      ],
+      "probabilities": [
+        0.2975026071071625,
+        0.7024974226951599
+      ],
+      "sample_id": "sample_000139",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.33538129925727844,
+        0.5404665470123291
+      ],
+      "probabilities": [
+        0.2940389811992645,
+        0.7059611082077026
+      ],
+      "sample_id": "sample_000140",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.44700226187705994,
+        0.6457127928733826
+      ],
+      "probabilities": [
+        0.2511073648929596,
+        0.7488926649093628
+      ],
+      "sample_id": "sample_000141",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.08460838347673416,
+        0.3173774182796478
+      ],
+      "probabilities": [
+        0.4008353352546692,
+        0.5991646647453308
+      ],
+      "sample_id": "sample_000142",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5195471048355103,
+        0.7174348831176758
+      ],
+      "probabilities": [
+        0.2249617576599121,
+        0.7750382423400879
+      ],
+      "sample_id": "sample_000143",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.40078073740005493,
+        0.6018324494361877
+      ],
+      "probabilities": [
+        0.26842793822288513,
+        0.7315720915794373
+      ],
+      "sample_id": "sample_000144",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5326607823371887,
+        0.734045684337616
+      ],
+      "probabilities": [
+        0.21982157230377197,
+        0.780178427696228
+      ],
+      "sample_id": "sample_000145",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.37523117661476135,
+        0.5799563527107239
+      ],
+      "probabilities": [
+        0.27784276008605957,
+        0.7221572399139404
+      ],
+      "sample_id": "sample_000146",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.20754598081111908,
+        0.4395609498023987
+      ],
+      "probabilities": [
+        0.3436417877674103,
+        0.6563582420349121
+      ],
+      "sample_id": "sample_000147",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3171640634536743,
+        0.5272483229637146
+      ],
+      "probabilities": [
+        0.30060628056526184,
+        0.6993936896324158
+      ],
+      "sample_id": "sample_000148",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4406353235244751,
+        0.6369920372962952
+      ],
+      "probabilities": [
+        0.25395527482032776,
+        0.7460447549819946
+      ],
+      "sample_id": "sample_000149",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4341318607330322,
+        0.6336497068405151
+      ],
+      "probabilities": [
+        0.2558251917362213,
+        0.7441748380661011
+      ],
+      "sample_id": "sample_000150",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3616849482059479,
+        0.5573638677597046
+      ],
+      "probabilities": [
+        0.28515174984931946,
+        0.7148482203483582
+      ],
+      "sample_id": "sample_000151",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.43817296624183655,
+        0.6380758881568909
+      ],
+      "probabilities": [
+        0.2542165219783783,
+        0.7457834482192993
+      ],
+      "sample_id": "sample_000152",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.42584940791130066,
+        0.6270476579666138
+      ],
+      "probabilities": [
+        0.2586691677570343,
+        0.7413308620452881
+      ],
+      "sample_id": "sample_000153",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.15687716007232666,
+        0.3931230306625366
+      ],
+      "probabilities": [
+        0.3658643662929535,
+        0.6341356039047241
+      ],
+      "sample_id": "sample_000154",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.264944851398468,
+        0.4831511080265045
+      ],
+      "probabilities": [
+        0.3212363123893738,
+        0.6787636876106262
+      ],
+      "sample_id": "sample_000155",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3614775538444519,
+        0.5666759014129639
+      ],
+      "probabilities": [
+        0.2832994759082794,
+        0.7167004942893982
+      ],
+      "sample_id": "sample_000156",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5270820260047913,
+        0.7278079986572266
+      ],
+      "probabilities": [
+        0.2218548208475113,
+        0.7781451940536499
+      ],
+      "sample_id": "sample_000157",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.244066059589386,
+        0.4680822193622589
+      ],
+      "probabilities": [
+        0.3291243314743042,
+        0.6708756685256958
+      ],
+      "sample_id": "sample_000158",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3104014992713928,
+        0.5205034017562866
+      ],
+      "probabilities": [
+        0.3034537732601166,
+        0.6965462565422058
+      ],
+      "sample_id": "sample_000159",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3680182695388794,
+        0.5662558078765869
+      ],
+      "probabilities": [
+        0.2820584177970886,
+        0.7179416418075562
+      ],
+      "sample_id": "sample_000160",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5830532908439636,
+        0.8072063326835632
+      ],
+      "probabilities": [
+        0.19936631619930267,
+        0.8006336688995361
+      ],
+      "sample_id": "sample_000161",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4287486970424652,
+        0.6235858201980591
+      ],
+      "probabilities": [
+        0.25877705216407776,
+        0.7412229180335999
+      ],
+      "sample_id": "sample_000162",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5009165406227112,
+        0.6972879767417908
+      ],
+      "probabilities": [
+        0.23179477453231812,
+        0.7682052254676819
+      ],
+      "sample_id": "sample_000163",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.48231998085975647,
+        0.6785964965820312
+      ],
+      "probabilities": [
+        0.23850078880786896,
+        0.7614991664886475
+      ],
+      "sample_id": "sample_000164",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5055199861526489,
+        0.7040913105010986
+      ],
+      "probabilities": [
+        0.22976984083652496,
+        0.770230233669281
+      ],
+      "sample_id": "sample_000165",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.37427836656570435,
+        0.5782760977745056
+      ],
+      "probabilities": [
+        0.2783713936805725,
+        0.7216286063194275
+      ],
+      "sample_id": "sample_000166",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.38576701283454895,
+        0.5847619771957397
+      ],
+      "probabilities": [
+        0.27477505803108215,
+        0.7252248525619507
+      ],
+      "sample_id": "sample_000167",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.39729657769203186,
+        0.5961337685585022
+      ],
+      "probabilities": [
+        0.2702350318431854,
+        0.7297649383544922
+      ],
+      "sample_id": "sample_000168",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.14484000205993652,
+        0.38681378960609436
+      ],
+      "probabilities": [
+        0.370131254196167,
+        0.629868745803833
+      ],
+      "sample_id": "sample_000169",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3844977915287018,
+        0.588420033454895
+      ],
+      "probabilities": [
+        0.274299293756485,
+        0.7257006764411926
+      ],
+      "sample_id": "sample_000170",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.287087082862854,
+        0.4972778260707855
+      ],
+      "probabilities": [
+        0.3133799135684967,
+        0.6866201162338257
+      ],
+      "sample_id": "sample_000171",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.26773208379745483,
+        0.4895455241203308
+      ],
+      "probabilities": [
+        0.319237619638443,
+        0.6807624101638794
+      ],
+      "sample_id": "sample_000172",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.23969623446464539,
+        0.45372143387794495
+      ],
+      "probabilities": [
+        0.3332732319831848,
+        0.6667267680168152
+      ],
+      "sample_id": "sample_000173",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.559371829032898,
+        0.7647390365600586
+      ],
+      "probabilities": [
+        0.21013516187667847,
+        0.7898648381233215
+      ],
+      "sample_id": "sample_000174",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.39931392669677734,
+        0.6005102396011353
+      ],
+      "probabilities": [
+        0.26897600293159485,
+        0.7310240268707275
+      ],
+      "sample_id": "sample_000175",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.12569938600063324,
+        0.3755567669868469
+      ],
+      "probabilities": [
+        0.3772455155849457,
+        0.6227545142173767
+      ],
+      "sample_id": "sample_000176",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4195789694786072,
+        0.6247891783714294
+      ],
+      "probabilities": [
+        0.26030802726745605,
+        0.7396919131278992
+      ],
+      "sample_id": "sample_000177",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.49726369976997375,
+        0.6950569748878479
+      ],
+      "probabilities": [
+        0.23284414410591125,
+        0.7671558260917664
+      ],
+      "sample_id": "sample_000178",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2987244129180908,
+        0.5072866678237915
+      ],
+      "probabilities": [
+        0.30874115228652954,
+        0.6912588477134705
+      ],
+      "sample_id": "sample_000179",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4014991819858551,
+        0.6081556677818298
+      ],
+      "probabilities": [
+        0.2670474052429199,
+        0.7329525947570801
+      ],
+      "sample_id": "sample_000180",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5313535332679749,
+        0.7340517044067383
+      ],
+      "probabilities": [
+        0.2200448215007782,
+        0.7799551486968994
+      ],
+      "sample_id": "sample_000181",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.11692039668560028,
+        0.367490291595459
+      ],
+      "probabilities": [
+        0.38121113181114197,
+        0.6187888383865356
+      ],
+      "sample_id": "sample_000182",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3958999812602997,
+        0.6019739508628845
+      ],
+      "probabilities": [
+        0.26935964822769165,
+        0.7306404113769531
+      ],
+      "sample_id": "sample_000183",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.403516948223114,
+        0.6052045226097107
+      ],
+      "probabilities": [
+        0.2672301232814789,
+        0.7327698469161987
+      ],
+      "sample_id": "sample_000184",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.37454381585121155,
+        0.5771100521087646
+      ],
+      "probabilities": [
+        0.2785523533821106,
+        0.7214476466178894
+      ],
+      "sample_id": "sample_000185",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3456970751285553,
+        0.5441330075263977
+      ],
+      "probabilities": [
+        0.29114487767219543,
+        0.7088550925254822
+      ],
+      "sample_id": "sample_000186",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.43875008821487427,
+        0.632012665271759
+      ],
+      "probabilities": [
+        0.25525805354118347,
+        0.7447419762611389
+      ],
+      "sample_id": "sample_000187",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.23886702954769135,
+        0.46267613768577576
+      ],
+      "probabilities": [
+        0.33147019147872925,
+        0.6685298085212708
+      ],
+      "sample_id": "sample_000188",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.46047189831733704,
+        0.6582673788070679
+      ],
+      "probabilities": [
+        0.24624522030353546,
+        0.7537547945976257
+      ],
+      "sample_id": "sample_000189",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.376414954662323,
+        0.5761551260948181
+      ],
+      "probabilities": [
+        0.2783682346343994,
+        0.7216317057609558
+      ],
+      "sample_id": "sample_000190",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.24971382319927216,
+        0.4697580933570862
+      ],
+      "probabilities": [
+        0.3275092840194702,
+        0.6724907159805298
+      ],
+      "sample_id": "sample_000191",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4325864613056183,
+        0.6339149475097656
+      ],
+      "probabilities": [
+        0.25606900453567505,
+        0.7439310550689697
+      ],
+      "sample_id": "sample_000192",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5124404430389404,
+        0.7109801769256592
+      ],
+      "probabilities": [
+        0.22733505070209503,
+        0.7726649641990662
+      ],
+      "sample_id": "sample_000193",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5953450798988342,
+        0.8268811702728271
+      ],
+      "probabilities": [
+        0.19431282579898834,
+        0.8056871891021729
+      ],
+      "sample_id": "sample_000194",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.36416691541671753,
+        0.5688551664352417
+      ],
+      "probabilities": [
+        0.2823120057582855,
+        0.7176880240440369
+      ],
+      "sample_id": "sample_000195",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.16111718118190765,
+        0.38664132356643677
+      ],
+      "probabilities": [
+        0.3663846552371979,
+        0.6336154341697693
+      ],
+      "sample_id": "sample_000196",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.45003044605255127,
+        0.6466943621635437
+      ],
+      "probabilities": [
+        0.2503540515899658,
+        0.7496458888053894
+      ],
+      "sample_id": "sample_000197",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2885761260986328,
+        0.5048995018005371
+      ],
+      "probabilities": [
+        0.3114228844642639,
+        0.6885771155357361
+      ],
+      "sample_id": "sample_000198",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.22298426926136017,
+        0.4496118128299713
+      ],
+      "probabilities": [
+        0.3379157483577728,
+        0.66208416223526
+      ],
+      "sample_id": "sample_000199",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5509973168373108,
+        0.7603492140769958
+      ],
+      "probabilities": [
+        0.2122616022825241,
+        0.7877383828163147
+      ],
+      "sample_id": "sample_000200",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.44552093744277954,
+        0.6438576579093933
+      ],
+      "probabilities": [
+        0.25173529982566833,
+        0.7482646703720093
+      ],
+      "sample_id": "sample_000201",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4851173162460327,
+        0.6820000410079956
+      ],
+      "probabilities": [
+        0.23737643659114838,
+        0.7626236081123352
+      ],
+      "sample_id": "sample_000202",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3628706634044647,
+        0.572975218296051
+      ],
+      "probabilities": [
+        0.2817402482032776,
+        0.7182598114013672
+      ],
+      "sample_id": "sample_000203",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5904751420021057,
+        0.8259820342063904
+      ],
+      "probabilities": [
+        0.19521759450435638,
+        0.8047824501991272
+      ],
+      "sample_id": "sample_000204",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4797195792198181,
+        0.676484227180481
+      ],
+      "probabilities": [
+        0.23935776948928833,
+        0.7606422305107117
+      ],
+      "sample_id": "sample_000205",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.17528708279132843,
+        0.38972675800323486
+      ],
+      "probabilities": [
+        0.36238816380500793,
+        0.6376118659973145
+      ],
+      "sample_id": "sample_000206",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.18376973271369934,
+        0.4172070622444153
+      ],
+      "probabilities": [
+        0.35412025451660156,
+        0.6458797454833984
+      ],
+      "sample_id": "sample_000207",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4734516143798828,
+        0.6702922582626343
+      ],
+      "probabilities": [
+        0.24163363873958588,
+        0.7583663463592529
+      ],
+      "sample_id": "sample_000208",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.49954965710639954,
+        0.6983581781387329
+      ],
+      "probabilities": [
+        0.2318475991487503,
+        0.7681523561477661
+      ],
+      "sample_id": "sample_000209",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5115932822227478,
+        0.7099177241325378
+      ],
+      "probabilities": [
+        0.22767065465450287,
+        0.7723293304443359
+      ],
+      "sample_id": "sample_000210",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.44220247864723206,
+        0.6402742862701416
+      ],
+      "probabilities": [
+        0.25303760170936584,
+        0.7469623684883118
+      ],
+      "sample_id": "sample_000211",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5161641836166382,
+        0.7210561037063599
+      ],
+      "probabilities": [
+        0.22492019832134247,
+        0.7750797867774963
+      ],
+      "sample_id": "sample_000212",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.29230135679244995,
+        0.5064560770988464
+      ],
+      "probabilities": [
+        0.3102913796901703,
+        0.6897086501121521
+      ],
+      "sample_id": "sample_000213",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4136122763156891,
+        0.6122804880142212
+      ],
+      "probabilities": [
+        0.2638811469078064,
+        0.7361188530921936
+      ],
+      "sample_id": "sample_000214",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4788081645965576,
+        0.6762904524803162
+      ],
+      "probabilities": [
+        0.23955902457237244,
+        0.7604409456253052
+      ],
+      "sample_id": "sample_000215",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3891955018043518,
+        0.5874335169792175
+      ],
+      "probabilities": [
+        0.27356117963790894,
+        0.7264388799667358
+      ],
+      "sample_id": "sample_000216",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.41706064343452454,
+        0.6129248738288879
+      ],
+      "probabilities": [
+        0.2630869150161743,
+        0.7369130849838257
+      ],
+      "sample_id": "sample_000217",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3742617964744568,
+        0.5756401419639587
+      ],
+      "probabilities": [
+        0.278904527425766,
+        0.7210954427719116
+      ],
+      "sample_id": "sample_000218",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.24323488771915436,
+        0.47091758251190186
+      ],
+      "probabilities": [
+        0.32868194580078125,
+        0.6713180541992188
+      ],
+      "sample_id": "sample_000219",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.34496575593948364,
+        0.5551609992980957
+      ],
+      "probabilities": [
+        0.2890244722366333,
+        0.7109755873680115
+      ],
+      "sample_id": "sample_000220",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.441071093082428,
+        0.63363116979599
+      ],
+      "probabilities": [
+        0.254509836435318,
+        0.7454900741577148
+      ],
+      "sample_id": "sample_000221",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.36389678716659546,
+        0.5698594450950623
+      ],
+      "probabilities": [
+        0.28216326236724854,
+        0.7178366780281067
+      ],
+      "sample_id": "sample_000222",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.13818809390068054,
+        0.37412387132644653
+      ],
+      "probabilities": [
+        0.374651700258255,
+        0.6253482699394226
+      ],
+      "sample_id": "sample_000223",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.19254127144813538,
+        0.4287562668323517
+      ],
+      "probabilities": [
+        0.34948641061782837,
+        0.6505135893821716
+      ],
+      "sample_id": "sample_000224",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2321045845746994,
+        0.4562228322029114
+      ],
+      "probabilities": [
+        0.3344052731990814,
+        0.665594756603241
+      ],
+      "sample_id": "sample_000225",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4374912977218628,
+        0.6368734836578369
+      ],
+      "probabilities": [
+        0.25457391142845154,
+        0.7454261183738708
+      ],
+      "sample_id": "sample_000226",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.31388863921165466,
+        0.5176035165786743
+      ],
+      "probabilities": [
+        0.3033296465873718,
+        0.6966703534126282
+      ],
+      "sample_id": "sample_000227",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.26729610562324524,
+        0.4904152750968933
+      ],
+      "probabilities": [
+        0.3191433548927307,
+        0.6808566451072693
+      ],
+      "sample_id": "sample_000228",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.38438740372657776,
+        0.5774427652359009
+      ],
+      "probabilities": [
+        0.27651190757751465,
+        0.7234880328178406
+      ],
+      "sample_id": "sample_000229",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.45897209644317627,
+        0.6578388214111328
+      ],
+      "probabilities": [
+        0.24660331010818481,
+        0.7533966898918152
+      ],
+      "sample_id": "sample_000230",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3323303759098053,
+        0.5369800925254822
+      ],
+      "probabilities": [
+        0.2953978180885315,
+        0.7046022415161133
+      ],
+      "sample_id": "sample_000231",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.38221630454063416,
+        0.584104597568512
+      ],
+      "probabilities": [
+        0.2756144404411316,
+        0.7243855595588684
+      ],
+      "sample_id": "sample_000232",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5730600953102112,
+        0.7864035367965698
+      ],
+      "probabilities": [
+        0.20432747900485992,
+        0.7956724762916565
+      ],
+      "sample_id": "sample_000233",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3438398838043213,
+        0.5570247769355774
+      ],
+      "probabilities": [
+        0.2888728380203247,
+        0.7111271619796753
+      ],
+      "sample_id": "sample_000234",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5175748467445374,
+        0.7172833681106567
+      ],
+      "probabilities": [
+        0.22533224523067474,
+        0.7746677994728088
+      ],
+      "sample_id": "sample_000235",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4779968559741974,
+        0.6744465231895447
+      ],
+      "probabilities": [
+        0.240043044090271,
+        0.7599568963050842
+      ],
+      "sample_id": "sample_000236",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3118745684623718,
+        0.5215423107147217
+      ],
+      "probabilities": [
+        0.3029230833053589,
+        0.6970769166946411
+      ],
+      "sample_id": "sample_000237",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.23241747915744781,
+        0.4570978283882141
+      ],
+      "probabilities": [
+        0.33414092659950256,
+        0.6658591032028198
+      ],
+      "sample_id": "sample_000238",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.24220284819602966,
+        0.4517821967601776
+      ],
+      "probabilities": [
+        0.33314716815948486,
+        0.6668528318405151
+      ],
+      "sample_id": "sample_000239",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.22444038093090057,
+        0.44464051723480225
+      ],
+      "probabilities": [
+        0.33870264887809753,
+        0.6612973213195801
+      ],
+      "sample_id": "sample_000240",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4077067971229553,
+        0.6094701290130615
+      ],
+      "probabilities": [
+        0.26557767391204834,
+        0.7344222664833069
+      ],
+      "sample_id": "sample_000241",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.40649110078811646,
+        0.6115184426307678
+      ],
+      "probabilities": [
+        0.2654153108596802,
+        0.7345847487449646
+      ],
+      "sample_id": "sample_000242",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5183319449424744,
+        0.717299222946167
+      ],
+      "probabilities": [
+        0.22519735991954803,
+        0.7748026847839355
+      ],
+      "sample_id": "sample_000243",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.23172828555107117,
+        0.45420053601264954
+      ],
+      "probabilities": [
+        0.3349393308162689,
+        0.6650606393814087
+      ],
+      "sample_id": "sample_000244",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2490091621875763,
+        0.4564143419265747
+      ],
+      "probabilities": [
+        0.33061087131500244,
+        0.6693891286849976
+      ],
+      "sample_id": "sample_000245",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2583996653556824,
+        0.47802069783210754
+      ],
+      "probabilities": [
+        0.3237873911857605,
+        0.6762126088142395
+      ],
+      "sample_id": "sample_000246",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.47589388489723206,
+        0.6723059415817261
+      ],
+      "probabilities": [
+        0.24081802368164062,
+        0.7591819167137146
+      ],
+      "sample_id": "sample_000247",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.42921531200408936,
+        0.631566047668457
+      ],
+      "probabilities": [
+        0.25716015696525574,
+        0.7428398132324219
+      ],
+      "sample_id": "sample_000248",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2151118367910385,
+        0.43862417340278625
+      ],
+      "probabilities": [
+        0.3421481251716614,
+        0.6578518748283386
+      ],
+      "sample_id": "sample_000249",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.25967615842819214,
+        0.48397454619407654
+      ],
+      "probabilities": [
+        0.3222063481807709,
+        0.6777936220169067
+      ],
+      "sample_id": "sample_000250",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4211795926094055,
+        0.6135426759719849
+      ],
+      "probabilities": [
+        0.26216962933540344,
+        0.737830400466919
+      ],
+      "sample_id": "sample_000251",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.48893848061561584,
+        0.6855577230453491
+      ],
+      "probabilities": [
+        0.23604324460029602,
+        0.7639567255973816
+      ],
+      "sample_id": "sample_000252",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4656621515750885,
+        0.6677152514457703
+      ],
+      "probabilities": [
+        0.24353834986686707,
+        0.7564616799354553
+      ],
+      "sample_id": "sample_000253",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4814751148223877,
+        0.6766045689582825
+      ],
+      "probabilities": [
+        0.23901639878749847,
+        0.7609835863113403
+      ],
+      "sample_id": "sample_000254",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.07632357627153397,
+        0.323866605758667
+      ],
+      "probabilities": [
+        0.4012666642665863,
+        0.5987333655357361
+      ],
+      "sample_id": "sample_000255",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5671747922897339,
+        0.7816247940063477
+      ],
+      "probabilities": [
+        0.20606669783592224,
+        0.7939333319664001
+      ],
+      "sample_id": "sample_000256",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.20801550149917603,
+        0.43593937158584595
+      ],
+      "probabilities": [
+        0.3443530797958374,
+        0.6556469202041626
+      ],
+      "sample_id": "sample_000257",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.44829028844833374,
+        0.6454017162322998
+      ],
+      "probabilities": [
+        0.25092369318008423,
+        0.7490763664245605
+      ],
+      "sample_id": "sample_000258",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5089365243911743,
+        0.7064031958580017
+      ],
+      "probabilities": [
+        0.22875761985778809,
+        0.7712423801422119
+      ],
+      "sample_id": "sample_000259",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2413741797208786,
+        0.458728551864624
+      ],
+      "probabilities": [
+        0.33178943395614624,
+        0.668210506439209
+      ],
+      "sample_id": "sample_000260",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.33094149827957153,
+        0.5448938012123108
+      ],
+      "probabilities": [
+        0.29404154419898987,
+        0.7059584856033325
+      ],
+      "sample_id": "sample_000261",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3406203091144562,
+        0.5383384227752686
+      ],
+      "probabilities": [
+        0.293393611907959,
+        0.706606388092041
+      ],
+      "sample_id": "sample_000262",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.34985965490341187,
+        0.5582457780838013
+      ],
+      "probabilities": [
+        0.2873876988887787,
+        0.7126123309135437
+      ],
+      "sample_id": "sample_000263",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.47477057576179504,
+        0.6750497221946716
+      ],
+      "probabilities": [
+        0.2405218929052353,
+        0.7594780921936035
+      ],
+      "sample_id": "sample_000264",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.13919267058372498,
+        0.3714601993560791
+      ],
+      "probabilities": [
+        0.3750404715538025,
+        0.6249595284461975
+      ],
+      "sample_id": "sample_000265",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.19607947766780853,
+        0.429583340883255
+      ],
+      "probabilities": [
+        0.34849461913108826,
+        0.6515053510665894
+      ],
+      "sample_id": "sample_000266",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.32381299138069153,
+        0.5354405045509338
+      ],
+      "probabilities": [
+        0.2974953055381775,
+        0.7025046348571777
+      ],
+      "sample_id": "sample_000267",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4394451975822449,
+        0.6331768035888672
+      ],
+      "probabilities": [
+        0.25490477681159973,
+        0.7450952529907227
+      ],
+      "sample_id": "sample_000268",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.18400157988071442,
+        0.4085787832736969
+      ],
+      "probabilities": [
+        0.3560430109500885,
+        0.6439569592475891
+      ],
+      "sample_id": "sample_000269",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4857419431209564,
+        0.6846426725387573
+      ],
+      "probabilities": [
+        0.23678545653820038,
+        0.7632144689559937
+      ],
+      "sample_id": "sample_000270",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.43894949555397034,
+        0.635796844959259
+      ],
+      "probabilities": [
+        0.2545015215873718,
+        0.745498538017273
+      ],
+      "sample_id": "sample_000271",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.44824928045272827,
+        0.6471829414367676
+      ],
+      "probabilities": [
+        0.25059670209884644,
+        0.7494032382965088
+      ],
+      "sample_id": "sample_000272",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.36287716031074524,
+        0.5577647686004639
+      ],
+      "probabilities": [
+        0.2848271131515503,
+        0.7151728868484497
+      ],
+      "sample_id": "sample_000273",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5007898807525635,
+        0.6970477104187012
+      ],
+      "probabilities": [
+        0.23186011612415314,
+        0.7681398391723633
+      ],
+      "sample_id": "sample_000274",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.29192355275154114,
+        0.5022282600402832
+      ],
+      "probabilities": [
+        0.31127792596817017,
+        0.6887221336364746
+      ],
+      "sample_id": "sample_000275",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3101668655872345,
+        0.5093221068382263
+      ],
+      "probabilities": [
+        0.3058721423149109,
+        0.6941278576850891
+      ],
+      "sample_id": "sample_000276",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4336230754852295,
+        0.6290533542633057
+      ],
+      "probabilities": [
+        0.25679832696914673,
+        0.7432016730308533
+      ],
+      "sample_id": "sample_000277",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.21501044929027557,
+        0.42387881875038147
+      ],
+      "probabilities": [
+        0.34549766778945923,
+        0.654502272605896
+      ],
+      "sample_id": "sample_000278",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.41462627053260803,
+        0.6115637421607971
+      ],
+      "probabilities": [
+        0.26382341980934143,
+        0.736176609992981
+      ],
+      "sample_id": "sample_000279",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4811628758907318,
+        0.6831402778625488
+      ],
+      "probabilities": [
+        0.23788626492023468,
+        0.7621137499809265
+      ],
+      "sample_id": "sample_000280",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4618845283985138,
+        0.6596522331237793
+      ],
+      "probabilities": [
+        0.24572637677192688,
+        0.7542737126350403
+      ],
+      "sample_id": "sample_000281",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.44389888644218445,
+        0.6432456970214844
+      ],
+      "probabilities": [
+        0.2521563768386841,
+        0.7478436827659607
+      ],
+      "sample_id": "sample_000282",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4971250295639038,
+        0.6965174078941345
+      ],
+      "probabilities": [
+        0.2326081395149231,
+        0.7673919200897217
+      ],
+      "sample_id": "sample_000283",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.1346753090620041,
+        0.3851296603679657
+      ],
+      "probabilities": [
+        0.3728978633880615,
+        0.6271021962165833
+      ],
+      "sample_id": "sample_000284",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.04370900243520737,
+        0.2908017635345459
+      ],
+      "probabilities": [
+        0.41714349389076233,
+        0.5828565359115601
+      ],
+      "sample_id": "sample_000285",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.292999804019928,
+        0.4993392527103424
+      ],
+      "probabilities": [
+        0.31166666746139526,
+        0.6883333921432495
+      ],
+      "sample_id": "sample_000286",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.489012748003006,
+        0.6884226202964783
+      ],
+      "probabilities": [
+        0.2355136275291443,
+        0.7644863724708557
+      ],
+      "sample_id": "sample_000287",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.21235883235931396,
+        0.42759042978286743
+      ],
+      "probabilities": [
+        0.34525802731513977,
+        0.6547420024871826
+      ],
+      "sample_id": "sample_000288",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4612589180469513,
+        0.6620416045188904
+      ],
+      "probabilities": [
+        0.2453995943069458,
+        0.754600465297699
+      ],
+      "sample_id": "sample_000289",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.45416611433029175,
+        0.6577203273773193
+      ],
+      "probabilities": [
+        0.2475193589925766,
+        0.752480685710907
+      ],
+      "sample_id": "sample_000290",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.41291356086730957,
+        0.61097252368927
+      ],
+      "probabilities": [
+        0.2642711400985718,
+        0.7357288599014282
+      ],
+      "sample_id": "sample_000291",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.25581347942352295,
+        0.47956061363220215
+      ],
+      "probabilities": [
+        0.3240165412425995,
+        0.6759834885597229
+      ],
+      "sample_id": "sample_000292",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.005624077748507261,
+        0.26631319522857666
+      ],
+      "probabilities": [
+        0.43243154883384705,
+        0.5675684213638306
+      ],
+      "sample_id": "sample_000293",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.15123289823532104,
+        0.39104345440864563
+      ],
+      "probabilities": [
+        0.36765816807746887,
+        0.632341742515564
+      ],
+      "sample_id": "sample_000294",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3523123860359192,
+        0.5625395774841309
+      ],
+      "probabilities": [
+        0.28600800037384033,
+        0.7139919996261597
+      ],
+      "sample_id": "sample_000295",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.07662546634674072,
+        0.3211267590522766
+      ],
+      "probabilities": [
+        0.40185248851776123,
+        0.598147451877594
+      ],
+      "sample_id": "sample_000296",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.23401255905628204,
+        0.45321622490882874
+      ],
+      "probabilities": [
+        0.33464983105659485,
+        0.6653501987457275
+      ],
+      "sample_id": "sample_000297",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2515866458415985,
+        0.475195050239563
+      ],
+      "probabilities": [
+        0.3259013593196869,
+        0.6740986704826355
+      ],
+      "sample_id": "sample_000298",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.20777970552444458,
+        0.4281405508518219
+      ],
+      "probabilities": [
+        0.3461693525314331,
+        0.6538306474685669
+      ],
+      "sample_id": "sample_000299",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.31458815932273865,
+        0.5249328017234802
+      ],
+      "probabilities": [
+        0.3016357123851776,
+        0.6983643174171448
+      ],
+      "sample_id": "sample_000300",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.38139477372169495,
+        0.5848007202148438
+      ],
+      "probabilities": [
+        0.27563947439193726,
+        0.7243605256080627
+      ],
+      "sample_id": "sample_000301",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.166046142578125,
+        0.3926677107810974
+      ],
+      "probabilities": [
+        0.3638450801372528,
+        0.6361548900604248
+      ],
+      "sample_id": "sample_000302",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.47860538959503174,
+        0.674265444278717
+      ],
+      "probabilities": [
+        0.23996511101722717,
+        0.7600349187850952
+      ],
+      "sample_id": "sample_000303",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.34115085005760193,
+        0.5489054918289185
+      ],
+      "probabilities": [
+        0.2910982072353363,
+        0.7089018225669861
+      ],
+      "sample_id": "sample_000304",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.19118519127368927,
+        0.42046472430229187
+      ],
+      "probabilities": [
+        0.3516829013824463,
+        0.6483170390129089
+      ],
+      "sample_id": "sample_000305",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4591541588306427,
+        0.6537148952484131
+      ],
+      "probabilities": [
+        0.24733640253543854,
+        0.7526636123657227
+      ],
+      "sample_id": "sample_000306",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.39242029190063477,
+        0.5884010791778564
+      ],
+      "probabilities": [
+        0.272728830575943,
+        0.7272711396217346
+      ],
+      "sample_id": "sample_000307",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.473319411277771,
+        0.6677249073982239
+      ],
+      "probabilities": [
+        0.2421286702156067,
+        0.7578713297843933
+      ],
+      "sample_id": "sample_000308",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3851057291030884,
+        0.5962169766426086
+      ],
+      "probabilities": [
+        0.27262941002845764,
+        0.7273706197738647
+      ],
+      "sample_id": "sample_000309",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.479968786239624,
+        0.6767804026603699
+      ],
+      "probabilities": [
+        0.23925845324993134,
+        0.7607415318489075
+      ],
+      "sample_id": "sample_000310",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3006080389022827,
+        0.5073123574256897
+      ],
+      "probabilities": [
+        0.3083338141441345,
+        0.6916661858558655
+      ],
+      "sample_id": "sample_000311",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3679959774017334,
+        0.5733190774917603
+      ],
+      "probabilities": [
+        0.2806347906589508,
+        0.7193651795387268
+      ],
+      "sample_id": "sample_000312",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.19673489034175873,
+        0.42866769433021545
+      ],
+      "probabilities": [
+        0.34855371713638306,
+        0.6514462828636169
+      ],
+      "sample_id": "sample_000313",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.37921392917633057,
+        0.5892791152000427
+      ],
+      "probabilities": [
+        0.27518096566200256,
+        0.724819004535675
+      ],
+      "sample_id": "sample_000314",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4690106213092804,
+        0.6668816208839417
+      ],
+      "probabilities": [
+        0.24307534098625183,
+        0.7569246292114258
+      ],
+      "sample_id": "sample_000315",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5472244024276733,
+        0.7523316740989685
+      ],
+      "probabilities": [
+        0.21423973143100739,
+        0.785760223865509
+      ],
+      "sample_id": "sample_000316",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5062658786773682,
+        0.7021539211273193
+      ],
+      "probabilities": [
+        0.22998076677322388,
+        0.7700192332267761
+      ],
+      "sample_id": "sample_000317",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.239974707365036,
+        0.44681859016418457
+      ],
+      "probabilities": [
+        0.3347468078136444,
+        0.665253221988678
+      ],
+      "sample_id": "sample_000318",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2108161598443985,
+        0.4440581798553467
+      ],
+      "probabilities": [
+        0.34189194440841675,
+        0.6581079959869385
+      ],
+      "sample_id": "sample_000319",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.218471959233284,
+        0.4492397904396057
+      ],
+      "probabilities": [
+        0.33900943398475647,
+        0.6609905958175659
+      ],
+      "sample_id": "sample_000320",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.28668683767318726,
+        0.5017115473747253
+      ],
+      "probabilities": [
+        0.31251269578933716,
+        0.6874873638153076
+      ],
+      "sample_id": "sample_000321",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.43327128887176514,
+        0.6318543553352356
+      ],
+      "probabilities": [
+        0.2563311457633972,
+        0.743668794631958
+      ],
+      "sample_id": "sample_000322",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3303202986717224,
+        0.5452912449836731
+      ],
+      "probabilities": [
+        0.2940880060195923,
+        0.7059119939804077
+      ],
+      "sample_id": "sample_000323",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.17445863783359528,
+        0.408786416053772
+      ],
+      "probabilities": [
+        0.3581862151622772,
+        0.6418136954307556
+      ],
+      "sample_id": "sample_000324",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.422341912984848,
+        0.6278206706047058
+      ],
+      "probabilities": [
+        0.25919389724731445,
+        0.7408061027526855
+      ],
+      "sample_id": "sample_000325",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.547156035900116,
+        0.7496023178100586
+      ],
+      "probabilities": [
+        0.21471108496189117,
+        0.78528892993927
+      ],
+      "sample_id": "sample_000326",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4154750406742096,
+        0.618954598903656
+      ],
+      "probabilities": [
+        0.2622262239456177,
+        0.7377737760543823
+      ],
+      "sample_id": "sample_000327",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.12663322687149048,
+        0.3631683588027954
+      ],
+      "probabilities": [
+        0.37994033098220825,
+        0.6200597286224365
+      ],
+      "sample_id": "sample_000328",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.23995161056518555,
+        0.4625326693058014
+      ],
+      "probabilities": [
+        0.33126166462898254,
+        0.6687383055686951
+      ],
+      "sample_id": "sample_000329",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4764752686023712,
+        0.6727942228317261
+      ],
+      "probabilities": [
+        0.24062255024909973,
+        0.7593774199485779
+      ],
+      "sample_id": "sample_000330",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4833641052246094,
+        0.6803256273269653
+      ],
+      "probabilities": [
+        0.23799745738506317,
+        0.7620024681091309
+      ],
+      "sample_id": "sample_000331",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.37878966331481934,
+        0.5818254351615906
+      ],
+      "probabilities": [
+        0.27675506472587585,
+        0.7232449650764465
+      ],
+      "sample_id": "sample_000332",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4776090085506439,
+        0.6718199253082275
+      ],
+      "probabilities": [
+        0.24059340357780457,
+        0.759406566619873
+      ],
+      "sample_id": "sample_000333",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.28703126311302185,
+        0.49534040689468384
+      ],
+      "probabilities": [
+        0.31380897760391235,
+        0.6861910223960876
+      ],
+      "sample_id": "sample_000334",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4486348628997803,
+        0.6441141366958618
+      ],
+      "probabilities": [
+        0.25110095739364624,
+        0.748898983001709
+      ],
+      "sample_id": "sample_000335",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4381880760192871,
+        0.6334709525108337
+      ],
+      "probabilities": [
+        0.2550877034664154,
+        0.744912326335907
+      ],
+      "sample_id": "sample_000336",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.15644428133964539,
+        0.38113704323768616
+      ],
+      "probabilities": [
+        0.3687504231929779,
+        0.6312496066093445
+      ],
+      "sample_id": "sample_000337",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.30858665704727173,
+        0.5222444534301758
+      ],
+      "probabilities": [
+        0.30346935987472534,
+        0.6965306401252747
+      ],
+      "sample_id": "sample_000338",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.420587956905365,
+        0.616777241230011
+      ],
+      "probabilities": [
+        0.2616586983203888,
+        0.7383413314819336
+      ],
+      "sample_id": "sample_000339",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2632405459880829,
+        0.4814807176589966
+      ],
+      "probabilities": [
+        0.3219725787639618,
+        0.6780273914337158
+      ],
+      "sample_id": "sample_000340",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2538222670555115,
+        0.47335004806518555
+      ],
+      "probabilities": [
+        0.3258155286312103,
+        0.6741844415664673
+      ],
+      "sample_id": "sample_000341",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.439275860786438,
+        0.6430097222328186
+      ],
+      "probabilities": [
+        0.25307372212409973,
+        0.7469262480735779
+      ],
+      "sample_id": "sample_000342",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5670258402824402,
+        0.7849008440971375
+      ],
+      "probabilities": [
+        0.20555555820465088,
+        0.7944444417953491
+      ],
+      "sample_id": "sample_000343",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3344576060771942,
+        0.5435531735420227
+      ],
+      "probabilities": [
+        0.29359015822410583,
+        0.7064098119735718
+      ],
+      "sample_id": "sample_000344",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2979740798473358,
+        0.5021835565567017
+      ],
+      "probabilities": [
+        0.3099918067455292,
+        0.6900082230567932
+      ],
+      "sample_id": "sample_000345",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3869975805282593,
+        0.5949999690055847
+      ],
+      "probabilities": [
+        0.2724955976009369,
+        0.7275043725967407
+      ],
+      "sample_id": "sample_000346",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4339912533760071,
+        0.6358054280281067
+      ],
+      "probabilities": [
+        0.2554417550563812,
+        0.7445582747459412
+      ],
+      "sample_id": "sample_000347",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.39066532254219055,
+        0.5906895399093628
+      ],
+      "probabilities": [
+        0.2726230323314667,
+        0.7273769974708557
+      ],
+      "sample_id": "sample_000348",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.32857632637023926,
+        0.5377225875854492
+      ],
+      "probabilities": [
+        0.29602497816085815,
+        0.7039749622344971
+      ],
+      "sample_id": "sample_000349",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5472375154495239,
+        0.7559905052185059
+      ],
+      "probabilities": [
+        0.21362225711345673,
+        0.7863777875900269
+      ],
+      "sample_id": "sample_000350",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2683257460594177,
+        0.4851920008659363
+      ],
+      "probabilities": [
+        0.3200553059577942,
+        0.6799447536468506
+      ],
+      "sample_id": "sample_000351",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4231482744216919,
+        0.6194509267807007
+      ],
+      "probabilities": [
+        0.26064878702163696,
+        0.739351212978363
+      ],
+      "sample_id": "sample_000352",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4508553445339203,
+        0.6485782861709595
+      ],
+      "probabilities": [
+        0.24984602630138397,
+        0.7501539587974548
+      ],
+      "sample_id": "sample_000353",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5100127458572388,
+        0.7079520225524902
+      ],
+      "probabilities": [
+        0.22829480469226837,
+        0.771705150604248
+      ],
+      "sample_id": "sample_000354",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.46770572662353516,
+        0.6676328182220459
+      ],
+      "probabilities": [
+        0.24317722022533417,
+        0.7568227052688599
+      ],
+      "sample_id": "sample_000355",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.48703786730766296,
+        0.6840466856956482
+      ],
+      "probabilities": [
+        0.2366590052843094,
+        0.7633410096168518
+      ],
+      "sample_id": "sample_000356",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2925941050052643,
+        0.5130921006202698
+      ],
+      "probabilities": [
+        0.3088105022907257,
+        0.6911895275115967
+      ],
+      "sample_id": "sample_000357",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.26638007164001465,
+        0.4795444905757904
+      ],
+      "probabilities": [
+        0.32170993089675903,
+        0.6782900094985962
+      ],
+      "sample_id": "sample_000358",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.1008632481098175,
+        0.33670538663864136
+      ],
+      "probabilities": [
+        0.39232051372528076,
+        0.607679545879364
+      ],
+      "sample_id": "sample_000359",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3972138464450836,
+        0.6038051247596741
+      ],
+      "probabilities": [
+        0.2687411308288574,
+        0.7312588691711426
+      ],
+      "sample_id": "sample_000360",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2205200046300888,
+        0.439382404088974
+      ],
+      "probabilities": [
+        0.34076154232025146,
+        0.6592384576797485
+      ],
+      "sample_id": "sample_000361",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.43017637729644775,
+        0.6294781565666199
+      ],
+      "probabilities": [
+        0.2573755085468292,
+        0.7426245212554932
+      ],
+      "sample_id": "sample_000362",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4686472415924072,
+        0.6665134429931641
+      ],
+      "probabilities": [
+        0.24320998787879944,
+        0.756790041923523
+      ],
+      "sample_id": "sample_000363",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5818051695823669,
+        0.8028703927993774
+      ],
+      "probabilities": [
+        0.20025914907455444,
+        0.7997408509254456
+      ],
+      "sample_id": "sample_000364",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.35952672362327576,
+        0.566027045249939
+      ],
+      "probabilities": [
+        0.28382763266563416,
+        0.7161723971366882
+      ],
+      "sample_id": "sample_000365",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5356708765029907,
+        0.7371504306793213
+      ],
+      "probabilities": [
+        0.21877466142177582,
+        0.781225323677063
+      ],
+      "sample_id": "sample_000366",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.09081663936376572,
+        0.32504647970199585
+      ],
+      "probabilities": [
+        0.39750710129737854,
+        0.6024929285049438
+      ],
+      "sample_id": "sample_000367",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.060038428753614426,
+        0.3051134943962097
+      ],
+      "probabilities": [
+        0.4097130000591278,
+        0.5902869701385498
+      ],
+      "sample_id": "sample_000368",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.27532321214675903,
+        0.49701887369155884
+      ],
+      "probabilities": [
+        0.3159726858139038,
+        0.6840273141860962
+      ],
+      "sample_id": "sample_000369",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.15893180668354034,
+        0.3842414319515228
+      ],
+      "probabilities": [
+        0.36744973063468933,
+        0.6325502991676331
+      ],
+      "sample_id": "sample_000370",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.18332482874393463,
+        0.3961983621120453
+      ],
+      "probabilities": [
+        0.35904231667518616,
+        0.6409576535224915
+      ],
+      "sample_id": "sample_000371",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3835935592651367,
+        0.5888267755508423
+      ],
+      "probabilities": [
+        0.2743983268737793,
+        0.7256016135215759
+      ],
+      "sample_id": "sample_000372",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.47533077001571655,
+        0.6704415082931519
+      ],
+      "probabilities": [
+        0.24126215279102325,
+        0.7587378621101379
+      ],
+      "sample_id": "sample_000373",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.19217641651630402,
+        0.4182153344154358
+      ],
+      "probabilities": [
+        0.3519698679447174,
+        0.648030161857605
+      ],
+      "sample_id": "sample_000374",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5963889360427856,
+        0.8367182612419128
+      ],
+      "probabilities": [
+        0.19261501729488373,
+        0.8073849678039551
+      ],
+      "sample_id": "sample_000375",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3998306691646576,
+        0.6035730242729187
+      ],
+      "probabilities": [
+        0.2682727575302124,
+        0.7317273020744324
+      ],
+      "sample_id": "sample_000376",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.36319828033447266,
+        0.5577359199523926
+      ],
+      "probabilities": [
+        0.28476759791374207,
+        0.7152324318885803
+      ],
+      "sample_id": "sample_000377",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.375270277261734,
+        0.5686861276626587
+      ],
+      "probabilities": [
+        0.28010186553001404,
+        0.7198981642723083
+      ],
+      "sample_id": "sample_000378",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5843833684921265,
+        0.8323033452033997
+      ],
+      "probabilities": [
+        0.19518153369426727,
+        0.8048185110092163
+      ],
+      "sample_id": "sample_000379",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4217636287212372,
+        0.6197764873504639
+      ],
+      "probabilities": [
+        0.2608529329299927,
+        0.7391470670700073
+      ],
+      "sample_id": "sample_000380",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5150843262672424,
+        0.7141098380088806
+      ],
+      "probabilities": [
+        0.2263225018978119,
+        0.7736775279045105
+      ],
+      "sample_id": "sample_000381",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.03438675031065941,
+        0.29317665100097656
+      ],
+      "probabilities": [
+        0.4188336133956909,
+        0.5811663866043091
+      ],
+      "sample_id": "sample_000382",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3454941511154175,
+        0.5381190180778503
+      ],
+      "probabilities": [
+        0.2924295961856842,
+        0.7075704336166382
+      ],
+      "sample_id": "sample_000383",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3982970118522644,
+        0.5994030833244324
+      ],
+      "probabilities": [
+        0.26939383149147034,
+        0.7306061387062073
+      ],
+      "sample_id": "sample_000384",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.302632212638855,
+        0.5277617573738098
+      ],
+      "probabilities": [
+        0.3035617470741272,
+        0.696438193321228
+      ],
+      "sample_id": "sample_000385",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.448548823595047,
+        0.6453198790550232
+      ],
+      "probabilities": [
+        0.25089046359062195,
+        0.7491095662117004
+      ],
+      "sample_id": "sample_000386",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3974648714065552,
+        0.6000386476516724
+      ],
+      "probabilities": [
+        0.26943251490592957,
+        0.730567455291748
+      ],
+      "sample_id": "sample_000387",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.13477498292922974,
+        0.3799924850463867
+      ],
+      "probabilities": [
+        0.37407657504081726,
+        0.6259233951568604
+      ],
+      "sample_id": "sample_000388",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.47551485896110535,
+        0.6722058057785034
+      ],
+      "probabilities": [
+        0.24090565741062164,
+        0.7590943574905396
+      ],
+      "sample_id": "sample_000389",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.1951943337917328,
+        0.4271363615989685
+      ],
+      "probabilities": [
+        0.34925156831741333,
+        0.6507484316825867
+      ],
+      "sample_id": "sample_000390",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.44646766781806946,
+        0.6422996520996094
+      ],
+      "probabilities": [
+        0.2518504858016968,
+        0.7481495141983032
+      ],
+      "sample_id": "sample_000391",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.24138382077217102,
+        0.46051672101020813
+      ],
+      "probabilities": [
+        0.33139100670814514,
+        0.6686090230941772
+      ],
+      "sample_id": "sample_000392",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3610711991786957,
+        0.5709144473075867
+      ],
+      "probabilities": [
+        0.282522052526474,
+        0.7174779772758484
+      ],
+      "sample_id": "sample_000393",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4663967490196228,
+        0.6621618270874023
+      ],
+      "probabilities": [
+        0.24442720413208008,
+        0.7555727958679199
+      ],
+      "sample_id": "sample_000394",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.19690249860286713,
+        0.43188896775245667
+      ],
+      "probabilities": [
+        0.3477846384048462,
+        0.6522154211997986
+      ],
+      "sample_id": "sample_000395",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.43173855543136597,
+        0.6312695145606995
+      ],
+      "probabilities": [
+        0.25673502683639526,
+        0.7432649731636047
+      ],
+      "sample_id": "sample_000396",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4273875057697296,
+        0.6262085437774658
+      ],
+      "probabilities": [
+        0.25853514671325684,
+        0.7414647936820984
+      ],
+      "sample_id": "sample_000397",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5086615085601807,
+        0.7069341540336609
+      ],
+      "probabilities": [
+        0.22871243953704834,
+        0.7712875008583069
+      ],
+      "sample_id": "sample_000398",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.31425681710243225,
+        0.5268459320068359
+      ],
+      "probabilities": [
+        0.30130258202552795,
+        0.6986973881721497
+      ],
+      "sample_id": "sample_000399",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.30135107040405273,
+        0.5060091018676758
+      ],
+      "probabilities": [
+        0.3084532916545868,
+        0.6915466785430908
+      ],
+      "sample_id": "sample_000400",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2726789116859436,
+        0.4881032407283783
+      ],
+      "probabilities": [
+        0.31847646832466125,
+        0.6815235018730164
+      ],
+      "sample_id": "sample_000401",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.21350111067295074,
+        0.43674591183662415
+      ],
+      "probabilities": [
+        0.3429338335990906,
+        0.6570661067962646
+      ],
+      "sample_id": "sample_000402",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.27291613817214966,
+        0.48867267370224
+      ],
+      "probabilities": [
+        0.3183014392852783,
+        0.6816986203193665
+      ],
+      "sample_id": "sample_000403",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.40996527671813965,
+        0.6164265275001526
+      ],
+      "probabilities": [
+        0.263784259557724,
+        0.7362157702445984
+      ],
+      "sample_id": "sample_000404",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3751989006996155,
+        0.5829365849494934
+      ],
+      "probabilities": [
+        0.277251660823822,
+        0.7227483987808228
+      ],
+      "sample_id": "sample_000405",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.41773226857185364,
+        0.6230588555335999
+      ],
+      "probabilities": [
+        0.26099738478660583,
+        0.7390026450157166
+      ],
+      "sample_id": "sample_000406",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2989479601383209,
+        0.5098859667778015
+      ],
+      "probabilities": [
+        0.30813902616500854,
+        0.6918609738349915
+      ],
+      "sample_id": "sample_000407",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4001462459564209,
+        0.5979850888252258
+      ],
+      "probabilities": [
+        0.26930901408195496,
+        0.7306910753250122
+      ],
+      "sample_id": "sample_000408",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.39295727014541626,
+        0.5945783853530884
+      ],
+      "probabilities": [
+        0.2713991105556488,
+        0.7286009192466736
+      ],
+      "sample_id": "sample_000409",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3582441508769989,
+        0.5687951445579529
+      ],
+      "probabilities": [
+        0.2835257649421692,
+        0.7164742350578308
+      ],
+      "sample_id": "sample_000410",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4873356521129608,
+        0.6828813552856445
+      ],
+      "probabilities": [
+        0.23681573569774628,
+        0.7631841897964478
+      ],
+      "sample_id": "sample_000411",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.16020448505878448,
+        0.38470107316970825
+      ],
+      "probabilities": [
+        0.36704716086387634,
+        0.6329528093338013
+      ],
+      "sample_id": "sample_000412",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.19054925441741943,
+        0.4161502718925476
+      ],
+      "probabilities": [
+        0.35281240940093994,
+        0.6471875309944153
+      ],
+      "sample_id": "sample_000413",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5430652499198914,
+        0.748812198638916
+      ],
+      "probabilities": [
+        0.21553519368171692,
+        0.7844648361206055
+      ],
+      "sample_id": "sample_000414",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.29295408725738525,
+        0.5016268491744995
+      ],
+      "probabilities": [
+        0.31118589639663696,
+        0.688814103603363
+      ],
+      "sample_id": "sample_000415",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.323551744222641,
+        0.5404312610626221
+      ],
+      "probabilities": [
+        0.296507865190506,
+        0.7034921646118164
+      ],
+      "sample_id": "sample_000416",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.43774136900901794,
+        0.6327309608459473
+      ],
+      "probabilities": [
+        0.25531327724456787,
+        0.7446867227554321
+      ],
+      "sample_id": "sample_000417",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.29038992524147034,
+        0.5090911388397217
+      ],
+      "probabilities": [
+        0.3101365566253662,
+        0.6898634433746338
+      ],
+      "sample_id": "sample_000418",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3776293396949768,
+        0.5756330490112305
+      ],
+      "probabilities": [
+        0.2782292068004608,
+        0.7217708230018616
+      ],
+      "sample_id": "sample_000419",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.19146054983139038,
+        0.4196985960006714
+      ],
+      "probabilities": [
+        0.3517948091030121,
+        0.6482051610946655
+      ],
+      "sample_id": "sample_000420",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.17503684759140015,
+        0.3990456163883209
+      ],
+      "probabilities": [
+        0.3602953553199768,
+        0.6397046446800232
+      ],
+      "sample_id": "sample_000421",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.17311294376850128,
+        0.3938587009906769
+      ],
+      "probabilities": [
+        0.36193588376045227,
+        0.6380640864372253
+      ],
+      "sample_id": "sample_000422",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.37770235538482666,
+        0.5835232734680176
+      ],
+      "probabilities": [
+        0.2766328752040863,
+        0.7233671545982361
+      ],
+      "sample_id": "sample_000423",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4619308412075043,
+        0.658793032169342
+      ],
+      "probabilities": [
+        0.24587704241275787,
+        0.7541229724884033
+      ],
+      "sample_id": "sample_000424",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3629552721977234,
+        0.5741082429885864
+      ],
+      "probabilities": [
+        0.2814939022064209,
+        0.7185061573982239
+      ],
+      "sample_id": "sample_000425",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4925403594970703,
+        0.6894903779029846
+      ],
+      "probabilities": [
+        0.23468726873397827,
+        0.7653127312660217
+      ],
+      "sample_id": "sample_000426",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5890716314315796,
+        0.8094175457954407
+      ],
+      "probabilities": [
+        0.1980559378862381,
+        0.8019440174102783
+      ],
+      "sample_id": "sample_000427",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.44360271096229553,
+        0.636927604675293
+      ],
+      "probabilities": [
+        0.2534056603908539,
+        0.7465943098068237
+      ],
+      "sample_id": "sample_000428",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.17110127210617065,
+        0.39824023842811584
+      ],
+      "probabilities": [
+        0.36138877272605896,
+        0.6386111974716187
+      ],
+      "sample_id": "sample_000429",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5158769488334656,
+        0.7137583494186401
+      ],
+      "probabilities": [
+        0.22624529898166656,
+        0.7737547755241394
+      ],
+      "sample_id": "sample_000430",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.39394423365592957,
+        0.5927923917770386
+      ],
+      "probabilities": [
+        0.27155712246894836,
+        0.7284428477287292
+      ],
+      "sample_id": "sample_000431",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4546201825141907,
+        0.6530928611755371
+      ],
+      "probabilities": [
+        0.24829749763011932,
+        0.7517024874687195
+      ],
+      "sample_id": "sample_000432",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.49499955773353577,
+        0.6917582750320435
+      ],
+      "probabilities": [
+        0.23383931815624237,
+        0.7661607265472412
+      ],
+      "sample_id": "sample_000433",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2921341061592102,
+        0.4991603195667267
+      ],
+      "probabilities": [
+        0.31189078092575073,
+        0.6881092190742493
+      ],
+      "sample_id": "sample_000434",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.48161229491233826,
+        0.6778445243835449
+      ],
+      "probabilities": [
+        0.23876599967479706,
+        0.7612339854240417
+      ],
+      "sample_id": "sample_000435",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5203224420547485,
+        0.719961941242218
+      ],
+      "probabilities": [
+        0.22438649833202362,
+        0.77561354637146
+      ],
+      "sample_id": "sample_000436",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4108694791793823,
+        0.6086654663085938
+      ],
+      "probabilities": [
+        0.2651180028915405,
+        0.7348820567131042
+      ],
+      "sample_id": "sample_000437",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3784348964691162,
+        0.5736703276634216
+      ],
+      "probabilities": [
+        0.27846163511276245,
+        0.7215383648872375
+      ],
+      "sample_id": "sample_000438",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2741768956184387,
+        0.4789832830429077
+      ],
+      "probabilities": [
+        0.3201330900192261,
+        0.6798668503761292
+      ],
+      "sample_id": "sample_000439",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4479275047779083,
+        0.6456362009048462
+      ],
+      "probabilities": [
+        0.2509478032588959,
+        0.7490522265434265
+      ],
+      "sample_id": "sample_000440",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.40343424677848816,
+        0.5983637571334839
+      ],
+      "probabilities": [
+        0.2685880661010742,
+        0.7314119338989258
+      ],
+      "sample_id": "sample_000441",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4706510007381439,
+        0.6699828505516052
+      ],
+      "probabilities": [
+        0.24220402538776398,
+        0.757796049118042
+      ],
+      "sample_id": "sample_000442",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3008710443973541,
+        0.5181378722190857
+      ],
+      "probabilities": [
+        0.3059740960597992,
+        0.6940259337425232
+      ],
+      "sample_id": "sample_000443",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4887077212333679,
+        0.6864683032035828
+      ],
+      "probabilities": [
+        0.23592065274715424,
+        0.7640792727470398
+      ],
+      "sample_id": "sample_000444",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5150337815284729,
+        0.7120660543441772
+      ],
+      "probabilities": [
+        0.226689413189888,
+        0.7733106017112732
+      ],
+      "sample_id": "sample_000445",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2769368588924408,
+        0.490878701210022
+      ],
+      "probabilities": [
+        0.31695181131362915,
+        0.6830481290817261
+      ],
+      "sample_id": "sample_000446",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4310966730117798,
+        0.623817503452301
+      ],
+      "probabilities": [
+        0.25828254222869873,
+        0.7417174577713013
+      ],
+      "sample_id": "sample_000447",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.42066314816474915,
+        0.6187554597854614
+      ],
+      "probabilities": [
+        0.2612621784210205,
+        0.7387378215789795
+      ],
+      "sample_id": "sample_000448",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2890685796737671,
+        0.5102786421775818
+      ],
+      "probabilities": [
+        0.3101651668548584,
+        0.6898348331451416
+      ],
+      "sample_id": "sample_000449",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.33052483201026917,
+        0.5419806838035583
+      ],
+      "probabilities": [
+        0.2947331964969635,
+        0.7052667737007141
+      ],
+      "sample_id": "sample_000450",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.45740723609924316,
+        0.6545171141624451
+      ],
+      "probabilities": [
+        0.24751229584217072,
+        0.7524877190589905
+      ],
+      "sample_id": "sample_000451",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.30615997314453125,
+        0.5217549204826355
+      ],
+      "probabilities": [
+        0.3040861189365387,
+        0.6959138512611389
+      ],
+      "sample_id": "sample_000452",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5109017491340637,
+        0.7118420004844666
+      ],
+      "probabilities": [
+        0.22745397686958313,
+        0.7725460529327393
+      ],
+      "sample_id": "sample_000453",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2646261751651764,
+        0.46880123019218445
+      ],
+      "probabilities": [
+        0.3244430720806122,
+        0.6755569577217102
+      ],
+      "sample_id": "sample_000454",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.1359182894229889,
+        0.3867810070514679
+      ],
+      "probabilities": [
+        0.3722212314605713,
+        0.6277787089347839
+      ],
+      "sample_id": "sample_000455",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4349841773509979,
+        0.6311331987380981
+      ],
+      "probabilities": [
+        0.25614213943481445,
+        0.7438578009605408
+      ],
+      "sample_id": "sample_000456",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.20538920164108276,
+        0.43134644627571106
+      ],
+      "probabilities": [
+        0.3459848165512085,
+        0.6540151834487915
+      ],
+      "sample_id": "sample_000457",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.19377847015857697,
+        0.4283774197101593
+      ],
+      "probabilities": [
+        0.34929129481315613,
+        0.6507086753845215
+      ],
+      "sample_id": "sample_000458",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.38602274656295776,
+        0.5840713381767273
+      ],
+      "probabilities": [
+        0.27486175298690796,
+        0.725138247013092
+      ],
+      "sample_id": "sample_000459",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.48094144463539124,
+        0.6776357293128967
+      ],
+      "probabilities": [
+        0.23892591893672943,
+        0.7610740661621094
+      ],
+      "sample_id": "sample_000460",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4779893159866333,
+        0.6774889826774597
+      ],
+      "probabilities": [
+        0.23948988318443298,
+        0.7605101466178894
+      ],
+      "sample_id": "sample_000461",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.42242878675460815,
+        0.6237446665763855
+      ],
+      "probabilities": [
+        0.2599605917930603,
+        0.7400394082069397
+      ],
+      "sample_id": "sample_000462",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.42943301796913147,
+        0.635063648223877
+      ],
+      "probabilities": [
+        0.2564510703086853,
+        0.7435489296913147
+      ],
+      "sample_id": "sample_000463",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.47148290276527405,
+        0.666747510433197
+      ],
+      "probabilities": [
+        0.24264539778232574,
+        0.7573546171188354
+      ],
+      "sample_id": "sample_000464",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.35732412338256836,
+        0.5608468651771545
+      ],
+      "probabilities": [
+        0.28533071279525757,
+        0.7146692872047424
+      ],
+      "sample_id": "sample_000465",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.033052489161491394,
+        0.2793838083744049
+      ],
+      "probabilities": [
+        0.4225202202796936,
+        0.5774798393249512
+      ],
+      "sample_id": "sample_000466",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.29373809695243835,
+        0.4999769926071167
+      ],
+      "probabilities": [
+        0.3113715350627899,
+        0.6886284947395325
+      ],
+      "sample_id": "sample_000467",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.43519437313079834,
+        0.6361479163169861
+      ],
+      "probabilities": [
+        0.25514793395996094,
+        0.7448521256446838
+      ],
+      "sample_id": "sample_000468",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.38299986720085144,
+        0.5812145471572876
+      ],
+      "probabilities": [
+        0.2760351896286011,
+        0.7239648103713989
+      ],
+      "sample_id": "sample_000469",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.42971205711364746,
+        0.6277549266815186
+      ],
+      "probabilities": [
+        0.2577938139438629,
+        0.7422061562538147
+      ],
+      "sample_id": "sample_000470",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4859757125377655,
+        0.6805750131607056
+      ],
+      "probabilities": [
+        0.2374790459871292,
+        0.7625210285186768
+      ],
+      "sample_id": "sample_000471",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.448392778635025,
+        0.6439295411109924
+      ],
+      "probabilities": [
+        0.2511812150478363,
+        0.7488188147544861
+      ],
+      "sample_id": "sample_000472",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5729295015335083,
+        0.7856906056404114
+      ],
+      "probabilities": [
+        0.2044646441936493,
+        0.7955353260040283
+      ],
+      "sample_id": "sample_000473",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4193049669265747,
+        0.6199641823768616
+      ],
+      "probabilities": [
+        0.2612910270690918,
+        0.7387089729309082
+      ],
+      "sample_id": "sample_000474",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4390569031238556,
+        0.631625771522522
+      ],
+      "probabilities": [
+        0.2552732825279236,
+        0.7447267174720764
+      ],
+      "sample_id": "sample_000475",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.37296217679977417,
+        0.5746368765830994
+      ],
+      "probabilities": [
+        0.27936792373657227,
+        0.720632016658783
+      ],
+      "sample_id": "sample_000476",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.08190549165010452,
+        0.3327702283859253
+      ],
+      "probabilities": [
+        0.3977915048599243,
+        0.6022084951400757
+      ],
+      "sample_id": "sample_000477",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3642553985118866,
+        0.5711657404899597
+      ],
+      "probabilities": [
+        0.2818261981010437,
+        0.7181738615036011
+      ],
+      "sample_id": "sample_000478",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5125864148139954,
+        0.7141876816749573
+      ],
+      "probabilities": [
+        0.2267465442419052,
+        0.7732535004615784
+      ],
+      "sample_id": "sample_000479",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.27257847785949707,
+        0.48773011565208435
+      ],
+      "probabilities": [
+        0.3185792565345764,
+        0.6814207434654236
+      ],
+      "sample_id": "sample_000480",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.27549585700035095,
+        0.49893254041671753
+      ],
+      "probabilities": [
+        0.3155219256877899,
+        0.6844780445098877
+      ],
+      "sample_id": "sample_000481",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4943977892398834,
+        0.6901597380638123
+      ],
+      "probabilities": [
+        0.23423373699188232,
+        0.7657662630081177
+      ],
+      "sample_id": "sample_000482",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4003061056137085,
+        0.6005598902702332
+      ],
+      "probabilities": [
+        0.2687712013721466,
+        0.7312288284301758
+      ],
+      "sample_id": "sample_000483",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3060663640499115,
+        0.5169153809547424
+      ],
+      "probabilities": [
+        0.30513107776641846,
+        0.6948688626289368
+      ],
+      "sample_id": "sample_000484",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.33020347356796265,
+        0.5403054356575012
+      ],
+      "probabilities": [
+        0.29514840245246887,
+        0.7048515677452087
+      ],
+      "sample_id": "sample_000485",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5266693234443665,
+        0.7255319356918335
+      ],
+      "probabilities": [
+        0.22231930494308472,
+        0.7776806354522705
+      ],
+      "sample_id": "sample_000486",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2583265006542206,
+        0.47861090302467346
+      ],
+      "probabilities": [
+        0.3236742317676544,
+        0.676325798034668
+      ],
+      "sample_id": "sample_000487",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3141787052154541,
+        0.5278929471969604
+      ],
+      "probabilities": [
+        0.30109864473342896,
+        0.698901355266571
+      ],
+      "sample_id": "sample_000488",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.07617046684026718,
+        0.3173544406890869
+      ],
+      "probabilities": [
+        0.4028690457344055,
+        0.5971309542655945
+      ],
+      "sample_id": "sample_000489",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.16872873902320862,
+        0.3905086815357208
+      ],
+      "probabilities": [
+        0.3637239336967468,
+        0.6362760663032532
+      ],
+      "sample_id": "sample_000490",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.10523846745491028,
+        0.3473700284957886
+      ],
+      "probabilities": [
+        0.38874077796936035,
+        0.6112592816352844
+      ],
+      "sample_id": "sample_000491",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.22809292376041412,
+        0.4549320638179779
+      ],
+      "probabilities": [
+        0.3355864882469177,
+        0.6644135117530823
+      ],
+      "sample_id": "sample_000492",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5308181047439575,
+        0.7325035929679871
+      ],
+      "probabilities": [
+        0.22040259838104248,
+        0.7795973420143127
+      ],
+      "sample_id": "sample_000493",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5217170119285583,
+        0.7212327122688293
+      ],
+      "probabilities": [
+        0.2239229530096054,
+        0.7760770320892334
+      ],
+      "sample_id": "sample_000494",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.48082464933395386,
+        0.6774115562438965
+      ],
+      "probabilities": [
+        0.23898792266845703,
+        0.761012077331543
+      ],
+      "sample_id": "sample_000495",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4366711974143982,
+        0.6402313709259033
+      ],
+      "probabilities": [
+        0.25409260392189026,
+        0.7459073662757874
+      ],
+      "sample_id": "sample_000496",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5288092494010925,
+        0.7277180552482605
+      ],
+      "probabilities": [
+        0.22157227993011475,
+        0.7784277200698853
+      ],
+      "sample_id": "sample_000497",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4577501714229584,
+        0.6515244245529175
+      ],
+      "probabilities": [
+        0.24800613522529602,
+        0.7519938349723816
+      ],
+      "sample_id": "sample_000498",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3843507468700409,
+        0.5865314602851868
+      ],
+      "probabilities": [
+        0.2747046947479248,
+        0.7252953052520752
+      ],
+      "sample_id": "sample_000499",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.36481454968452454,
+        0.5661296248435974
+      ],
+      "probabilities": [
+        0.2827332019805908,
+        0.7172667980194092
+      ],
+      "sample_id": "sample_000500",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.19146589934825897,
+        0.4152953326702118
+      ],
+      "probabilities": [
+        0.35279834270477295,
+        0.6472015976905823
+      ],
+      "sample_id": "sample_000501",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5012314319610596,
+        0.6977267265319824
+      ],
+      "probabilities": [
+        0.2316606193780899,
+        0.7683393955230713
+      ],
+      "sample_id": "sample_000502",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5049029588699341,
+        0.7039323449134827
+      ],
+      "probabilities": [
+        0.22990718483924866,
+        0.7700928449630737
+      ],
+      "sample_id": "sample_000503",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4996704161167145,
+        0.6972076892852783
+      ],
+      "probabilities": [
+        0.23203107714653015,
+        0.7679689526557922
+      ],
+      "sample_id": "sample_000504",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.36678948998451233,
+        0.5745941996574402
+      ],
+      "probabilities": [
+        0.2806209325790405,
+        0.7193790674209595
+      ],
+      "sample_id": "sample_000505",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.42767858505249023,
+        0.6300933361053467
+      ],
+      "probabilities": [
+        0.2577354907989502,
+        0.7422645688056946
+      ],
+      "sample_id": "sample_000506",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3488359749317169,
+        0.555353045463562
+      ],
+      "probabilities": [
+        0.28819042444229126,
+        0.7118096351623535
+      ],
+      "sample_id": "sample_000507",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2852930724620819,
+        0.5023824572563171
+      ],
+      "probabilities": [
+        0.31266799569129944,
+        0.6873319745063782
+      ],
+      "sample_id": "sample_000508",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.13175098598003387,
+        0.36903005838394165
+      ],
+      "probabilities": [
+        0.3773570954799652,
+        0.6226428151130676
+      ],
+      "sample_id": "sample_000509",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.49389585852622986,
+        0.6908138990402222
+      ],
+      "probabilities": [
+        0.234206423163414,
+        0.7657936215400696
+      ],
+      "sample_id": "sample_000510",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.4258739948272705,
+        0.633074939250946
+      ],
+      "probabilities": [
+        0.25751033425331116,
+        0.7424896359443665
+      ],
+      "sample_id": "sample_000511",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.3149787485599518,
+        0.5346325635910034
+      ],
+      "probabilities": [
+        0.29951441287994385,
+        0.7004855871200562
+      ],
+      "sample_id": "sample_000512",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5161161422729492,
+        0.7153000235557556
+      ],
+      "probabilities": [
+        0.22593364119529724,
+        0.7740663290023804
+      ],
+      "sample_id": "sample_000513",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.18758267164230347,
+        0.4128217399120331
+      ],
+      "probabilities": [
+        0.3542512059211731,
+        0.6457488536834717
+      ],
+      "sample_id": "sample_000514",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.5600923299789429,
+        0.774517297744751
+      ],
+      "probabilities": [
+        0.20839789509773254,
+        0.7916020750999451
+      ],
+      "sample_id": "sample_000515",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2803138792514801,
+        0.5021023154258728
+      ],
+      "probabilities": [
+        0.31379935145378113,
+        0.6862006187438965
+      ],
+      "sample_id": "sample_000516",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.2842278778553009,
+        0.4975748360157013
+      ],
+      "probabilities": [
+        0.31393149495124817,
+        0.6860685348510742
+      ],
+      "sample_id": "sample_000517",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.39906683564186096,
+        0.5947068929672241
+      ],
+      "probabilities": [
+        0.27016735076904297,
+        0.729832649230957
+      ],
+      "sample_id": "sample_000518",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.35355907678604126,
+        0.5506516695022583
+      ],
+      "probabilities": [
+        0.2881859540939331,
+        0.7118140459060669
+      ],
+      "sample_id": "sample_000519",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.28137487173080444,
+        0.5000243186950684
+      ],
+      "probabilities": [
+        0.3140183985233307,
+        0.6859815716743469
+      ],
+      "sample_id": "sample_000520",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.41517746448516846,
+        0.6204172372817993
+      ],
+      "probabilities": [
+        0.2620009183883667,
+        0.7379991412162781
+      ],
+      "sample_id": "sample_000521",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.30519455671310425,
+        0.5154634714126587
+      ],
+      "probabilities": [
+        0.30562400817871094,
+        0.6943759918212891
+      ],
+      "sample_id": "sample_000522",
+      "target": 1,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 1,
+      "logits": [
+        -0.25334984064102173,
+        0.47157856822013855
+      ],
+      "probabilities": [
+        0.32630863785743713,
+        0.6736913323402405
+      ],
+      "sample_id": "sample_000523",
+      "target": 1,
+      "threshold_prediction": 1
+    }
+  ],
+  "privacy_note": "This is only a plaintext reference for e2e checker development. It is not an MPC/SPU secure execution result.",
+  "sample_count": 524,
+  "status": "plaintext_reference_not_secure",
+  "threshold": 0.3577311038970947
+}

@@ -1,65 +1,65 @@
 {
-  "updated_at": "2026-04-23",
+  "updated_at": "2026-05-05",
   "default_bundle": {
     "title": "当前展示模型",
-    "display_name": "当前主展示模型（已验证）",
-    "bundle_name": "frozen_bundle_verified_tracka_lr3e5_20260414",
-    "bundle_dir": "artifacts/frozen_bundle_verified_tracka_lr3e5_20260414",
-    "status": "已验证候选（可展示）",
-    "argmax_accuracy": 93.70229244232178,
-    "threshold_accuracy": 94.08397078514099,
+    "display_name": "当前主展示模型（P0 交付闭环）",
+    "bundle_name": "frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
+    "bundle_dir": "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
+    "status": "p0_delivery_closure_ready",
+    "argmax_accuracy": 75.19084215164185,
+    "threshold_accuracy": 90.07633328437805,
     "best_epoch": 8,
-    "argmax_match_ratio": 1.0,
-    "threshold_match_ratio": 1.0,
+    "argmax_match_ratio": 0.9942748091603053,
+    "threshold_match_ratio": 0.9751908396946565,
     "spu_pipeline_overall_passed": true,
     "spu_replay_overall_passed": true,
     "communication_source": "本页面主路径展示 E2E approximate SPU live run 通信量",
-    "summary": "前端默认加载这份冻结展示包，其中包含当前主展示模型的权重、阈值和运行配置。",
+    "summary": "前端默认加载当前 secure-static 正式交付 bundle，其中包含当前主线模型的权重和运行配置。",
     "best_epoch_note": "最佳轮次表示训练过程中验证集效果最好的 epoch；当前离线成绩来自这一轮，单图在线结果会实时重新计算。"
   },
   "external_comparison": {
     "title": "外部项目对比",
-    "summary": "主页面当前只保留与同数据集外部明文基线的公平对比；当前展示值来自 fair_external_20260423_113217。",
-    "source_run": "fair_external_20260423_113217",
+    "summary": "主页面当前只保留与同数据集外部明文基线的公平对比；当前展示值来自 fair_external_secure_static_20260505_clean。",
+    "source_run": "fair_external_secure_static_20260505_clean",
     "fairness_passed": true,
-    "fairness_note": "当前这组外部对比已在 fair_external_20260423_113217 中通过同路径、同样本量、同验证集文件哈希的公平性自检。",
+    "fairness_note": "当前这组外部对比已在 fair_external_secure_static_20260505_clean 中通过同路径、同样本量、同验证集文件哈希的公平性自检。",
     "transshield_verified": {
-      "argmax_accuracy": 93.70229244232178,
-      "threshold_accuracy": 94.08397078514099,
-      "auc": 0.972312672569742
+      "argmax_accuracy": 75.19084215164185,
+      "threshold_accuracy": 90.07633328437805,
+      "auc": 0.9584309244977626
     },
     "mpcvit_same_dataset": {
-      "argmax_accuracy": 96.66030534351145,
-      "threshold_accuracy": 96.94656488549619,
-      "auc": 0.993449490621727,
-      "seed_count": 2,
-      "status": "同数据集明文外部基线（seed 1/2 均值）"
+      "argmax_accuracy": 96.18320610687023,
+      "threshold_accuracy": 96.18320610687023,
+      "auc": 0.9925640293249548,
+      "seed_count": 1,
+      "status": "同数据集明文外部基线（当前可用汇总）"
     },
     "mpcvit_seed_mean": {
-      "label": "MPCViT 两个随机种子均值",
-      "argmax_accuracy": 96.66030534351145,
-      "threshold_accuracy": 96.94656488549619,
-      "auc": 0.993449490621727,
-      "seed_count": 2,
-      "status": "同路径同样本量公平对比均值"
+      "label": "MPCViT 当前汇总值",
+      "argmax_accuracy": 96.18320610687023,
+      "threshold_accuracy": 96.18320610687023,
+      "auc": 0.9925640293249548,
+      "seed_count": 1,
+      "status": "同路径同样本量公平对比当前汇总"
     },
     "mpcvit_3seed_mean": {
-      "label": "MPCViT 两个随机种子均值",
-      "argmax_accuracy": 96.66030534351145,
-      "threshold_accuracy": 96.94656488549619,
-      "auc": 0.993449490621727,
-      "seed_count": 2,
-      "status": "兼容旧字段名；当前实际只统计 seed 1/2"
+      "label": "MPCViT 当前汇总值",
+      "argmax_accuracy": 96.18320610687023,
+      "threshold_accuracy": 96.18320610687023,
+      "auc": 0.9925640293249548,
+      "seed_count": 1,
+      "status": "兼容旧字段名；当前实际使用当前汇总值"
     },
     "gap_to_mpcvit_reference": {
-      "argmax_accuracy_gap": 2.958012901189676,
-      "threshold_accuracy_gap": 2.862594100355196,
-      "auc_gap": 0.021136818051985085
+      "argmax_accuracy_gap": 20.992363955228384,
+      "threshold_accuracy_gap": 6.106872822492178,
+      "auc_gap": 0.03413310482719223
     },
     "gap_to_mpcvit_best_by_argmax": {
-      "argmax_accuracy_gap": 2.958012901189676,
-      "threshold_accuracy_gap": 2.862594100355196,
-      "auc_gap": 0.021136818051985085
+      "argmax_accuracy_gap": 20.992363955228384,
+      "threshold_accuracy_gap": 6.106872822492178,
+      "auc_gap": 0.03413310482719223
     },
     "note": "这里展示的是同数据集、同样本量、同路径下的公平效果对比，不表示外部方法已经在当前仓库完成同口径 secure 复现。"
   },
@@ -223,7 +223,7 @@
         "profile_id": "transshield_final_arch_proxy",
         "display_name": "Transshield 当前最终模型 proxy",
         "role": "current_project",
-        "model_source": "artifacts/frozen_bundle_verified_tracka_lr3e5_20260414 · DeiT-S / 224px / dynamic token pruning",
+        "model_source": "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430 · DeiT-S / 224px / secure-static delivery line",
         "scope_note": "同一 MPCFormer local 2PC benchmark harness；使用当前最终模型的 transformer 结构参数近似。",
         "config": {
           "batch_size": 1,
@@ -316,10 +316,10 @@
   },
   "e2e_secure_approx_deploy": {
     "title": "E2E 全隐私近似部署路径",
-    "status": "validated_smoke_ready_for_web_demo",
-    "summary": "full-depth static whole-forward SPU/JAX 路径已按 party-local debug share load 跑通：driver 不读取 plaintext pixel_values，不读取私有 share tensor，P1/P2 device function 加载各自 share，最终只 reveal logits。该路径是近似部署基线，不是原始 DynamicViT 明文语义的逐算子等价复现。",
-    "run_entry": "artifacts/server_inference_friendly_pack/run_e2e_secure_approx_deploy.sh",
-    "eval_entry": "artifacts/server_inference_friendly_pack/run_e2e_secure_approx_eval.sh",
+    "status": "secret_depth6_clip0_showcase_ready",
+    "summary": "当前 Web 主路径默认使用 secret_blockwise_stage 的 depth6 + clip0 展示线：driver 不读取 plaintext pixel_values，不读取私有 share tensor，P1/P2 device function 各自加载 share，最终只 reveal logits。该口径当前可展示，但不要外推成 secret full-depth 已稳定。",
+    "run_entry": "artifacts/server_inference_friendly_pack/run_e2e_secure_whole_forward.sh",
+    "eval_entry": "artifacts/server_inference_friendly_pack/run_e2e_secure_secret_isolated_eval.sh",
     "privacy_fields_summary": "finite_logits=true, input_pt=null, input_mode=party_local_debug_share_load, host_plaintext_pixel_values_materialized=false, host_private_share_tensors_loaded=false, private_input_paths_redacted=true",
     "deploy_config": [
       {
@@ -329,6 +329,10 @@
       {
         "name": "Input",
         "value": "split public + P1/P2 party manifests, party-local share load"
+      },
+      {
+        "name": "Params",
+        "value": "secret_blockwise_stage"
       },
       {
         "name": "LayerNorm",
@@ -344,48 +348,42 @@
       },
       {
         "name": "Batch",
-        "value": "E2E_SPU_BATCH_SIZE=1, multi-sample sequential"
+        "value": "E2E_SPU_BATCH_SIZE=1, fresh runtime per request"
+      },
+      {
+        "name": "Output calibration",
+        "value": "secret depth6 clip0 balanced8 calibration"
       }
     ],
     "latest_validated_run": {
-      "sample_count": 2,
-      "elapsed_sec": 52.040173292160034,
+      "sample_count": 8,
+      "elapsed_sec": 0.0,
       "logits": [
         [
-          0.0314483642578125,
-          0.13165283203125
-        ],
-        [
-          0.0358734130859375,
-          0.1358489990234375
+          -0.012359619140625,
+          0.1743316650390625
         ]
       ],
       "probabilities": [
         [
-          0.4749736487865448,
-          0.5250263810157776
-        ],
-        [
-          0.47503387928009033,
-          0.5249661207199097
+          0.45346227288246155,
+          0.5465376973152161
         ]
       ],
       "argmax_predictions": [
-        1,
         1
       ],
       "threshold_predictions": [
-        1,
-        1
+        0
       ],
-      "decision": "finite logits, non-saturated probabilities, both samples predicted class 1"
+      "decision": "balanced8 accepted raw path completed with no outlier; offline output calibration reaches argmax 100% / threshold 100% on the accepted 8 samples"
     },
     "accuracy_comparison": {
       "original_plaintext_argmax_accuracy": 93.70229244232178,
       "original_plaintext_threshold_accuracy": 94.08397078514099,
-      "e2e_accuracy_status": "pending_dataset_eval",
-      "current_conclusion": "网页主路径已切换为浏览器本地分片 + E2E approximate SPU。准确率差、预测一致率和通信量应以 run_e2e_secure_approx_eval.sh 的同一图片列表评测结果为准；不要再使用旧 SPU sidecar 对比作为最终主口径。",
-      "recommended_eval": "先用 E2E_EVAL_MAX_SAMPLES=8 或 16 做 smoke accuracy，再逐步扩大；保持 E2E_SPU_BATCH_SIZE=1。"
+      "e2e_accuracy_status": "balanced8 accepted raw + offline output calibration: argmax 100%, threshold 100%",
+      "current_conclusion": "当前 Web 展示线应表述为 secret depth6 clip0 showcase，而不是 secret full-depth。depth8+ 对这个 bundle 仍会出现 unstable / outlier。",
+      "recommended_eval": "继续扩大 secret 数据集级评测时，保持单样本 fresh runtime、logit guard 和 depth6 + clip0 口径。"
     },
     "limitations": [
       "public-calibrated LN replaces private per-sample LN",

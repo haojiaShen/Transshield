@@ -9,11 +9,16 @@ import sys
 import types
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Optional
 
 import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 
 def load_json(path: Path):
@@ -89,6 +94,12 @@ def build_model(args_snapshot: dict, model_cls):
         kwargs['eval_pruning_mode'] = args_snapshot.get('eval_pruning_mode', 'topk_argsort')
     if 'eval_tie_policy' in parameters:
         kwargs['eval_tie_policy'] = args_snapshot.get('eval_tie_policy', 'lowest_index')
+    if 'secure_static_depth' in parameters:
+        kwargs['secure_static_depth'] = int(args_snapshot.get('secure_static_train_depth', 0) or 0)
+    if 'secure_static_skip_pruning' in parameters:
+        kwargs['secure_static_skip_pruning'] = bool(args_snapshot.get('secure_static_skip_pruning', True))
+    if 'nonempty_keep_guard' in parameters and 'nonempty_keep_guard' in args_snapshot:
+        kwargs['nonempty_keep_guard'] = bool(args_snapshot.get('nonempty_keep_guard'))
 
     return model_cls(**kwargs)
 
@@ -153,10 +164,31 @@ def find_threshold_json(checkpoint_path: Path, threshold_json_arg: str):
     return candidate if candidate.exists() else None
 
 
+def resolve_bundle_threshold(bundle_dir: Path, threshold_json_arg: str):
+    from tools.transshield_stage2_bundle import resolve_threshold_payload
+
+    if threshold_json_arg:
+        threshold_path = Path(threshold_json_arg).resolve()
+        if not threshold_path.exists():
+            raise FileNotFoundError(f'threshold json does not exist: {threshold_path}')
+        return threshold_path, load_json(threshold_path)
+
+    threshold_payload = resolve_threshold_payload(bundle_dir)
+    threshold_path = bundle_dir / 'threshold_best.json'
+    return threshold_path if threshold_path.exists() or threshold_path.is_symlink() else None, threshold_payload
+
+
 def main():
     parser = argparse.ArgumentParser(description='Evaluate a plaintext ViT checkpoint from either the baseline repo or the modified Transshield repo.')
-    parser.add_argument('--repo-root', required=True)
-    parser.add_argument('--checkpoint', required=True)
+    source_group = parser.add_mutually_exclusive_group(required=True)
+    source_group.add_argument('--checkpoint')
+    source_group.add_argument('--bundle-dir')
+    parser.add_argument(
+        '--checkpoint-model-key',
+        default='model',
+        help='State dict key to load when --checkpoint points to a training checkpoint.',
+    )
+    parser.add_argument('--repo-root', default='')
     parser.add_argument('--data-path', required=True)
     parser.add_argument('--device', default='cpu')
     parser.add_argument('--batch-size', type=int, default=32)
@@ -168,26 +200,55 @@ def main():
     parser.add_argument('--output-csv', default='')
     args = parser.parse_args()
 
-    repo_root = Path(args.repo_root).resolve()
-    checkpoint_path = Path(args.checkpoint).resolve()
     data_path = Path(args.data_path).resolve()
-    threshold_json = find_threshold_json(checkpoint_path, args.threshold_json)
+    repo_root: Optional[Path] = None
+    checkpoint_path: Optional[Path] = None
+    bundle_dir: Optional[Path] = None
+    model_state_dict_path: Optional[Path] = None
+    threshold_json: Optional[Path] = None
+    threshold_payload = None
 
-    datasets_mod, dyvit_mod = import_repo_modules(repo_root)
+    if args.bundle_dir:
+        from tools.transshield_stage2_bundle import load_frozen_bundle
 
-    checkpoint = torch.load(checkpoint_path, map_location='cpu', weights_only=False)
-    args_snapshot = checkpoint_args_to_dict(checkpoint.get('args'))
-    model = build_model(args_snapshot, dyvit_mod.VisionTransformerDiffPruning).to(args.device)
-    state_dict = checkpoint['model'] if isinstance(checkpoint, dict) and 'model' in checkpoint else checkpoint
-    load_result = model.load_state_dict(state_dict, strict=True)
-    if getattr(load_result, 'missing_keys', None) or getattr(load_result, 'unexpected_keys', None):
-        raise ValueError(
-            f'non-strict load result: missing={getattr(load_result, "missing_keys", None)} '
-            f'unexpected={getattr(load_result, "unexpected_keys", None)}'
-        )
-    model.eval()
+        bundle_dir = Path(args.bundle_dir).resolve()
+        bundle = load_frozen_bundle(bundle_dir, args.device)
+        args_snapshot = dict(bundle['args_snapshot'])
+        model = bundle['model']
+        transform = bundle['transform']
+        model_state_dict_path = Path(bundle['model_state_dict_path']).resolve()
+        threshold_json, threshold_payload = resolve_bundle_threshold(bundle_dir, args.threshold_json)
+        repo_root = Path(__file__).resolve().parents[1]
+    else:
+        repo_root = Path(args.repo_root).resolve()
+        checkpoint_path = Path(args.checkpoint).resolve()
+        threshold_json = find_threshold_json(checkpoint_path, args.threshold_json)
 
-    transform = build_eval_transform(args_snapshot, datasets_mod.build_transform)
+        datasets_mod, dyvit_mod = import_repo_modules(repo_root)
+
+        checkpoint = torch.load(checkpoint_path, map_location='cpu', weights_only=False)
+        args_snapshot = checkpoint_args_to_dict(checkpoint.get('args'))
+        model = build_model(args_snapshot, dyvit_mod.VisionTransformerDiffPruning).to(args.device)
+        if isinstance(checkpoint, dict):
+            if args.checkpoint_model_key not in checkpoint:
+                raise KeyError(
+                    f'checkpoint model key {args.checkpoint_model_key!r} not found in {checkpoint_path}'
+                )
+            state_dict = checkpoint[args.checkpoint_model_key]
+        else:
+            state_dict = checkpoint
+        load_result = model.load_state_dict(state_dict, strict=True)
+        if getattr(load_result, 'missing_keys', None) or getattr(load_result, 'unexpected_keys', None):
+            raise ValueError(
+                f'non-strict load result: missing={getattr(load_result, "missing_keys", None)} '
+                f'unexpected={getattr(load_result, "unexpected_keys", None)}'
+            )
+        model.eval()
+
+        transform = build_eval_transform(args_snapshot, datasets_mod.build_transform)
+        if threshold_json is not None and threshold_json.exists():
+            threshold_payload = load_json(threshold_json)
+
     dataset = ImageFolder(root=str(data_path), transform=transform)
     if args.max_samples > 0:
         dataset.samples = dataset.samples[: args.max_samples]
@@ -222,8 +283,7 @@ def main():
     threshold_predictions = None
     threshold_accuracy = None
     threshold_f1 = None
-    if threshold_json is not None and threshold_json.exists():
-        threshold_payload = load_json(threshold_json)
+    if threshold_payload is not None:
         threshold = float(threshold_payload['eval_binary_threshold'])
         threshold_predictions = (class1_prob >= threshold).long()
         threshold_accuracy = accuracy(threshold_predictions, targets)
@@ -255,9 +315,12 @@ def main():
             writer.writerows(rows)
 
     summary = {
-        'label': args.label or checkpoint_path.stem,
-        'repo_root': str(repo_root),
-        'checkpoint_path': str(checkpoint_path),
+        'label': args.label or (bundle_dir.name if bundle_dir is not None else checkpoint_path.stem),
+        'repo_root': str(repo_root) if repo_root is not None else None,
+        'checkpoint_path': str(checkpoint_path) if checkpoint_path is not None else None,
+        'checkpoint_model_key': args.checkpoint_model_key if checkpoint_path is not None else None,
+        'bundle_dir': str(bundle_dir) if bundle_dir is not None else None,
+        'model_state_dict_path': str(model_state_dict_path) if model_state_dict_path is not None else None,
         'threshold_json': str(threshold_json) if threshold_json is not None else None,
         'data_path': str(data_path),
         'sample_count': int(targets.numel()),
@@ -281,6 +344,8 @@ def main():
             'use_mask_pruning': bool(args_snapshot.get('use_mask_pruning', False)),
             'eval_pruning_mode': args_snapshot.get('eval_pruning_mode', 'topk_argsort'),
             'eval_tie_policy': args_snapshot.get('eval_tie_policy', 'lowest_index'),
+            'secure_static_train_depth': int(args_snapshot.get('secure_static_train_depth', 0) or 0),
+            'secure_static_skip_pruning': bool(args_snapshot.get('secure_static_skip_pruning', True)),
         },
         'artifacts': {
             'output_csv': str(Path(args.output_csv).resolve()) if args.output_csv else None,

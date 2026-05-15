@@ -41,7 +41,7 @@ class ConvNextDistillDiffPruningLoss(torch.nn.Module):
 
         pred, token_pred, out_pred_score = outputs
 
-        pred_loss = 0.0
+        pred_loss = pred.new_zeros(())
 
         ratio = self.keep_ratio
             
@@ -417,7 +417,7 @@ class DistillDiffPruningLoss_dynamic(torch.nn.Module):
         for i, score in enumerate(out_pred_score):
             self._check_finite(f'out_pred_score_{i}', score)
 
-        pred_loss = 0.0
+        pred_loss = pred.new_zeros(())
 
         ratio = self.keep_ratio
         for i, score in enumerate(out_pred_score):
@@ -458,7 +458,7 @@ class DistillDiffPruningLoss_dynamic(torch.nn.Module):
         # print(cls_loss, pred_loss)
         loss = (
             self.clf_weight * cls_loss
-            + self.ratio_weight * pred_loss / len(self.pruning_loc)
+            + self.ratio_weight * pred_loss / max(len(out_pred_score), 1)
             + self.cls_distill_weight * cls_kl_loss
             + self.token_distill_weight * token_kl_loss
             + self.pruning_margin_weight * pruning_margin_loss

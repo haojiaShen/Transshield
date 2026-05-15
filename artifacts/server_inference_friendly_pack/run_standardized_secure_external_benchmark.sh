@@ -111,7 +111,7 @@ if [[ "$RUN_ARCHITECTURE_PROXY" == "1" ]]; then
     "Transshield 当前最终模型 proxy" \
     "current_project" \
     "architecture_proxy" \
-    "artifacts/frozen_bundle_verified_tracka_lr3e5_20260414 · DeiT-S / 224px / dynamic token pruning" \
+    "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430 · DeiT-S / 224px / secure-static delivery line" \
     "同一 MPCFormer local 2PC benchmark harness；使用当前最终模型的 transformer 结构参数近似。" \
     12 384 1536 197 6 "quad" "softmax"
 

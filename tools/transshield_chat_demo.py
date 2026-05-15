@@ -3,6 +3,7 @@ import cgi
 import json
 import os
 import re
+import shlex
 import signal
 import subprocess
 import sys
@@ -19,12 +20,10 @@ if str(REPO_ROOT) not in sys.path:
 
 HTML_PATH = REPO_ROOT / 'web_demo' / 'index.html'
 DEMO_SUMMARY_PATH = REPO_ROOT / 'artifacts' / 'web_demo_assets' / 'best_demo_content.json'
-PROMOTION_MANIFEST_PATH = (
-    REPO_ROOT / 'artifacts' / 'frozen_bundle_verified_tracka_lr3e5_20260414' / 'promotion_manifest.json'
-)
 ALLOWED_UPLOAD_SUFFIXES = {'.png', '.jpg', '.jpeg', '.webp', '.bmp'}
 DEFAULT_MAX_UPLOAD_MB = 10
-DEFAULT_SECURE_TIMEOUT_SEC = 300
+DEFAULT_SECURE_TIMEOUT_SEC = 600
+DEFAULT_E2E_PROFILE = 'secret_depth6_clip0_showcase'
 E2E_SHARE_SHAPE = [1, 3, 224, 224]
 E2E_SHARE_FLOAT_COUNT = 1 * 3 * 224 * 224
 E2E_SHARE_BYTE_COUNT = E2E_SHARE_FLOAT_COUNT * 4
@@ -52,6 +51,20 @@ def positive_int_from_env(name: str, default: int) -> int:
     return value if value > 0 else default
 
 
+def float_from_env(name: str, default: float) -> float:
+    raw_value = os.environ.get(name)
+    if raw_value in (None, ''):
+        return default
+    try:
+        return float(raw_value)
+    except ValueError:
+        return default
+
+
+def clip_tag(value: float) -> str:
+    return 'clip' + f'{value:g}'.replace('.', 'p')
+
+
 def empty_demo_summary():
     return {
         'updated_at': None,
@@ -67,7 +80,7 @@ def build_manifest_demo_summary(manifest):
         'default_bundle': {
             'title': '当前默认展示 bundle',
             'bundle_name': manifest.get('bundle_name'),
-            'bundle_dir': 'artifacts/frozen_bundle_verified_tracka_lr3e5_20260414',
+            'bundle_dir': 'artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430',
             'status': manifest.get('status'),
             'argmax_accuracy': verified.get('argmax_accuracy'),
             'threshold_accuracy': verified.get('threshold_accuracy'),
@@ -77,7 +90,7 @@ def build_manifest_demo_summary(manifest):
             'spu_pipeline_overall_passed': verified.get('spu_pipeline_overall_passed'),
             'spu_replay_overall_passed': verified.get('spu_replay_overall_passed'),
             'communication_source': '本页面仅展示当前 E2E SPU live run 通信量',
-            'summary': '前端默认加载这份冻结展示包，里面放的是当前主展示模型的权重、阈值和运行配置。',
+            'summary': '前端默认加载当前 secure-static 正式交付 bundle，里面放的是当前主展示模型的权重、阈值和运行配置。',
         },
         'plaintext_stability_closure': None,
     }
@@ -86,9 +99,6 @@ def build_manifest_demo_summary(manifest):
 def load_demo_summary():
     if DEMO_SUMMARY_PATH.exists():
         return json.loads(DEMO_SUMMARY_PATH.read_text(encoding='utf-8'))
-    if PROMOTION_MANIFEST_PATH.exists():
-        manifest = json.loads(PROMOTION_MANIFEST_PATH.read_text(encoding='utf-8'))
-        return build_manifest_demo_summary(manifest)
     return empty_demo_summary()
 
 
@@ -113,8 +123,23 @@ class DemoState:
         self.threshold = None
         self.sessions = {}
         self.demo_summary = load_demo_summary()
+        self.e2e_profile = self.build_e2e_profile()
         self.max_upload_bytes = positive_int_from_env('WEB_DEMO_MAX_UPLOAD_MB', DEFAULT_MAX_UPLOAD_MB) * 1024 * 1024
         self.command_timeout_sec = positive_int_from_env('WEB_DEMO_SECURE_TIMEOUT_SEC', DEFAULT_SECURE_TIMEOUT_SEC)
+        self.e2e_execution_mode = os.environ.get('WEB_DEMO_E2E_EXECUTION_MODE', 'local').strip().lower() or 'local'
+        if self.e2e_execution_mode not in {'local', 'ssh'}:
+            raise ValueError('WEB_DEMO_E2E_EXECUTION_MODE must be local or ssh')
+        self.remote_ssh_target = os.environ.get('WEB_DEMO_REMOTE_SSH_TARGET', '').strip()
+        self.remote_ssh_port = os.environ.get('WEB_DEMO_REMOTE_SSH_PORT', '22').strip() or '22'
+        self.remote_repo_root = Path(
+            os.environ.get('WEB_DEMO_REMOTE_REPO_ROOT', '/home/yclcg/Transshield_final')
+        )
+        self.remote_python_bin = os.environ.get(
+            'WEB_DEMO_REMOTE_PYTHON_BIN',
+            '/data/wyb/conda_envs/transshield/bin/python',
+        )
+        if self.e2e_execution_mode == 'ssh' and not self.remote_ssh_target:
+            raise ValueError('WEB_DEMO_REMOTE_SSH_TARGET is required when WEB_DEMO_E2E_EXECUTION_MODE=ssh')
 
     def ensure_bundle(self):
         if self.bundle is None:
@@ -142,6 +167,112 @@ class DemoState:
             'prediction': prediction,
             'pruning_trace': trace,
         }
+
+    def build_e2e_profile(self):
+        profile_name = os.environ.get('WEB_DEMO_E2E_PROFILE', DEFAULT_E2E_PROFILE).strip() or DEFAULT_E2E_PROFILE
+        profile_defs = {
+            'secret_depth6_clip0_showcase': {
+                'description': 'secret_blockwise_stage / depth6 / clip0 showcase',
+                'run_suffix': 'secret_depth6_clip0',
+                'static_depth_limit': 6,
+                'spu_params_mode': 'secret_blockwise_stage',
+                'spu_layer_norm_policy': 'public_calibrated',
+                'spu_attention_policy': 'uniform',
+                'spu_activation_override': 'fixed_square',
+                'spu_activation_clip_value': 0.0,
+                'spu_block_chunk_size': 0,
+                'spu_layer_norm_chunk_size': 0,
+                'spu_batch_size': 1,
+                'party_local_share_load': True,
+                'spu_runtime_reuse': False,
+                'spu_disable_colocated_optimization': True,
+                'candidate_basename': 'e2e_static_whole_forward_candidate_spu_depth6_partylocal_publiccalibln_uniform_fixed_square_clip0_eval',
+                'ln_calibration_json': self.repo_root / 'artifacts' / 'server_pipeline_run' / 'secure_static_depth12_epoch8_secret_depth_boundary_calib_clip0_20260430' / 'e2e_secure_poc' / 'e2e_public_layer_norm_calibration_depth6_uniform_fixed_square_clip0.json',
+                'output_calibration_json': self.repo_root / 'artifacts' / 'server_pipeline_run' / 'e2e_output_calibration_secret_depth6_clip0_balanced8_20260502.json',
+            },
+            'public_depth12_clip3_showcase': {
+                'description': 'public params / depth12 / clip3 showcase',
+                'run_suffix': 'public_depth12_clip3',
+                'static_depth_limit': 12,
+                'spu_params_mode': 'public',
+                'spu_layer_norm_policy': 'public_calibrated',
+                'spu_attention_policy': 'uniform',
+                'spu_activation_override': 'fixed_square',
+                'spu_activation_clip_value': 3.0,
+                'spu_block_chunk_size': 0,
+                'spu_layer_norm_chunk_size': 0,
+                'spu_batch_size': 1,
+                'party_local_share_load': True,
+                'spu_runtime_reuse': False,
+                'spu_disable_colocated_optimization': True,
+                'candidate_basename': 'e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip3_eval',
+                'ln_calibration_json': self.repo_root / 'artifacts' / 'server_pipeline_run' / 'secure_static_depth12_epoch8_publicraw_balanced8_clip3_20260430' / 'e2e_secure_poc' / 'e2e_public_layer_norm_calibration_depth12_uniform_fixed_square_clip3p0.json',
+                'output_calibration_json': self.repo_root / 'artifacts' / 'server_pipeline_run' / 'e2e_output_calibration_secure_static_depth12_epoch8_clip3_balanced8_20260430.json',
+            },
+        }
+        if profile_name not in profile_defs:
+            raise ValueError(f'unsupported WEB_DEMO_E2E_PROFILE: {profile_name}')
+        profile = dict(profile_defs[profile_name])
+        profile['profile_name'] = profile_name
+        profile['static_depth_limit'] = positive_int_from_env(
+            'WEB_DEMO_E2E_STATIC_DEPTH_LIMIT',
+            int(profile['static_depth_limit']),
+        )
+        profile['spu_batch_size'] = positive_int_from_env(
+            'WEB_DEMO_E2E_SPU_BATCH_SIZE',
+            int(profile['spu_batch_size']),
+        )
+        profile['spu_block_chunk_size'] = positive_int_from_env(
+            'WEB_DEMO_E2E_SPU_BLOCK_CHUNK_SIZE',
+            int(profile['spu_block_chunk_size']),
+        )
+        profile['spu_layer_norm_chunk_size'] = positive_int_from_env(
+            'WEB_DEMO_E2E_SPU_LAYER_NORM_CHUNK_SIZE',
+            int(profile['spu_layer_norm_chunk_size']),
+        )
+        profile['spu_params_mode'] = os.environ.get('WEB_DEMO_E2E_PARAMS_MODE', profile['spu_params_mode'])
+        profile['spu_layer_norm_policy'] = os.environ.get(
+            'WEB_DEMO_E2E_LAYER_NORM_POLICY',
+            profile['spu_layer_norm_policy'],
+        )
+        profile['spu_attention_policy'] = os.environ.get(
+            'WEB_DEMO_E2E_ATTENTION_POLICY',
+            profile['spu_attention_policy'],
+        )
+        profile['spu_activation_override'] = os.environ.get(
+            'WEB_DEMO_E2E_ACTIVATION_OVERRIDE',
+            profile['spu_activation_override'],
+        )
+        profile['spu_activation_clip_value'] = float_from_env(
+            'WEB_DEMO_E2E_ACTIVATION_CLIP_VALUE',
+            float(profile['spu_activation_clip_value']),
+        )
+        profile['party_local_share_load'] = bool_from_env(
+            'WEB_DEMO_E2E_PARTY_LOCAL_SHARE_LOAD',
+            bool(profile['party_local_share_load']),
+        )
+        profile['spu_runtime_reuse'] = bool_from_env(
+            'WEB_DEMO_REUSE_SPU_RUNTIME',
+            bool(profile['spu_runtime_reuse']),
+        )
+        profile['spu_disable_colocated_optimization'] = bool_from_env(
+            'SPU_DISABLE_COLOCATED_OPTIMIZATION',
+            bool(profile['spu_disable_colocated_optimization']),
+        )
+        profile['candidate_basename'] = os.environ.get(
+            'WEB_DEMO_E2E_CANDIDATE_BASENAME',
+            profile['candidate_basename'],
+        )
+        profile['candidate_pt_name'] = f"{profile['candidate_basename']}.pt"
+        profile['candidate_json_name'] = f"{profile['candidate_basename']}.json"
+        profile['ln_calibration_json'] = Path(
+            os.environ.get('WEB_DEMO_E2E_LN_CALIBRATION_JSON', str(profile['ln_calibration_json']))
+        ).expanduser().resolve()
+        profile['output_calibration_json'] = Path(
+            os.environ.get('WEB_DEMO_E2E_OUTPUT_CALIBRATION_JSON', str(profile['output_calibration_json']))
+        ).expanduser().resolve()
+        profile['activation_clip_tag'] = clip_tag(float(profile['spu_activation_clip_value']))
+        return profile
 
     def create_pruning_visual_assets(self, session_id: str, analysis: dict):
         from tools.transshield_token_pruning_visualization import (
@@ -240,7 +371,7 @@ class DemoState:
     def build_e2e_run_context(self, session_id: str):
         session = self.sessions[session_id]
         image_path = Path(session['analysis']['image_path']).resolve()
-        run_name = f'web_demo_{session_id}_e2e'
+        run_name = f"web_demo_{session_id}_e2e_{self.e2e_profile['run_suffix']}"
         secure_run_dir = self.run_root / run_name
         e2e_run_dir = secure_run_dir / 'e2e_secure_poc'
         e2e_run_dir.mkdir(parents=True, exist_ok=True)
@@ -257,25 +388,54 @@ class DemoState:
             'share_manifest_json': e2e_run_dir / 'client_pixel_values_debug_share_manifest.json',
             'share_public_json': e2e_run_dir / 'client_pixel_values_debug_share_public_manifest.json',
             'share_party_dir': e2e_run_dir / 'client_pixel_values_debug_share_party_manifests',
-            'candidate_pt': e2e_run_dir / 'e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square.pt',
-            'candidate_json': e2e_run_dir / 'e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square.json',
+            'candidate_pt': e2e_run_dir / self.e2e_profile['candidate_pt_name'],
+            'candidate_json': e2e_run_dir / self.e2e_profile['candidate_json_name'],
         }
 
     def build_browser_e2e_run_context(self, job_id: str):
-        run_name = f'web_demo_browser_e2e_{job_id}'
+        run_name = f"web_demo_browser_e2e_{job_id}_{self.e2e_profile['run_suffix']}"
         secure_run_dir = self.run_root / run_name
         e2e_run_dir = secure_run_dir / 'e2e_secure_poc'
         e2e_run_dir.mkdir(parents=True, exist_ok=True)
+        run_relative_dir = secure_run_dir.relative_to(self.repo_root)
+        remote_secure_run_dir = self.remote_repo_root / run_relative_dir
+        remote_e2e_run_dir = remote_secure_run_dir / 'e2e_secure_poc'
         return {
             'run_name': run_name,
             'secure_run_dir': secure_run_dir,
             'e2e_run_dir': e2e_run_dir,
+            'remote_secure_run_dir': remote_secure_run_dir,
+            'remote_e2e_run_dir': remote_e2e_run_dir,
+            'share_log_path': secure_run_dir / 'web_demo_browser_e2e_share_write.log',
             'infer_log_path': secure_run_dir / 'web_demo_browser_e2e_infer.log',
             'share_public_json': e2e_run_dir / 'client_pixel_values_debug_share_public_manifest.json',
             'share_party_dir': e2e_run_dir / 'client_pixel_values_debug_share_party_manifests',
-            'candidate_pt': e2e_run_dir / 'e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square.pt',
-            'candidate_json': e2e_run_dir / 'e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square.json',
+            'candidate_pt': e2e_run_dir / self.e2e_profile['candidate_pt_name'],
+            'candidate_json': e2e_run_dir / self.e2e_profile['candidate_json_name'],
         }
+
+    def remote_path_for(self, path: Path) -> Path:
+        path = Path(path).expanduser().resolve()
+        try:
+            relative = path.relative_to(self.repo_root)
+        except ValueError as exc:
+            raise ValueError(f'cannot map non-repo path to remote repo root: {path}') from exc
+        return self.remote_repo_root / relative
+
+    def execution_path(self, path: Path) -> Path:
+        if self.e2e_execution_mode == 'ssh':
+            return self.remote_path_for(path)
+        return Path(path).expanduser().resolve()
+
+    def context_execution_path(self, context: dict, key: str) -> Path:
+        if self.e2e_execution_mode == 'ssh':
+            mapping = {
+                'secure_run_dir': 'remote_secure_run_dir',
+                'e2e_run_dir': 'remote_e2e_run_dir',
+            }
+            if key in mapping:
+                return context[mapping[key]]
+        return context[key]
 
     def write_browser_e2e_share_payloads(self, context: dict, share0_bytes: bytes, share1_bytes: bytes):
         if len(share0_bytes) != E2E_SHARE_BYTE_COUNT or len(share1_bytes) != E2E_SHARE_BYTE_COUNT:
@@ -286,6 +446,10 @@ class DemoState:
         share_paths = [
             context['e2e_run_dir'] / 'browser_client_pixel_values_debug_share_p1_share.float32le',
             context['e2e_run_dir'] / 'browser_client_pixel_values_debug_share_p2_share.float32le',
+        ]
+        manifest_share_paths = [
+            self.execution_path(share_paths[0]),
+            self.execution_path(share_paths[1]),
         ]
         sample_ids = ['browser_sample_000000']
         for share_path, share_bytes in zip(share_paths, [share0_bytes, share1_bytes]):
@@ -317,9 +481,9 @@ class DemoState:
                 'party_id': party_id,
                 'share_rank': rank,
                 'share_count': 2,
-                'share_path': str(share_paths[rank]),
+                'share_path': str(manifest_share_paths[rank]),
                 'share_storage_format': 'raw_float32_le',
-                'public_manifest_json': str(context['share_public_json']),
+                'public_manifest_json': str(self.execution_path(context['share_public_json'])),
                 'share_semantics': public_manifest['share_semantics'],
                 'share_dtype': public_manifest['share_dtype'],
                 'share_shape': public_manifest['share_shape'],
@@ -338,6 +502,10 @@ class DemoState:
         self.write_browser_e2e_share_payloads(context, share0_bytes, share1_bytes)
         calibration_json, calibration_exists = self.resolve_e2e_calibration_path(context['e2e_run_dir'])
         output_calibration_json = self.resolve_e2e_output_calibration_path()
+        if output_calibration_json is None:
+            raise RuntimeError(
+                'E2E output calibration JSON is missing for the selected web demo profile.'
+            )
         env = self.build_e2e_env(context, calibration_json, output_calibration_json)
         scripts = self.secure_script_paths()
         if not calibration_exists:
@@ -346,27 +514,19 @@ class DemoState:
                     'E2E public layer norm calibration JSON is missing. '
                     'Pre-generate it on the server, or set WEB_DEMO_AUTO_CALIBRATE_E2E=1 for an explicit debug run.'
                 )
+            raise RuntimeError(
+                'Web demo currently expects a pre-generated layer norm calibration JSON for the selected E2E profile.'
+            )
+        if self.e2e_execution_mode == 'ssh':
+            self.run_remote_e2e_whole_forward(context, env, scripts['whole_forward'])
+        else:
             self._run_command_with_log(
-                ['bash', str(scripts['e2e_approx']), 'make-calib-pixels'],
+                ['bash', str(scripts['whole_forward']), 'spu'],
                 cwd=self.repo_root,
                 env=env,
                 log_path=context['infer_log_path'],
-                step_name='browser_e2e_make_calibration_pixels',
+                step_name='browser_e2e_secure_whole_forward_spu',
             )
-            self._run_command_with_log(
-                ['bash', str(scripts['e2e_approx']), 'calibrate'],
-                cwd=self.repo_root,
-                env=env,
-                log_path=context['infer_log_path'],
-                step_name='browser_e2e_public_layer_norm_calibration',
-            )
-        self._run_command_with_log(
-            ['bash', str(scripts['e2e_approx']), 'infer'],
-            cwd=self.repo_root,
-            env=env,
-            log_path=context['infer_log_path'],
-            step_name='browser_e2e_secure_approx_infer',
-        )
         return self.load_e2e_approx_result(context, calibration_json, output_calibration_json)
 
     def resolve_e2e_calibration_path(self, e2e_run_dir: Path):
@@ -377,13 +537,8 @@ class DemoState:
         if raw_path:
             path = Path(raw_path).expanduser().resolve()
             return path, path.exists()
-        candidate_root = self.repo_root / 'artifacts' / 'server_pipeline_run'
-        candidates = list(candidate_root.glob('*/e2e_secure_poc/e2e_public_layer_norm_calibration_depth12_uniform_fixedsquare*.json'))
-        if candidates:
-            path = max(candidates, key=lambda item: item.stat().st_mtime)
-            return path.resolve(), True
-        path = e2e_run_dir / 'e2e_public_layer_norm_calibration_depth12_uniform_fixedsquare.json'
-        return path.resolve(), False
+        path = Path(self.e2e_profile['ln_calibration_json']).expanduser().resolve()
+        return path, path.exists()
 
     def resolve_e2e_output_calibration_path(self):
         raw_path = (
@@ -393,55 +548,189 @@ class DemoState:
         if raw_path:
             path = Path(raw_path).expanduser().resolve()
             return path if path.exists() else None
-        candidate_root = self.repo_root / 'artifacts' / 'server_pipeline_run'
-        candidates = list(candidate_root.glob('e2e_output_calibration*.json'))
-        if candidates:
-            return max(candidates, key=lambda item: item.stat().st_mtime).resolve()
-        return None
+        path = Path(self.e2e_profile['output_calibration_json']).expanduser().resolve()
+        return path if path.exists() else None
 
     def build_e2e_env(self, context: dict, calibration_json: Path, output_calibration_json: Optional[Path] = None):
         env = os.environ.copy()
+        repo_root = self.remote_repo_root if self.e2e_execution_mode == 'ssh' else self.repo_root
+        python_bin = self.remote_python_bin if self.e2e_execution_mode == 'ssh' else sys.executable
+        e2e_run_dir = self.context_execution_path(context, 'e2e_run_dir')
+        candidate_pt = self.execution_path(context['candidate_pt'])
+        candidate_json = self.execution_path(context['candidate_json'])
+        share_public_json = self.execution_path(context['share_public_json'])
+        share_party_dir = self.execution_path(context['share_party_dir'])
+        calibration_path = self.execution_path(calibration_json)
         env.update(
             {
-                'REPO_ROOT': str(self.repo_root),
-                'PYTHON_BIN': sys.executable,
-                'BUNDLE_DIR': str(self.bundle_dir),
-                'CONFIG_PATH': str(self.repo_root / 'configs' / 'openbumblebee' / '2pc.json'),
+                'REPO_ROOT': str(repo_root),
+                'PYTHON_BIN': python_bin,
+                'BUNDLE_DIR': str(self.execution_path(self.bundle_dir)),
+                'CONFIG_PATH': str(repo_root / 'configs' / 'openbumblebee' / '2pc.json'),
                 'RUN_NAME': context['run_name'],
-                'E2E_RUN_DIR': str(context['e2e_run_dir']),
-                'E2E_INPUT_SHARE_PUBLIC_MANIFEST_JSON': str(context['share_public_json']),
-                'E2E_INPUT_P1_SHARE_MANIFEST_JSON': str(context['share_party_dir'] / 'p1_share_manifest.json'),
-                'E2E_INPUT_P2_SHARE_MANIFEST_JSON': str(context['share_party_dir'] / 'p2_share_manifest.json'),
-                'E2E_CANDIDATE_PT': str(context['candidate_pt']),
-                'E2E_CANDIDATE_JSON': str(context['candidate_json']),
-                'E2E_SPU_LAYER_NORM_CALIBRATION_JSON': str(calibration_json),
-                'E2E_STATIC_DEPTH_LIMIT': '12',
+                'E2E_RUN_DIR': str(e2e_run_dir),
+                'E2E_INPUT_SHARE_PUBLIC_MANIFEST_JSON': str(share_public_json),
+                'E2E_INPUT_P1_SHARE_MANIFEST_JSON': str(share_party_dir / 'p1_share_manifest.json'),
+                'E2E_INPUT_P2_SHARE_MANIFEST_JSON': str(share_party_dir / 'p2_share_manifest.json'),
+                'E2E_CANDIDATE_PT': str(candidate_pt),
+                'E2E_CANDIDATE_JSON': str(candidate_json),
+                'E2E_SPU_LAYER_NORM_CALIBRATION_JSON': str(calibration_path),
+                'E2E_STATIC_DEPTH_LIMIT': str(self.e2e_profile['static_depth_limit']),
                 'E2E_RUN_MAX_SAMPLES': '1',
-                'E2E_SPU_BATCH_SIZE': '1',
-                'E2E_PARTY_LOCAL_SHARE_LOAD': '1',
+                'E2E_SPU_BATCH_SIZE': str(self.e2e_profile['spu_batch_size']),
+                'E2E_SPU_BLOCK_CHUNK_SIZE': str(self.e2e_profile['spu_block_chunk_size']),
+                'E2E_SPU_LAYER_NORM_CHUNK_SIZE': str(self.e2e_profile['spu_layer_norm_chunk_size']),
+                'E2E_PARTY_LOCAL_SHARE_LOAD': '1' if self.e2e_profile['party_local_share_load'] else '0',
                 'E2E_REDACT_PRIVATE_INPUT_PATHS': '1',
-                'E2E_SPU_LAYER_NORM_POLICY': 'public_calibrated',
-                'E2E_SPU_ATTENTION_POLICY': 'uniform',
-                'E2E_SPU_ACTIVATION_OVERRIDE': 'fixed_square',
-                'E2E_SPU_ACTIVATION_CLIP_VALUE': os.environ.get('WEB_DEMO_E2E_ACTIVATION_CLIP_VALUE', '3.0'),
-                'SPU_RUNTIME_REUSE': os.environ.get('WEB_DEMO_REUSE_SPU_RUNTIME', '1'),
-                'SPU_DISABLE_COLOCATED_OPTIMIZATION': os.environ.get('SPU_DISABLE_COLOCATED_OPTIMIZATION', '1'),
+                'E2E_SPU_LAYER_NORM_POLICY': self.e2e_profile['spu_layer_norm_policy'],
+                'E2E_SPU_PARAMS_MODE': self.e2e_profile['spu_params_mode'],
+                'E2E_SPU_ATTENTION_POLICY': self.e2e_profile['spu_attention_policy'],
+                'E2E_SPU_ACTIVATION_OVERRIDE': self.e2e_profile['spu_activation_override'],
+                'E2E_SPU_ACTIVATION_CLIP_VALUE': str(self.e2e_profile['spu_activation_clip_value']),
+                'SPU_RUNTIME_REUSE': '1' if self.e2e_profile['spu_runtime_reuse'] else '0',
+                'SPU_DISABLE_COLOCATED_OPTIMIZATION': '1' if self.e2e_profile['spu_disable_colocated_optimization'] else '0',
                 'PUBLIC_CALIB_DATASET_DIR': os.environ.get(
                     'WEB_DEMO_PUBLIC_CALIB_DATASET_DIR',
-                    '/data/wyb/pneumoniamnist_imagefolder_subset',
+                    os.environ.get('DATA_ROOT', str(REPO_ROOT / 'data')),
                 ),
             }
         )
         if output_calibration_json is not None:
-            env['E2E_OUTPUT_CALIBRATION_JSON'] = str(output_calibration_json)
+            env['E2E_OUTPUT_CALIBRATION_JSON'] = str(self.execution_path(output_calibration_json))
         return env
+
+    def remote_ssh_base(self):
+        return [
+            'ssh',
+            '-p',
+            self.remote_ssh_port,
+            '-o',
+            'StrictHostKeyChecking=no',
+            '-o',
+            f'UserKnownHostsFile={Path.home() / ".ssh" / "known_hosts"}',
+        ]
+
+    def remote_command_env(self, context: dict):
+        env = os.environ.copy()
+        password = os.environ.get('WEB_DEMO_REMOTE_SSH_PASSWORD', '')
+        if password:
+            askpass_path = context['secure_run_dir'] / '.web_demo_ssh_askpass.sh'
+            askpass_path.write_text(
+                '#!/usr/bin/env bash\n'
+                f"printf '%s\\n' {shlex.quote(password)}\n",
+                encoding='utf-8',
+            )
+            askpass_path.chmod(0o700)
+            env['SSH_ASKPASS'] = str(askpass_path)
+            env['SSH_ASKPASS_REQUIRE'] = 'force'
+            env.setdefault('DISPLAY', ':0')
+        return env
+
+    def run_remote_e2e_whole_forward(self, context: dict, env: dict, whole_forward_script: Path):
+        remote_env = self.remote_command_env(context)
+        remote_secure_run_dir = context['remote_secure_run_dir']
+        remote_e2e_run_dir = context['remote_e2e_run_dir']
+        ssh_command = ' '.join(shlex.quote(item) for item in self.remote_ssh_base())
+        rsync_ssh = ssh_command
+        self._run_command_with_log(
+            [
+                'setsid',
+                'rsync',
+                '-av',
+                '--delete',
+                '-e',
+                rsync_ssh,
+                f"{context['secure_run_dir']}/",
+                f"{self.remote_ssh_target}:{remote_secure_run_dir}/",
+            ],
+            cwd=self.repo_root,
+            env=remote_env,
+            log_path=context['secure_run_dir'] / 'web_demo_remote_e2e_upload.log',
+            step_name='browser_e2e_remote_upload',
+        )
+        forward_env_keys = [
+            'REPO_ROOT',
+            'PYTHON_BIN',
+            'BUNDLE_DIR',
+            'CONFIG_PATH',
+            'RUN_NAME',
+            'E2E_RUN_DIR',
+            'E2E_INPUT_SHARE_PUBLIC_MANIFEST_JSON',
+            'E2E_INPUT_P1_SHARE_MANIFEST_JSON',
+            'E2E_INPUT_P2_SHARE_MANIFEST_JSON',
+            'E2E_CANDIDATE_PT',
+            'E2E_CANDIDATE_JSON',
+            'E2E_SPU_LAYER_NORM_CALIBRATION_JSON',
+            'E2E_STATIC_DEPTH_LIMIT',
+            'E2E_RUN_MAX_SAMPLES',
+            'E2E_SPU_BATCH_SIZE',
+            'E2E_SPU_BLOCK_CHUNK_SIZE',
+            'E2E_SPU_LAYER_NORM_CHUNK_SIZE',
+            'E2E_PARTY_LOCAL_SHARE_LOAD',
+            'E2E_REDACT_PRIVATE_INPUT_PATHS',
+            'E2E_SPU_LAYER_NORM_POLICY',
+            'E2E_SPU_PARAMS_MODE',
+            'E2E_SPU_ATTENTION_POLICY',
+            'E2E_SPU_ACTIVATION_OVERRIDE',
+            'E2E_SPU_ACTIVATION_CLIP_VALUE',
+            'E2E_OUTPUT_CALIBRATION_JSON',
+            'SPU_RUNTIME_REUSE',
+            'SPU_DISABLE_COLOCATED_OPTIMIZATION',
+            'PUBLIC_CALIB_DATASET_DIR',
+        ]
+        exported = ' '.join(
+            f'{key}={shlex.quote(value)}'
+            for key in forward_env_keys
+            if (value := env.get(key)) is not None
+        )
+        remote_script = (
+            f'cd {shlex.quote(str(self.remote_repo_root))} && '
+            f'{exported} bash {shlex.quote(str(self.remote_path_for(whole_forward_script)))} spu'
+        )
+        self._run_command_with_log(
+            ['setsid', *self.remote_ssh_base(), self.remote_ssh_target, remote_script],
+            cwd=self.repo_root,
+            env=remote_env,
+            log_path=context['infer_log_path'],
+            step_name='browser_e2e_remote_secure_whole_forward_spu',
+        )
+        self._run_command_with_log(
+            [
+                'setsid',
+                'rsync',
+                '-av',
+                '-e',
+                rsync_ssh,
+                f"{self.remote_ssh_target}:{remote_e2e_run_dir}/",
+                f"{context['e2e_run_dir']}/",
+            ],
+            cwd=self.repo_root,
+            env=remote_env,
+            log_path=context['secure_run_dir'] / 'web_demo_remote_e2e_download.log',
+            step_name='browser_e2e_remote_download',
+        )
+        self._run_command_with_log(
+            [
+                'setsid',
+                'rsync',
+                '-av',
+                '-e',
+                rsync_ssh,
+                f"{self.remote_ssh_target}:{self.remote_repo_root / 'logs' / 'spu_nodes'}/",
+                f"{context['secure_run_dir'] / 'remote_spu_nodes'}/",
+            ],
+            cwd=self.repo_root,
+            env=remote_env,
+            log_path=context['secure_run_dir'] / 'web_demo_remote_spu_logs_download.log',
+            step_name='browser_e2e_remote_spu_logs_download',
+        )
 
     def secure_script_paths(self):
         script_dir = self.repo_root / 'artifacts' / 'server_inference_friendly_pack'
         return {
             'suite': script_dir / 'run_selected_image_secure_suite.sh',
             'profile': script_dir / 'run_secure_profile_summary.sh',
-            'e2e_approx': script_dir / 'run_e2e_secure_approx_deploy.sh',
+            'whole_forward': script_dir / 'run_e2e_secure_whole_forward.sh',
         }
 
     def load_secure_result(self, runtime: str, run_name: str, secure_run_dir: Path, suite_log_path: Path, profile_log_path: Path):
@@ -459,8 +748,26 @@ class DemoState:
             'profile': profile,
         }
 
+    def validate_e2e_summary(self, summary: dict):
+        if not bool(summary.get('finite_logits', True)):
+            raise RuntimeError('E2E candidate JSON reports non-finite logits.')
+        guard = float_from_env('WEB_DEMO_E2E_LOGIT_ABS_GUARD', 10.0)
+        stats = summary.get('raw_logits_before_output_calibration') or summary.get('logits') or {}
+        if not isinstance(stats, dict):
+            return
+        min_value = stats.get('min')
+        max_value = stats.get('max')
+        if min_value is None or max_value is None:
+            return
+        max_abs = max(abs(float(min_value)), abs(float(max_value)))
+        if max_abs > guard:
+            raise RuntimeError(
+                f'E2E candidate JSON exceeded logit guard: max_abs={max_abs:.6f}, guard={guard:.6f}.'
+            )
+
     def load_e2e_approx_result(self, context: dict, calibration_json: Path, output_calibration_json: Optional[Path] = None):
         summary = json.loads(context['candidate_json'].read_text(encoding='utf-8'))
+        self.validate_e2e_summary(summary)
         preview = summary.get('prediction_preview') or {}
         probabilities = preview.get('probabilities')
         logits = preview.get('logits')
@@ -480,7 +787,9 @@ class DemoState:
             if threshold_predictions is None or len(threshold_predictions) <= row_index
             else int(threshold_predictions[row_index])
         )
-        link_details = latest_nonzero_spu_link_details(self.repo_root / 'logs' / 'spu_nodes')
+        remote_log_dir = context['secure_run_dir'] / 'remote_spu_nodes'
+        log_dir = remote_log_dir if remote_log_dir.exists() else self.repo_root / 'logs' / 'spu_nodes'
+        link_details = latest_nonzero_spu_link_details(log_dir)
         link_total_bytes = None if link_details is None else link_details['total_bytes']
         return {
             'runtime': 'e2e',
@@ -491,6 +800,8 @@ class DemoState:
             'infer_log_path': str(context['infer_log_path']),
             'candidate_json': str(context['candidate_json']),
             'candidate_pt': str(context['candidate_pt']),
+            'web_demo_profile': self.e2e_profile['profile_name'],
+            'web_demo_profile_description': self.e2e_profile['description'],
             'calibration_json': str(calibration_json),
             'output_calibration_json': None if output_calibration_json is None else str(output_calibration_json),
             'summary': summary,
@@ -506,7 +817,7 @@ class DemoState:
                 'total_pipeline_duration_sec': summary.get('elapsed_sec'),
                 'communication': {
                     'source': 'SPU/JAX e2e node logs',
-                    'source_detail': 'Parsed from latest nonzero Link details in logs/spu_nodes/node_*.log.',
+                    'source_detail': f'Parsed from latest nonzero Link details in {log_dir}/node_*.log.',
                     'status': 'available' if link_details else 'missing',
                     'total_bytes': link_total_bytes,
                     'request_bytes': None if link_details is None else link_details['send_bytes'],
@@ -518,6 +829,16 @@ class DemoState:
                     'warning': None,
                 },
                 'supported': True,
+                'web_demo_profile': self.e2e_profile['profile_name'],
+                'web_demo_profile_description': self.e2e_profile['description'],
+                'web_demo_profile_config': {
+                    'static_depth_limit': int(self.e2e_profile['static_depth_limit']),
+                    'spu_params_mode': self.e2e_profile['spu_params_mode'],
+                    'spu_layer_norm_policy': self.e2e_profile['spu_layer_norm_policy'],
+                    'spu_attention_policy': self.e2e_profile['spu_attention_policy'],
+                    'spu_activation_override': self.e2e_profile['spu_activation_override'],
+                    'spu_activation_clip_value': float(self.e2e_profile['spu_activation_clip_value']),
+                },
             },
         }
 
@@ -565,6 +886,10 @@ class DemoState:
         context = self.build_e2e_run_context(session_id)
         calibration_json, calibration_exists = self.resolve_e2e_calibration_path(context['e2e_run_dir'])
         output_calibration_json = self.resolve_e2e_output_calibration_path()
+        if output_calibration_json is None:
+            raise RuntimeError(
+                'E2E output calibration JSON is missing for the selected web demo profile.'
+            )
         env = self.build_e2e_env(context, calibration_json, output_calibration_json)
         scripts = self.secure_script_paths()
 
@@ -596,26 +921,15 @@ class DemoState:
             step_name='e2e_client_share_preprocess',
         )
         if not calibration_exists:
-            self._run_command_with_log(
-                ['bash', str(scripts['e2e_approx']), 'make-calib-pixels'],
-                cwd=self.repo_root,
-                env=env,
-                log_path=context['calib_log_path'],
-                step_name='e2e_make_calibration_pixels',
-            )
-            self._run_command_with_log(
-                ['bash', str(scripts['e2e_approx']), 'calibrate'],
-                cwd=self.repo_root,
-                env=env,
-                log_path=context['calib_log_path'],
-                step_name='e2e_public_layer_norm_calibration',
+            raise RuntimeError(
+                'E2E public layer norm calibration JSON is missing for the selected web demo profile.'
             )
         self._run_command_with_log(
-            ['bash', str(scripts['e2e_approx']), 'infer'],
+            ['bash', str(scripts['whole_forward']), 'spu'],
             cwd=self.repo_root,
             env=env,
             log_path=context['infer_log_path'],
-            step_name='e2e_secure_approx_infer',
+            step_name='e2e_secure_whole_forward_spu',
         )
 
         result = self.load_e2e_approx_result(context, calibration_json, output_calibration_json)

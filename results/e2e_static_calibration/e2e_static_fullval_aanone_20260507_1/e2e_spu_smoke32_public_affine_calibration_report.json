@@ -1,0 +1,30 @@
+{
+  "best_accuracy_constrained_affine": {
+    "accuracy": 96.875,
+    "auc": 0.96875,
+    "bias": 2.014323643906751,
+    "ce_loss": 0.18686114854823688,
+    "scale": 5.529255602590326
+  },
+  "deployment_note": {
+    "changes_auc_ranking": false,
+    "operation": "replace score = logit_1 - logit_0 + bias with score = scale * (logit_1 - logit_0) + bias",
+    "requires_retraining": false,
+    "secure_friendly": true
+  },
+  "inputs": {
+    "baseline_calibration_json": "/home/yclcg/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_bias_spuaware_smoke32_threshold.json",
+    "static_logits_csv": "/home/yclcg/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_smoke32_spu_raw_logits.csv"
+  },
+  "label": "e2e_spu_smoke32_public_affine_accuracy_constrained",
+  "manifest_type": "transshield_public_logit_affine_calibration_report_v0",
+  "min_accuracy": 96.875,
+  "raw": {
+    "accuracy": 87.5,
+    "auc": 0.96875,
+    "bias": 0.0,
+    "ce_loss": 0.43573739796701627,
+    "scale": 1.0
+  },
+  "sample_count": 32
+}

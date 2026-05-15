@@ -1,0 +1,343 @@
+{
+  "acceptance_policy": {
+    "same_policy_consistency_high": {
+      "argmax_match_ratio_min": 0.99,
+      "logits_max_abs_error_max": 0.05,
+      "probabilities_max_abs_error_max": 0.02,
+      "threshold_match_ratio_min": 0.97
+    }
+  },
+  "bundle_dir": null,
+  "gates": {
+    "boundary_kth_check_passed": null,
+    "boundary_stage_decision_match_full": null,
+    "boundary_tie_check_passed": null,
+    "e2e_same_policy_consistency_exact": true,
+    "e2e_same_policy_consistency_high": true,
+    "fairness_comparison_is_fair": true,
+    "fairness_report_available": true,
+    "fairness_transshield_matches_current_plaintext_fullval": true,
+    "legacy_replay_consistency_exact": false,
+    "legacy_replay_consistency_high": true,
+    "plaintext_fullval_available": true,
+    "secret_runtime_complete": true,
+    "secret_runtime_no_pending_items": true,
+    "secret_runtime_no_unstable_items": true,
+    "secret_runtime_summary_available": true
+  },
+  "inputs": {
+    "e2e_verify_json": "/home/yclcg/Transshield_final/results/e2e_gap_attribution/keepmask_wholeforward_wrapper_spu_smoke32_partylocal_secret_20260509_1/e2e_static_whole_forward_compare.json",
+    "fair_comparison_json": "/home/yclcg/Transshield_final/results/fair_external_comparison/fair_external_secure_static_20260505_clean/fair_external_comparison.json",
+    "network_kth_check_json": null,
+    "plaintext_eval_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/delivery_line_suite_20260505_clean/plaintext_modified_eval.json",
+    "plaintext_secure_compare_json": null,
+    "secret_isolated_summary_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/secret_depth6_clip0_guarded_eval_20260505_clean/secret_isolated_eval_summary.json",
+    "tie_check_json": null
+  },
+  "manifest_type": "transshield_delivery_acceptance_report_v0",
+  "official_line": {
+    "default_plaintext_bundle": "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
+    "default_secret_profile": "secret_blockwise_stage + public_calibrated + uniform + fixed_square + clip0 + depth6 + bsz1",
+    "method_core": "masking -> F_mux ; threshold compare -> F_less ; secure sidecar/replay"
+  },
+  "readiness": {
+    "reason": "至少一个核心闭环仍缺当前证据或当前输入文件未提供。",
+    "status": "p0_closure_incomplete"
+  },
+  "sections": {
+    "boundary": {
+      "network_kth": {
+        "available": false
+      },
+      "tie_policy": {
+        "available": false
+      }
+    },
+    "e2e_same_policy_consistency": {
+      "allow_prefix_candidate": false,
+      "argmax_match_ratio": 1.0,
+      "available": true,
+      "candidate_pt": "/data/wyb/Transshield_final/results/e2e_gap_attribution/keepmask_wholeforward_wrapper_spu_smoke32_partylocal_secret_20260509_1/e2e_static_whole_forward_candidate_from_server.pt",
+      "logits_max_abs_error": 0.00355452299118042,
+      "probabilities_max_abs_error": 0.0017725229263305664,
+      "reference_pt": "/data/wyb/Transshield_final/results/e2e_gap_attribution/keepmask_wholeforward_wrapper_spu_smoke32_partylocal_secret_20260509_1/runtime_pruning_reference.pt",
+      "sample_count": 32,
+      "slice_count": null,
+      "source": "transshield_e2e_secure_vit_verify_v0",
+      "threshold_match_ratio": 1.0
+    },
+    "fairness": {
+      "available": true,
+      "comparison": {
+        "transshield_minus_mpcvit_argmax_accuracy_pt": -20.992363955228384,
+        "transshield_minus_mpcvit_auc": -0.03413310482719223,
+        "transshield_minus_mpcvit_threshold_accuracy_pt": -6.106872822492178
+      },
+      "external_baselines": {
+        "mpcvit": {
+          "aggregate": {
+            "argmax_accuracy": {
+              "max": 96.18320610687023,
+              "mean": 96.18320610687023,
+              "min": 96.18320610687023,
+              "std": 0.0
+            },
+            "auc": {
+              "max": 0.9925640293249548,
+              "mean": 0.9925640293249548,
+              "min": 0.9925640293249548,
+              "std": 0.0
+            },
+            "threshold_accuracy": {
+              "max": 96.18320610687023,
+              "mean": 96.18320610687023,
+              "min": 96.18320610687023,
+              "std": 0.0
+            }
+          },
+          "metrics": {
+            "argmax_accuracy": 96.18320610687023,
+            "auc": 0.9925640293249548,
+            "threshold_accuracy": 96.18320610687023
+          },
+          "sample_count": 524,
+          "summary_json": "/data/wyb/Transshield_final/results/fair_external_comparison/fair_external_secure_static_20260505_clean/mpcvit/summary_multiseed.json",
+          "type": "multi_seed"
+        }
+      },
+      "fairness_checks": {
+        "accuracy_comparison_is_fair": true,
+        "accuracy_comparison_reason": "Transshield 与 MPCViT 都指向同一组 train/val 路径，样本量也一致，可做同数据集效果对比。",
+        "mpcvit_dataset_match": true,
+        "requested_dataset": {
+          "train_path": "/data/wyb/pneumoniamnist_imagefolder_subset/train",
+          "train_sample_count": 4708,
+          "train_sample_paths_sha256": "39ca670ffb6c571c41f242654f7bed55a36f3156056b6778372c6ba67630d1e7",
+          "val_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+          "val_sample_count": 524,
+          "val_sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610"
+        },
+        "transshield_dataset_match": true
+      },
+      "fairness_scope": {
+        "dataset": "PneumoniaMNIST imagefolder subset",
+        "same_dataset_accuracy_comparison": true,
+        "same_protocol_secure_communication_comparison": false
+      },
+      "title": "Transshield 公平外部对比",
+      "transshield": {
+        "metrics": {
+          "argmax_accuracy": 75.19084215164185,
+          "auc": 0.9584309244977626,
+          "eval_loss": 0.5456902384757996,
+          "threshold": 0.5696036219596863,
+          "threshold_accuracy": 90.07633328437805
+        },
+        "run_dir": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/delivery_line_suite_20260505_clean",
+        "sample_count": 524,
+        "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+        "secure_consistency": {
+          "argmax_match_ratio": 0.9942748091603053,
+          "logits_max_abs_error": 0.040701448917388916,
+          "overall_passed": null,
+          "probabilities_max_abs_error": 0.01950448751449585,
+          "replay_overall_passed": null,
+          "threshold_match_ratio": 0.9751908396946565
+        },
+        "secure_runtime": {
+          "communication_note": null,
+          "communication_status": null,
+          "network_kth_bridge_sec": null,
+          "rpc_total_bytes": null,
+          "runtime": null,
+          "tie_bridge_sec": null,
+          "total_pipeline_duration_sec": null
+        }
+      }
+    },
+    "legacy_replay_consistency": {
+      "argmax_match_ratio": 0.9942748091603053,
+      "available": true,
+      "logits_max_abs_error": 0.040701448917388916,
+      "plaintext_argmax_accuracy": 75.19084215164185,
+      "plaintext_threshold_accuracy": 90.07633328437805,
+      "probabilities_max_abs_error": 0.01950448751449585,
+      "secure_argmax_accuracy": null,
+      "secure_model_replay_status": null,
+      "secure_overall_passed": null,
+      "secure_threshold_accuracy": null,
+      "source": "fair_external_comparison.json::transshield.secure_consistency",
+      "threshold_match_ratio": 0.9751908396946565
+    },
+    "plaintext_fullval": {
+      "args_snapshot_summary": {
+        "approx_attn_mode": "uniform",
+        "eval_pruning_mode": "topk_argsort",
+        "eval_tie_policy": "lowest_index",
+        "model": "deit-s",
+        "secure_static_skip_pruning": true,
+        "secure_static_train_depth": 12,
+        "square_activation_mode": "fixed_square",
+        "use_approx_attn": true,
+        "use_mask_pruning": false,
+        "use_square_gelu": true
+      },
+      "available": true,
+      "checkpoint_path": null,
+      "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+      "finite_logits": true,
+      "label": "modified_plaintext",
+      "metrics": {
+        "argmax_accuracy": 75.19084215164185,
+        "auc": 0.9584309244977626,
+        "eval_loss": 0.5456902384757996,
+        "threshold": 0.5696036219596863,
+        "threshold_accuracy": 90.07633328437805
+      },
+      "sample_count": 524,
+      "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+      "threshold_json": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/threshold_best.json"
+    },
+    "secret_runtime": {
+      "accepted_accuracy": 1.0,
+      "accepted_count": 8,
+      "accepted_item_preview": [
+        {
+          "argmax": 0,
+          "correct_argmax": true,
+          "elapsed_sec": 95.68565607070923,
+          "idx": 0,
+          "logits": [
+            0.04145622253417969,
+            -0.04145622253417969
+          ],
+          "max_abs_raw_or_logit": 0.17431640625,
+          "path": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/secret_depth6_clip0_guarded_eval_20260505_clean/idx0_accepted.json",
+          "probabilities": [
+            0.5207162499427795,
+            0.47928375005722046
+          ],
+          "raw_logits_before_output_calibration": {
+            "dtype": "torch.float32",
+            "max": 0.17431640625,
+            "mean": 0.08098602294921875,
+            "min": -0.0123443603515625,
+            "shape": [
+              1,
+              2
+            ],
+            "std": 0.09333038330078125
+          },
+          "spu_layer_norm_policy": "public_calibrated",
+          "spu_params_mode": "secret_blockwise_stage",
+          "target": 0,
+          "threshold": 0
+        },
+        {
+          "argmax": 0,
+          "correct_argmax": true,
+          "elapsed_sec": 93.98621201515198,
+          "idx": 1,
+          "logits": [
+            0.14321184158325195,
+            -0.14321184158325195
+          ],
+          "max_abs_raw_or_logit": 0.1714019775390625,
+          "path": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/secret_depth6_clip0_guarded_eval_20260505_clean/idx1_accepted.json",
+          "probabilities": [
+            0.5711203813552856,
+            0.42887964844703674
+          ],
+          "raw_logits_before_output_calibration": {
+            "dtype": "torch.float32",
+            "max": 0.1714019775390625,
+            "mean": 0.07344818115234375,
+            "min": -0.024505615234375,
+            "shape": [
+              1,
+              2
+            ],
+            "std": 0.09795379638671875
+          },
+          "spu_layer_norm_policy": "public_calibrated",
+          "spu_params_mode": "secret_blockwise_stage",
+          "target": 0,
+          "threshold": 0
+        },
+        {
+          "argmax": 0,
+          "correct_argmax": true,
+          "elapsed_sec": 92.86060214042664,
+          "idx": 2,
+          "logits": [
+            0.03994178771972656,
+            -0.03994178771972656
+          ],
+          "max_abs_raw_or_logit": 0.1756744384765625,
+          "path": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/secret_depth6_clip0_guarded_eval_20260505_clean/idx2_accepted.json",
+          "probabilities": [
+            0.5199602842330933,
+            0.4800397455692291
+          ],
+          "raw_logits_before_output_calibration": {
+            "dtype": "torch.float32",
+            "max": 0.1756744384765625,
+            "mean": 0.08094024658203125,
+            "min": -0.0137939453125,
+            "shape": [
+              1,
+              2
+            ],
+            "std": 0.09473419189453125
+          },
+          "spu_layer_norm_policy": "public_calibrated",
+          "spu_params_mode": "secret_blockwise_stage",
+          "target": 0,
+          "threshold": 0
+        },
+        {
+          "argmax": 0,
+          "correct_argmax": true,
+          "elapsed_sec": 93.18192720413208,
+          "idx": 3,
+          "logits": [
+            0.04304921627044678,
+            -0.04304921627044678
+          ],
+          "max_abs_raw_or_logit": 0.2575531005859375,
+          "path": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/secret_depth6_clip0_guarded_eval_20260505_clean/idx3_accepted.json",
+          "probabilities": [
+            0.5215113162994385,
+            0.47848865389823914
+          ],
+          "raw_logits_before_output_calibration": {
+            "dtype": "torch.float32",
+            "max": 0.2575531005859375,
+            "mean": 0.10703277587890625,
+            "min": -0.043487548828125,
+            "shape": [
+              1,
+              2
+            ],
+            "std": 0.15052032470703125
+          },
+          "spu_layer_norm_policy": "public_calibrated",
+          "spu_params_mode": "secret_blockwise_stage",
+          "target": 0,
+          "threshold": 0
+        }
+      ],
+      "available": true,
+      "complete": true,
+      "layer_norm_calibration_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/secure_static_depth12_epoch8_secret_depth_boundary_calib_clip0_20260430/e2e_secure_poc/e2e_public_layer_norm_calibration_depth6_uniform_fixed_square_clip0.json",
+      "mean_accepted_elapsed_sec": 93.89593839645386,
+      "outlier_rule": "reject if max_abs_raw_or_logit > 10.0",
+      "output_calibration_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_output_calibration_secret_depth6_clip0_balanced8_20260502.json",
+      "pending_count": 0,
+      "sample_count": 8,
+      "sum_accepted_elapsed_sec": 751.1675071716309,
+      "unstable_count": 0,
+      "unstable_items": []
+    }
+  }
+}

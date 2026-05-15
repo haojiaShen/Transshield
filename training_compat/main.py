@@ -153,6 +153,31 @@ def _load_checkpoint_state_dict(path, model_key='model|module'):
         checkpoint_model = checkpoint
     return checkpoint_model
 
+
+def _resolve_deit_s_bootstrap_state_dict(args):
+    candidate_paths = []
+    for path in [getattr(args, 'finetune', ''), getattr(args, 'teacher_checkpoint_path', '')]:
+        if path and path not in candidate_paths:
+            candidate_paths.append(path)
+    default_pretrained_path = './pretrained/deit_small_patch16_224-cd65a155.pth'
+    candidate_paths.append(default_pretrained_path)
+
+    missing = []
+    for candidate in candidate_paths:
+        if not candidate:
+            continue
+        if os.path.isfile(candidate):
+            print(f"Bootstrap DeiT-S weights from {candidate}")
+            return _load_checkpoint_state_dict(candidate, model_key=args.model_key)
+        missing.append(candidate)
+
+    raise FileNotFoundError(
+        'Unable to resolve bootstrap DeiT-S weights. '
+        f'Tried: {missing}. '
+        'Provide --finetune / --teacher_checkpoint_path with a reachable checkpoint, '
+        'or materialize ./pretrained/deit_small_patch16_224-cd65a155.pth.'
+    )
+
 def _load_teacher_checkpoint_if_needed(teacher_model, args):
     if not args.teacher_checkpoint_path:
         return
@@ -195,11 +220,10 @@ def _build_deit_s_model_bundle(args, sparse_ratio, student_act_layer):
         approx_attn_mode=args.approx_attn_mode,
         fp32_attention=True,
         nonempty_keep_guard=args.nonempty_keep_guard,
+        secure_static_depth=args.secure_static_train_depth,
+        secure_static_skip_pruning=args.secure_static_skip_pruning,
     )
-    pretrained = torch.load(
-        './pretrained/deit_small_patch16_224-cd65a155.pth',
-        map_location='cpu',
-    )['model']
+    pretrained = _resolve_deit_s_bootstrap_state_dict(args)
     teacher_model = VisionTransformerTeacher(
         patch_size=16,
         embed_dim=384,
@@ -476,6 +500,10 @@ def get_args_parser():
                         help='Use mask-based pruning in training instead of keeping pruned token features active.')
     parser.add_argument('--nonempty_keep_guard', type=utils.str2bool, default=False,
                         help='Enable training-time zero-token guard; false preserves original tracka pruning semantics.')
+    parser.add_argument('--secure_static_train_depth', type=int, default=0,
+                        help='If >0, train/eval the student with the static whole-forward path truncated to this many blocks.')
+    parser.add_argument('--secure_static_skip_pruning', type=utils.str2bool, default=True,
+                        help='When secure_static_train_depth>0, skip runtime pruning predictors to match SPU whole-forward scope.')
     parser.add_argument('--pruning_margin_weight', type=float, default=0.0,
                         help='Optional margin regularization weight for pruning boundary scores; 0 disables it.')
     parser.add_argument('--pruning_margin_target', type=float, default=1e-4,
@@ -851,8 +879,6 @@ if __name__ == '__main__':
     if args.output_dir:
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     main(args)
-
-
 
 
 

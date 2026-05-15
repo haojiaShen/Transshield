@@ -1,0 +1,12 @@
+{
+  "bias": 0.341079728784391,
+  "manifest_type": "transshield_e2e_output_calibration_v0",
+  "note": "Static-path public logit bias derived from E2E static logits.",
+  "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+  "source_eval_binary_threshold": 0.4155472218990326,
+  "threshold": 0.5,
+  "weights": [
+    -1.0,
+    1.0
+  ]
+}

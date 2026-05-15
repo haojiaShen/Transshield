@@ -1,0 +1,164 @@
+{
+  "cross_dataset_eval": [
+    {
+      "accuracy": 92.1875,
+      "eval_dataset": "smoke64_bias",
+      "nearest_wrong_samples": [
+        {
+          "canonical_score": 0.3787893056869507,
+          "default_correct": false,
+          "default_prediction": 1,
+          "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00114.png",
+          "index": 6,
+          "target": 0,
+          "threshold_correct": false,
+          "threshold_prediction": 1
+        },
+        {
+          "canonical_score": 0.4484761953353882,
+          "default_correct": false,
+          "default_prediction": 1,
+          "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00223.png",
+          "index": 14,
+          "target": 0,
+          "threshold_correct": false,
+          "threshold_prediction": 1
+        },
+        {
+          "canonical_score": 0.5009053945541382,
+          "default_correct": false,
+          "default_prediction": 1,
+          "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00210.png",
+          "index": 13,
+          "target": 0,
+          "threshold_correct": false,
+          "threshold_prediction": 1
+        },
+        {
+          "canonical_score": -0.057108521461486816,
+          "default_correct": false,
+          "default_prediction": 0,
+          "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00115.png",
+          "index": 39,
+          "target": 1,
+          "threshold_correct": false,
+          "threshold_prediction": 0
+        },
+        {
+          "canonical_score": -0.2633157968521118,
+          "default_correct": false,
+          "default_prediction": 0,
+          "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00206.png",
+          "index": 44,
+          "target": 1,
+          "threshold_correct": false,
+          "threshold_prediction": 0
+        }
+      ],
+      "source_dataset": "smoke32_temp",
+      "threshold": 0.2325185666495205,
+      "wrong_count": 5
+    },
+    {
+      "accuracy": 90.625,
+      "eval_dataset": "smoke32_temp",
+      "nearest_wrong_samples": [
+        {
+          "canonical_score": 0.44585171775904336,
+          "default_correct": true,
+          "default_prediction": 1,
+          "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00136.png",
+          "index": 20,
+          "target": 1,
+          "threshold_correct": false,
+          "threshold_prediction": 0
+        },
+        {
+          "canonical_score": 0.24414577268888232,
+          "default_correct": true,
+          "default_prediction": 1,
+          "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00384.png",
+          "index": 27,
+          "target": 1,
+          "threshold_correct": false,
+          "threshold_prediction": 0
+        },
+        {
+          "canonical_score": -0.23246252365546344,
+          "default_correct": false,
+          "default_prediction": 0,
+          "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00316.png",
+          "index": 25,
+          "target": 1,
+          "threshold_correct": false,
+          "threshold_prediction": 0
+        }
+      ],
+      "source_dataset": "smoke64_bias",
+      "threshold": 0.5042470693588257,
+      "wrong_count": 3
+    }
+  ],
+  "dataset_summaries": [
+    {
+      "candidate_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke32_temp_nonisolated_20260507_1/e2e_secure_poc/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip0_eval.json",
+      "image_list": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke32_temp_nonisolated_20260507_1/e2e_secure_poc/e2e_eval_images.txt",
+      "label": "smoke32_temp",
+      "output_calibration": {
+        "bias": 3.8029727935791016,
+        "calibration_json": "/data/wyb/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_temperature.json",
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Public temperature calibration that preserves the bias-only decision boundary exactly.",
+        "score_rule": "class1_score = scale * (logits @ [-1, 1] + public_bias)",
+        "threshold": 0.5,
+        "weights": [
+          -6.498303413391113,
+          6.498303413391113
+        ]
+      },
+      "reference_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke32_temp_nonisolated_20260507_1/e2e_secure_poc/plaintext_same_images_reference.json",
+      "sample_count": 32,
+      "score_scale": 6.498303413391113,
+      "within_dataset_threshold_sweep": {
+        "best_accuracy": 96.875,
+        "best_delta_vs_default": 9.375,
+        "best_threshold": 0.2325185666495205,
+        "default_accuracy": 87.5,
+        "default_threshold": 0.0
+      }
+    },
+    {
+      "candidate_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke64_even_nonisolated_20260507_2/e2e_secure_poc/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip0_eval.json",
+      "image_list": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke64_even_nonisolated_20260507_2/e2e_secure_poc/e2e_eval_images.txt",
+      "label": "smoke64_bias",
+      "output_calibration": {
+        "bias": 0.5852254629135132,
+        "calibration_json": "/data/wyb/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_bias.json",
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Static-path public logit bias derived from E2E static logits.",
+        "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+        "threshold": 0.5,
+        "weights": [
+          -1.0,
+          1.0
+        ]
+      },
+      "reference_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke64_even_nonisolated_20260507_2/e2e_secure_poc/plaintext_same_images_reference.json",
+      "sample_count": 64,
+      "score_scale": 1.0,
+      "within_dataset_threshold_sweep": {
+        "best_accuracy": 93.75,
+        "best_delta_vs_default": 6.25,
+        "best_threshold": 0.5042470693588257,
+        "default_accuracy": 87.5,
+        "default_threshold": 0.0
+      }
+    }
+  ],
+  "judgement": {
+    "reason": "A threshold fitted on one E2E subset improved another E2E subset; SPU-aware public threshold calibration is a viable lightweight recovery axis.",
+    "status": "public_threshold_transfer_improves_eval_subset"
+  },
+  "label": "e2e_aanone_public_threshold_recovery_smoke32_to_smoke64_20260507",
+  "manifest_type": "transshield_e2e_public_threshold_recovery_v0"
+}

@@ -8,6 +8,12 @@ These files are the in-repo runtime configs for the Transshield secure bridge.
 - `2pc.template.json`: copy/edit template if your server ports or temp folders differ
 - `2pc_e2e.template.json`: reserved template for the future e2e whole-forward secure inference track; keep it separate from the current live sidecar config
 
+By default these configs set `cheetah_2pc_config.enable_mul_lsb_error=false`.
+The older `true` setting produced intermittent million-scale logits in
+`secret_blockwise_stage` full-depth ViT runs. The runtime setup helper also
+forces this stable default when rewriting ports, unless
+`--allow-cheetah-mul-lsb-error` is passed explicitly for diagnosis.
+
 ## When to edit
 
 Edit these values on the server if needed:

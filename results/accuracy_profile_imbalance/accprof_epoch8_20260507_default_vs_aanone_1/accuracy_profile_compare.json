@@ -1,0 +1,325 @@
+{
+  "config_compare": {
+    "baseline": {
+      "aa": "rand-m9-mstd0.5-inc1",
+      "activation_lr_scale": "1.0",
+      "augmentation_profile": "timm",
+      "batch_size": "32",
+      "class_weight_mode": "none",
+      "class_weight_power": "1.0",
+      "clip_grad": "1.0",
+      "cls_distill_weight": "1.0",
+      "cls_token_full_lr": "false",
+      "color_jitter": "0.4",
+      "epochs": "8",
+      "finetune": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "freeze_patch_embed_bias": "false",
+      "freeze_patch_embed_proj": "false",
+      "freeze_patch_embed_weight": "false",
+      "groupa_lr_scale": "0.1",
+      "lr": "3e-6",
+      "lr_scale": "1.0",
+      "min_lr": "1e-7",
+      "model_ema": "false",
+      "patch_embed_bias_init_mode": "pretrained",
+      "pretrained_fix_step": "0",
+      "pruning_margin_mode": "hinge",
+      "pruning_margin_stage_weights": null,
+      "pruning_margin_start_epoch": "0",
+      "pruning_margin_target": "1e-4",
+      "pruning_margin_weight": "0.0",
+      "reprob": "0.25",
+      "secure_static_skip_pruning": "true",
+      "secure_static_train_depth": "12",
+      "seed": "0",
+      "skip_patch_embed_bias_pretrained": "false",
+      "smoothing": "0.1",
+      "teacher_checkpoint_path": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "token_distill_weight": "0.02",
+      "train_pos_embed": "false",
+      "train_sampler_mode": "distributed",
+      "use_mask_pruning": "false",
+      "warmup_steps": "20",
+      "weight_decay": "0.05"
+    },
+    "candidate": {
+      "aa": "",
+      "activation_lr_scale": "1.0",
+      "augmentation_profile": "timm",
+      "batch_size": "32",
+      "class_weight_mode": "none",
+      "class_weight_power": "1.0",
+      "clip_grad": "1.0",
+      "cls_distill_weight": "1.0",
+      "cls_token_full_lr": "false",
+      "color_jitter": "0.4",
+      "epochs": "8",
+      "finetune": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "freeze_patch_embed_bias": "false",
+      "freeze_patch_embed_proj": "false",
+      "freeze_patch_embed_weight": "false",
+      "groupa_lr_scale": "0.1",
+      "lr": "3e-6",
+      "lr_scale": "1.0",
+      "min_lr": "1e-7",
+      "model_ema": "false",
+      "patch_embed_bias_init_mode": "pretrained",
+      "pretrained_fix_step": "0",
+      "pruning_margin_mode": "hinge",
+      "pruning_margin_stage_weights": null,
+      "pruning_margin_start_epoch": "0",
+      "pruning_margin_target": "1e-4",
+      "pruning_margin_weight": "0.0",
+      "reprob": "0.25",
+      "secure_static_skip_pruning": "true",
+      "secure_static_train_depth": "12",
+      "seed": "0",
+      "skip_patch_embed_bias_pretrained": "false",
+      "smoothing": "0.1",
+      "teacher_checkpoint_path": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "token_distill_weight": "0.02",
+      "train_pos_embed": "false",
+      "train_sampler_mode": "distributed",
+      "use_mask_pruning": "false",
+      "warmup_steps": "20",
+      "weight_decay": "0.05"
+    },
+    "changed": {
+      "aa": {
+        "baseline": "rand-m9-mstd0.5-inc1",
+        "candidate": ""
+      }
+    }
+  },
+  "distill_compare": {
+    "baseline": null,
+    "candidate": null,
+    "delta_candidate_minus_baseline": {
+      "mean_cls_kl": null,
+      "mean_effective_cls_term": null,
+      "mean_effective_token_term": null,
+      "mean_token_kl": null
+    }
+  },
+  "inputs": {
+    "baseline_distill_report_json": null,
+    "baseline_margin_report_json": null,
+    "baseline_plaintext_eval_csv": "/home/yclcg/Transshield_final/results/accuracy_profile_imbalance/secure_static_accprof_epoch8_20260506_default1/plaintext_eval.csv",
+    "baseline_plaintext_eval_json": "/home/yclcg/Transshield_final/results/accuracy_profile_imbalance/secure_static_accprof_epoch8_20260506_default1/plaintext_eval.json",
+    "baseline_run_dir": "/home/yclcg/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch8_20260506_default1",
+    "baseline_threshold_search_json": "/home/yclcg/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch8_20260506_default1/threshold_eval.json",
+    "candidate_distill_report_json": null,
+    "candidate_margin_report_json": null,
+    "candidate_plaintext_eval_csv": "/home/yclcg/Transshield_final/results/accuracy_profile_imbalance/secure_static_accprof_epoch8_20260507_aanone_1/plaintext_eval.csv",
+    "candidate_plaintext_eval_json": "/home/yclcg/Transshield_final/results/accuracy_profile_imbalance/secure_static_accprof_epoch8_20260507_aanone_1/plaintext_eval.json",
+    "candidate_run_dir": "/home/yclcg/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch8_20260507_aanone_1",
+    "candidate_threshold_search_json": "/home/yclcg/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch8_20260507_aanone_1/threshold_eval.json"
+  },
+  "judgement": {
+    "auc_delta": 0.02096543844615817,
+    "reason": "候选 run 的 threshold/AUC 没有低于 baseline，可以继续做更长训练或更完整验证。",
+    "status": "candidate_eval_not_worse",
+    "threshold_accuracy_delta": 2.2900760173797607
+  },
+  "labels": {
+    "baseline": "secure_static_accprof_epoch8_20260506_default1",
+    "candidate": "secure_static_accprof_epoch8_20260507_aanone_1"
+  },
+  "margin_compare": {
+    "baseline": null,
+    "candidate": null,
+    "delta_candidate_minus_baseline": {
+      "focus_stage_margin_mean": null,
+      "focus_stage_violation_ratio": null,
+      "max_pruning_margin": null
+    }
+  },
+  "plaintext_eval_compare": {
+    "baseline": {
+      "argmax_accuracy": 82.44274854660034,
+      "argmax_f1": 0.8685714285714284,
+      "args_snapshot_summary": {
+        "approx_attn_mode": "uniform",
+        "eval_pruning_mode": "topk_argsort",
+        "eval_tie_policy": "lowest_index",
+        "model": "deit-s",
+        "secure_static_skip_pruning": true,
+        "secure_static_train_depth": 12,
+        "square_activation_mode": "fixed_square",
+        "use_approx_attn": true,
+        "use_mask_pruning": false,
+        "use_square_gelu": true
+      },
+      "auc": 0.9469104065505094,
+      "eval_loss": 0.5045640468597412,
+      "finite_logits": true,
+      "sample_count": 524,
+      "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+      "threshold": 0.4091948866844177,
+      "threshold_accuracy": 89.69465494155884,
+      "threshold_f1": 0.9291338582677164
+    },
+    "candidate": {
+      "argmax_accuracy": 76.7175555229187,
+      "argmax_f1": 0.8140243902439025,
+      "args_snapshot_summary": {
+        "approx_attn_mode": "uniform",
+        "eval_pruning_mode": "topk_argsort",
+        "eval_tie_policy": "lowest_index",
+        "model": "deit-s",
+        "secure_static_skip_pruning": true,
+        "secure_static_train_depth": 12,
+        "square_activation_mode": "fixed_square",
+        "use_approx_attn": true,
+        "use_mask_pruning": false,
+        "use_square_gelu": true
+      },
+      "auc": 0.9678758449966676,
+      "eval_loss": 0.530501127243042,
+      "finite_logits": true,
+      "sample_count": 524,
+      "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+      "threshold": 0.3577311038970947,
+      "threshold_accuracy": 91.9847309589386,
+      "threshold_f1": 0.9455958549222798
+    },
+    "delta_candidate_minus_baseline": {
+      "argmax_accuracy": -5.725193023681641,
+      "argmax_f1": -0.05454703832752594,
+      "auc": 0.02096543844615817,
+      "eval_loss": 0.02593708038330078,
+      "threshold_accuracy": 2.2900760173797607,
+      "threshold_f1": 0.016461996654563382
+    },
+    "sample_count_match": true,
+    "sample_paths_match": true
+  },
+  "public_logit_bias_calibration_compare": {
+    "baseline": {
+      "deployment_note": {
+        "changes_auc_ranking": false,
+        "operation": "add public scalar to class-1 logit before final argmax decision",
+        "requires_retraining": false,
+        "secure_friendly": true
+      },
+      "effective_class1_logit_bias": 0.36729566740512726,
+      "metrics": {
+        "calibrated_argmax_accuracy": 89.69465648854961,
+        "calibrated_argmax_f1": 0.9291338582677164,
+        "calibrated_auc": 0.9469104065505094,
+        "calibrated_ce_loss": 0.44368253624319737,
+        "calibrated_minus_original_argmax_accuracy": 7.251908396946561,
+        "calibrated_minus_original_ce_loss": -0.06088151669623726,
+        "original_argmax_accuracy": 82.44274809160305,
+        "original_argmax_f1": 0.8685714285714284,
+        "original_auc": 0.9469104065505094,
+        "original_ce_loss": 0.5045640529394346,
+        "threshold_accuracy": 89.69465648854961,
+        "threshold_f1": 0.9291338582677164
+      },
+      "plaintext_eval_csv": "/home/yclcg/Transshield_final/results/accuracy_profile_imbalance/secure_static_accprof_epoch8_20260506_default1/plaintext_eval.csv",
+      "reason": "公开 class-1 logit bias 将 best threshold 等价搬到 argmax 边界；该操作不改变 ViT/SPU 主体算子。",
+      "sample_count": 524,
+      "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+      "status": "public_bias_recovers_threshold_argmax",
+      "threshold": 0.4091948866844177
+    },
+    "candidate": {
+      "deployment_note": {
+        "changes_auc_ranking": false,
+        "operation": "add public scalar to class-1 logit before final argmax decision",
+        "requires_retraining": false,
+        "secure_friendly": true
+      },
+      "effective_class1_logit_bias": 0.5852264595359804,
+      "metrics": {
+        "calibrated_argmax_accuracy": 91.98473282442748,
+        "calibrated_argmax_f1": 0.9455958549222798,
+        "calibrated_auc": 0.9678758449966676,
+        "calibrated_ce_loss": 0.4286648295761729,
+        "calibrated_minus_original_argmax_accuracy": 15.26717557251908,
+        "calibrated_minus_original_ce_loss": -0.10183639389928967,
+        "original_argmax_accuracy": 76.7175572519084,
+        "original_argmax_f1": 0.8140243902439025,
+        "original_auc": 0.9678758449966676,
+        "original_ce_loss": 0.5305012234754626,
+        "threshold_accuracy": 91.98473282442748,
+        "threshold_f1": 0.9455958549222798
+      },
+      "plaintext_eval_csv": "/home/yclcg/Transshield_final/results/accuracy_profile_imbalance/secure_static_accprof_epoch8_20260507_aanone_1/plaintext_eval.csv",
+      "reason": "公开 class-1 logit bias 将 best threshold 等价搬到 argmax 边界；该操作不改变 ViT/SPU 主体算子。",
+      "sample_count": 524,
+      "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+      "status": "public_bias_recovers_threshold_argmax",
+      "threshold": 0.3577311038970947
+    },
+    "delta_candidate_minus_baseline": {
+      "calibrated_argmax_accuracy": 2.2900763358778704,
+      "calibrated_argmax_f1": 0.016461996654563382,
+      "calibrated_auc": 0.02096543844615817,
+      "calibrated_ce_loss": -0.015017706667024455,
+      "effective_class1_logit_bias": 0.21793079213085315
+    },
+    "enabled": true
+  },
+  "study_kind": "accuracy_profile_imbalance_epoch8",
+  "threshold_search_compare": {
+    "baseline": {
+      "auc": 0.9469103813171387,
+      "default_argmax_acc1": null,
+      "eval_acc1": 89.69465494155884,
+      "eval_binary_threshold": 0.4091948866844177,
+      "eval_loss": 0.5045640468597412,
+      "finite_logits": true,
+      "sample_count": 524
+    },
+    "candidate": {
+      "auc": 0.9678758382797241,
+      "default_argmax_acc1": null,
+      "eval_acc1": 91.9847309589386,
+      "eval_binary_threshold": 0.3577311038970947,
+      "eval_loss": 0.530501127243042,
+      "finite_logits": true,
+      "sample_count": 524
+    },
+    "delta_candidate_minus_baseline": {
+      "auc": 0.02096545696258545,
+      "eval_acc1": 2.2900760173797607,
+      "eval_binary_threshold": -0.051463782787323
+    }
+  },
+  "train_metrics": {
+    "baseline": {
+      "epoch": 7,
+      "n_parameters": 22390184,
+      "test_acc1": 78.81679540736074,
+      "test_acc5": 100.0,
+      "test_loss": 0.5241477381099354,
+      "train_class_acc": 0.7667942176870748,
+      "train_grad_norm": 2.0243170123521974,
+      "train_loss": 0.6359874103345028,
+      "train_lr": 1.3865136364162506e-07,
+      "train_min_lr": 1.3865136364162508e-08,
+      "train_weight_decay": 0.04999999999999988
+    },
+    "candidate": {
+      "epoch": 7,
+      "n_parameters": 22390184,
+      "test_acc1": 72.70992535307207,
+      "test_acc5": 100.0,
+      "test_loss": 0.561071742664684,
+      "train_class_acc": 0.7810374149659864,
+      "train_grad_norm": 2.1498571506568362,
+      "train_loss": 0.6248330157630297,
+      "train_lr": 1.3865136364162506e-07,
+      "train_min_lr": 1.3865136364162508e-08,
+      "train_weight_decay": 0.04999999999999988
+    },
+    "delta_candidate_minus_baseline": {
+      "test_acc1": -6.106870054288677,
+      "test_loss": 0.036924004554748535,
+      "train_class_acc": 0.014243197278911657,
+      "train_loss": -0.011154394571473047
+    }
+  }
+}

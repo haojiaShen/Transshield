@@ -1,0 +1,21 @@
+{
+  "bias": 0.35270689288645984,
+  "manifest_type": "transshield_e2e_output_calibration_v0",
+  "note": "SPU-aware public logit-bias calibration: base static bias shifted by a public E2E smoke32 threshold sweep; validate on held-out/expanded E2E subsets before making default.",
+  "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+  "source_eval_binary_threshold": 0.3577311038970947,
+  "source_public_threshold_recovery_report": {
+    "base_calibration_json": "results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_bias.json",
+    "cross_eval_smoke64_accuracy": 92.1875,
+    "report_json": "results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_public_threshold_recovery_smoke32_to_smoke64.json",
+    "source_best_accuracy": 96.875,
+    "source_best_threshold": 0.2325185666495205,
+    "source_dataset": "smoke32_temp",
+    "source_default_accuracy": 87.5
+  },
+  "threshold": 0.5,
+  "weights": [
+    -1.0,
+    1.0
+  ]
+}

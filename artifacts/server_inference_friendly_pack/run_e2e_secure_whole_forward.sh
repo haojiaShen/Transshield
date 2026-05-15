@@ -21,10 +21,13 @@ esac
 
 PYTHON_BIN="${PYTHON_BIN:-python}"
 RUN_NAME="${RUN_NAME:-transshield_e2e_secure_poc}"
-BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_verified_tracka_lr3e5_20260414}"
+BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430}"
 E2E_RUN_DIR="${E2E_RUN_DIR:-$REPO_ROOT/artifacts/server_pipeline_run/${RUN_NAME}/e2e_secure_poc}"
 PACK_DIR="${PACK_DIR:-$E2E_RUN_DIR/whole_forward_pack}"
 E2E_INPUT_PT="${E2E_INPUT_PT:-$E2E_RUN_DIR/client_pixel_values.pt}"
+E2E_RUNTIME_PRUNING_KEEP_MASK_PT="${E2E_RUNTIME_PRUNING_KEEP_MASK_PT:-}"
+E2E_RUNTIME_PRUNING_KEEP_MASK_JSON="${E2E_RUNTIME_PRUNING_KEEP_MASK_JSON:-$E2E_RUN_DIR/runtime_pruning_keep_mask_payload.json}"
+E2E_RUNTIME_PRUNING_KEEP_MASK_AUTO_EXPORT="${E2E_RUNTIME_PRUNING_KEEP_MASK_AUTO_EXPORT:-0}"
 E2E_INPUT_SHARE_MANIFEST_JSON="${E2E_INPUT_SHARE_MANIFEST_JSON:-}"
 E2E_INPUT_SHARE_PUBLIC_MANIFEST_JSON="${E2E_INPUT_SHARE_PUBLIC_MANIFEST_JSON:-}"
 E2E_INPUT_P1_SHARE_MANIFEST_JSON="${E2E_INPUT_P1_SHARE_MANIFEST_JSON:-}"
@@ -39,6 +42,7 @@ E2E_OUTPUT_CALIBRATION_JSON="${E2E_OUTPUT_CALIBRATION_JSON:-}"
 E2E_COMPARE_JSON="${E2E_COMPARE_JSON:-$E2E_RUN_DIR/e2e_static_whole_forward_compare.json}"
 E2E_DEVICE="${E2E_DEVICE:-cpu}"
 CONFIG_PATH="${CONFIG_PATH:-$REPO_ROOT/configs/openbumblebee/2pc.json}"
+SPU_RUNTIME_TEMPLATE_PATH="${SPU_RUNTIME_TEMPLATE_PATH:-configs/openbumblebee/2pc.template.json}"
 SPU_RUNTIME_REUSE="${SPU_RUNTIME_REUSE:-0}"
 SPU_DISABLE_COLOCATED_OPTIMIZATION="${SPU_DISABLE_COLOCATED_OPTIMIZATION:-0}"
 SPU_REMOVE_UNSUPPORTED_CHEETAH_FIELDS="${SPU_REMOVE_UNSUPPORTED_CHEETAH_FIELDS:-1}"
@@ -58,6 +62,8 @@ E2E_SPU_PARAMS_MODE="${E2E_SPU_PARAMS_MODE:-public}"
 E2E_SPU_ATTENTION_POLICY="${E2E_SPU_ATTENTION_POLICY:-smoothed}"
 E2E_SPU_ACTIVATION_OVERRIDE="${E2E_SPU_ACTIVATION_OVERRIDE:-bundle}"
 E2E_SPU_ACTIVATION_CLIP_VALUE="${E2E_SPU_ACTIVATION_CLIP_VALUE:-0}"
+E2E_SPU_TOKEN_RECYCLE_SCALE="${E2E_SPU_TOKEN_RECYCLE_SCALE:-0}"
+E2E_SPU_TOKEN_RATIO_BASE_OVERRIDE="${E2E_SPU_TOKEN_RATIO_BASE_OVERRIDE:-0}"
 E2E_VERIFY_MAX_SAMPLES="${E2E_VERIFY_MAX_SAMPLES:-0}"
 E2E_VERIFY_ALLOW_PREFIX="${E2E_VERIFY_ALLOW_PREFIX:-0}"
 E2E_PROBE_BLOCK_INDEX="${E2E_PROBE_BLOCK_INDEX:-0}"
@@ -103,7 +109,7 @@ build_spu_runtime_start_args() {
     tools/transshield_spu_runtime_setup.py
     start
     --config "$CONFIG_PATH"
-    --template configs/openbumblebee/2pc.template.json
+    --template "$SPU_RUNTIME_TEMPLATE_PATH"
     --backup
     --restart
     --log-dir "$SPU_RUNTIME_LOG_DIR"
@@ -145,6 +151,39 @@ append_positive_int_arg() {
   fi
 }
 
+ensure_runtime_pruning_keep_mask_payload() {
+  if [[ "$E2E_RUNTIME_PRUNING_KEEP_MASK_AUTO_EXPORT" != "1" ]]; then
+    return
+  fi
+  if [[ -z "$E2E_RUNTIME_PRUNING_KEEP_MASK_PT" ]]; then
+    E2E_RUNTIME_PRUNING_KEEP_MASK_PT="$E2E_RUN_DIR/runtime_pruning_keep_mask_payload.pt"
+  fi
+  if [[ ! -f "$E2E_INPUT_PT" ]]; then
+    echo "[e2e-whole-forward] E2E_RUNTIME_PRUNING_KEEP_MASK_AUTO_EXPORT=1 需要存在 E2E_INPUT_PT: $E2E_INPUT_PT" >&2
+    exit 1
+  fi
+  mkdir -p "$(dirname "$E2E_RUNTIME_PRUNING_KEEP_MASK_PT")" "$(dirname "$E2E_RUNTIME_PRUNING_KEEP_MASK_JSON")"
+  "$PYTHON_BIN" tools/transshield_e2e_secure_infer.py export-runtime-pruning-keep-mask-payload \
+    --bundle-dir "$BUNDLE_DIR" \
+    --input-pt "$E2E_INPUT_PT" \
+    --device "$E2E_DEVICE" \
+    --output-json "$E2E_RUNTIME_PRUNING_KEEP_MASK_JSON" \
+    --output-pt "$E2E_RUNTIME_PRUNING_KEEP_MASK_PT" \
+    --static-depth-limit "$E2E_STATIC_DEPTH_LIMIT"
+}
+
+append_runtime_pruning_keep_mask_arg() {
+  local -n target_args="$1"
+  if [[ -z "$E2E_RUNTIME_PRUNING_KEEP_MASK_PT" ]]; then
+    return
+  fi
+  if [[ ! -f "$E2E_RUNTIME_PRUNING_KEEP_MASK_PT" ]]; then
+    echo "[e2e-whole-forward] missing E2E_RUNTIME_PRUNING_KEEP_MASK_PT: $E2E_RUNTIME_PRUNING_KEEP_MASK_PT" >&2
+    exit 1
+  fi
+  target_args+=(--runtime-pruning-keep-mask-pt "$E2E_RUNTIME_PRUNING_KEEP_MASK_PT")
+}
+
 case "$MODE" in
   prepare)
     "$PYTHON_BIN" integrations/openbumblebee/e2e_secure_vit/transshield_e2e_secure_vit.py prepare \
@@ -157,11 +196,26 @@ case "$MODE" in
   cpu|spu)
     RUN_ARGS=()
     INPUT_ARGS=(--input-pt "$E2E_INPUT_PT")
+    ensure_runtime_pruning_keep_mask_payload
     append_positive_int_arg RUN_ARGS --max-samples "$E2E_RUN_MAX_SAMPLES"
     if [[ "$E2E_STATIC_DEPTH_LIMIT" != "-1" ]]; then
       RUN_ARGS+=(--static-depth-limit "$E2E_STATIC_DEPTH_LIMIT")
     fi
     if [[ "$MODE" == "spu" ]]; then
+      if [[ -n "$E2E_RUNTIME_PRUNING_KEEP_MASK_PT" ]]; then
+        if [[ "$E2E_SPU_ATTENTION_POLICY" != "uniform" ]]; then
+          echo "[e2e-whole-forward-spu] runtime-pruning keep-mask 模式当前要求 E2E_SPU_ATTENTION_POLICY=uniform。" >&2
+          exit 1
+        fi
+        if [[ "$E2E_SPU_PARAMS_MODE" != "public" && "$E2E_SPU_PARAMS_MODE" != "secret" ]]; then
+          echo "[e2e-whole-forward-spu] runtime-pruning keep-mask 模式当前只支持 E2E_SPU_PARAMS_MODE=public|secret。" >&2
+          exit 1
+        fi
+        if [[ "$E2E_SPU_BLOCK_CHUNK_SIZE" != "0" ]]; then
+          echo "[e2e-whole-forward-spu] runtime-pruning keep-mask 模式当前不支持 E2E_SPU_BLOCK_CHUNK_SIZE>0。" >&2
+          exit 1
+        fi
+      fi
       start_spu_runtime_if_needed
       RUN_ARGS+=(--spu-batch-size "$E2E_SPU_BATCH_SIZE")
       if [[ "$E2E_SPU_BLOCK_CHUNK_SIZE" != "0" ]]; then
@@ -178,6 +232,10 @@ case "$MODE" in
       RUN_ARGS+=(--spu-attention-policy "$E2E_SPU_ATTENTION_POLICY")
       RUN_ARGS+=(--spu-activation-override "$E2E_SPU_ACTIVATION_OVERRIDE")
       RUN_ARGS+=(--spu-activation-clip-value "$E2E_SPU_ACTIVATION_CLIP_VALUE")
+      RUN_ARGS+=(--spu-token-recycle-scale "$E2E_SPU_TOKEN_RECYCLE_SCALE")
+      if [[ "$E2E_SPU_TOKEN_RATIO_BASE_OVERRIDE" != "0" ]]; then
+        RUN_ARGS+=(--spu-token-ratio-base-override "$E2E_SPU_TOKEN_RATIO_BASE_OVERRIDE")
+      fi
       if [[ -n "$E2E_INPUT_SHARE_MANIFEST_JSON" ]]; then
         if [[ -n "$E2E_INPUT_SHARE_PUBLIC_MANIFEST_JSON" || -n "$E2E_INPUT_P1_SHARE_MANIFEST_JSON" || -n "$E2E_INPUT_P2_SHARE_MANIFEST_JSON" ]]; then
           echo "[e2e-whole-forward-spu] E2E_INPUT_SHARE_MANIFEST_JSON 不能和 split share manifest 同时设置。" >&2
@@ -206,6 +264,7 @@ case "$MODE" in
         RUN_ARGS+=(--redact-private-input-paths)
       fi
     fi
+    append_runtime_pruning_keep_mask_arg RUN_ARGS
     if [[ -n "$E2E_OUTPUT_CALIBRATION_JSON" ]]; then
       RUN_ARGS+=(--output-calibration-json "$E2E_OUTPUT_CALIBRATION_JSON")
     fi
@@ -294,9 +353,14 @@ case "$MODE" in
         PROBE_ARGS+=(--spu-layer-norm-chunk-size "$E2E_SPU_LAYER_NORM_CHUNK_SIZE")
       fi
       PROBE_ARGS+=(--spu-layer-norm-policy "$E2E_SPU_LAYER_NORM_POLICY")
+      if [[ "$E2E_SPU_LAYER_NORM_POLICY" == "public_calibrated" ]]; then
+        PROBE_ARGS+=(--spu-layer-norm-calibration-json "$E2E_SPU_LAYER_NORM_CALIBRATION_JSON")
+      fi
       PROBE_ARGS+=(--spu-params-mode "$E2E_SPU_PARAMS_MODE")
       PROBE_ARGS+=(--spu-attention-policy "$E2E_SPU_ATTENTION_POLICY")
       PROBE_ARGS+=(--spu-activation-override "$E2E_SPU_ACTIVATION_OVERRIDE")
+      PROBE_ARGS+=(--spu-activation-clip-value "$E2E_SPU_ACTIVATION_CLIP_VALUE")
+      PROBE_ARGS+=(--spu-token-recycle-scale "$E2E_SPU_TOKEN_RECYCLE_SCALE")
       if [[ -n "$E2E_INPUT_SHARE_MANIFEST_JSON" ]]; then
         if [[ -n "$E2E_INPUT_SHARE_PUBLIC_MANIFEST_JSON" || -n "$E2E_INPUT_P1_SHARE_MANIFEST_JSON" || -n "$E2E_INPUT_P2_SHARE_MANIFEST_JSON" ]]; then
           echo "[e2e-whole-forward-probe] E2E_INPUT_SHARE_MANIFEST_JSON 不能和 split share manifest 同时设置。" >&2

@@ -1,0 +1,233 @@
+{
+  "config_compare": {
+    "baseline": {
+      "batch_size": "32",
+      "cls_distill_weight": "0.0",
+      "epochs": "3",
+      "finetune": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "lr": "3e-6",
+      "min_lr": "1e-7",
+      "pruning_margin_mode": "hinge",
+      "pruning_margin_stage_weights": null,
+      "pruning_margin_start_epoch": "0",
+      "pruning_margin_target": "1e-4",
+      "pruning_margin_weight": "0.0",
+      "secure_static_skip_pruning": "false",
+      "secure_static_train_depth": "12",
+      "teacher_checkpoint_path": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "token_distill_weight": "0.0",
+      "use_mask_pruning": "false"
+    },
+    "candidate": {
+      "batch_size": "32",
+      "cls_distill_weight": "1.0",
+      "epochs": "3",
+      "finetune": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "lr": "3e-6",
+      "min_lr": "1e-7",
+      "pruning_margin_mode": "hinge",
+      "pruning_margin_stage_weights": null,
+      "pruning_margin_start_epoch": "0",
+      "pruning_margin_target": "1e-4",
+      "pruning_margin_weight": "0.0",
+      "secure_static_skip_pruning": "false",
+      "secure_static_train_depth": "12",
+      "teacher_checkpoint_path": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "token_distill_weight": "0.0",
+      "use_mask_pruning": "false"
+    },
+    "changed": {
+      "cls_distill_weight": {
+        "baseline": "0.0",
+        "candidate": "1.0"
+      }
+    }
+  },
+  "distill_compare": {
+    "baseline": {
+      "cls_distill_weight": "0.0",
+      "interpretation_reason": "command.sh keeps both cls/token distill weights at 0, so this run acts as the no-distill reference.",
+      "interpretation_status": "distill_disabled_reference",
+      "loss_info_line_count": 4,
+      "mean_cls_kl": 0.163475,
+      "mean_effective_cls_term": 0.0,
+      "mean_effective_token_term": 0.0,
+      "mean_token_kl": 0.47135,
+      "nonzero_effective_distill_line_count": 0,
+      "token_distill_weight": "0.0"
+    },
+    "candidate": {
+      "cls_distill_weight": "1.0",
+      "interpretation_reason": "distill loss lines were parsed successfully and the configured weights produce non-zero effective distill terms.",
+      "interpretation_status": "distill_terms_observed",
+      "loss_info_line_count": 4,
+      "mean_cls_kl": 0.06735,
+      "mean_effective_cls_term": 0.06735,
+      "mean_effective_token_term": 0.0,
+      "mean_token_kl": 0.4858,
+      "nonzero_effective_distill_line_count": 4,
+      "token_distill_weight": "0.0"
+    },
+    "delta_candidate_minus_baseline": {
+      "mean_cls_kl": -0.09612500000000002,
+      "mean_effective_cls_term": 0.06735,
+      "mean_effective_token_term": 0.0,
+      "mean_token_kl": 0.014450000000000018
+    }
+  },
+  "inputs": {
+    "baseline_distill_report_json": "/data/wyb/Transshield_final/results/distillation_compensation/distill_comp_pair_epoch3_20260506_cls_only1_nodistill/distill_log_report.json",
+    "baseline_margin_report_json": null,
+    "baseline_plaintext_eval_json": "/data/wyb/Transshield_final/results/distillation_compensation/distill_comp_pair_epoch3_20260506_cls_only1_nodistill/plaintext_eval.json",
+    "baseline_run_dir": "/data/wyb/Transshield_final/artifacts/train_runs/distill_comp_pair_epoch3_20260506_cls_only1_nodistill",
+    "baseline_threshold_search_json": "/data/wyb/Transshield_final/artifacts/train_runs/distill_comp_pair_epoch3_20260506_cls_only1_nodistill/threshold_eval.json",
+    "candidate_distill_report_json": "/data/wyb/Transshield_final/results/distillation_compensation/distill_comp_pair_epoch3_20260506_cls_only1_cls_only/distill_log_report.json",
+    "candidate_margin_report_json": null,
+    "candidate_plaintext_eval_json": "/data/wyb/Transshield_final/results/distillation_compensation/distill_comp_pair_epoch3_20260506_cls_only1_cls_only/plaintext_eval.json",
+    "candidate_run_dir": "/data/wyb/Transshield_final/artifacts/train_runs/distill_comp_pair_epoch3_20260506_cls_only1_cls_only",
+    "candidate_threshold_search_json": "/data/wyb/Transshield_final/artifacts/train_runs/distill_comp_pair_epoch3_20260506_cls_only1_cls_only/threshold_eval.json"
+  },
+  "judgement": {
+    "argmax_accuracy_delta": 0.9541988372802734,
+    "auc_delta": -0.0015805008092925066,
+    "candidate_effective_cls_term": 0.06735,
+    "candidate_effective_token_term": 0.0,
+    "candidate_nonzero_effective_distill_line_count": 4,
+    "reason": "候选 run 虽已观测到有效 distill term，但当前 full-val compare 还没有形成明确收益。",
+    "status": "no_clear_distill_benefit_yet",
+    "threshold_accuracy_delta": -0.38167834281921387
+  },
+  "labels": {
+    "baseline": "distill_comp_pair_epoch3_20260506_cls_only1_nodistill",
+    "candidate": "distill_comp_pair_epoch3_20260506_cls_only1_cls_only"
+  },
+  "margin_compare": {
+    "baseline": null,
+    "candidate": null,
+    "delta_candidate_minus_baseline": {
+      "focus_stage_margin_mean": null,
+      "focus_stage_violation_ratio": null,
+      "max_pruning_margin": null
+    }
+  },
+  "plaintext_eval_compare": {
+    "baseline": {
+      "argmax_accuracy": 74.23664331436157,
+      "argmax_f1": 0.8521358159912377,
+      "args_snapshot_summary": {
+        "approx_attn_mode": "uniform",
+        "eval_pruning_mode": "topk_argsort",
+        "eval_tie_policy": "lowest_index",
+        "model": "deit-s",
+        "secure_static_skip_pruning": false,
+        "secure_static_train_depth": 12,
+        "square_activation_mode": "fixed_square",
+        "use_approx_attn": true,
+        "use_mask_pruning": false,
+        "use_square_gelu": true
+      },
+      "auc": 0.958830810244692,
+      "eval_loss": 0.45562371611595154,
+      "finite_logits": true,
+      "sample_count": 524,
+      "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+      "threshold": 0.6546620726585388,
+      "threshold_accuracy": 91.22137427330017,
+      "threshold_f1": 0.9425
+    },
+    "candidate": {
+      "argmax_accuracy": 75.19084215164185,
+      "argmax_f1": 0.8568281938325992,
+      "args_snapshot_summary": {
+        "approx_attn_mode": "uniform",
+        "eval_pruning_mode": "topk_argsort",
+        "eval_tie_policy": "lowest_index",
+        "model": "deit-s",
+        "secure_static_skip_pruning": false,
+        "secure_static_train_depth": 12,
+        "square_activation_mode": "fixed_square",
+        "use_approx_attn": true,
+        "use_mask_pruning": false,
+        "use_square_gelu": true
+      },
+      "auc": 0.9572503094353995,
+      "eval_loss": 0.4932258427143097,
+      "finite_logits": true,
+      "sample_count": 524,
+      "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+      "threshold": 0.5802362561225891,
+      "threshold_accuracy": 90.83969593048096,
+      "threshold_f1": 0.9395465994962217
+    },
+    "delta_candidate_minus_baseline": {
+      "argmax_accuracy": 0.9541988372802734,
+      "argmax_f1": 0.004692377841361561,
+      "auc": -0.0015805008092925066,
+      "eval_loss": 0.037602126598358154,
+      "threshold_accuracy": -0.38167834281921387,
+      "threshold_f1": -0.0029534005037783473
+    },
+    "sample_count_match": true,
+    "sample_paths_match": true
+  },
+  "study_kind": "distill_compensation",
+  "threshold_search_compare": {
+    "baseline": {
+      "auc": 0.9588308334350586,
+      "default_argmax_acc1": null,
+      "eval_acc1": 91.22137427330017,
+      "eval_binary_threshold": 0.6546620726585388,
+      "eval_loss": 0.45562371611595154,
+      "finite_logits": true,
+      "sample_count": 524
+    },
+    "candidate": {
+      "auc": 0.9572502970695496,
+      "default_argmax_acc1": null,
+      "eval_acc1": 90.83969593048096,
+      "eval_binary_threshold": 0.5802362561225891,
+      "eval_loss": 0.4932258427143097,
+      "finite_logits": true,
+      "sample_count": 524
+    },
+    "delta_candidate_minus_baseline": {
+      "auc": -0.0015805363655090332,
+      "eval_acc1": -0.38167834281921387,
+      "eval_binary_threshold": -0.07442581653594971
+    }
+  },
+  "train_metrics": {
+    "baseline": {
+      "epoch": 2,
+      "n_parameters": 22390184,
+      "test_acc1": 74.23664122137404,
+      "test_acc5": 100.0,
+      "test_loss": 0.4377401742068204,
+      "train_class_acc": 0.7889030612244898,
+      "train_grad_norm": 2.2095888216479294,
+      "train_loss": 0.5192099491349694,
+      "train_lr": 3.764793421463784e-07,
+      "train_min_lr": 3.7647934214637844e-08,
+      "train_weight_decay": 0.04999999999999988
+    },
+    "candidate": {
+      "epoch": 2,
+      "n_parameters": 22390184,
+      "test_acc1": 75.763358938785,
+      "test_acc5": 100.0,
+      "test_loss": 0.4870707853273912,
+      "train_class_acc": 0.765093537414966,
+      "train_grad_norm": 1.9787451764758752,
+      "train_loss": 0.6261228059424835,
+      "train_lr": 3.764793421463784e-07,
+      "train_min_lr": 3.7647934214637844e-08,
+      "train_weight_decay": 0.04999999999999988
+    },
+    "delta_candidate_minus_baseline": {
+      "test_acc1": 1.5267177174109605,
+      "test_loss": 0.0493306111205708,
+      "train_class_acc": -0.023809523809523836,
+      "train_loss": 0.10691285680751406
+    }
+  }
+}

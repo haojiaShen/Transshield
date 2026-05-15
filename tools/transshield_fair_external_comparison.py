@@ -399,9 +399,22 @@ def build_accuracy_rows(transshield, mpcvit):
     trans_metrics = transshield.get('metrics') or {}
     mpc_metrics = (mpcvit or {}).get('metrics') or {}
     if transshield.get('available'):
+        secure_runtime = transshield.get('secure_runtime') or {}
+        secure_consistency = transshield.get('secure_consistency') or {}
+        has_secure_evidence = any(
+            value is not None
+            for value in [
+                secure_runtime.get('runtime'),
+                secure_runtime.get('communication_status'),
+                secure_consistency.get('overall_passed'),
+                secure_consistency.get('replay_overall_passed'),
+                secure_consistency.get('argmax_match_ratio'),
+                secure_consistency.get('threshold_match_ratio'),
+            ]
+        )
         rows.append(
             {
-                'method': 'Transshield modified + secure replay',
+                'method': 'Transshield modified + secure replay' if has_secure_evidence else 'Transshield modified plaintext',
                 'scope': '当前项目',
                 'sample_count': transshield.get('sample_count'),
                 'argmax_accuracy': trans_metrics.get('argmax_accuracy'),
@@ -445,6 +458,9 @@ def build_communication_rows(transshield, mpcvit):
     rows = []
     secure_runtime = transshield.get('secure_runtime') or {}
     if transshield.get('available'):
+        communication_status = secure_runtime.get('communication_status')
+        if communication_status is None and secure_runtime.get('runtime') is None:
+            communication_status = 'not_run_secure'
         rows.append(
             {
                 'method': 'Transshield SPU secure sidecar',
@@ -452,7 +468,7 @@ def build_communication_rows(transshield, mpcvit):
                 'runtime': secure_runtime.get('runtime'),
                 'total_pipeline_duration_sec': secure_runtime.get('total_pipeline_duration_sec'),
                 'rpc_total_bytes': secure_runtime.get('rpc_total_bytes'),
-                'communication_status': secure_runtime.get('communication_status'),
+                'communication_status': communication_status,
                 'source': transshield.get('secure_profile_json'),
                 'comparable_to_external': False,
                 'reason': '当前没有外部模型在同数据集、同输入、同协议路径下的 secure 通信结果。',

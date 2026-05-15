@@ -67,8 +67,9 @@ pneumoniamnist_imagefolder_subset/
   - `threshold_match_ratio = 100%`
 - **适用范围**
   - 页面中的统一对比区
-  - `docs/result_summary.md`
-  - `docs/external_baseline_comparison.md`
+  - `docs/transshield_master_plan_20260505.md`
+  - `results/delivery_acceptance/delivery_acceptance_20260510_full/delivery_acceptance_report.md`
+  - `results/fair_external_comparison/fair_external_secure_static_20260505_clean/fair_external_comparison.md`
 - **禁止用途**
   - 不能冒充当前浏览器选择图片的即时结果
   - 不能直接写成“本次上传图片准确率”

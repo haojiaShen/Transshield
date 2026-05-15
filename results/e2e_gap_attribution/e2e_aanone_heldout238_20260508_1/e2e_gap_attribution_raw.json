@@ -1,0 +1,134 @@
+{
+  "compares": {
+    "cpu_vs_spu": {
+      "logits_error": {
+        "max_abs_error": 0.004115104675292969,
+        "mean_abs_error": 0.002251723890795427
+      },
+      "metric_delta_rhs_minus_lhs": {
+        "argmax_accuracy": 0.0,
+        "auc": -7.061648188688707e-05,
+        "ce_loss": -0.00010757671134742353,
+        "threshold_accuracy": 0.0
+      },
+      "prediction_match": {
+        "argmax_match_ratio": 1.0,
+        "threshold_match_ratio": 1.0
+      },
+      "probabilities_error": {
+        "max_abs_error": 0.0018781791194109054,
+        "mean_abs_error": 0.000982318209799818
+      }
+    },
+    "reference_vs_cpu": {
+      "logits_error": {
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      "metric_delta_rhs_minus_lhs": {
+        "argmax_accuracy": 0.0,
+        "auc": 0.0,
+        "ce_loss": 0.0,
+        "threshold_accuracy": 0.0
+      },
+      "prediction_match": {
+        "argmax_match_ratio": 1.0,
+        "threshold_match_ratio": 1.0
+      },
+      "probabilities_error": {
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      }
+    },
+    "reference_vs_spu": {
+      "logits_error": {
+        "max_abs_error": 0.004115104675292969,
+        "mean_abs_error": 0.002251723890795427
+      },
+      "metric_delta_rhs_minus_lhs": {
+        "argmax_accuracy": 0.0,
+        "auc": -7.061648188688707e-05,
+        "ce_loss": -0.00010757671134742353,
+        "threshold_accuracy": 0.0
+      },
+      "prediction_match": {
+        "argmax_match_ratio": 1.0,
+        "threshold_match_ratio": 1.0
+      },
+      "probabilities_error": {
+        "max_abs_error": 0.0018781791194109054,
+        "mean_abs_error": 0.000982318209799818
+      }
+    }
+  },
+  "judgement": {
+    "cpu_to_spu_argmax_accuracy_delta": 0.0,
+    "cpu_to_spu_ce_loss_delta": -0.00010757671134742353,
+    "key_compare_metrics": {
+      "cpu_vs_spu_argmax_match_ratio": 1.0,
+      "cpu_vs_spu_logit_max_abs_error": 0.004115104675292969,
+      "reference_vs_cpu_argmax_match_ratio": 1.0,
+      "reference_vs_cpu_logit_max_abs_error": 0.0,
+      "reference_vs_spu_argmax_match_ratio": 1.0,
+      "reference_vs_spu_logit_max_abs_error": 0.004115104675292969
+    },
+    "reason": "SPU introduces measurable logit drift, but on this subset it does not change argmax or threshold decisions.",
+    "reference_to_cpu_argmax_accuracy_delta": 0.0,
+    "reference_to_cpu_ce_loss_delta": 0.0,
+    "reference_to_spu_argmax_accuracy_delta": 0.0,
+    "reference_to_spu_ce_loss_delta": -0.00010757671134742353,
+    "status": "spu_numeric_drift_present_but_decision_negligible"
+  },
+  "label": "e2e_aanone_heldout238_gap_raw_20260508_1",
+  "manifest_type": "transshield_e2e_gap_attribution_report_v0",
+  "reference_json": null,
+  "sample_count": 238,
+  "stages": {
+    "cpu": {
+      "label": "cpu_static_candidate",
+      "logits_key": "logits",
+      "metrics": {
+        "argmax_accuracy": 86.1344537815126,
+        "argmax_f1": 0.8390243902439024,
+        "auc": 0.965115457947885,
+        "ce_loss": 0.4718124649441639,
+        "threshold_accuracy": 90.75630252100841,
+        "threshold_f1": 0.9105691056910569
+      },
+      "path": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout238_spuaware_nonisolated_20260507_1/e2e_secure_poc/e2e_static_whole_forward_candidate_cpu_depth12_raw.pt",
+      "sample_count": 238,
+      "threshold": 0.3577311038970947
+    },
+    "reference": {
+      "label": "reference_static_plaintext",
+      "logits_key": "logits",
+      "metrics": {
+        "argmax_accuracy": 86.1344537815126,
+        "argmax_f1": 0.8390243902439024,
+        "auc": 0.965115457947885,
+        "ce_loss": 0.4718124649441639,
+        "threshold_accuracy": 90.75630252100841,
+        "threshold_f1": 0.9105691056910569
+      },
+      "path": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout238_spuaware_nonisolated_20260507_1/e2e_secure_poc/static_whole_forward_reference.pt",
+      "sample_count": 238,
+      "threshold": 0.3577311038970947
+    },
+    "spu": {
+      "label": "spu_static_candidate",
+      "logits_key": "raw_logits_before_output_calibration",
+      "metrics": {
+        "argmax_accuracy": 86.1344537815126,
+        "argmax_f1": 0.8390243902439024,
+        "auc": 0.9650448414659981,
+        "ce_loss": 0.4717048882328165,
+        "threshold_accuracy": 90.75630252100841,
+        "threshold_f1": 0.9105691056910569
+      },
+      "path": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout238_spuaware_nonisolated_20260507_1/e2e_secure_poc/e2e_static_whole_forward_candidate_spu_depth12_partylocal_publiccalibln_uniform_fixed_square_clip0_eval.pt",
+      "sample_count": 238,
+      "threshold": 0.3577311038970947
+    }
+  },
+  "threshold_used_for_metrics": 0.3577311038970947
+}

@@ -1,9 +1,9 @@
 {
   "current_reference_artifacts": {
-    "secure_kth_contract": "/home/yclcg/Transshield_final/artifacts/frozen_candidates/tracka_lr3e5_timm_best_20260414/stage2_secure_kth_contract.json",
-    "secure_tie_payload_contract": "/home/yclcg/Transshield_final/artifacts/frozen_candidates/tracka_lr3e5_timm_best_20260414/stage2_secure_tie_payload_contract.json",
-    "threshold_branch_acceptance_val": "/home/yclcg/Transshield_final/artifacts/frozen_candidates/threshold_branch_secure_network_kth_lowest_v1/threshold_branch_acceptance_val.json",
-    "threshold_branch_eval_val": "/home/yclcg/Transshield_final/artifacts/frozen_candidates/threshold_branch_secure_network_kth_lowest_v1/threshold_branch_eval_val.json"
+    "secure_kth_contract": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/stage2_secure_kth_contract.json",
+    "secure_tie_payload_contract": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/stage2_secure_tie_payload_contract.json",
+    "threshold_branch_acceptance_val": "/data/wyb/Transshield_final/artifacts/threshold_branch_secure_network_kth_lowest_v1/threshold_branch_acceptance_val.json",
+    "threshold_branch_eval_val": "/data/wyb/Transshield_final/artifacts/threshold_branch_secure_network_kth_lowest_v1/threshold_branch_eval_val.json"
   },
   "experiment_family": "secure_network_kth_threshold",
   "network_definition": {
@@ -1027,7 +1027,7 @@
     "threshold_mask_reconstruction": "greater_mask OR selected_equal_mask"
   },
   "single_source_of_truth": {
-    "bundle_dir": "/home/yclcg/Transshield_final/artifacts/frozen_candidates/tracka_lr3e5_timm_best_20260414",
+    "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
     "frozen_candidate_protected": true
   },
   "stage_plan": [

@@ -153,6 +153,31 @@ def _load_checkpoint_state_dict(path, model_key='model|module'):
         checkpoint_model = checkpoint
     return checkpoint_model
 
+
+def _resolve_deit_s_bootstrap_state_dict(args):
+    candidate_paths = []
+    for path in [getattr(args, 'finetune', ''), getattr(args, 'teacher_checkpoint_path', '')]:
+        if path and path not in candidate_paths:
+            candidate_paths.append(path)
+    default_pretrained_path = './pretrained/deit_small_patch16_224-cd65a155.pth'
+    candidate_paths.append(default_pretrained_path)
+
+    missing = []
+    for candidate in candidate_paths:
+        if not candidate:
+            continue
+        if os.path.isfile(candidate):
+            print(f"Bootstrap DeiT-S weights from {candidate}")
+            return _load_checkpoint_state_dict(candidate, model_key=args.model_key)
+        missing.append(candidate)
+
+    raise FileNotFoundError(
+        'Unable to resolve bootstrap DeiT-S weights. '
+        f'Tried: {missing}. '
+        'Provide --finetune / --teacher_checkpoint_path with a reachable checkpoint, '
+        'or materialize ./pretrained/deit_small_patch16_224-cd65a155.pth.'
+    )
+
 def _load_teacher_checkpoint_if_needed(teacher_model, args):
     if not args.teacher_checkpoint_path:
         return
@@ -196,11 +221,11 @@ def _build_deit_s_model_bundle(args, sparse_ratio, student_act_layer):
         fp32_attention=True,
         eval_pruning_mode=args.eval_pruning_mode,
         eval_tie_policy=args.eval_tie_policy,
+        secure_static_depth=args.secure_static_train_depth,
+        secure_static_skip_pruning=args.secure_static_skip_pruning,
+        mixed_attn_split=args.mixed_attn_split,
     )
-    pretrained = torch.load(
-        './pretrained/deit_small_patch16_224-cd65a155.pth',
-        map_location='cpu',
-    )['model']
+    pretrained = _resolve_deit_s_bootstrap_state_dict(args)
     teacher_model = VisionTransformerTeacher(
         patch_size=16,
         embed_dim=384,
@@ -467,7 +492,7 @@ def get_args_parser():
     parser.add_argument('--use_approx_attn', type=utils.str2bool, default=False,
                         help='Use security-friendly approximate attention in student attention blocks.')
     parser.add_argument('--approx_attn_mode', type=str, default='relu',
-                        choices=['relu', 'relu_square', 'square_relu', 'abs_square'],
+                        choices=['relu', 'relu_square', 'square_relu', 'abs_square', 'uniform'],
                         help='Approximate attention mode for student model.')
     parser.add_argument('--use_mask_pruning', type=utils.str2bool, default=False,
                         help='Use mask-based pruning in training instead of keeping pruned token features active.')
@@ -490,6 +515,12 @@ def get_args_parser():
                         help='Deterministic boundary tie policy used by eval_pruning_mode=compare_network_tie/f_less_tie.')
     parser.add_argument('--inference_friendly_ops', type=utils.str2bool, default=False,
                         help='Convenience switch for square activation, approximate attention, mask pruning, and F_less/tie eval pruning.')
+    parser.add_argument('--secure_static_train_depth', type=int, default=0,
+                        help='If >0, train/eval the student with the static whole-forward path truncated to this many blocks.')
+    parser.add_argument('--secure_static_skip_pruning', type=utils.str2bool, default=True,
+                        help='When secure_static_train_depth>0, skip runtime pruning predictors to match SPU whole-forward scope.')
+    parser.add_argument('--mixed_attn_split', type=int, default=0,
+                        help='If > 0, first N blocks use approx_attn_mode (e.g. uniform), remaining blocks use standard softmax. Enables mixed attention strategy.')
     parser.add_argument('--debug_nan', type=utils.str2bool, default=False,
                         help='Enable minimal non-finite checks in student forward and loss computation.')
     parser.add_argument('--debug_max_steps', default=0, type=int,

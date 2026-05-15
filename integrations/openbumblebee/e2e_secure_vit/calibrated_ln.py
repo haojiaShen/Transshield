@@ -152,18 +152,24 @@ def compute_public_layer_norm_calibration(
             residual = x
             norm1_out = calibrated_layer_norm(x, norm1_weight, norm1_bias, stats["norm1"])
             batch, token_count, channels = norm1_out.shape
-            qkv = _linear(norm1_out, qkv_weight, qkv_bias, torch)
-            qkv = torch.reshape(qkv, (batch, token_count, 3, num_heads, head_dim))
-            qkv = torch.permute(qkv, (2, 0, 3, 1, 4))
-            query, key, value = qkv[0], qkv[1], qkv[2]
-            attn = torch.matmul(query, torch.swapaxes(key, -1, -2)) * attn_scale
             if attention_policy == "uniform":
+                value_weight = qkv_weight[2 * channels : 3 * channels, :]
+                value_bias = qkv_bias[2 * channels : 3 * channels]
+                value = _linear(norm1_out, value_weight, value_bias, torch)
+                value = torch.reshape(value, (batch, token_count, num_heads, head_dim))
+                value = torch.permute(value, (0, 2, 1, 3))
                 mean_value = torch.mean(value, dim=2, keepdim=True)
                 attn_out = torch.broadcast_to(mean_value, (batch, num_heads, token_count, head_dim))
-            elif attention_policy == "identity":
-                attn_out = value
             else:
-                attn_out = torch.matmul(attention_softmax(attn), value)
+                qkv = _linear(norm1_out, qkv_weight, qkv_bias, torch)
+                qkv = torch.reshape(qkv, (batch, token_count, 3, num_heads, head_dim))
+                qkv = torch.permute(qkv, (2, 0, 3, 1, 4))
+                query, key, value = qkv[0], qkv[1], qkv[2]
+                if attention_policy == "identity":
+                    attn_out = value
+                else:
+                    attn = torch.matmul(query, torch.swapaxes(key, -1, -2)) * attn_scale
+                    attn_out = torch.matmul(attention_softmax(attn), value)
             attn_out = torch.permute(attn_out, (0, 2, 1, 3))
             attn_out = torch.reshape(attn_out, (batch, token_count, channels))
             x = residual + _linear(attn_out, proj_weight, proj_bias, torch)

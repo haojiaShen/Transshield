@@ -112,7 +112,7 @@ PY
 setup_followup_defaults() {
   PYTHON_BIN="$(choose_python)"
   VAL_DATA_PATH="${VAL_DATA_PATH:-$(default_val_data_path || true)}"
-  BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_verified_tracka_lr3e5_20260414}"
+  BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430}"
   RUN_NAME="${RUN_NAME:-tracka_lr3e5_timm_spu_followup_$(date +%Y%m%d_%H%M%S)}"
   SECURE_RUN_DIR="${SECURE_RUN_DIR:-$REPO_ROOT/artifacts/server_pipeline_run/$RUN_NAME}"
   CONFIG_PATH="${CONFIG_PATH:-$REPO_ROOT/configs/openbumblebee/2pc.json}"

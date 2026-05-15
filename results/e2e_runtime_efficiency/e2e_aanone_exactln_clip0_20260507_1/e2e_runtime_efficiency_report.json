@@ -1,0 +1,351 @@
+{
+  "all_finite_logits": true,
+  "all_privacy_ok": true,
+  "best_speedup_vs_same_sample_isolated": 2.2774260356509277,
+  "label": "e2e_aanone_exactln_clip0_isolated_vs_nonisolated_20260507",
+  "manifest_type": "transshield_e2e_runtime_efficiency_report_v0",
+  "run_count": 11,
+  "runs": [
+    {
+      "aggregate_total_bytes": 1823502222,
+      "e2e_argmax_accuracy": 75.0,
+      "e2e_elapsed_sec": 387.0393764972687,
+      "e2e_sec_per_sample": 48.379922062158585,
+      "e2e_threshold_accuracy": 75.0,
+      "finite_logits": true,
+      "label": "isolated_smoke8",
+      "metrics_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke8_20260507_2/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 50.0,
+      "original_plaintext_same_subset_threshold_accuracy": 50.0,
+      "prediction_match_vs_original_plaintext": {
+        "argmax_match_ratio": 0.75,
+        "threshold_match_ratio": 0.75
+      },
+      "prediction_match_vs_static_whole_forward": null,
+      "privacy_fields": {
+        "host_plaintext_pixel_values_materialized": false,
+        "host_private_share_tensors_loaded": false,
+        "input_mode": "party_local_debug_share_load",
+        "input_pt": null,
+        "private_input_paths_redacted": true
+      },
+      "privacy_ok": true,
+      "raw_secure_graph_before_output_calibration": null,
+      "sample_count": 8,
+      "speedup_baseline_label": null,
+      "speedup_vs_same_sample_isolated": null,
+      "static_whole_forward_same_subset_argmax_accuracy": null,
+      "static_whole_forward_same_subset_threshold_accuracy": null
+    },
+    {
+      "aggregate_total_bytes": 1764406428,
+      "e2e_argmax_accuracy": 75.0,
+      "e2e_elapsed_sec": 187.02981615066528,
+      "e2e_sec_per_sample": 23.37872701883316,
+      "e2e_threshold_accuracy": 75.0,
+      "finite_logits": true,
+      "label": "nonisolated_smoke8",
+      "metrics_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke8_nonisolated_20260507_1/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 50.0,
+      "original_plaintext_same_subset_threshold_accuracy": 50.0,
+      "prediction_match_vs_original_plaintext": {
+        "argmax_match_ratio": 0.75,
+        "threshold_match_ratio": 0.75
+      },
+      "prediction_match_vs_static_whole_forward": null,
+      "privacy_fields": {
+        "host_plaintext_pixel_values_materialized": false,
+        "host_private_share_tensors_loaded": false,
+        "input_mode": "party_local_debug_share_load",
+        "input_pt": null,
+        "private_input_paths_redacted": true
+      },
+      "privacy_ok": true,
+      "raw_secure_graph_before_output_calibration": null,
+      "sample_count": 8,
+      "speedup_baseline_label": "isolated_smoke8",
+      "speedup_vs_same_sample_isolated": 2.0693993314172006,
+      "static_whole_forward_same_subset_argmax_accuracy": null,
+      "static_whole_forward_same_subset_threshold_accuracy": null
+    },
+    {
+      "aggregate_total_bytes": 1823535459,
+      "e2e_argmax_accuracy": 81.25,
+      "e2e_elapsed_sec": 768.6033742427826,
+      "e2e_sec_per_sample": 48.03771089017391,
+      "e2e_threshold_accuracy": 81.25,
+      "finite_logits": true,
+      "label": "isolated_smoke16",
+      "metrics_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke16_20260507_1/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 56.25,
+      "original_plaintext_same_subset_threshold_accuracy": 50.0,
+      "prediction_match_vs_original_plaintext": {
+        "argmax_match_ratio": 0.625,
+        "threshold_match_ratio": 0.5625
+      },
+      "prediction_match_vs_static_whole_forward": null,
+      "privacy_fields": {
+        "host_plaintext_pixel_values_materialized": false,
+        "host_private_share_tensors_loaded": false,
+        "input_mode": "party_local_debug_share_load",
+        "input_pt": null,
+        "private_input_paths_redacted": true
+      },
+      "privacy_ok": true,
+      "raw_secure_graph_before_output_calibration": null,
+      "sample_count": 16,
+      "speedup_baseline_label": null,
+      "speedup_vs_same_sample_isolated": null,
+      "static_whole_forward_same_subset_argmax_accuracy": null,
+      "static_whole_forward_same_subset_threshold_accuracy": null
+    },
+    {
+      "aggregate_total_bytes": 1764377399,
+      "e2e_argmax_accuracy": 81.25,
+      "e2e_elapsed_sec": 352.29815697669983,
+      "e2e_sec_per_sample": 22.01863481104374,
+      "e2e_threshold_accuracy": 81.25,
+      "finite_logits": true,
+      "label": "nonisolated_smoke16_bias",
+      "metrics_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke16_nonisolated_20260507_1/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 56.25,
+      "original_plaintext_same_subset_threshold_accuracy": 50.0,
+      "prediction_match_vs_original_plaintext": {
+        "argmax_match_ratio": 0.625,
+        "threshold_match_ratio": 0.5625
+      },
+      "prediction_match_vs_static_whole_forward": null,
+      "privacy_fields": {
+        "host_plaintext_pixel_values_materialized": false,
+        "host_private_share_tensors_loaded": false,
+        "input_mode": "party_local_debug_share_load",
+        "input_pt": null,
+        "private_input_paths_redacted": true
+      },
+      "privacy_ok": true,
+      "raw_secure_graph_before_output_calibration": null,
+      "sample_count": 16,
+      "speedup_baseline_label": "isolated_smoke16",
+      "speedup_vs_same_sample_isolated": 2.1816843461194044,
+      "static_whole_forward_same_subset_argmax_accuracy": null,
+      "static_whole_forward_same_subset_threshold_accuracy": null
+    },
+    {
+      "aggregate_total_bytes": 1764398800,
+      "e2e_argmax_accuracy": 87.5,
+      "e2e_elapsed_sec": 343.9620244503021,
+      "e2e_sec_per_sample": 21.497626528143883,
+      "e2e_threshold_accuracy": 87.5,
+      "finite_logits": true,
+      "label": "nonisolated_smoke16_affine",
+      "metrics_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke16_affine_nonisolated_20260507_1/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 50.0,
+      "original_plaintext_same_subset_threshold_accuracy": 50.0,
+      "prediction_match_vs_original_plaintext": {
+        "argmax_match_ratio": 0.5,
+        "threshold_match_ratio": 0.5
+      },
+      "prediction_match_vs_static_whole_forward": null,
+      "privacy_fields": {
+        "host_plaintext_pixel_values_materialized": false,
+        "host_private_share_tensors_loaded": false,
+        "input_mode": "party_local_debug_share_load",
+        "input_pt": null,
+        "private_input_paths_redacted": true
+      },
+      "privacy_ok": true,
+      "raw_secure_graph_before_output_calibration": null,
+      "sample_count": 16,
+      "speedup_baseline_label": "isolated_smoke16",
+      "speedup_vs_same_sample_isolated": 2.23455881640165,
+      "static_whole_forward_same_subset_argmax_accuracy": null,
+      "static_whole_forward_same_subset_threshold_accuracy": null
+    },
+    {
+      "aggregate_total_bytes": 1823506673,
+      "e2e_argmax_accuracy": 90.625,
+      "e2e_elapsed_sec": 1522.9726452827454,
+      "e2e_sec_per_sample": 47.59289516508579,
+      "e2e_threshold_accuracy": 90.625,
+      "finite_logits": true,
+      "label": "isolated_smoke32",
+      "metrics_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke32_20260507_1/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 53.125,
+      "original_plaintext_same_subset_threshold_accuracy": 50.0,
+      "prediction_match_vs_original_plaintext": {
+        "argmax_match_ratio": 0.5625,
+        "threshold_match_ratio": 0.53125
+      },
+      "prediction_match_vs_static_whole_forward": null,
+      "privacy_fields": {
+        "host_plaintext_pixel_values_materialized": false,
+        "host_private_share_tensors_loaded": false,
+        "input_mode": "party_local_debug_share_load",
+        "input_pt": null,
+        "private_input_paths_redacted": true
+      },
+      "privacy_ok": true,
+      "raw_secure_graph_before_output_calibration": null,
+      "sample_count": 32,
+      "speedup_baseline_label": null,
+      "speedup_vs_same_sample_isolated": null,
+      "static_whole_forward_same_subset_argmax_accuracy": null,
+      "static_whole_forward_same_subset_threshold_accuracy": null
+    },
+    {
+      "aggregate_total_bytes": 1764413614,
+      "e2e_argmax_accuracy": 90.625,
+      "e2e_elapsed_sec": 689.4148316383362,
+      "e2e_sec_per_sample": 21.544213488698006,
+      "e2e_threshold_accuracy": 90.625,
+      "finite_logits": true,
+      "label": "nonisolated_smoke32_legacy_bias",
+      "metrics_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke32_nonisolated_20260507_1/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 53.125,
+      "original_plaintext_same_subset_threshold_accuracy": 50.0,
+      "prediction_match_vs_original_plaintext": {
+        "argmax_match_ratio": 0.5625,
+        "threshold_match_ratio": 0.53125
+      },
+      "prediction_match_vs_static_whole_forward": null,
+      "privacy_fields": {
+        "host_plaintext_pixel_values_materialized": false,
+        "host_private_share_tensors_loaded": false,
+        "input_mode": "party_local_debug_share_load",
+        "input_pt": null,
+        "private_input_paths_redacted": true
+      },
+      "privacy_ok": true,
+      "raw_secure_graph_before_output_calibration": null,
+      "sample_count": 32,
+      "speedup_baseline_label": "isolated_smoke32",
+      "speedup_vs_same_sample_isolated": 2.2090801871255503,
+      "static_whole_forward_same_subset_argmax_accuracy": null,
+      "static_whole_forward_same_subset_threshold_accuracy": null
+    },
+    {
+      "aggregate_total_bytes": 1764410150,
+      "e2e_argmax_accuracy": 87.5,
+      "e2e_elapsed_sec": 687.0903890132904,
+      "e2e_sec_per_sample": 21.471574656665325,
+      "e2e_threshold_accuracy": 87.5,
+      "finite_logits": true,
+      "label": "nonisolated_smoke32_affine_even",
+      "metrics_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke32_affine_nonisolated_20260507_1/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 50.0,
+      "original_plaintext_same_subset_threshold_accuracy": 50.0,
+      "prediction_match_vs_original_plaintext": {
+        "argmax_match_ratio": 0.5625,
+        "threshold_match_ratio": 0.5625
+      },
+      "prediction_match_vs_static_whole_forward": null,
+      "privacy_fields": {
+        "host_plaintext_pixel_values_materialized": false,
+        "host_private_share_tensors_loaded": false,
+        "input_mode": "party_local_debug_share_load",
+        "input_pt": null,
+        "private_input_paths_redacted": true
+      },
+      "privacy_ok": true,
+      "raw_secure_graph_before_output_calibration": null,
+      "sample_count": 32,
+      "speedup_baseline_label": "isolated_smoke32",
+      "speedup_vs_same_sample_isolated": 2.2165535563229755,
+      "static_whole_forward_same_subset_argmax_accuracy": null,
+      "static_whole_forward_same_subset_threshold_accuracy": null
+    },
+    {
+      "aggregate_total_bytes": 1764401467,
+      "e2e_argmax_accuracy": 87.5,
+      "e2e_elapsed_sec": 668.7254037857056,
+      "e2e_sec_per_sample": 20.8976688683033,
+      "e2e_threshold_accuracy": 87.5,
+      "finite_logits": true,
+      "label": "nonisolated_smoke32_temperature_even",
+      "metrics_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke32_temp_nonisolated_20260507_1/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 50.0,
+      "original_plaintext_same_subset_threshold_accuracy": 50.0,
+      "prediction_match_vs_original_plaintext": {
+        "argmax_match_ratio": 0.5625,
+        "threshold_match_ratio": 0.5625
+      },
+      "prediction_match_vs_static_whole_forward": null,
+      "privacy_fields": {
+        "host_plaintext_pixel_values_materialized": false,
+        "host_private_share_tensors_loaded": false,
+        "input_mode": "party_local_debug_share_load",
+        "input_pt": null,
+        "private_input_paths_redacted": true
+      },
+      "privacy_ok": true,
+      "raw_secure_graph_before_output_calibration": null,
+      "sample_count": 32,
+      "speedup_baseline_label": "isolated_smoke32",
+      "speedup_vs_same_sample_isolated": 2.2774260356509277,
+      "static_whole_forward_same_subset_argmax_accuracy": null,
+      "static_whole_forward_same_subset_threshold_accuracy": null
+    },
+    {
+      "aggregate_total_bytes": 1764379104,
+      "e2e_argmax_accuracy": 64.0625,
+      "e2e_elapsed_sec": 1345.3245770931244,
+      "e2e_sec_per_sample": 21.02069651708007,
+      "e2e_threshold_accuracy": 64.0625,
+      "finite_logits": true,
+      "label": "nonisolated_smoke64_head",
+      "metrics_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke64_nonisolated_20260507_1/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 51.5625,
+      "original_plaintext_same_subset_threshold_accuracy": 90.625,
+      "prediction_match_vs_original_plaintext": {
+        "argmax_match_ratio": 0.875,
+        "threshold_match_ratio": 0.703125
+      },
+      "prediction_match_vs_static_whole_forward": null,
+      "privacy_fields": {
+        "host_plaintext_pixel_values_materialized": false,
+        "host_private_share_tensors_loaded": false,
+        "input_mode": "party_local_debug_share_load",
+        "input_pt": null,
+        "private_input_paths_redacted": true
+      },
+      "privacy_ok": true,
+      "raw_secure_graph_before_output_calibration": null,
+      "sample_count": 64,
+      "speedup_baseline_label": null,
+      "speedup_vs_same_sample_isolated": null,
+      "static_whole_forward_same_subset_argmax_accuracy": null,
+      "static_whole_forward_same_subset_threshold_accuracy": null
+    },
+    {
+      "aggregate_total_bytes": 1764365937,
+      "e2e_argmax_accuracy": 87.5,
+      "e2e_elapsed_sec": 1352.908170223236,
+      "e2e_sec_per_sample": 21.139190159738064,
+      "e2e_threshold_accuracy": 87.5,
+      "finite_logits": true,
+      "label": "nonisolated_smoke64_even",
+      "metrics_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke64_even_nonisolated_20260507_2/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 50.0,
+      "original_plaintext_same_subset_threshold_accuracy": 50.0,
+      "prediction_match_vs_original_plaintext": {
+        "argmax_match_ratio": 0.5625,
+        "threshold_match_ratio": 0.5625
+      },
+      "prediction_match_vs_static_whole_forward": null,
+      "privacy_fields": {
+        "host_plaintext_pixel_values_materialized": false,
+        "host_private_share_tensors_loaded": false,
+        "input_mode": "party_local_debug_share_load",
+        "input_pt": null,
+        "private_input_paths_redacted": true
+      },
+      "privacy_ok": true,
+      "raw_secure_graph_before_output_calibration": null,
+      "sample_count": 64,
+      "speedup_baseline_label": null,
+      "speedup_vs_same_sample_isolated": null,
+      "static_whole_forward_same_subset_argmax_accuracy": null,
+      "static_whole_forward_same_subset_threshold_accuracy": null
+    }
+  ]
+}

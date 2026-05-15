@@ -1,0 +1,105 @@
+{
+  "compare": {
+    "error": {
+      "logits": {
+        "max_abs_error": 0.7783178277313709,
+        "mean_abs_error": 0.4524898239214963
+      },
+      "probabilities": {
+        "max_abs_error": 0.33632026612758636,
+        "mean_abs_error": 0.2110766291152686
+      },
+      "score_delta": {
+        "max_abs_error": 1.4621320851147175,
+        "mean_abs_error": 0.9049796478429926
+      }
+    },
+    "metric_delta_static_minus_plaintext": {
+      "argmax_accuracy": 37.5,
+      "auc": 0.0068359375,
+      "ce_loss": -0.14488414314687514,
+      "threshold_accuracy": 42.1875
+    },
+    "plaintext_score_threshold_sweep_vs_static_argmax": {
+      "match_ratio": 0.953125,
+      "threshold": 0.7601286619901657
+    },
+    "plaintext_score_threshold_sweep_vs_targets": {
+      "best_accuracy": {
+        "accuracy": 93.75,
+        "f1": 0.9375,
+        "threshold": 0.6570841521024704
+      },
+      "zero_threshold_accuracy": 51.5625
+    },
+    "prediction_match": {
+      "argmax_match_ratio": 0.40625,
+      "threshold_match_ratio": 0.515625
+    },
+    "score_alignment": {
+      "affine_static_from_plaintext_score": {
+        "boundary_shift_x_at_y0": 0.7907360817561057,
+        "intercept": -1.4753916926717807,
+        "mean_abs_error": 0.1384555493410476,
+        "slope": 1.8658459209236515
+      },
+      "pearson_correlation": 0.9666889399275727,
+      "plaintext_score_mean": 0.6587916291391593,
+      "same_sign_ratio": 0.40625,
+      "static_score_mean": -0.24618801870383322
+    }
+  },
+  "judgement": {
+    "affine_boundary_shift_x_at_y0": 0.7907360817561057,
+    "plaintext_argmax_accuracy": 51.5625,
+    "plaintext_best_threshold": 0.6570841521024704,
+    "plaintext_best_threshold_accuracy": 93.75,
+    "plaintext_to_static_best_match_threshold": 0.7601286619901657,
+    "reason": "Plaintext full-path class scores stay strongly rank-correlated with static scores, but the zero boundary is badly shifted; sweeping a public threshold on plaintext scores nearly recovers static-level accuracy.",
+    "same_sign_ratio": 0.40625,
+    "score_correlation": 0.9666889399275727,
+    "static_argmax_accuracy": 89.0625,
+    "status": "ranking_preserved_but_zero_boundary_misaligned"
+  },
+  "label": "e2e_plaintext_static_gap_heldout64",
+  "manifest_type": "transshield_e2e_plaintext_static_gap_report_v0",
+  "sample_count": 64,
+  "stages": {
+    "plaintext": {
+      "label": "plaintext_full_model",
+      "metrics": {
+        "argmax_accuracy": 51.5625,
+        "argmax_f1": 0.6736842105263158,
+        "auc": 0.96484375,
+        "ce_loss": 0.6120929481470173,
+        "threshold_accuracy": 50.0,
+        "threshold_f1": 0.6666666666666666
+      },
+      "path": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout64_spuaware_nonisolated_20260507_2/e2e_secure_poc/plaintext_same_images_reference.json",
+      "sample_count": 64,
+      "score_stats": {
+        "max": 1.3586201071739197,
+        "mean": 0.6587916291391593,
+        "min": -0.03219226002693176
+      }
+    },
+    "static": {
+      "label": "static_whole_forward",
+      "metrics": {
+        "argmax_accuracy": 89.0625,
+        "argmax_f1": 0.8771929824561403,
+        "auc": 0.9716796875,
+        "ce_loss": 0.46720880500014217,
+        "threshold_accuracy": 92.1875,
+        "threshold_f1": 0.923076923076923
+      },
+      "path": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout64_spuaware_nonisolated_20260507_2/e2e_secure_poc/static_whole_forward_reference.json",
+      "sample_count": 64,
+      "score_stats": {
+        "max": 1.170655608177185,
+        "mean": -0.24618801870383322,
+        "min": -1.1894512176513672
+      }
+    }
+  }
+}

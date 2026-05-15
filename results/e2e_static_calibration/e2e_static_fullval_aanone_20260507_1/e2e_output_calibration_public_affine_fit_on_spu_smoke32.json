@@ -1,0 +1,19 @@
+{
+  "bias": 2.014323643906751,
+  "manifest_type": "transshield_e2e_output_calibration_v0",
+  "note": "Public affine calibration fitted on E2E static logits with an accuracy-preserving constraint.",
+  "score_rule": "class1_score = logits @ [-scale, scale] + public_bias",
+  "source_public_logit_affine_report": {
+    "accuracy": 96.875,
+    "ce_loss": 0.18686114854823688,
+    "label": "e2e_spu_smoke32_public_affine_accuracy_constrained",
+    "min_accuracy": 96.875,
+    "sample_count": 32,
+    "static_logits_csv": "/home/yclcg/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_smoke32_spu_raw_logits.csv"
+  },
+  "threshold": 0.5,
+  "weights": [
+    -5.529255602590326,
+    5.529255602590326
+  ]
+}

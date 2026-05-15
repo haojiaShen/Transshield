@@ -29,18 +29,8 @@ These files are used by:
 
 The lightweight checkpoint keeps only the model state and args snapshot required for evaluation, so the repo does not need a second standalone baseline code repository or a heavier training checkpoint.
 
-归档保留：
-
-- `artifacts/archive/baselines/baseline_plaintext_training_checkpoint_full.pth`
-
-说明：
-
-- `baseline_plaintext_training_checkpoint_full.pth` 就是原始 baseline `checkpoint-best.pth` 的归档重命名版。
-- 它保留完整 checkpoint 结构，主要用于恢复训练、追溯训练来源和核对完整训练状态。
-
 Use guidance:
 
-- use `artifacts/archive/baselines/baseline_plaintext_training_checkpoint_full.pth` only when you explicitly need the original full server checkpoint
 - use `baseline_plaintext_eval_checkpoint_light.pth` for the repo's default evaluation and comparison scripts
 - use `original_plaintext_threshold_best_fix3.json` only with the paired `fix3` baseline checkpoints above
 

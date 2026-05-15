@@ -1,0 +1,835 @@
+{
+  "baseline_variant": "exact_uniform_clip0",
+  "interpretation": {
+    "argmax_recovery_axis": "At least one secure-graph policy variant flips a baseline-wrong selected sample.",
+    "loss_recovery_axis": "Compare mean_abs_score and raw_score shifts here with public affine/temperature calibration reports; post-reveal calibration can improve BCE/confidence without changing the secret SPU graph."
+  },
+  "label": "e2e_aanone_heldout238_even32_publiccalib_clip0_probe_20260508_1",
+  "manifest_type": "transshield_e2e_policy_probe_report_v0",
+  "per_sample": [
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00007.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 0,
+      "source_index": 0,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.1864013969898224,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.5391082763671875,
+          "score": -0.1864013969898224
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3938140571117401,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.041107177734375,
+          "score": 0.3938140571117401
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00037.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 1,
+      "source_index": 8,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.4724273979663849,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.82513427734375,
+          "score": -0.4724273979663849
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3979797065258026,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.0452728271484375,
+          "score": 0.3979797065258026
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00072.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 2,
+      "source_index": 16,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.6436920166015625,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.99639892578125,
+          "score": -0.6436920166015625
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3970641791820526,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.0443572998046875,
+          "score": 0.3970641791820526
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00124.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 3,
+      "source_index": 24,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.3067627251148224,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.6594696044921875,
+          "score": -0.3067627251148224
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3852538764476776,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.0325469970703125,
+          "score": 0.3852538764476776
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00155.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 4,
+      "source_index": 31,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.3336944878101349,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.6864013671875,
+          "score": -0.3336944878101349
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3902587592601776,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.0375518798828125,
+          "score": 0.3902587592601776
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00185.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 5,
+      "source_index": 39,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.51422119140625,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.8669281005859375,
+          "score": -0.51422119140625
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3932494819164276,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.0405426025390625,
+          "score": 0.3932494819164276
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00203.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 6,
+      "source_index": 47,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.016845732927322388,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.3695526123046875,
+          "score": -0.016845732927322388
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3982085883617401,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.045501708984375,
+          "score": 0.3982085883617401
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00226.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 7,
+      "source_index": 55,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.3219299614429474,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.6746368408203125,
+          "score": -0.3219299614429474
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3887481391429901,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.036041259765625,
+          "score": 0.3887481391429901
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00281.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 8,
+      "source_index": 63,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.4883423149585724,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.8410491943359375,
+          "score": -0.4883423149585724
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3913116157054901,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.038604736328125,
+          "score": 0.3913116157054901
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00311.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 9,
+      "source_index": 71,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.2663268744945526,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": -0.0863800048828125,
+          "score": 0.2663268744945526
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3903350532054901,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.037628173828125,
+          "score": 0.3903350532054901
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00353.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 10,
+      "source_index": 79,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.2725067436695099,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.625213623046875,
+          "score": -0.2725067436695099
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3971252143383026,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.0444183349609375,
+          "score": 0.3971252143383026
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00388.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 11,
+      "source_index": 87,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.64141845703125,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.9941253662109375,
+          "score": -0.64141845703125
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3972778022289276,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.0445709228515625,
+          "score": 0.3972778022289276
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00416.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 12,
+      "source_index": 94,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.3105469048023224,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.6632537841796875,
+          "score": -0.3105469048023224
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.4400939643383026,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.0873870849609375,
+          "score": 0.4400939643383026
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00455.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 13,
+      "source_index": 102,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.5367889404296875,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.889495849609375,
+          "score": -0.5367889404296875
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3898162543773651,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.037109375,
+          "score": 0.3898162543773651
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00484.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 14,
+      "source_index": 110,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.3185882866382599,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.671295166015625,
+          "score": -0.3185882866382599
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3876647651195526,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.0349578857421875,
+          "score": 0.3876647651195526
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00519.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": true,
+      "row_index": 15,
+      "source_index": 118,
+      "target": 0,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.4682159721851349,
+          "correct": true,
+          "prediction": 0,
+          "raw_score": -0.8209228515625,
+          "score": -0.4682159721851349
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3966369330883026,
+          "correct": false,
+          "prediction": 1,
+          "raw_score": 0.0439300537109375,
+          "score": 0.3966369330883026
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00001.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 16,
+      "source_index": 119,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.1301422417163849,
+          "correct": false,
+          "prediction": 0,
+          "raw_score": -0.48284912109375,
+          "score": -0.1301422417163849
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 87006.5234375,
+          "correct": false,
+          "prediction": 0,
+          "raw_score": -87006.875,
+          "score": -87006.5234375
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00039.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 17,
+      "source_index": 127,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.6850738525390625,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.332366943359375,
+          "score": 0.6850738525390625
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3955535590648651,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.0428466796875,
+          "score": 0.3955535590648651
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00073.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 18,
+      "source_index": 135,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.2951965034008026,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": -0.0575103759765625,
+          "score": 0.2951965034008026
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3954009711742401,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.042694091796875,
+          "score": 0.3954009711742401
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00105.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 19,
+      "source_index": 143,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 1.1757049560546875,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.822998046875,
+          "score": 1.1757049560546875
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3913268744945526,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.0386199951171875,
+          "score": 0.3913268744945526
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00134.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 20,
+      "source_index": 150,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.3878478705883026,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.0351409912109375,
+          "score": 0.3878478705883026
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3918151557445526,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.0391082763671875,
+          "score": 0.3918151557445526
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00167.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 21,
+      "source_index": 158,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.718048095703125,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.3653411865234375,
+          "score": 0.718048095703125
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3996734321117401,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.046966552734375,
+          "score": 0.3996734321117401
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00211.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 22,
+      "source_index": 166,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.9824676513671875,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.6297607421875,
+          "score": 0.9824676513671875
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.6209869384765625,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.268280029296875,
+          "score": 0.6209869384765625
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00247.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 23,
+      "source_index": 174,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 1.2411651611328125,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.888458251953125,
+          "score": 1.2411651611328125
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3910827338695526,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.0383758544921875,
+          "score": 0.3910827338695526
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00280.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 24,
+      "source_index": 182,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 1.4556427001953125,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 1.102935791015625,
+          "score": 1.4556427001953125
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3329772651195526,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": -0.0197296142578125,
+          "score": 0.3329772651195526
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00317.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 25,
+      "source_index": 190,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.551513671875,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.1988067626953125,
+          "score": 0.551513671875
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.5558624267578125,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.203155517578125,
+          "score": 0.5558624267578125
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00350.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 26,
+      "source_index": 198,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.2459411323070526,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": -0.1067657470703125,
+          "score": 0.2459411323070526
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.5176849365234375,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.16497802734375,
+          "score": 0.5176849365234375
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00385.png",
+      "recovered_by_any_nonbaseline_variant": true,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 27,
+      "source_index": 206,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.2893829643726349,
+          "correct": false,
+          "prediction": 0,
+          "raw_score": -0.64208984375,
+          "score": -0.2893829643726349
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3982696235179901,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.045562744140625,
+          "score": 0.3982696235179901
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00414.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 28,
+      "source_index": 213,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.6801605224609375,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.32745361328125,
+          "score": 0.6801605224609375
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.4167480170726776,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.0640411376953125,
+          "score": 0.4167480170726776
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00449.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 29,
+      "source_index": 221,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.8475799560546875,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.494873046875,
+          "score": 0.8475799560546875
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3925323188304901,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.039825439453125,
+          "score": 0.3925323188304901
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00486.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 30,
+      "source_index": 229,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 1.2584075927734375,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.90570068359375,
+          "score": 1.2584075927734375
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 1.588043212890625,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 1.2353363037109375,
+          "score": 1.588043212890625
+        }
+      }
+    },
+    {
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00521.png",
+      "recovered_by_any_nonbaseline_variant": false,
+      "regressed_by_any_nonbaseline_variant": false,
+      "row_index": 31,
+      "source_index": 237,
+      "target": 1,
+      "variants": {
+        "exact_uniform_clip0": {
+          "abs_score": 0.4728851020336151,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.12017822265625,
+          "score": 0.4728851020336151
+        },
+        "publiccalib_uniform_clip0": {
+          "abs_score": 0.3900756537914276,
+          "correct": true,
+          "prediction": 1,
+          "raw_score": 0.0373687744140625,
+          "score": 0.3900756537914276
+        }
+      }
+    }
+  ],
+  "per_variant": {
+    "exact_uniform_clip0": {
+      "accuracy": 90.625,
+      "correct_count": 29,
+      "finite_logits": true,
+      "mean_abs_score": 0.5473709106445312,
+      "pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_heldout238_even32_publiccalib_clip0_probe_20260508_1/exact_uniform_clip0/e2e_candidate_exact_uniform_clip0.pt",
+      "wrong_count": 3
+    },
+    "publiccalib_uniform_clip0": {
+      "accuracy": 46.875,
+      "correct_count": 15,
+      "finite_logits": true,
+      "mean_abs_score": 2719.388916015625,
+      "pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_heldout238_even32_publiccalib_clip0_probe_20260508_1/publiccalib_uniform_clip0/e2e_candidate_publiccalib_uniform_clip0.pt",
+      "wrong_count": 17
+    }
+  },
+  "recovered_by_any_nonbaseline_variant": 1,
+  "regressed_by_any_nonbaseline_variant": 15,
+  "sample_count": 32,
+  "selected_indices": [
+    0,
+    8,
+    16,
+    24,
+    31,
+    39,
+    47,
+    55,
+    63,
+    71,
+    79,
+    87,
+    94,
+    102,
+    110,
+    118,
+    119,
+    127,
+    135,
+    143,
+    150,
+    158,
+    166,
+    174,
+    182,
+    190,
+    198,
+    206,
+    213,
+    221,
+    229,
+    237
+  ],
+  "status": "policy_variant_regression_dominates_recovery"
+}

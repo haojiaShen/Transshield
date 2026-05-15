@@ -7,8 +7,18 @@
 - 能直接支撑 `baseline / modified / secure` 三条主线；
 - 能支持最小必要复现；
 - 能作为结果证据或答辩材料；
-- 历史材料只保留对追溯有价值、且不会干扰主入口的部分；
-- `source/provenance` 快照、server 兼容 runner、baseline runtime 快照默认不是误删候选。
+- 当前主线优先，能删掉的旧展示资产、旧候选资产、旧完整 checkpoint 就不继续留在仓内；
+- `source/provenance` 快照只保留到不会反向干扰当前主入口为止。
+
+另外，当前目录角色已分离：
+
+- `Transshield_final`：权威源码、结果、文档、provenance 仓
+- `Transshield`：服务器整仓替换使用的 clean deploy mirror
+
+因此本仓的清理原则不是“无限保留历史”，而是：
+
+- 删除已经被正式 clean 结果完整覆盖的旧 run / 重复件
+- 只保留当前交付线仍会直接用到的源码、结果和最小说明材料
 
 ---
 
@@ -24,10 +34,7 @@
 | `training_compat/` | 当前 server 侧 plaintext compatibility runner；与 `source` 做 parity / provenance 对照时必留 | provenance 保留 |
 | `references/original_plaintext_runtime/` | baseline runtime 快照；用于说明“原始明文口径” | provenance 保留 |
 | `artifacts/baselines/` | baseline 明文评估默认资产与阈值配置 | 训练资产 |
-| `artifacts/frozen_bundle_full/` | 旧正式 modified bundle；仍保留完整 stage2 设计/contract 说明与 light checkpoint | 训练资产 |
-| `artifacts/frozen_bundle_verified_tracka_lr3e5_20260414/` | 当前已验证 TrackA 正式候选 bundle；当前默认展示 / 运行口径 | 训练资产 |
-| `artifacts/frozen_candidates/` | 历史 TrackA best 与 margin-aware 候选 bundle；仍被 provenance / ablation 文档引用 | provenance 保留 |
-| `artifacts/archive/` | 完整训练 checkpoint 与历史正式资产归档 | 归档保留 |
+| `artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/` | 当前正式 modified plaintext bundle | 训练资产 |
 | `artifacts/train_runs/` | 当前仍需追溯的 server 训练日志 / stdout / tb 产物 | 训练证据 |
 
 ---
@@ -48,7 +55,7 @@
 | `tools/transshield_kth_threshold_report.py`、`tools/transshield_secure_kth_checker.py` | secure pruning 边界设计说明与复核工具 | 安全推理核心 |
 | `artifacts/inference_ready_config/` | 已验证的 sidecar / selection-mode runtime inputs | 安全推理资产 |
 | `artifacts/server_inference_friendly_pack/` | 最终服务器运行入口与权威 wrapper 集 | 安全推理资产 |
-| `artifacts/server_pipeline_run/` | 当前 secure pipeline 运行证据与回放输入输出 | 运行证据 |
+| `artifacts/server_pipeline_run/` | 当前 secure pipeline 运行证据与回放输入输出；只保留 current clean run、必要 calibration 与仍有引用价值的 evidence | 运行证据 |
 | `artifacts/server_profile_reports/` | 当前 secure profile / selection-mode profile 报告 | 运行证据 |
 | `logs/` | 当前仍被 secure 证据链引用的最小日志保留集 | 运行证据 |
 | `artifacts/web_demo_assets/` | 当前前端统一摘要与离线最佳成绩数据源 | 展示资产 |
@@ -60,16 +67,16 @@
 | 路径 | 保留原因 | 类别 |
 |---|---|---|
 | `README.md` | 比赛展示主入口 | 展示材料 |
-| `docs/result_summary.md` | 当前最终结果中文摘要 | 展示材料 |
-| `docs/project_overview_newcomer_defense.md` | 初见者 / 答辩统一总览入口 | 展示材料 |
-| `docs/external_baseline_comparison.md` | 外部同口径基线对比主文档 | 展示材料 |
+| `docs/transshield_master_plan_20260505.md` | 当前最高优先级总路线主文档 | 展示材料 |
+| `results/fair_external_comparison/fair_external_secure_static_20260505_clean/` | 当前公平外部对比主结果目录 | 展示材料 |
+| `results/delivery_acceptance/delivery_acceptance_20260510_full/` | **当前交付闭环完整验收主结果目录（含 boundary check）** | 展示材料 |
+| `results/delivery_acceptance/delivery_acceptance_20260505_clean/` | 初始验收结果目录 | 历史参考 |
 | `docs/web_chat_demo.md` | Web demo 展示口径与使用说明 | 展示材料 |
 | `docs/architecture.md` | 当前系统结构总览；同时承担 secure 代码导航 | 展示材料 |
 | `docs/current_work_status.md` | 当前进度、最近收口与 repo 级改动记录 | 交接材料 |
 | `docs/handoff-next.md` | 下次接手先读文档与权威命令入口 | 交接材料 |
-| `docs/history_best_repro_drift_audit_2026-04-21.md` | TrackA 主审计文档 | 交接材料 |
 | `docs/tracka_predictor1_root_cause_2026-04-21.md` | TrackA `ratio loss` 非首发驱动的归档结论 | 交接材料 |
-| `docs/network_kth_blockwise_notes.md`、`docs/margin_aware_pruning_notes.md` | 当前 secure / pruning 两条研究线主说明 | 交接材料 |
+| `docs/network_kth_blockwise_notes.md` | 当前 secure boundary 说明 | 交接材料 |
 | `docs/data_source_policy.md` | 数据来源、默认数据集与展示口径主文档 | 展示材料 |
 | `docs/retention_list.md` | 当前保留清单本身 | 展示材料 |
 | `results/` | 已整理的最终结果 / 对比 / ablation 结果入口 | 结果材料 |
@@ -85,11 +92,10 @@
 比赛展示、交接或复现建议按以下顺序阅读或运行：
 
 1. `README.md`
-2. `docs/project_overview_newcomer_defense.md`
-3. `docs/result_summary.md`
-4. `docs/current_work_status.md`
-5. `docs/handoff-next.md`
-6. `docs/architecture.md`
+2. `docs/transshield_master_plan_20260505.md`
+3. `docs/current_work_status.md`
+4. `docs/handoff-next.md`
+5. `docs/architecture.md`
 7. `tools/README.md`
 8. `scripts/README.md`
 9. `artifacts/server_inference_friendly_pack/final_compare_env.template.sh`
@@ -102,7 +108,8 @@
 
 - 本仓库不再依赖外部旧副本作为正式代码来源。
 - `DynamicViT_exp_square` 只作为研发来源档案，不再当作最终仓的 live 入口。
-- baseline 与 modified 的默认对比流程均使用轻量 checkpoint；完整 checkpoint 放在 `artifacts/archive/` 做强复现与追溯。
+- baseline 与 modified 的默认对比流程均使用当前仓内轻量资产或 pure `state_dict`。
 - secure 一致性展示以 `Modified Plaintext vs Secure` 为主，因为这是当前比赛版最重要的技术闭环。
 - 安全推理代码导航现在统一由 `docs/architecture.md`、`tools/README.md` 与 `docs/handoff-next.md` 负责，不再单独保留 `secure_infer/` 目录。
 - 历史 `results/` / `artifacts/` JSON、log、summary 中仍可能出现旧脚本名或旧绝对路径；这些属于 provenance 证据，不应反向覆盖当前 live 入口。
+- `2026-05-05` 当前仓又执行了一轮主线化清理：旧 `archive/`、`frozen_candidates/`、`frozen_bundle_full/` 与历史展示 bundle 已全部移除，只保留当前 active delivery line 资产。

@@ -1,0 +1,127 @@
+{
+  "args_snapshot_summary": {
+    "approx_attn_mode": "uniform",
+    "eval_pruning_mode": "topk_argsort",
+    "eval_tie_policy": "lowest_index",
+    "model": "deit-s",
+    "secure_static_skip_pruning": true,
+    "secure_static_train_depth": 12,
+    "square_activation_mode": "fixed_square",
+    "use_approx_attn": true,
+    "use_mask_pruning": false,
+    "use_square_gelu": true
+  },
+  "artifacts": {
+    "output_csv": "/data/wyb/Transshield_final/results/accuracy_profile_imbalance/secure_static_accprof_epoch1_20260506_warmup0_1/plaintext_eval.csv"
+  },
+  "bundle_dir": null,
+  "checkpoint_model_key": "model",
+  "checkpoint_path": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch1_20260506_warmup0_1/checkpoint-best.pth",
+  "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+  "finite_logits": true,
+  "label": "secure_static_accprof_epoch1_20260506_warmup0_1",
+  "metrics": {
+    "argmax_accuracy": 81.67939186096191,
+    "argmax_f1": 0.8620689655172413,
+    "auc": 0.9453299057412168,
+    "eval_loss": 0.5101799964904785,
+    "threshold": 0.3571419417858124,
+    "threshold_accuracy": 89.31297659873962,
+    "threshold_f1": 0.93
+  },
+  "model_state_dict_path": null,
+  "per_sample_preview": [
+    {
+      "argmax_prediction": 0,
+      "logit_0": 0.6987589597702026,
+      "logit_1": -0.34019044041633606,
+      "prob_0": 0.7386472225189209,
+      "prob_1": 0.2613527476787567,
+      "sample_index": 0,
+      "sample_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00003.png",
+      "target": 0,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_prediction": 0,
+      "logit_0": 0.35087138414382935,
+      "logit_1": -0.03991954028606415,
+      "prob_0": 0.5964730978012085,
+      "prob_1": 0.4035269021987915,
+      "sample_index": 1,
+      "sample_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00007.png",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 0,
+      "logit_0": 0.6759355664253235,
+      "logit_1": -0.3257727324962616,
+      "prob_0": 0.731394350528717,
+      "prob_1": 0.26860570907592773,
+      "sample_index": 2,
+      "sample_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00011.png",
+      "target": 0,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_prediction": 0,
+      "logit_0": 0.4203031063079834,
+      "logit_1": -0.10659876465797424,
+      "prob_0": 0.6287602186203003,
+      "prob_1": 0.3712397813796997,
+      "sample_index": 3,
+      "sample_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00014.png",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 0,
+      "logit_0": 0.7052680850028992,
+      "logit_1": -0.3505439758300781,
+      "prob_0": 0.7418894171714783,
+      "prob_1": 0.25811058282852173,
+      "sample_index": 4,
+      "sample_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00022.png",
+      "target": 0,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_prediction": 0,
+      "logit_0": 0.6316911578178406,
+      "logit_1": -0.2732117772102356,
+      "prob_0": 0.7119560241699219,
+      "prob_1": 0.2880440056324005,
+      "sample_index": 5,
+      "sample_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00028.png",
+      "target": 0,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_prediction": 0,
+      "logit_0": 0.42358195781707764,
+      "logit_1": -0.12506502866744995,
+      "prob_0": 0.6338216662406921,
+      "prob_1": 0.36617839336395264,
+      "sample_index": 6,
+      "sample_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00030.png",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 0,
+      "logit_0": 0.4572668671607971,
+      "logit_1": -0.12612101435661316,
+      "prob_0": 0.6418465971946716,
+      "prob_1": 0.35815343260765076,
+      "sample_index": 7,
+      "sample_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00031.png",
+      "target": 0,
+      "threshold_prediction": 1
+    }
+  ],
+  "repo_root": "/data/wyb/Transshield_final/training_compat",
+  "sample_count": 524,
+  "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+  "threshold_json": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch1_20260506_warmup0_1/threshold_best.json"
+}

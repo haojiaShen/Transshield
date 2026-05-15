@@ -9,7 +9,7 @@
 1. 让 pruning 分数分布更适合 secure 比较协议
 2. 让 `network-kth` 本身更像协议友好的选择器，而不是明文 `topk` 的直接替身
 3. 让 sidecar 输入 / 输出更轻、更稳、更容易展示通信收益
-4. 在不破坏现有正式展示路径的前提下，把安全边界继续前移到客户端输入，新增 `e2e secure inference` 并行系统线
+4. 在不破坏现有正式展示路径的前提下，把安全边界继续前移到数据使用方输入，新增 `e2e secure inference` 并行系统线
 
 ## 推荐推进顺序
 
@@ -219,7 +219,7 @@
 
 - 保留当前 `secure sidecar + replay + compare` 作为正式默认路径，不直接覆盖
 - 先做**不含 pruning** 的最小 `deit-s / ViT` 整网 secure inference：
-  - 客户端本地读取 / 预处理图像
+  - 数据使用方本地读取 / 预处理图像
   - secret-share `pixel_values`
   - `patch_embed -> blocks -> head` 全放进 secure 前向
 - 再迁入当前 `masking` 语义，把

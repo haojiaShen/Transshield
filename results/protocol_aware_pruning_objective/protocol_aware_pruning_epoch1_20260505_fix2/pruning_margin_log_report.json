@@ -1,0 +1,40 @@
+{
+  "configured_objective": {
+    "batch_size": "32",
+    "debug_max_steps": "0",
+    "epochs": "1",
+    "pruning_margin_mode": "softplus",
+    "pruning_margin_stage_weights": "1.50,1.65,1.00",
+    "pruning_margin_start_epoch": "0",
+    "pruning_margin_target": "2.6e-05",
+    "pruning_margin_weight": "1.0"
+  },
+  "global_status_counts": {},
+  "inputs": {
+    "command_sh": "/data/wyb/Transshield_final/artifacts/server_runs/protocol_aware_pruning_epoch1_20260505_fix2/command.sh",
+    "recipe_json": "/data/wyb/Transshield_final/results/protocol_aware_pruning_objective/protocol_aware_pruning_epoch1_20260505_fix2/protocol_aware_pruning_recipe.json",
+    "selected_profile": "conservative",
+    "train_log": "/data/wyb/Transshield_final/artifacts/server_runs/protocol_aware_pruning_epoch1_20260505_fix2/train_stdout.log"
+  },
+  "interpretation": {
+    "reason": "loss info lines exist, but margin_stats is empty/none in the parsed window.",
+    "status": "loss_info_present_but_no_stage_margin_stats"
+  },
+  "log_summary": {
+    "loss_info_line_count": 1,
+    "max_pruning_margin": 0.0,
+    "mean_pruning_margin": 0.0,
+    "nonzero_pruning_margin_line_count": 0,
+    "stage_margin_line_count": 0
+  },
+  "manifest_type": "transshield_pruning_margin_log_report_v0",
+  "recipe_comparison": {
+    "matches_mode": true,
+    "matches_stage_weights_csv": true,
+    "matches_start_epoch": true,
+    "matches_target": true,
+    "matches_weight": true,
+    "profile_name": "conservative"
+  },
+  "stage_summaries": {}
+}

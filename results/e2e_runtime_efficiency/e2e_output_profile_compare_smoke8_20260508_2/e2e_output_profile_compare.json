@@ -1,0 +1,229 @@
+{
+  "all_runs_share_same_sample_count": true,
+  "all_runs_share_same_sample_signature": true,
+  "baseline_label": "accuracy_first",
+  "best_by_metric": {
+    "argmax_accuracy": {
+      "label": "loss_first_affine",
+      "metric": "e2e_argmax_accuracy",
+      "value": 100.0
+    },
+    "fastest": {
+      "label": "loss_first_affine",
+      "metric": "e2e_elapsed_sec",
+      "value": 188.93726110458374
+    },
+    "lowest_calibrated_bce": {
+      "label": "loss_first_temperature",
+      "metric": "calibrated_bce",
+      "value": 0.023480444213886197
+    },
+    "lowest_raw_logits_mae_vs_static": {
+      "label": "loss_first_affine",
+      "metric": "raw_logits_mean_abs_error_vs_static",
+      "value": 0.0022256127558648586
+    },
+    "lowest_total_bytes": {
+      "label": "loss_first_temperature",
+      "metric": "aggregate_total_bytes",
+      "value": 1764378721
+    },
+    "threshold_accuracy": {
+      "label": "loss_first_affine",
+      "metric": "e2e_threshold_accuracy",
+      "value": 100.0
+    }
+  },
+  "delta_vs_baseline": {
+    "accuracy_first": {
+      "aggregate_total_bytes": 0.0,
+      "calibrated_bce": 0.0,
+      "e2e_argmax_accuracy": 0.0,
+      "e2e_elapsed_sec": 0.0,
+      "e2e_threshold_accuracy": 0.0,
+      "original_plaintext_same_subset_argmax_accuracy": 0.0,
+      "original_plaintext_same_subset_threshold_accuracy": 0.0,
+      "raw_logits_mean_abs_error_vs_static": 0.0,
+      "static_whole_forward_same_subset_argmax_accuracy": 0.0,
+      "static_whole_forward_same_subset_threshold_accuracy": 0.0
+    },
+    "loss_first_affine": {
+      "aggregate_total_bytes": -17043.0,
+      "calibrated_bce": -0.32431675225985535,
+      "e2e_argmax_accuracy": 0.0,
+      "e2e_elapsed_sec": -5.12702751159668,
+      "e2e_threshold_accuracy": 0.0,
+      "original_plaintext_same_subset_argmax_accuracy": 0.0,
+      "original_plaintext_same_subset_threshold_accuracy": 0.0,
+      "raw_logits_mean_abs_error_vs_static": -0.0002346038818359375,
+      "static_whole_forward_same_subset_argmax_accuracy": 0.0,
+      "static_whole_forward_same_subset_threshold_accuracy": 0.0
+    },
+    "loss_first_temperature": {
+      "aggregate_total_bytes": -18831.0,
+      "calibrated_bce": -0.3324931443880362,
+      "e2e_argmax_accuracy": 0.0,
+      "e2e_elapsed_sec": -3.5759143829345703,
+      "e2e_threshold_accuracy": 0.0,
+      "original_plaintext_same_subset_argmax_accuracy": 0.0,
+      "original_plaintext_same_subset_threshold_accuracy": 0.0,
+      "raw_logits_mean_abs_error_vs_static": -0.00022220611572265625,
+      "static_whole_forward_same_subset_argmax_accuracy": 0.0,
+      "static_whole_forward_same_subset_threshold_accuracy": 0.0
+    }
+  },
+  "manifest_type": "transshield_e2e_output_profile_compare_v0",
+  "run_count": 3,
+  "runs": [
+    {
+      "aggregate_total_bytes": 1764397552,
+      "e2e_argmax_accuracy": 100.0,
+      "e2e_elapsed_sec": 194.06428861618042,
+      "e2e_threshold_accuracy": 100.0,
+      "finite_logits": true,
+      "label": "accuracy_first",
+      "losses": {
+        "bce_delta_calibrated_minus_raw": -0.004567611183775078,
+        "calibrated_bce": 0.35597358860192235,
+        "raw_bce": 0.36054119978569743,
+        "score_count": 8
+      },
+      "metrics_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke8_accuracyfirst_20260508_1/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 50.0,
+      "original_plaintext_same_subset_threshold_accuracy": 50.0,
+      "output_calibration_json": "/data/wyb/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_bias_spuaware_smoke32_threshold.json",
+      "output_calibration_note": "SPU-aware public logit-bias calibration: base static bias shifted by a public E2E smoke32 threshold sweep; validate on held-out/expanded E2E subsets before making default.",
+      "plaintext_static_gap": {
+        "affine_boundary_shift_x_at_y0": 0.7200104834764359,
+        "metric_delta_static_minus_plaintext": {
+          "argmax_accuracy": 37.5,
+          "auc": 0.0,
+          "ce_loss": -0.17187487203456553,
+          "threshold_accuracy": 50.0
+        },
+        "plaintext_best_threshold_accuracy": 100.0,
+        "plaintext_to_static_best_match_threshold": 0.9267435073852539,
+        "reason": "Plaintext full-path class scores stay strongly rank-correlated with static scores, but the zero boundary is badly shifted; sweeping a public threshold on plaintext scores nearly recovers static-level accuracy.",
+        "same_sign_ratio": 0.375,
+        "score_correlation": 0.9913708511462801,
+        "status": "ranking_preserved_but_zero_boundary_misaligned"
+      },
+      "profile_guess": "accuracy_first",
+      "raw_secure_graph_before_output_calibration": {
+        "logits_mean_abs_error_vs_static": 0.002460216637700796,
+        "present": true,
+        "probabilities_mean_abs_error_vs_static": 0.0009690271690487862,
+        "same_subset_argmax_accuracy": 87.5,
+        "same_subset_threshold_accuracy": 100.0
+      },
+      "run_dir": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke8_accuracyfirst_20260508_1/e2e_secure_poc",
+      "sample_count": 8,
+      "sample_signature": {
+        "sample_count": 8,
+        "sample_ids_sha256": "10e2015acf22698376985a84b113d10b0136fd5b012772d0b478751a5aa832b3"
+      },
+      "static_whole_forward_same_subset_argmax_accuracy": 87.5,
+      "static_whole_forward_same_subset_threshold_accuracy": 100.0
+    },
+    {
+      "aggregate_total_bytes": 1764380509,
+      "e2e_argmax_accuracy": 100.0,
+      "e2e_elapsed_sec": 188.93726110458374,
+      "e2e_threshold_accuracy": 100.0,
+      "finite_logits": true,
+      "label": "loss_first_affine",
+      "losses": {
+        "bce_delta_calibrated_minus_raw": -0.32873688546622104,
+        "calibrated_bce": 0.031656836342067035,
+        "raw_bce": 0.3603937218082881,
+        "score_count": 8
+      },
+      "metrics_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke8_lossaffine_20260508_1/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 50.0,
+      "original_plaintext_same_subset_threshold_accuracy": 50.0,
+      "output_calibration_json": "/data/wyb/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_output_calibration_public_affine_fit_on_spu_smoke32.json",
+      "output_calibration_note": "Public affine calibration fitted on E2E static logits with an accuracy-preserving constraint.",
+      "plaintext_static_gap": {
+        "affine_boundary_shift_x_at_y0": 0.7200104834764359,
+        "metric_delta_static_minus_plaintext": {
+          "argmax_accuracy": 37.5,
+          "auc": 0.0,
+          "ce_loss": -0.17187487203456553,
+          "threshold_accuracy": 50.0
+        },
+        "plaintext_best_threshold_accuracy": 100.0,
+        "plaintext_to_static_best_match_threshold": 0.9267435073852539,
+        "reason": "Plaintext full-path class scores stay strongly rank-correlated with static scores, but the zero boundary is badly shifted; sweeping a public threshold on plaintext scores nearly recovers static-level accuracy.",
+        "same_sign_ratio": 0.375,
+        "score_correlation": 0.9913708511462801,
+        "status": "ranking_preserved_but_zero_boundary_misaligned"
+      },
+      "profile_guess": "loss_first_affine",
+      "raw_secure_graph_before_output_calibration": {
+        "logits_mean_abs_error_vs_static": 0.0022256127558648586,
+        "present": true,
+        "probabilities_mean_abs_error_vs_static": 0.0008978908881545067,
+        "same_subset_argmax_accuracy": 87.5,
+        "same_subset_threshold_accuracy": 100.0
+      },
+      "run_dir": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke8_lossaffine_20260508_1/e2e_secure_poc",
+      "sample_count": 8,
+      "sample_signature": {
+        "sample_count": 8,
+        "sample_ids_sha256": "10e2015acf22698376985a84b113d10b0136fd5b012772d0b478751a5aa832b3"
+      },
+      "static_whole_forward_same_subset_argmax_accuracy": 87.5,
+      "static_whole_forward_same_subset_threshold_accuracy": 100.0
+    },
+    {
+      "aggregate_total_bytes": 1764378721,
+      "e2e_argmax_accuracy": 100.0,
+      "e2e_elapsed_sec": 190.48837423324585,
+      "e2e_threshold_accuracy": 100.0,
+      "finite_logits": true,
+      "label": "loss_first_temperature",
+      "losses": {
+        "bce_delta_calibrated_minus_raw": -0.33690354678998197,
+        "calibrated_bce": 0.023480444213886197,
+        "raw_bce": 0.36038399100386814,
+        "score_count": 8
+      },
+      "metrics_json": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke8_losstemp_20260508_1/e2e_secure_poc/e2e_approx_eval_metrics.json",
+      "original_plaintext_same_subset_argmax_accuracy": 50.0,
+      "original_plaintext_same_subset_threshold_accuracy": 50.0,
+      "output_calibration_json": "/data/wyb/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_output_calibration_public_temperature_fit_on_spu_smoke32.json",
+      "output_calibration_note": "Public temperature calibration that preserves the bias-only decision boundary exactly.",
+      "plaintext_static_gap": {
+        "affine_boundary_shift_x_at_y0": 0.7200104834764359,
+        "metric_delta_static_minus_plaintext": {
+          "argmax_accuracy": 37.5,
+          "auc": 0.0,
+          "ce_loss": -0.17187487203456553,
+          "threshold_accuracy": 50.0
+        },
+        "plaintext_best_threshold_accuracy": 100.0,
+        "plaintext_to_static_best_match_threshold": 0.9267435073852539,
+        "reason": "Plaintext full-path class scores stay strongly rank-correlated with static scores, but the zero boundary is badly shifted; sweeping a public threshold on plaintext scores nearly recovers static-level accuracy.",
+        "same_sign_ratio": 0.375,
+        "score_correlation": 0.9913708511462801,
+        "status": "ranking_preserved_but_zero_boundary_misaligned"
+      },
+      "profile_guess": "loss_first_temperature",
+      "raw_secure_graph_before_output_calibration": {
+        "logits_mean_abs_error_vs_static": 0.00223801052197814,
+        "present": true,
+        "probabilities_mean_abs_error_vs_static": 0.0009114155545830727,
+        "same_subset_argmax_accuracy": 87.5,
+        "same_subset_threshold_accuracy": 100.0
+      },
+      "run_dir": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_smoke8_losstemp_20260508_1/e2e_secure_poc",
+      "sample_count": 8,
+      "sample_signature": {
+        "sample_count": 8,
+        "sample_ids_sha256": "10e2015acf22698376985a84b113d10b0136fd5b012772d0b478751a5aa832b3"
+      },
+      "static_whole_forward_same_subset_argmax_accuracy": 87.5,
+      "static_whole_forward_same_subset_threshold_accuracy": 100.0
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Transfield 安全推理成果展示页</title>
+    <title>Transshield 安全推理成果展示页</title>
     <style>
       :root {
         --bg: #0b1020;
@@ -838,6 +838,725 @@
         .stage-value { grid-column: 2; text-align: left; }
       }
     </style>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+      :root {
+        --bg: #f2f2f4;
+        --panel: rgba(253, 253, 253, 0.84);
+        --panel-2: rgba(255, 255, 255, 0.9);
+        --panel-3: rgba(247, 247, 248, 0.94);
+        --text: #0f1012;
+        --muted: rgba(15, 16, 18, 0.64);
+        --accent: #0071e3;
+        --accent-2: #005ec2;
+        --secure: #0071e3;
+        --warning: #a86800;
+        --danger: #b63d3d;
+        --user: rgba(15, 16, 18, 0.06);
+        --border: rgba(15, 16, 18, 0.14);
+        --border-soft: rgba(15, 16, 18, 0.08);
+        --blueprint-line: rgba(15, 16, 18, 0.035);
+        --shadow: none;
+      }
+
+      body {
+        font-family: "Manrope", "Aptos", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at 12% 0%, rgba(0, 113, 227, 0.1), transparent 26%),
+          radial-gradient(circle at 88% 14%, rgba(15, 16, 18, 0.04), transparent 18%),
+          linear-gradient(180deg, #fcfcfd 0%, #f2f2f4 100%);
+        color: var(--text);
+      }
+
+      body::before {
+        background-image:
+          linear-gradient(var(--blueprint-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--blueprint-line) 1px, transparent 1px);
+        background-size: 34px 34px;
+        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.82), transparent 88%);
+      }
+
+      .app {
+        width: min(1460px, 100%);
+        padding: 28px clamp(16px, 3vw, 40px) 72px;
+        gap: 24px;
+      }
+
+      .card {
+        border-radius: 28px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        box-shadow: none;
+        backdrop-filter: blur(18px);
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(0, 113, 227, 0.45), transparent);
+        pointer-events: none;
+      }
+
+      .hero,
+      .control-panel,
+      .flow-card {
+        padding: clamp(18px, 2.3vw, 34px);
+      }
+
+      .hero::after {
+        width: 460px;
+        height: 460px;
+        inset: auto -120px -180px auto;
+        background: radial-gradient(circle, rgba(0, 113, 227, 0.12), transparent 68%);
+      }
+
+      .hero-layout {
+        grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+        align-items: stretch;
+        gap: 20px;
+      }
+
+      .hero h1 {
+        color: #0f1012;
+      }
+
+      .hero-layout > div:first-child > h1 {
+        margin: 12px 0 12px;
+        max-width: 860px;
+        font-size: clamp(38px, 5vw, 68px);
+        line-height: 0.96;
+        letter-spacing: -0.06em;
+      }
+
+      .hero-lead {
+        max-width: 840px;
+        color: rgba(15, 16, 18, 0.68);
+        font-size: 16px;
+        line-height: 1.8;
+      }
+
+      .hero-summary {
+        max-width: 900px;
+        margin: 18px 0 0;
+        padding: 14px 16px;
+        border-radius: 18px;
+        border: 1px solid rgba(0, 113, 227, 0.14);
+        background:
+          linear-gradient(180deg, rgba(0, 113, 227, 0.06), rgba(255, 255, 255, 0.9)),
+          rgba(255, 255, 255, 0.9);
+        color: rgba(15, 16, 18, 0.7);
+        line-height: 1.75;
+      }
+
+      .hero-proof {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .proof-card {
+        padding: 14px 16px;
+        border-radius: 18px;
+        border: 1px solid rgba(15, 16, 18, 0.08);
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      .proof-card b {
+        display: block;
+        margin-bottom: 8px;
+        color: #020201;
+        font-size: 14px;
+        letter-spacing: -0.02em;
+      }
+
+      .proof-card span {
+        display: block;
+        color: rgba(15, 16, 18, 0.62);
+        font-size: 13px;
+        line-height: 1.65;
+      }
+
+      .hero-aside {
+        display: grid;
+        gap: 12px;
+        align-content: start;
+      }
+
+      .board-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: rgba(15, 16, 18, 0.56);
+        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .board-label::before {
+        content: "";
+        width: 22px;
+        height: 1px;
+        background: rgba(0, 113, 227, 0.42);
+      }
+
+      .brand {
+        margin-bottom: 18px;
+      }
+
+      .brand-mark {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        background:
+          linear-gradient(135deg, rgba(0, 113, 227, 0.12), rgba(255, 255, 255, 0.96)),
+          #ffffff;
+        color: var(--accent);
+        box-shadow: none;
+        border: 1px solid rgba(0, 113, 227, 0.14);
+        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+        font-size: 15px;
+        letter-spacing: 0.12em;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: #020201;
+      }
+
+      .brand p {
+        margin: 4px 0 0;
+        color: rgba(15, 16, 18, 0.56);
+        font-size: 12px;
+        letter-spacing: 0.03em;
+      }
+
+      .kicker,
+      .section-eyebrow {
+        color: var(--accent);
+        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .kicker {
+        padding: 7px 12px;
+        background: rgba(0, 113, 227, 0.08);
+        border: 1px solid rgba(0, 113, 227, 0.14);
+        border-radius: 999px;
+      }
+
+      .hero-tags,
+      .pill-list {
+        gap: 10px;
+      }
+
+      .tag {
+        background: rgba(15, 16, 18, 0.04);
+        border: 1px solid rgba(15, 16, 18, 0.08);
+        color: rgba(15, 16, 18, 0.7);
+        border-radius: 10px;
+        padding: 8px 12px;
+      }
+
+      .tag.secure,
+      .tag.ref {
+        color: var(--accent);
+        background: rgba(0, 113, 227, 0.08);
+        border-color: rgba(0, 113, 227, 0.16);
+      }
+
+      .kpi-grid {
+        gap: 12px;
+        align-content: start;
+        padding: 18px;
+        border-radius: 22px;
+        border: 1px solid rgba(0, 113, 227, 0.14);
+        background:
+          linear-gradient(180deg, rgba(0, 113, 227, 0.06), rgba(255, 255, 255, 0.88)),
+          rgba(255, 255, 255, 0.9);
+      }
+
+      .kpi-card {
+        min-height: 162px;
+        padding: 18px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(15, 16, 18, 0.08);
+      }
+
+      .kpi-card.primary {
+        background: linear-gradient(180deg, rgba(0, 113, 227, 0.08), rgba(255, 255, 255, 0.92));
+        border-color: rgba(0, 113, 227, 0.18);
+      }
+
+      .kpi-label {
+        color: var(--accent);
+        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+      }
+
+      .kpi-value,
+      .kpi-card.primary .kpi-value {
+        color: #020201;
+        font-size: clamp(28px, 4vw, 42px);
+        line-height: 1;
+        letter-spacing: -0.05em;
+      }
+
+      .kpi-sub {
+        color: rgba(15, 16, 18, 0.62);
+      }
+
+      .control-grid {
+        grid-template-columns: minmax(0, 310px) minmax(0, 380px) minmax(0, 1fr);
+        gap: 16px;
+      }
+
+      .control-copy h2 {
+        margin: 8px 0 8px;
+        font-size: 28px;
+        line-height: 1.08;
+        letter-spacing: -0.05em;
+      }
+
+      .control-copy p {
+        color: rgba(15, 16, 18, 0.68);
+        line-height: 1.75;
+      }
+
+      .preview {
+        min-height: 430px;
+        border-radius: 22px;
+        border: 1px solid rgba(0, 113, 227, 0.14);
+        background:
+          linear-gradient(180deg, rgba(0, 113, 227, 0.06), rgba(255, 255, 255, 0.9)),
+          rgba(255, 255, 255, 0.9);
+      }
+
+      .preview::before {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        border-radius: 18px;
+        border: 1px dashed rgba(15, 16, 18, 0.16);
+        background:
+          linear-gradient(rgba(15, 16, 18, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(15, 16, 18, 0.03) 1px, transparent 1px);
+        background-size: 24px 24px;
+        pointer-events: none;
+      }
+
+      .preview img {
+        position: relative;
+        z-index: 1;
+        border-radius: 18px;
+        border: 1px solid rgba(15, 16, 18, 0.08);
+        box-shadow: none;
+        background: #fff;
+      }
+
+      .preview span {
+        position: relative;
+        z-index: 1;
+        color: rgba(15, 16, 18, 0.58);
+        line-height: 1.8;
+      }
+
+      .pipeline-note,
+      .summary-note,
+      .meta-note,
+      .result-note,
+      .comparison-status,
+      .empty-state,
+      .external-card,
+      .method-card,
+      .stage-explanation,
+      .seed-card,
+      .panel-item,
+      .flow-step,
+      .result-column,
+      .detail-panel,
+      .stage-row,
+      .privacy-step {
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(15, 16, 18, 0.08);
+      }
+
+      .pipeline-note,
+      .summary-note,
+      .meta-note,
+      .result-note,
+      .comparison-status,
+      .empty-state {
+        color: rgba(15, 16, 18, 0.66);
+        line-height: 1.7;
+      }
+
+      .privacy-flow {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .privacy-step {
+        gap: 8px;
+      }
+
+      .privacy-step b {
+        color: #020201;
+        font-size: 14px;
+        letter-spacing: -0.02em;
+      }
+
+      .privacy-step span {
+        color: rgba(15, 16, 18, 0.62);
+      }
+
+      input[type="file"] {
+        color: rgba(15, 16, 18, 0.66);
+        background: rgba(255, 255, 255, 0.84);
+        border: 1px dashed rgba(15, 16, 18, 0.18);
+        font-family: "Manrope", "Aptos", "Segoe UI", sans-serif;
+      }
+
+      input[type="file"]::file-selector-button {
+        margin-right: 12px;
+        padding: 10px 14px;
+        border: 1px solid rgba(0, 113, 227, 0.16);
+        border-radius: 12px;
+        background: rgba(0, 113, 227, 0.08);
+        color: var(--accent);
+        font-family: "Manrope", "Aptos", "Segoe UI", sans-serif;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .visually-hidden-file {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .native-file-input {
+        display: block;
+        min-height: 48px;
+        padding: 10px;
+        color: rgba(15, 16, 18, 0.72);
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(0, 113, 227, 0.18);
+        box-shadow: none;
+        cursor: pointer;
+      }
+
+      .file-picker-button {
+        color: #0071e3;
+        background: rgba(0, 113, 227, 0.08);
+        border: 1px solid rgba(0, 113, 227, 0.18);
+        box-shadow: none;
+      }
+
+      .file-name-status {
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px dashed rgba(15, 16, 18, 0.14);
+        color: rgba(15, 16, 18, 0.62);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .control-panel > *,
+      .control-grid > *,
+      .run-actions,
+      .run-actions > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .run-actions,
+      .run-actions button,
+      .run-actions input,
+      .file-picker-button,
+      .native-file-input {
+        pointer-events: auto;
+      }
+
+      button {
+        color: #ffffff;
+        background: linear-gradient(135deg, #0071e3, #005ec2);
+        border-radius: 16px;
+        box-shadow: none;
+      }
+
+      .feedback-head h3 {
+        margin: 8px 0 6px;
+        font-size: 28px;
+        line-height: 1.08;
+        letter-spacing: -0.05em;
+        color: #020201;
+      }
+
+      .feedback-head p,
+      .section-head p {
+        color: rgba(15, 16, 18, 0.64);
+      }
+
+      .result-column,
+      .external-card,
+      .panel-item,
+      .method-card,
+      .flow-step,
+      .seed-card,
+      .stage-explanation,
+      .stage-row {
+        border-radius: 22px;
+      }
+
+      .result-column h4,
+      .subcard-title,
+      .section-head h3 {
+        color: #020201;
+      }
+
+      .result-column h4,
+      .subcard-title {
+        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        color: var(--accent);
+      }
+
+      .section-head {
+        margin-bottom: 16px;
+      }
+
+      .section-head h3 {
+        margin: 8px 0 8px;
+        font-size: clamp(28px, 3vw, 38px);
+        line-height: 1.06;
+        letter-spacing: -0.05em;
+      }
+
+      .section-head > div {
+        max-width: 980px;
+      }
+
+      .metric {
+        background: rgba(255, 255, 255, 0.88);
+        border: 1px solid rgba(15, 16, 18, 0.08);
+      }
+
+      .metric span {
+        color: rgba(15, 16, 18, 0.52);
+        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .metric b {
+        color: #020201;
+      }
+
+      .metric.secure {
+        border-color: rgba(0, 113, 227, 0.18);
+        background: linear-gradient(180deg, rgba(0, 113, 227, 0.07), rgba(255, 255, 255, 0.92));
+      }
+
+      .metric.warn,
+      .comparison-status.warn,
+      .result-note.warn {
+        border-color: rgba(168, 104, 0, 0.18);
+        background: linear-gradient(180deg, rgba(255, 191, 71, 0.14), rgba(255, 255, 255, 0.92));
+        color: #7c5200;
+      }
+
+      .comparison-status {
+        color: #020201;
+        border-color: rgba(0, 113, 227, 0.18);
+        background: linear-gradient(180deg, rgba(0, 113, 227, 0.08), rgba(255, 255, 255, 0.92));
+      }
+
+      .external-card.highlight {
+        background: linear-gradient(180deg, rgba(0, 113, 227, 0.08), rgba(255, 255, 255, 0.94));
+        border-color: rgba(0, 113, 227, 0.18);
+      }
+
+      .external-card h4,
+      .method-card b,
+      .stage-explanation b,
+      .seed-card b,
+      .panel-item b,
+      .flow-step strong {
+        color: #020201;
+      }
+
+      .external-card p,
+      .method-card span,
+      .stage-explanation span,
+      .seed-card span,
+      .panel-item span,
+      .flow-step span,
+      .stage-value {
+        color: rgba(15, 16, 18, 0.64);
+      }
+
+      .overview-table th {
+        color: rgba(15, 16, 18, 0.54);
+        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+      }
+
+      .overview-table th,
+      .overview-table td {
+        border-bottom: 1px solid rgba(15, 16, 18, 0.08);
+      }
+
+      .overview-table .muted {
+        color: rgba(15, 16, 18, 0.58);
+      }
+
+      .panel-grid {
+        gap: 12px;
+      }
+
+      .panel-item {
+        gap: 12px;
+        background: linear-gradient(180deg, rgba(0, 113, 227, 0.06), rgba(255, 255, 255, 0.94));
+      }
+
+      .panel-item img {
+        background: #fff;
+        border: 1px solid rgba(15, 16, 18, 0.08);
+      }
+
+      .panel-item.placeholder::after {
+        content: "";
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 16px;
+        border: 1px dashed rgba(15, 16, 18, 0.16);
+        background:
+          radial-gradient(circle at 50% 50%, rgba(0, 113, 227, 0.12), transparent 38%),
+          linear-gradient(rgba(15, 16, 18, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(15, 16, 18, 0.03) 1px, transparent 1px);
+        background-size: auto, 20px 20px, 20px 20px;
+      }
+
+      .legend-item {
+        color: rgba(15, 16, 18, 0.62);
+      }
+
+      .legend-swatch.keep {
+        background: rgba(0, 113, 227, 0.92);
+      }
+
+      .legend-swatch.prune {
+        background: rgba(15, 16, 18, 0.2);
+      }
+
+      .stage-name {
+        color: #020201;
+        font-size: 15px;
+        letter-spacing: -0.02em;
+      }
+
+      .bar-track {
+        background: rgba(15, 16, 18, 0.08);
+      }
+
+      .bar-fill {
+        background: linear-gradient(90deg, #8bc4ff 0%, #0071e3 100%);
+      }
+
+      .detail-panel {
+        background: rgba(255, 255, 255, 0.84);
+      }
+
+      .detail-panel summary {
+        color: #020201;
+      }
+
+      @media (max-width: 1040px) {
+        .hero-proof {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .log-tail {
+        color: rgba(15, 16, 18, 0.68);
+      }
+
+      code {
+        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+        color: #020201;
+      }
+
+      @media (max-width: 1220px) {
+        .hero-layout,
+        .control-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 1040px) {
+        .result-layout,
+        .kpi-grid,
+        .metric-grid,
+        .stage-card-grid,
+        .method-grid,
+        .seed-grid,
+        .flow-steps,
+        .panel-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .metric.wide {
+          grid-column: auto;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .app {
+          padding: 16px 12px 40px;
+        }
+
+        .card {
+          border-radius: 22px;
+        }
+
+        .hero,
+        .control-panel,
+        .flow-card {
+          padding: 16px;
+        }
+
+        .privacy-flow {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-layout > div:first-child > h1 {
+          font-size: 34px;
+        }
+      }
+    </style>
   </head>
   <body>
     <div class="app">
@@ -857,14 +1576,35 @@
               在保护患者影像隐私的前提下，通过安全掩码动态剪枝与安全友好算子替换，降低安全推理通信与计算开销，
               同时保持接近明文模型的效果。
             </p>
+            <p class="hero-summary">
+              答辩建议按“结论摘要 → 现场隐私推理演示 → 外部基线对比 → 三阶段剪枝机制 → 工程附录”顺序阅读；
+              这页把离线结果、在线演示和机制说明分开摆放，避免把不同口径的数据混在一起。
+            </p>
             <div class="hero-tags">
               <span class="tag secure">安全掩码动态剪枝</span>
               <span class="tag">安全友好算子替换</span>
               <span class="tag ref">同数据集外部基线对比</span>
             </div>
+            <div class="hero-proof">
+              <div class="proof-card">
+                <b>问题定义</b>
+                <span>医疗影像推理需要保护输入隐私，但直接把标准 Transformer 搬到密态环境会带来较重的计算与通信代价。</span>
+              </div>
+              <div class="proof-card">
+                <b>核心方法</b>
+                <span>用安全掩码保留动态剪枝语义，再配合安全友好激活替换，把明文剪枝流程改写成可执行的安全协议路径。</span>
+              </div>
+              <div class="proof-card">
+                <b>现场证据</b>
+                <span>右侧先给默认稳定版本摘要，下方再现场上传一张图，展示本地分片、E2E 推理结果与三阶段保留率变化。</span>
+              </div>
+            </div>
           </div>
-          <div class="kpi-grid" id="bestContentBox">
-            <p class="empty-state">正在读取默认 bundle 与最新稳定性摘要...</p>
+          <div class="hero-aside">
+            <div class="board-label">Default Summary / Latest Stable Bundle</div>
+            <div class="kpi-grid" id="bestContentBox">
+              <p class="empty-state">正在读取默认 bundle 与最新稳定性摘要...</p>
+            </div>
           </div>
         </div>
       </section>
@@ -876,7 +1616,7 @@
             <span id="previewText">先上传一张图片，然后查看模型处理流程。</span>
           </div>
           <div class="control-copy">
-            <span class="section-eyebrow">交互演示</span>
+            <span class="section-eyebrow">现场演示</span>
             <h2>选择一张图，浏览器本地生成密态 share 后做 E2E 隐私分析</h2>
             <p>
               原图只在浏览器本地读取和预处理；页面会把像素张量拆成两份 share，
@@ -889,6 +1629,9 @@
             <div class="pipeline-note">
               当前网页演示不上传原图；若部署为两个独立 P1/P2 信任域，share0/share1 分别上传并由 SPU/2PC 联合计算，
               即可实现服务端不接触原图或完整 pixel_values 的全程隐私推理。
+            </div>
+            <div class="pipeline-note">
+              协议口径：这里的 2PC 是基于秘密共享的 MPC 路径，不是同态加密；页面中的 share0/share1 是 additive shares。
             </div>
             <div class="privacy-flow">
               <div class="privacy-step">
@@ -909,8 +1652,10 @@
               </div>
             </div>
             <div class="run-actions">
-              <input id="imageInput" type="file" accept="image/*" />
-              <button id="uploadButton">本地生成密态 share 并开始分析</button>
+              <button id="selectImageButton" class="file-picker-button" type="button">选择图片</button>
+              <input id="imageInput" class="native-file-input" type="file" accept="image/*" />
+              <div id="fileNameBox" class="file-name-status">尚未选择图片</div>
+              <button id="uploadButton" type="button">本地生成密态 share 并开始分析</button>
             </div>
           </div>
           <div class="run-feedback">
@@ -918,7 +1663,7 @@
               <div>
                 <span class="section-eyebrow">本次运行结果</span>
                 <h3>操作后立即看结果</h3>
-                <p>这里显示浏览器本地分片状态、E2E 推理结果和隐私边界字段。</p>
+                <p>这里专门放现场运行证据：浏览器本地分片状态、E2E 推理输出，以及这次执行暴露了哪些边界字段。</p>
               </div>
             </div>
             <div class="result-layout">
@@ -948,7 +1693,7 @@
       <section class="card flow-card">
         <div class="section-head">
           <div>
-            <span class="section-eyebrow">外部比较</span>
+            <span class="section-eyebrow">实验比较</span>
             <h3>与外部同数据集基线相比</h3>
             <p>这里统一展示离线验证集效果与外部基线对比；通信 / 时间只有在同一 secure benchmark 口径下重新运行后才显示。</p>
           </div>
@@ -1028,7 +1773,7 @@
           <div>
             <span class="section-eyebrow">附录</span>
             <h3>附录（复现实验与工程细节）</h3>
-            <p>旧 bundle、多 seed 和工程细节都默认收起；历史 fastpath 与 archived profile 已从当前展示口径中移除。</p>
+            <p>旧 bundle、多 seed 和工程细节都默认收起；历史 fastpath 与 archived profile 已从当前展示口径中移除，避免答辩主线被次要材料打断。</p>
           </div>
         </div>
         <div class="details-stack" id="detailsContentBox">
@@ -1039,6 +1784,8 @@
 
     <script>
       const imageInput = document.getElementById('imageInput');
+      const selectImageButton = document.getElementById('selectImageButton');
+      const fileNameBox = document.getElementById('fileNameBox');
       const uploadButton = document.getElementById('uploadButton');
       const previewImage = document.getElementById('previewImage');
       const previewText = document.getElementById('previewText');
@@ -1108,7 +1855,30 @@
 
       function setMainActionDisabled(disabled) {
         uploadButton.disabled = disabled;
+        selectImageButton.disabled = disabled;
       }
+
+      function setClientSideFailure(message, details = '') {
+        const safeMessage = message || '前端事件处理失败';
+        metaBox.innerHTML = `<div class="result-note warn">${escapeHtml(safeMessage)}</div>`;
+        compareBox.innerHTML = `<div class="result-note warn">
+          浏览器端还没有成功提交到后端。${details ? `<br><code>${escapeHtml(details)}</code>` : ''}
+        </div>`;
+        runtimeBox.innerHTML = `<div class="metric-grid">
+          ${metric('当前状态', '前端未完成提交', 'warn wide')}
+          ${metric('建议处理', '重新选择 PNG/JPG 图片后再点击按钮', 'wide')}
+        </div>`;
+      }
+
+      window.addEventListener('error', (event) => {
+        setClientSideFailure('前端脚本运行错误', `${event.message || 'unknown'} @ ${event.filename || 'inline'}:${event.lineno || 0}`);
+      });
+
+      window.addEventListener('unhandledrejection', (event) => {
+        const reason = event.reason;
+        const message = reason && reason.message ? reason.message : String(reason || 'unknown promise rejection');
+        setClientSideFailure('前端异步处理错误', message);
+      });
 
       function updateSummaryBoard(assets, stages = []) {
         if (!assets) {
@@ -1184,6 +1954,50 @@
           </div>
         `;
         }).join('');
+      }
+
+      function restorePruningStoryFromSummary(summary) {
+        const targets = Array.isArray(summary?.pruning_targets?.stages) ? summary.pruning_targets.stages : [];
+        if (!summaryBoard || !targets.length) {
+          updateSummaryBoard(null);
+          updateStageBars(null);
+          updateStageExplanations(null);
+          return;
+        }
+        summaryBoard.innerHTML = [
+          `
+            <div class="panel-item placeholder">
+              <span class="panel-kicker">Input</span>
+              <b>浏览器本地读图与标准化</b>
+              <span>当前主路径不会把原图上传到后端，因此这里先展示流程位说明，而不是伪造一张阶段图。</span>
+            </div>
+          `,
+          ...targets.map((stage, index) => `
+            <div class="panel-item placeholder">
+              <span class="panel-kicker">Stage ${escapeHtml(stage.stage ?? index + 1)}</span>
+              <b>目标保留约 ${escapeHtml(stage.target_tokens_after)} / 196 个 token</b>
+              <span>这是当前正式展示口径里的默认收缩目标，用来解释后续为什么能减少安全比较、通信和计算对象。</span>
+            </div>
+          `),
+        ].join('');
+
+        updateStageBars(targets.map((stage, index) => ({
+          stage_index: stage.stage ?? index + 1,
+          pruning_layer: stage.stage ?? index + 1,
+          keep_count: stage.target_tokens_after,
+          density: Number(stage.keep_ratio ?? 0),
+          density_percent: humanRatioPercent(stage.keep_ratio ?? 0),
+        })));
+
+        updateStageExplanations(targets.map((stage, index) => ({
+          title: `Stage ${stage.stage ?? index + 1} 目标`,
+          summary: `默认保留 ${stage.target_tokens_after}/196 个 token，保留率 ${humanRatioPercent(stage.keep_ratio ?? 0)}。`,
+          reason: index === 0
+            ? '先缩小后续需要进入安全比较的候选集合。'
+            : (index === targets.length - 1
+              ? '最后只保留最关键的 token，进一步压低后续密态负担。'
+              : '在上一阶段基础上继续压缩活跃 token 集，减少后续对象规模。'),
+        })));
       }
 
       function humanSeconds(value) {
@@ -1472,7 +2286,7 @@
           if (source.includes('external_baselines/mpcvit')) {
             return '外部对照来自 MPCViT 当前同数据集模型结构的 proxy，不是 full pipeline secure 复现。';
           }
-          if (source.includes('frozen_bundle_verified_tracka_lr3e5_20260414')) {
+          if (source.includes('frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430')) {
             return '本项目对照来自当前最终展示模型的 transformer 结构 proxy。';
           }
           return source ? `来源：${source}` : '来源信息未写入。';
@@ -1602,7 +2416,7 @@
               <thead>
                 <tr>
                   <th>指标</th>
-                  <th>本项目 Transfield</th>
+                  <th>本项目 Transshield</th>
                   <th>对比对象</th>
                   <th>结论</th>
                 </tr>
@@ -1725,6 +2539,7 @@
           : Object.entries(closure?.config || {}).map(([key, value]) => configLabel(key, value));
         renderHeroCards(summary);
         renderExternalComparisonSection(summary);
+        restorePruningStoryFromSummary(summary);
         if (!latestLiveRunState) {
           renderRuntimePlaceholder();
         }
@@ -1990,7 +2805,8 @@
       async function runBrowserPrivateAnalysis() {
         const file = imageInput.files[0];
         if (!file) {
-          alert('请先选择图片。');
+          setClientSideFailure('请先选择图片。');
+          imageInput.focus();
           return;
         }
         setButtonBusy(uploadButton, true, '本地分片并分析中...');
@@ -2019,28 +2835,46 @@
         }
       }
 
-      uploadButton.addEventListener('click', async () => {
+      uploadButton.addEventListener('click', async (event) => {
+        event.preventDefault();
+        metaBox.innerHTML = '<div class="empty-state">按钮点击已收到，正在检查图片并准备浏览器本地分片。</div>';
         await runBrowserPrivateAnalysis();
+      });
+
+      selectImageButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        metaBox.innerHTML = '<div class="empty-state">选择图片按钮点击已收到，正在打开浏览器文件选择器；如果系统拦截弹窗，请直接点击下方原生文件选择框。</div>';
+        try {
+          if (typeof imageInput.showPicker === 'function') {
+            imageInput.showPicker();
+            return;
+          }
+          imageInput.click();
+        } catch (error) {
+          setClientSideFailure('浏览器拦截了脚本触发的文件选择器，请直接点击下方原生文件选择框。', error.message);
+          imageInput.focus();
+        }
       });
 
       imageInput.addEventListener('change', () => {
         const file = imageInput.files[0];
         if (file) {
+          fileNameBox.textContent = `已选择：${file.name}`;
           latestLiveRunState = null;
           latestSecurePrediction = null;
           previewImage.src = URL.createObjectURL(file);
           previewImage.style.display = 'block';
           previewText.style.display = 'none';
           metaBox.innerHTML = '<div class="empty-state">图片已在浏览器本地载入；点击主按钮后会生成 share 并启动 E2E 推理。</div>';
-          updateSummaryBoard(null);
-          updateStageBars(null);
-          updateStageExplanations(null);
+          restorePruningStoryFromSummary(latestDemoSummary);
           compareBox.innerHTML = '<div class="empty-state">点击“本地生成密态 share 并开始分析”后，会显示 E2E 推理结果。</div>';
           renderRuntimePlaceholder();
           if (latestDemoSummary) {
             renderHeroCards(latestDemoSummary);
             renderExternalComparisonSection(latestDemoSummary);
           }
+        } else {
+          fileNameBox.textContent = '尚未选择图片';
         }
       });
 

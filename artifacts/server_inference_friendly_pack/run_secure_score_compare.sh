@@ -10,7 +10,7 @@ RUN_NAME="${RUN_NAME:-transshield_inference_friendly_deits}"
 TRAIN_DATA_PATH="${TRAIN_DATA_PATH:-}"
 VAL_DATA_PATH="${VAL_DATA_PATH:-}"
 RUN_DIR="${RUN_DIR:-artifacts/server_runs/${RUN_NAME}}"
-BUNDLE_DIR="${BUNDLE_DIR:-artifacts/frozen_bundle_verified_tracka_lr3e5_20260414}"
+BUNDLE_DIR="${BUNDLE_DIR:-artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430}"
 SECURE_RUN_DIR="${SECURE_RUN_DIR:-artifacts/server_pipeline_run/${RUN_NAME}}"
 CONFIG_PATH="${CONFIG_PATH:-configs/openbumblebee/2pc.json}"
 

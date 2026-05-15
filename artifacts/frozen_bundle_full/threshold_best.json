@@ -1,9 +1,0 @@
-{
-  "checkpoint": "checkpoint-best.pth",
-  "eval_binary_threshold": 0.524941,
-  "eval_acc1": 85.87786,
-  "eval_loss": 0.5782,
-  "auc": 0.9231076835189945,
-  "default_argmax_acc1": 81.29771,
-  "default_pred_counts": [55, 469]
-}

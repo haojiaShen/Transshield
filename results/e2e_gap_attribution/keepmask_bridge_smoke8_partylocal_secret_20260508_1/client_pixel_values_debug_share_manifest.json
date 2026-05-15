@@ -1,0 +1,65 @@
+{
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+  "crop_pct": 0.875,
+  "imagenet_default_mean_and_std": true,
+  "input_size": 224,
+  "manifest_type": "transshield_e2e_debug_float_additive_share_manifest_v0",
+  "max_reconstruct_abs_error": 2.384185791015625e-07,
+  "plaintext_pixel_package_written": false,
+  "privacy_status": "debug_additive_shares_only_not_production_mpc; each share file must be held by a different party",
+  "sample_count": 8,
+  "sample_ids": [
+    "sample_000000",
+    "sample_000001",
+    "sample_000002",
+    "sample_000003",
+    "sample_000004",
+    "sample_000005",
+    "sample_000006",
+    "sample_000007"
+  ],
+  "selection_mode": "imagefolder",
+  "server_boundary_note": "A production e2e path should provide each share to its owning party and must not reconstruct plaintext pixel_values on the server host.",
+  "share_count": 2,
+  "share_dtype": "torch.float32",
+  "share_paths": [
+    "/data/wyb/Transshield_final/results/e2e_gap_attribution/keepmask_bridge_smoke8_partylocal_secret_20260508_1/client_pixel_values_debug_share_p1_share.pt",
+    "/data/wyb/Transshield_final/results/e2e_gap_attribution/keepmask_bridge_smoke8_partylocal_secret_20260508_1/client_pixel_values_debug_share_p2_share.pt"
+  ],
+  "share_semantics": "debug_float_additive_share_not_production_mpc_share",
+  "share_shape": [
+    8,
+    3,
+    224,
+    224
+  ],
+  "source_paths": [
+    "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00003.png",
+    "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00007.png",
+    "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00011.png",
+    "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00014.png",
+    "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00022.png",
+    "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00028.png",
+    "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00030.png",
+    "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00031.png"
+  ],
+  "source_paths_included": true,
+  "split_public_and_party_manifests": {
+    "party_manifest_jsons": [
+      "/data/wyb/Transshield_final/results/e2e_gap_attribution/keepmask_bridge_smoke8_partylocal_secret_20260508_1/share_party_manifests/p1_share_manifest.json",
+      "/data/wyb/Transshield_final/results/e2e_gap_attribution/keepmask_bridge_smoke8_partylocal_secret_20260508_1/share_party_manifests/p2_share_manifest.json"
+    ],
+    "public_manifest_json": "/data/wyb/Transshield_final/results/e2e_gap_attribution/keepmask_bridge_smoke8_partylocal_secret_20260508_1/client_pixel_values_debug_share_public_manifest.json"
+  },
+  "targets": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "targets_included": true
+}

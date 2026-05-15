@@ -3,7 +3,6 @@ import json
 import math
 import sys
 from pathlib import Path
-from types import SimpleNamespace
 
 import torch
 import torch.nn.functional as F
@@ -14,9 +13,13 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from models.dyvit import VisionTransformerDiffPruning
-from tools.transshield_stage2_bundle import build_eval_transform_from_args_snapshot
 from tools.transshield_threshold_branch_eval import binary_auc
+from tools.transshield_plaintext_checkpoint_eval import (
+    build_eval_transform,
+    build_model,
+    checkpoint_args_to_dict,
+    import_repo_modules,
+)
 
 
 def write_json(path: Path, payload):
@@ -25,60 +28,24 @@ def write_json(path: Path, payload):
     path.write_text(text + '\n', encoding='utf-8')
 
 
-def checkpoint_args_to_dict(checkpoint_args):
-    if hasattr(checkpoint_args, '__dict__'):
-        return dict(vars(checkpoint_args))
-    if isinstance(checkpoint_args, dict):
-        return dict(checkpoint_args)
-    return {}
-
-
-def build_model_from_training_args(args_snapshot):
-    model_name = args_snapshot.get('model', 'deit-s')
-    base_rate = float(args_snapshot['base_rate'])
-    keep_rate = [base_rate, base_rate ** 2, base_rate ** 3]
-    if model_name == 'deit-s':
-        config = {'embed_dim': 384, 'depth': 12, 'num_heads': 6}
-    elif model_name == 'deit-b':
-        config = {'embed_dim': 768, 'depth': 12, 'num_heads': 12}
-    else:
-        raise ValueError(f'Unsupported model for threshold search: {model_name}')
-
-    return VisionTransformerDiffPruning(
-        patch_size=16,
-        embed_dim=config['embed_dim'],
-        depth=config['depth'],
-        num_heads=config['num_heads'],
-        mlp_ratio=4,
-        qkv_bias=True,
-        num_classes=int(args_snapshot['nb_classes']),
-        pruning_loc=[3, 6, 9],
-        token_ratio=keep_rate,
-        distill=True,
-        act_layer=args_snapshot['square_activation_mode'] if args_snapshot['use_square_gelu'] else 'gelu',
-        use_mask_pruning=bool(args_snapshot['use_mask_pruning']),
-        use_approx_attn=bool(args_snapshot['use_approx_attn']),
-        approx_attn_mode=args_snapshot.get('approx_attn_mode', 'relu'),
-        fp32_attention=True,
-        eval_pruning_mode=args_snapshot.get('eval_pruning_mode', 'topk_argsort'),
-        eval_tie_policy=args_snapshot.get('eval_tie_policy', 'lowest_index'),
-    )
-
-
-def load_checkpoint_bundle(checkpoint_path: Path, device: str):
+def load_checkpoint_bundle(checkpoint_path: Path, device: str, repo_root: Path, checkpoint_model_key: str = 'model'):
     checkpoint = torch.load(checkpoint_path.resolve(), map_location='cpu', weights_only=False)
     args_snapshot = checkpoint_args_to_dict(checkpoint.get('args'))
-    model = build_model_from_training_args(args_snapshot).to(device)
-    state_dict = checkpoint['model']
+    datasets_mod, dyvit_mod = import_repo_modules(repo_root)
+    model = build_model(args_snapshot, dyvit_mod.VisionTransformerDiffPruning).to(device)
+    if checkpoint_model_key not in checkpoint:
+        raise KeyError(f'checkpoint model key {checkpoint_model_key!r} not found in {checkpoint_path}')
+    state_dict = checkpoint[checkpoint_model_key]
     load_result = model.load_state_dict(state_dict, strict=True)
     if load_result.missing_keys or load_result.unexpected_keys:
         raise ValueError(
             f'non-strict load result: missing={load_result.missing_keys} unexpected={load_result.unexpected_keys}'
         )
     model.eval()
-    transform = build_eval_transform_from_args_snapshot(args_snapshot)
+    transform = build_eval_transform(args_snapshot, datasets_mod.build_transform)
     return {
         'checkpoint': checkpoint,
+        'checkpoint_model_key': checkpoint_model_key,
         'args_snapshot': args_snapshot,
         'model': model,
         'transform': transform,
@@ -157,8 +124,8 @@ def load_data_loader(data_path: Path, transform, batch_size: int, num_workers: i
     return DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=False)
 
 
-def build_search_report(checkpoint_path: Path, data_path: Path, device: str, batch_size: int, num_workers: int):
-    bundle = load_checkpoint_bundle(checkpoint_path, device)
+def build_search_report(checkpoint_path: Path, data_path: Path, device: str, batch_size: int, num_workers: int, repo_root: Path, checkpoint_model_key: str):
+    bundle = load_checkpoint_bundle(checkpoint_path, device, repo_root, checkpoint_model_key)
     data_loader = load_data_loader(data_path, bundle['transform'], batch_size, num_workers)
     outputs = collect_eval_outputs(bundle['model'], data_loader, device)
 
@@ -173,6 +140,7 @@ def build_search_report(checkpoint_path: Path, data_path: Path, device: str, bat
     return {
         'checkpoint': str(checkpoint_path.resolve().name),
         'checkpoint_path': str(checkpoint_path.resolve()),
+        'checkpoint_model_key': bundle['checkpoint_model_key'],
         'data_path': str(data_path.resolve()),
         'sample_count': int(targets.numel()),
         'finite_logits': bool(outputs['finite_logits']),
@@ -194,12 +162,14 @@ def build_search_report(checkpoint_path: Path, data_path: Path, device: str, bat
             'use_mask_pruning': bool(bundle['args_snapshot'].get('use_mask_pruning')),
             'eval_pruning_mode': bundle['args_snapshot'].get('eval_pruning_mode', 'topk_argsort'),
             'eval_tie_policy': bundle['args_snapshot'].get('eval_tie_policy', 'lowest_index'),
+            'secure_static_train_depth': int(bundle['args_snapshot'].get('secure_static_train_depth', 0) or 0),
+            'secure_static_skip_pruning': bool(bundle['args_snapshot'].get('secure_static_skip_pruning', True)),
         },
     }
 
 
-def build_eval_report(checkpoint_path: Path, threshold_json: Path, data_path: Path, device: str, batch_size: int, num_workers: int):
-    bundle = load_checkpoint_bundle(checkpoint_path, device)
+def build_eval_report(checkpoint_path: Path, threshold_json: Path, data_path: Path, device: str, batch_size: int, num_workers: int, repo_root: Path, checkpoint_model_key: str):
+    bundle = load_checkpoint_bundle(checkpoint_path, device, repo_root, checkpoint_model_key)
     threshold_payload = json.loads(threshold_json.resolve().read_text(encoding='utf-8'))
     threshold = float(threshold_payload['eval_binary_threshold'])
     data_loader = load_data_loader(data_path, bundle['transform'], batch_size, num_workers)
@@ -213,6 +183,7 @@ def build_eval_report(checkpoint_path: Path, threshold_json: Path, data_path: Pa
 
     return {
         'checkpoint_path': str(checkpoint_path.resolve()),
+        'checkpoint_model_key': bundle['checkpoint_model_key'],
         'threshold_json': str(threshold_json.resolve()),
         'data_path': str(data_path.resolve()),
         'sample_count': int(targets.numel()),
@@ -231,7 +202,9 @@ def main():
 
     parser_search = subparsers.add_parser('search', help='find and save the best validation threshold')
     parser_search.add_argument('--checkpoint', required=True)
+    parser_search.add_argument('--checkpoint-model-key', default='model')
     parser_search.add_argument('--data-path', required=True)
+    parser_search.add_argument('--repo-root', default=str(REPO_ROOT))
     parser_search.add_argument('--device', default='cpu')
     parser_search.add_argument('--batch-size', type=int, default=32)
     parser_search.add_argument('--num-workers', type=int, default=0)
@@ -239,8 +212,10 @@ def main():
 
     parser_eval = subparsers.add_parser('eval', help='evaluate a checkpoint with a saved threshold json')
     parser_eval.add_argument('--checkpoint', required=True)
+    parser_eval.add_argument('--checkpoint-model-key', default='model')
     parser_eval.add_argument('--threshold-json', required=True)
     parser_eval.add_argument('--data-path', required=True)
+    parser_eval.add_argument('--repo-root', default=str(REPO_ROOT))
     parser_eval.add_argument('--device', default='cpu')
     parser_eval.add_argument('--batch-size', type=int, default=32)
     parser_eval.add_argument('--num-workers', type=int, default=0)
@@ -255,6 +230,8 @@ def main():
             device=args.device,
             batch_size=args.batch_size,
             num_workers=args.num_workers,
+            repo_root=Path(args.repo_root).resolve(),
+            checkpoint_model_key=args.checkpoint_model_key,
         )
     else:
         report = build_eval_report(
@@ -264,6 +241,8 @@ def main():
             device=args.device,
             batch_size=args.batch_size,
             num_workers=args.num_workers,
+            repo_root=Path(args.repo_root).resolve(),
+            checkpoint_model_key=args.checkpoint_model_key,
         )
 
     write_json(Path(args.output_json).resolve(), report)

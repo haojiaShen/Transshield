@@ -10,7 +10,7 @@ cd "$REPO_ROOT"
 
 PYTHON_BIN="${PYTHON_BIN:-python}"
 RUN_NAME="${RUN_NAME:-transshield_e2e_secure_poc}"
-BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_verified_tracka_lr3e5_20260414}"
+BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430}"
 E2E_RUN_DIR="${E2E_RUN_DIR:-$REPO_ROOT/artifacts/server_pipeline_run/${RUN_NAME}/e2e_secure_poc}"
 E2E_INPUT_PT="${E2E_INPUT_PT:-$E2E_RUN_DIR/client_pixel_values.pt}"
 E2E_INPUT_JSON="${E2E_INPUT_JSON:-$E2E_RUN_DIR/client_pixel_values.json}"
@@ -50,7 +50,7 @@ if [[ "$E2E_SHARE_ONLY" == "1" && ! -f "$E2E_SHARE_MANIFEST_JSON" ]]; then
     exit 1
   fi
 
-  echo "[e2e-poc] 生成客户端 debug additive share manifest，不写 plaintext pixel package。"
+  echo "[e2e-poc] 生成数据使用方 debug additive share manifest，不写 plaintext pixel package。"
   SHARE_ARGS=(
     tools/transshield_e2e_secure_infer.py client-share-preprocess
     --bundle-dir "$BUNDLE_DIR"
@@ -114,7 +114,7 @@ if [[ ! -f "$E2E_INPUT_PT" ]]; then
     exit 1
   fi
 
-  echo "[e2e-poc] 生成客户端预处理像素包。"
+  echo "[e2e-poc] 生成数据使用方预处理像素包。"
   echo "[e2e-poc] 注意：这一步仍是 plaintext client tensor，不是正式 MPC share。"
 
   PREPROCESS_ARGS=(
@@ -147,7 +147,7 @@ if [[ ! -f "$E2E_INPUT_PT" ]]; then
   fi
   "$PYTHON_BIN" "${PREPROCESS_ARGS[@]}"
 else
-  echo "[e2e-poc] 复用现有客户端像素包：$E2E_INPUT_PT"
+  echo "[e2e-poc] 复用现有数据使用方像素包：$E2E_INPUT_PT"
 fi
 
 echo "[e2e-poc] 运行 plaintext reference。"

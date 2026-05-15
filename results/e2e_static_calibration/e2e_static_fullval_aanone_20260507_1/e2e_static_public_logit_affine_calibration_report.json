@@ -1,0 +1,30 @@
+{
+  "best_accuracy_constrained_affine": {
+    "accuracy": 91.79389312977099,
+    "auc": 0.9678758449966676,
+    "bias": 4.699830266269055,
+    "ce_loss": 0.20253536801901464,
+    "scale": 8.066156921766135
+  },
+  "deployment_note": {
+    "changes_auc_ranking": false,
+    "operation": "replace score = logit_1 - logit_0 + bias with score = scale * (logit_1 - logit_0) + bias",
+    "requires_retraining": false,
+    "secure_friendly": true
+  },
+  "inputs": {
+    "baseline_calibration_json": "/home/yclcg/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_bias.json",
+    "static_logits_csv": "/home/yclcg/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_logits.csv"
+  },
+  "label": "e2e_static_fullval_aanone_public_affine_accuracy_preserving_20260507",
+  "manifest_type": "transshield_public_logit_affine_calibration_report_v0",
+  "min_accuracy": 91.79389312977099,
+  "raw": {
+    "accuracy": 76.7175572519084,
+    "auc": 0.9678758449966676,
+    "bias": 0.0,
+    "ce_loss": 0.5305012232469885,
+    "scale": 1.0
+  },
+  "sample_count": 524
+}

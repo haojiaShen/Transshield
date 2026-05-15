@@ -1,0 +1,82 @@
+{
+  "report_type": "depth_truncation_plaintext_cpu_accuracy",
+  "bundle_dir": "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+  "eval_samples": 524,
+  "device": "cpu",
+  "note": "Static whole-forward reference (no runtime pruning), truncating ViT blocks at specified depth. Threshold=0.3577311038970947.",
+  "results": [
+    {
+      "depth": 6,
+      "sample_count": 524,
+      "argmax_accuracy": 25.76,
+      "threshold_accuracy": 30.73,
+      "relative_compute_pct": 67.1,
+      "compute_saving_pct": 32.9,
+      "argmax_delta_vs_d12": -50.96,
+      "threshold_delta_vs_d12": -61.25
+    },
+    {
+      "depth": 8,
+      "sample_count": 524,
+      "argmax_accuracy": 26.34,
+      "threshold_accuracy": 51.53,
+      "relative_compute_pct": 80.0,
+      "compute_saving_pct": 20.0,
+      "argmax_delta_vs_d12": -50.38,
+      "threshold_delta_vs_d12": -40.45
+    },
+    {
+      "depth": 9,
+      "sample_count": 524,
+      "argmax_accuracy": 66.6,
+      "threshold_accuracy": 85.5,
+      "relative_compute_pct": 86.5,
+      "compute_saving_pct": 13.5,
+      "argmax_delta_vs_d12": -10.12,
+      "threshold_delta_vs_d12": -6.48
+    },
+    {
+      "depth": 10,
+      "sample_count": 524,
+      "argmax_accuracy": 79.96,
+      "threshold_accuracy": 91.41,
+      "relative_compute_pct": 91.0,
+      "compute_saving_pct": 9.0,
+      "argmax_delta_vs_d12": 3.24,
+      "threshold_delta_vs_d12": -0.57
+    },
+    {
+      "depth": 11,
+      "sample_count": 524,
+      "argmax_accuracy": 79.01,
+      "threshold_accuracy": 91.22,
+      "relative_compute_pct": 95.5,
+      "compute_saving_pct": 4.5,
+      "argmax_delta_vs_d12": 2.29,
+      "threshold_delta_vs_d12": -0.76
+    },
+    {
+      "depth": 12,
+      "sample_count": 524,
+      "argmax_accuracy": 76.72,
+      "threshold_accuracy": 91.98,
+      "relative_compute_pct": 100.0,
+      "compute_saving_pct": 0.0,
+      "argmax_delta_vs_d12": 0.0,
+      "threshold_delta_vs_d12": -0.0
+    }
+  ],
+  "best_threshold_candidate": {
+    "depth": 12,
+    "threshold_accuracy": 91.98
+  },
+  "best_argmax_candidate": {
+    "depth": 10,
+    "argmax_accuracy": 79.96
+  },
+  "recommended_candidate": {
+    "depth": 10,
+    "reason": "argmax_accuracy +3.24pp vs depth12, threshold_accuracy -0.57pp only, compute_saving 17.4%",
+    "spu_status": "running on server 2026-05-11"
+  }
+}

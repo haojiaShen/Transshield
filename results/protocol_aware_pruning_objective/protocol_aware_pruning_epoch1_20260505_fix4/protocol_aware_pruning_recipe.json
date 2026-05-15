@@ -1,0 +1,120 @@
+{
+  "acceptance_readiness": {
+    "reason": "plaintext/fairness/boundary/consistency/secret-runtime 五个闭环都已有当前证据。",
+    "status": "p0_delivery_closure_ready"
+  },
+  "basis": {
+    "consistency": {
+      "argmax_match_ratio": 0.9942748091603053,
+      "logits_max_abs_error": 0.040701448917388916,
+      "probabilities_max_abs_error": 0.01950448751449585,
+      "secure_overall_passed": true,
+      "threshold_match_ratio": 0.9751908396946565
+    },
+    "dominant_cost_stage_index": 0,
+    "dominant_risk_stage_index": 1,
+    "key_findings": [
+      "stage 0 contributes the largest estimated sidecar bridge share: 42.56%.",
+      "stage 1 has the highest heuristic risk tier: high (0.9500).",
+      "stages 0/2 use strict below-threshold margins on the order of 1e-8 while secure kth max abs error stays around 1e-5, so semantic tie handling is part of the method, not an optional patch.",
+      "stage 1 is fully tie-dominated in the current clean run: all active tokens lie on the kth boundary before tie disambiguation."
+    ],
+    "stage_basis": [
+      {
+        "all_active_equal_ratio": 0.0,
+        "boundary_tie_sample_ratio": 0.9312977194786072,
+        "estimated_total_sidecar_share": 0.4256212800729019,
+        "keep_count": 137,
+        "kth_threshold_max_abs_error": 1.239776611328125e-05,
+        "primary_driver": "tie_dominated_and_numeric_margin_smaller_than_kth_error",
+        "pruning_layer": 3,
+        "risk_score": 0.7011373827730304,
+        "risk_tier": "medium",
+        "semantic_zero_margin_ratio": 0.9312977194786072,
+        "stage_index": 0
+      },
+      {
+        "all_active_equal_ratio": 1.0,
+        "boundary_tie_sample_ratio": 1.0,
+        "estimated_total_sidecar_share": 0.36450315316398907,
+        "keep_count": 96,
+        "kth_threshold_max_abs_error": 2.384185791015625e-07,
+        "primary_driver": "all_active_equal_boundary",
+        "pruning_layer": 6,
+        "risk_score": 0.95,
+        "risk_tier": "high",
+        "semantic_zero_margin_ratio": 1.0,
+        "stage_index": 1
+      },
+      {
+        "all_active_equal_ratio": 0.0,
+        "boundary_tie_sample_ratio": 0.8664122223854065,
+        "estimated_total_sidecar_share": 0.20987556676310903,
+        "keep_count": 67,
+        "kth_threshold_max_abs_error": 1.2755393981933594e-05,
+        "primary_driver": "numeric_margin_smaller_than_kth_error",
+        "pruning_layer": 9,
+        "risk_score": 0.651075290781293,
+        "risk_tier": "medium",
+        "semantic_zero_margin_ratio": 0.8664122223854065,
+        "stage_index": 2
+      }
+    ]
+  },
+  "inputs": {
+    "stage_cost_risk_json": "/data/wyb/Transshield_final/results/stage_cost_risk_model/stage_cost_risk_20260505_clean/stage_cost_risk_report.json"
+  },
+  "judgement": {
+    "debug_cadence_note": "the current loss print cadence is 100 training steps, so debug80 is for launch/stability only; epoch1 is the first short mode that should emit pruning margin stats on the current dataset.",
+    "scope": "this recipe only formalizes a protocol-aware pruning objective entry point for the current official line; it does not claim a new accuracy gain before fresh training runs are executed and compared.",
+    "why_now": [
+      "stage 1 is the dominant boundary-risk stage and should receive the strongest margin pressure",
+      "stage 0 still carries the largest estimated sidecar cost share and should not be ignored",
+      "stages 0 and 2 show strict margins far below the current secure kth numerical error scale, so immediate protocol-aware regularization should stay conservative first"
+    ]
+  },
+  "manifest_type": "transshield_protocol_aware_pruning_recipe_v0",
+  "official_line": {
+    "default_plaintext_bundle": "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
+    "default_secret_profile": "secret_blockwise_stage + public_calibrated + uniform + fixed_square + clip0 + depth6 + bsz1",
+    "historical_benchmark_bundle": "artifacts/frozen_bundle_verified_tracka_lr3e5_20260414",
+    "method_core": "masking -> F_mux ; threshold compare -> F_less ; secure sidecar/replay"
+  },
+  "profiles": {
+    "conservative": {
+      "intended_use": "first protocol-aware wiring check with immediate activation",
+      "notes": [
+        "uses a smooth penalty to avoid turning the tie-dominated boundary into an abrupt optimization target on the first short run",
+        "keeps all pruning stages active, but emphasizes stage 1 first and stage 0 second"
+      ],
+      "pruning_margin_mode": "softplus",
+      "pruning_margin_stage_weights": [
+        1.5,
+        1.65,
+        1.0
+      ],
+      "pruning_margin_stage_weights_csv": "1.50,1.65,1.00",
+      "pruning_margin_start_epoch": 0,
+      "pruning_margin_target": 2.6e-05,
+      "pruning_margin_weight": 1.0
+    },
+    "focused": {
+      "intended_use": "after conservative wiring succeeds and you want stronger explicit margin pressure",
+      "notes": [
+        "pushes the dominant risk stage more aggressively",
+        "switches to hinge to optimize a clearer minimum-margin target once short-run stability is confirmed"
+      ],
+      "pruning_margin_mode": "hinge",
+      "pruning_margin_stage_weights": [
+        1.4,
+        1.9,
+        0.9
+      ],
+      "pruning_margin_stage_weights_csv": "1.40,1.90,0.90",
+      "pruning_margin_start_epoch": 0,
+      "pruning_margin_target": 3.9e-05,
+      "pruning_margin_weight": 3.0
+    }
+  },
+  "recommended_profile": "conservative"
+}

@@ -87,6 +87,7 @@ def update_config(
     remove_unsupported_cheetah_fields: bool,
     make_backup: bool,
     disable_colocated_optimization: bool,
+    allow_cheetah_mul_lsb_error: bool,
 ):
     if make_backup:
         backup_file(path)
@@ -107,8 +108,12 @@ def update_config(
         cheetah_config = spu_config.get('runtime_config', {}).get('cheetah_2pc_config', {})
         cheetah_config.pop('approx_less_precision', None)
 
+    runtime_config = spu_config.get('runtime_config', {})
+    cheetah_config = runtime_config.setdefault('cheetah_2pc_config', {})
+    if not allow_cheetah_mul_lsb_error:
+        cheetah_config['enable_mul_lsb_error'] = False
+
     if disable_colocated_optimization:
-        runtime_config = spu_config.get('runtime_config', {})
         runtime_config['experimental_enable_colocated_optimization'] = False
 
     write_json(path, payload)
@@ -253,6 +258,7 @@ def configure(args):
         remove_unsupported_cheetah_fields=args.remove_unsupported_cheetah_fields,
         make_backup=args.backup,
         disable_colocated_optimization=args.disable_colocated_optimization,
+        allow_cheetah_mul_lsb_error=args.allow_cheetah_mul_lsb_error,
     )
     if template_path and template_path.exists() and template_path != config_path:
         update_config(
@@ -261,6 +267,7 @@ def configure(args):
             remove_unsupported_cheetah_fields=args.remove_unsupported_cheetah_fields,
             make_backup=args.backup,
             disable_colocated_optimization=args.disable_colocated_optimization,
+            allow_cheetah_mul_lsb_error=args.allow_cheetah_mul_lsb_error,
         )
 
     state = {
@@ -270,6 +277,10 @@ def configure(args):
         'spu_internal_addrs': updated_config['devices']['SPU']['config']['spu_internal_addrs'],
         'remove_unsupported_cheetah_fields': args.remove_unsupported_cheetah_fields,
         'disable_colocated_optimization': args.disable_colocated_optimization,
+        'allow_cheetah_mul_lsb_error': args.allow_cheetah_mul_lsb_error,
+        'enable_mul_lsb_error': updated_config['devices']['SPU']['config']['runtime_config']
+        .get('cheetah_2pc_config', {})
+        .get('enable_mul_lsb_error'),
         'node_processes': [],
     }
     if args.state_json:
@@ -323,6 +334,10 @@ def start(args):
     raise RuntimeError(f'SPU runtime setup failed after {args.warmup_attempts} attempts: {last_error}')
 
 
+def stop(args):
+    stop_existing_nodes(Path(args.config).resolve(), args.config, Path(args.state_json).resolve())
+
+
 def check(args):
     config_payload = load_json(Path(args.config).resolve())
     wait_for_addresses(parse_node_ports(config_payload), args.startup_timeout_sec, 'SPU node gRPC ports')
@@ -336,6 +351,11 @@ def add_common_args(parser):
     parser.add_argument('--state-json', default='logs/spu_runtime_ports.json')
     parser.add_argument('--remove-unsupported-cheetah-fields', action='store_true')
     parser.add_argument('--disable-colocated-optimization', action='store_true')
+    parser.add_argument(
+        '--allow-cheetah-mul-lsb-error',
+        action='store_true',
+        help='keep Cheetah enable_mul_lsb_error enabled instead of forcing the stable default false',
+    )
 
 
 def build_parser():
@@ -353,6 +373,9 @@ def build_parser():
     parser_start.add_argument('--startup-timeout-sec', type=float, default=30.0)
     parser_start.add_argument('--warmup-attempts', type=int, default=2)
 
+    parser_stop = subparsers.add_parser('stop', help='stop SPU nodes recorded in the runtime state')
+    add_common_args(parser_stop)
+
     parser_check = subparsers.add_parser('check', help='wait until configured SPU node ports are reachable')
     parser_check.add_argument('--config', default='configs/openbumblebee/2pc.json')
     parser_check.add_argument('--startup-timeout-sec', type=float, default=20.0)
@@ -366,6 +389,8 @@ def main():
         configure(args)
     elif args.command == 'start':
         start(args)
+    elif args.command == 'stop':
+        stop(args)
     else:
         check(args)
 

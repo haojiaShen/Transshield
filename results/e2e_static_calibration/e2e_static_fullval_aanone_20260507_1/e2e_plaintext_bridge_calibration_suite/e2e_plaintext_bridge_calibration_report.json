@@ -1,0 +1,739 @@
+{
+  "bridge_candidates": [
+    {
+      "affine_static_from_plaintext_score": {
+        "intercept": -1.4753916926717807,
+        "mean_abs_error": 0.1384555493410476,
+        "slope": 1.8658459209236515
+      },
+      "bridge_plaintext_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout64_spuaware_nonisolated_20260507_2/e2e_secure_poc/plaintext_same_images_reference.json",
+      "bridge_static_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout64_spuaware_nonisolated_20260507_2/e2e_secure_poc/static_whole_forward_reference.json",
+      "candidate_output_calibration": {
+        "bias": 0.2493739077678101,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Bridge calibration translated from plaintext best-threshold into static/E2E raw-score space.",
+        "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+        "threshold": 0.5,
+        "weights": [
+          -1.0,
+          1.0
+        ]
+      },
+      "label": "heldout64",
+      "plaintext_best_threshold": {
+        "accuracy": 93.75,
+        "threshold": 0.6570841521024704
+      },
+      "sample_count": 64,
+      "translated_static_threshold": -0.2493739077678101
+    },
+    {
+      "affine_static_from_plaintext_score": {
+        "intercept": -1.4644971154435056,
+        "mean_abs_error": 0.15229200856165112,
+        "slope": 1.8713304180004902
+      },
+      "bridge_plaintext_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout128_spuaware_nonisolated_20260507_1/e2e_secure_poc/plaintext_same_images_reference.json",
+      "bridge_static_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout128_spuaware_nonisolated_20260507_1/e2e_secure_poc/static_whole_forward_reference.json",
+      "candidate_output_calibration": {
+        "bias": 0.2985149019059281,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Bridge calibration translated from plaintext best-threshold into static/E2E raw-score space.",
+        "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+        "threshold": 0.5,
+        "weights": [
+          -1.0,
+          1.0
+        ]
+      },
+      "label": "heldout128",
+      "plaintext_best_threshold": {
+        "accuracy": 89.84375,
+        "threshold": 0.6230766102671623
+      },
+      "sample_count": 128,
+      "translated_static_threshold": -0.2985149019059281
+    },
+    {
+      "affine_static_from_plaintext_score": {
+        "intercept": -1.474863363466532,
+        "mean_abs_error": 0.14582159530697017,
+        "slope": 1.8945058696663761
+      },
+      "bridge_plaintext_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout238_spuaware_nonisolated_20260507_1/e2e_secure_poc/plaintext_same_images_reference.json",
+      "bridge_static_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout238_spuaware_nonisolated_20260507_1/e2e_secure_poc/static_whole_forward_reference.json",
+      "candidate_output_calibration": {
+        "bias": 0.39722639951664007,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Bridge calibration translated from plaintext best-threshold into static/E2E raw-score space.",
+        "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+        "threshold": 0.5,
+        "weights": [
+          -1.0,
+          1.0
+        ]
+      },
+      "label": "heldout238",
+      "plaintext_best_threshold": {
+        "accuracy": 91.17647058823529,
+        "threshold": 0.5688221827149391
+      },
+      "sample_count": 238,
+      "translated_static_threshold": -0.39722639951664007
+    },
+    {
+      "candidate_output_calibration": {
+        "bias": 0.3150384030634594,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Mean bridge bias aggregated from multiple plaintext-static bridge datasets.",
+        "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+        "threshold": 0.5,
+        "weights": [
+          -1.0,
+          1.0
+        ]
+      },
+      "label": "bridge_mean_bias",
+      "source_bridge_labels": [
+        "heldout64",
+        "heldout128",
+        "heldout238"
+      ]
+    },
+    {
+      "candidate_output_calibration": {
+        "bias": 0.2985149019059281,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Median bridge bias aggregated from multiple plaintext-static bridge datasets.",
+        "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+        "threshold": 0.5,
+        "weights": [
+          -1.0,
+          1.0
+        ]
+      },
+      "label": "bridge_median_bias",
+      "source_bridge_labels": [
+        "heldout64",
+        "heldout128",
+        "heldout238"
+      ]
+    }
+  ],
+  "candidate_summaries": [
+    {
+      "calibration": {
+        "bias": 0.2493739077678101,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Bridge calibration translated from plaintext best-threshold into static/E2E raw-score space.",
+        "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+        "threshold": 0.5,
+        "weights": [
+          -1.0,
+          1.0
+        ]
+      },
+      "kind": "bridge",
+      "label": "heldout64",
+      "per_eval_dataset": [
+        {
+          "accuracy": 90.625,
+          "auc": 0.9716796875,
+          "binary_cross_entropy": 0.46005725764674826,
+          "f1": 0.9032258064516129,
+          "label": "heldout64",
+          "mean_abs_margin": 0.6302097144894879,
+          "sample_count": 64,
+          "wrong_count": 6
+        },
+        {
+          "accuracy": 89.84375,
+          "auc": 0.957275390625,
+          "binary_cross_entropy": 0.4794506441109892,
+          "f1": 0.8943089430894309,
+          "label": "heldout128",
+          "mean_abs_margin": 0.5974508900410275,
+          "sample_count": 128,
+          "wrong_count": 13
+        },
+        {
+          "accuracy": 91.17647058823529,
+          "auc": 0.9650448414659981,
+          "binary_cross_entropy": 0.4646706183435586,
+          "f1": 0.9074889867841409,
+          "label": "heldout238",
+          "mean_abs_margin": 0.6284589812188421,
+          "sample_count": 238,
+          "wrong_count": 21
+        }
+      ],
+      "source": {
+        "affine_static_from_plaintext_score": {
+          "intercept": -1.4753916926717807,
+          "mean_abs_error": 0.1384555493410476,
+          "slope": 1.8658459209236515
+        },
+        "bridge_plaintext_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout64_spuaware_nonisolated_20260507_2/e2e_secure_poc/plaintext_same_images_reference.json",
+        "bridge_static_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout64_spuaware_nonisolated_20260507_2/e2e_secure_poc/static_whole_forward_reference.json",
+        "candidate_output_calibration": {
+          "bias": 0.2493739077678101,
+          "manifest_type": "transshield_e2e_output_calibration_v0",
+          "note": "Bridge calibration translated from plaintext best-threshold into static/E2E raw-score space.",
+          "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+          "threshold": 0.5,
+          "weights": [
+            -1.0,
+            1.0
+          ]
+        },
+        "label": "heldout64",
+        "plaintext_best_threshold": {
+          "accuracy": 93.75,
+          "threshold": 0.6570841521024704
+        },
+        "sample_count": 64,
+        "translated_static_threshold": -0.2493739077678101
+      },
+      "weighted_accuracy": 90.69767441860465,
+      "weighted_binary_cross_entropy": 0.4683836141892219
+    },
+    {
+      "calibration": {
+        "bias": 0.2985149019059281,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Bridge calibration translated from plaintext best-threshold into static/E2E raw-score space.",
+        "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+        "threshold": 0.5,
+        "weights": [
+          -1.0,
+          1.0
+        ]
+      },
+      "kind": "bridge",
+      "label": "heldout128",
+      "per_eval_dataset": [
+        {
+          "accuracy": 92.1875,
+          "auc": 0.9716796875,
+          "binary_cross_entropy": 0.4603102786797696,
+          "f1": 0.9206349206349206,
+          "label": "heldout64",
+          "mean_abs_margin": 0.6274557244246921,
+          "sample_count": 64,
+          "wrong_count": 5
+        },
+        {
+          "accuracy": 90.625,
+          "auc": 0.957275390625,
+          "binary_cross_entropy": 0.479719714363507,
+          "f1": 0.9032258064516129,
+          "label": "heldout128",
+          "mean_abs_margin": 0.594102051151936,
+          "sample_count": 128,
+          "wrong_count": 12
+        },
+        {
+          "accuracy": 92.43697478991596,
+          "auc": 0.9650448414659981,
+          "binary_cross_entropy": 0.4649139539031645,
+          "f1": 0.9217391304347827,
+          "label": "heldout238",
+          "mean_abs_margin": 0.6246132370263819,
+          "sample_count": 238,
+          "wrong_count": 18
+        }
+      ],
+      "source": {
+        "affine_static_from_plaintext_score": {
+          "intercept": -1.4644971154435056,
+          "mean_abs_error": 0.15229200856165112,
+          "slope": 1.8713304180004902
+        },
+        "bridge_plaintext_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout128_spuaware_nonisolated_20260507_1/e2e_secure_poc/plaintext_same_images_reference.json",
+        "bridge_static_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout128_spuaware_nonisolated_20260507_1/e2e_secure_poc/static_whole_forward_reference.json",
+        "candidate_output_calibration": {
+          "bias": 0.2985149019059281,
+          "manifest_type": "transshield_e2e_output_calibration_v0",
+          "note": "Bridge calibration translated from plaintext best-threshold into static/E2E raw-score space.",
+          "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+          "threshold": 0.5,
+          "weights": [
+            -1.0,
+            1.0
+          ]
+        },
+        "label": "heldout128",
+        "plaintext_best_threshold": {
+          "accuracy": 89.84375,
+          "threshold": 0.6230766102671623
+        },
+        "sample_count": 128,
+        "translated_static_threshold": -0.2985149019059281
+      },
+      "weighted_accuracy": 91.86046511627907,
+      "weighted_binary_cross_entropy": 0.46863605186741236
+    },
+    {
+      "calibration": {
+        "bias": 0.39722639951664007,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Bridge calibration translated from plaintext best-threshold into static/E2E raw-score space.",
+        "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+        "threshold": 0.5,
+        "weights": [
+          -1.0,
+          1.0
+        ]
+      },
+      "kind": "bridge",
+      "label": "heldout238",
+      "per_eval_dataset": [
+        {
+          "accuracy": 92.1875,
+          "auc": 0.9716796875,
+          "binary_cross_entropy": 0.46244725305757395,
+          "f1": 0.9206349206349206,
+          "label": "heldout64",
+          "mean_abs_margin": 0.6243709901243579,
+          "sample_count": 64,
+          "wrong_count": 5
+        },
+        {
+          "accuracy": 90.625,
+          "auc": 0.957275390625,
+          "binary_cross_entropy": 0.48189982793229835,
+          "f1": 0.9047619047619047,
+          "label": "heldout128",
+          "mean_abs_margin": 0.5894244292646778,
+          "sample_count": 128,
+          "wrong_count": 12
+        },
+        {
+          "accuracy": 92.01680672268907,
+          "auc": 0.9650448414659981,
+          "binary_cross_entropy": 0.4670284017833472,
+          "f1": 0.9177489177489176,
+          "label": "heldout238",
+          "mean_abs_margin": 0.6182042091137462,
+          "sample_count": 238,
+          "wrong_count": 19
+        }
+      ],
+      "source": {
+        "affine_static_from_plaintext_score": {
+          "intercept": -1.474863363466532,
+          "mean_abs_error": 0.14582159530697017,
+          "slope": 1.8945058696663761
+        },
+        "bridge_plaintext_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout238_spuaware_nonisolated_20260507_1/e2e_secure_poc/plaintext_same_images_reference.json",
+        "bridge_static_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/e2e_aanone_exactln_clip0_heldout238_spuaware_nonisolated_20260507_1/e2e_secure_poc/static_whole_forward_reference.json",
+        "candidate_output_calibration": {
+          "bias": 0.39722639951664007,
+          "manifest_type": "transshield_e2e_output_calibration_v0",
+          "note": "Bridge calibration translated from plaintext best-threshold into static/E2E raw-score space.",
+          "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+          "threshold": 0.5,
+          "weights": [
+            -1.0,
+            1.0
+          ]
+        },
+        "label": "heldout238",
+        "plaintext_best_threshold": {
+          "accuracy": 91.17647058823529,
+          "threshold": 0.5688221827149391
+        },
+        "sample_count": 238,
+        "translated_static_threshold": -0.39722639951664007
+      },
+      "weighted_accuracy": 91.62790697674419,
+      "weighted_binary_cross_entropy": 0.4707733995243153
+    },
+    {
+      "calibration": {
+        "bias": 0.3150384030634594,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Mean bridge bias aggregated from multiple plaintext-static bridge datasets.",
+        "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+        "threshold": 0.5,
+        "weights": [
+          -1.0,
+          1.0
+        ]
+      },
+      "kind": "bridge",
+      "label": "bridge_mean_bias",
+      "per_eval_dataset": [
+        {
+          "accuracy": 92.1875,
+          "auc": 0.9716796875,
+          "binary_cross_entropy": 0.46051647573286003,
+          "f1": 0.9206349206349206,
+          "label": "heldout64",
+          "mean_abs_margin": 0.6269393650135205,
+          "sample_count": 64,
+          "wrong_count": 5
+        },
+        {
+          "accuracy": 90.625,
+          "auc": 0.957275390625,
+          "binary_cross_entropy": 0.4799321140948194,
+          "f1": 0.9032258064516129,
+          "label": "heldout128",
+          "mean_abs_margin": 0.5930693323295906,
+          "sample_count": 128,
+          "wrong_count": 12
+        },
+        {
+          "accuracy": 92.43697478991596,
+          "auc": 0.9650448414659981,
+          "binary_cross_entropy": 0.46511665226754073,
+          "f1": 0.9217391304347827,
+          "label": "heldout238",
+          "mean_abs_margin": 0.6235024134191489,
+          "sample_count": 238,
+          "wrong_count": 18
+        }
+      ],
+      "source": {
+        "candidate_output_calibration": {
+          "bias": 0.3150384030634594,
+          "manifest_type": "transshield_e2e_output_calibration_v0",
+          "note": "Mean bridge bias aggregated from multiple plaintext-static bridge datasets.",
+          "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+          "threshold": 0.5,
+          "weights": [
+            -1.0,
+            1.0
+          ]
+        },
+        "label": "bridge_mean_bias",
+        "source_bridge_labels": [
+          "heldout64",
+          "heldout128",
+          "heldout238"
+        ]
+      },
+      "weighted_accuracy": 91.86046511627907,
+      "weighted_binary_cross_entropy": 0.4688421588156154
+    },
+    {
+      "calibration": {
+        "bias": 0.2985149019059281,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Median bridge bias aggregated from multiple plaintext-static bridge datasets.",
+        "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+        "threshold": 0.5,
+        "weights": [
+          -1.0,
+          1.0
+        ]
+      },
+      "kind": "bridge",
+      "label": "bridge_median_bias",
+      "per_eval_dataset": [
+        {
+          "accuracy": 92.1875,
+          "auc": 0.9716796875,
+          "binary_cross_entropy": 0.4603102786797696,
+          "f1": 0.9206349206349206,
+          "label": "heldout64",
+          "mean_abs_margin": 0.6274557244246921,
+          "sample_count": 64,
+          "wrong_count": 5
+        },
+        {
+          "accuracy": 90.625,
+          "auc": 0.957275390625,
+          "binary_cross_entropy": 0.479719714363507,
+          "f1": 0.9032258064516129,
+          "label": "heldout128",
+          "mean_abs_margin": 0.594102051151936,
+          "sample_count": 128,
+          "wrong_count": 12
+        },
+        {
+          "accuracy": 92.43697478991596,
+          "auc": 0.9650448414659981,
+          "binary_cross_entropy": 0.4649139539031645,
+          "f1": 0.9217391304347827,
+          "label": "heldout238",
+          "mean_abs_margin": 0.6246132370263819,
+          "sample_count": 238,
+          "wrong_count": 18
+        }
+      ],
+      "source": {
+        "candidate_output_calibration": {
+          "bias": 0.2985149019059281,
+          "manifest_type": "transshield_e2e_output_calibration_v0",
+          "note": "Median bridge bias aggregated from multiple plaintext-static bridge datasets.",
+          "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+          "threshold": 0.5,
+          "weights": [
+            -1.0,
+            1.0
+          ]
+        },
+        "label": "bridge_median_bias",
+        "source_bridge_labels": [
+          "heldout64",
+          "heldout128",
+          "heldout238"
+        ]
+      },
+      "weighted_accuracy": 91.86046511627907,
+      "weighted_binary_cross_entropy": 0.46863605186741236
+    },
+    {
+      "calibration": {
+        "bias": 0.5852254595359804,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Static-path public logit bias derived from E2E static logits.",
+        "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+        "source_eval_binary_threshold": 0.3577311038970947,
+        "threshold": 0.5,
+        "weights": [
+          -1.0,
+          1.0
+        ]
+      },
+      "kind": "compare",
+      "label": "static_bias",
+      "per_eval_dataset": [
+        {
+          "accuracy": 92.1875,
+          "auc": 0.9716796875,
+          "binary_cross_entropy": 0.47250888867429336,
+          "f1": 0.923076923076923,
+          "label": "heldout64",
+          "mean_abs_margin": 0.6230334452229261,
+          "sample_count": 64,
+          "wrong_count": 5
+        },
+        {
+          "accuracy": 87.5,
+          "auc": 0.957275390625,
+          "binary_cross_entropy": 0.49208407258338044,
+          "f1": 0.8823529411764706,
+          "label": "heldout128",
+          "mean_abs_margin": 0.5953040565798756,
+          "sample_count": 128,
+          "wrong_count": 16
+        },
+        {
+          "accuracy": 90.75630252100841,
+          "auc": 0.9650448414659981,
+          "binary_cross_entropy": 0.4770385500581302,
+          "f1": 0.9105691056910569,
+          "label": "heldout238",
+          "mean_abs_margin": 0.6203460931510858,
+          "sample_count": 238,
+          "wrong_count": 22
+        }
+      ],
+      "source": {
+        "path": "/home/yclcg/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_bias.json"
+      },
+      "weighted_accuracy": 90.0,
+      "weighted_binary_cross_entropy": 0.48084303506898246
+    },
+    {
+      "calibration": {
+        "bias": 0.35270689288645984,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "SPU-aware public logit-bias calibration: base static bias shifted by a public E2E smoke32 threshold sweep; validate on held-out/expanded E2E subsets before making default.",
+        "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+        "source_eval_binary_threshold": 0.3577311038970947,
+        "source_public_threshold_recovery_report": {
+          "base_calibration_json": "results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_bias.json",
+          "cross_eval_smoke64_accuracy": 92.1875,
+          "report_json": "results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_public_threshold_recovery_smoke32_to_smoke64.json",
+          "source_best_accuracy": 96.875,
+          "source_best_threshold": 0.2325185666495205,
+          "source_dataset": "smoke32_temp",
+          "source_default_accuracy": 87.5
+        },
+        "threshold": 0.5,
+        "weights": [
+          -1.0,
+          1.0
+        ]
+      },
+      "kind": "compare",
+      "label": "spuaware_bias",
+      "per_eval_dataset": [
+        {
+          "accuracy": 92.1875,
+          "auc": 0.9716796875,
+          "binary_cross_entropy": 0.46121435974654695,
+          "f1": 0.9206349206349206,
+          "label": "heldout64",
+          "mean_abs_margin": 0.6257622247065511,
+          "sample_count": 64,
+          "wrong_count": 5
+        },
+        {
+          "accuracy": 91.40625,
+          "auc": 0.957275390625,
+          "binary_cross_entropy": 0.4806456662113312,
+          "f1": 0.9120000000000001,
+          "label": "heldout128",
+          "mean_abs_margin": 0.5910826929100463,
+          "sample_count": 128,
+          "wrong_count": 11
+        },
+        {
+          "accuracy": 92.43697478991596,
+          "auc": 0.9650448414659981,
+          "binary_cross_entropy": 0.4658061374407649,
+          "f1": 0.9217391304347827,
+          "label": "heldout238",
+          "mean_abs_margin": 0.6209700779688659,
+          "sample_count": 238,
+          "wrong_count": 18
+        }
+      ],
+      "source": {
+        "path": "/home/yclcg/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_static_output_calibration_public_logit_bias_spuaware_smoke32_threshold.json"
+      },
+      "weighted_accuracy": 92.09302325581395,
+      "weighted_binary_cross_entropy": 0.46954005816216615
+    },
+    {
+      "calibration": {
+        "bias": 2.014323643906751,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Public affine calibration fitted on E2E static logits with an accuracy-preserving constraint.",
+        "score_rule": "class1_score = logits @ [-scale, scale] + public_bias",
+        "source_public_logit_affine_report": {
+          "accuracy": 96.875,
+          "ce_loss": 0.18686114854823688,
+          "label": "e2e_spu_smoke32_public_affine_accuracy_constrained",
+          "min_accuracy": 96.875,
+          "sample_count": 32,
+          "static_logits_csv": "/home/yclcg/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_smoke32_spu_raw_logits.csv"
+        },
+        "threshold": 0.5,
+        "weights": [
+          -5.529255602590326,
+          5.529255602590326
+        ]
+      },
+      "kind": "compare",
+      "label": "e2e_smoke32_affine",
+      "per_eval_dataset": [
+        {
+          "accuracy": 92.1875,
+          "auc": 0.9716796875,
+          "binary_cross_entropy": 0.20144496019285035,
+          "f1": 0.9206349206349206,
+          "label": "heldout64",
+          "mean_abs_margin": 3.457995628087394,
+          "sample_count": 64,
+          "wrong_count": 5
+        },
+        {
+          "accuracy": 91.40625,
+          "auc": 0.957275390625,
+          "binary_cross_entropy": 0.2528055779333712,
+          "f1": 0.9120000000000001,
+          "label": "heldout128",
+          "mean_abs_margin": 3.2652418032260155,
+          "sample_count": 128,
+          "wrong_count": 11
+        },
+        {
+          "accuracy": 92.43697478991596,
+          "auc": 0.9650448414659981,
+          "binary_cross_entropy": 0.21806770015008356,
+          "f1": 0.9217391304347827,
+          "label": "heldout238",
+          "mean_abs_margin": 3.4291918906945345,
+          "sample_count": 238,
+          "wrong_count": 18
+        }
+      ],
+      "source": {
+        "path": "/home/yclcg/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_output_calibration_public_affine_fit_on_spu_smoke32.json"
+      },
+      "weighted_accuracy": 92.09302325581395,
+      "weighted_binary_cross_entropy": 0.2259341954965903
+    },
+    {
+      "calibration": {
+        "bias": 2.2668038787117735,
+        "manifest_type": "transshield_e2e_output_calibration_v0",
+        "note": "Public temperature calibration that preserves the bias-only decision boundary exactly.",
+        "score_rule": "class1_score = scale * (logits @ [-1, 1] + public_bias)",
+        "source_public_logit_temperature_report": {
+          "best_accuracy": 96.875,
+          "best_ce_loss": 0.18469924456941095,
+          "best_scale": 6.426877173170194,
+          "label": "e2e_spu_smoke32_public_temperature_boundary_preserving",
+          "raw_accuracy": 96.875,
+          "raw_ce_loss": 0.4360322130418355,
+          "sample_count": 32,
+          "static_logits_csv": "/home/yclcg/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_smoke32_spu_raw_logits.csv"
+        },
+        "threshold": 0.5,
+        "weights": [
+          -6.426877173170194,
+          6.426877173170194
+        ]
+      },
+      "kind": "compare",
+      "label": "e2e_smoke32_temperature",
+      "per_eval_dataset": [
+        {
+          "accuracy": 92.1875,
+          "auc": 0.9716796875,
+          "binary_cross_entropy": 0.2015609122322547,
+          "f1": 0.9206349206349206,
+          "label": "heldout64",
+          "mean_abs_margin": 4.0216969577987305,
+          "sample_count": 64,
+          "wrong_count": 5
+        },
+        {
+          "accuracy": 91.40625,
+          "auc": 0.957275390625,
+          "binary_cross_entropy": 0.2556074357177293,
+          "f1": 0.9120000000000001,
+          "label": "heldout128",
+          "mean_abs_margin": 3.798815866519542,
+          "sample_count": 128,
+          "wrong_count": 11
+        },
+        {
+          "accuracy": 92.43697478991596,
+          "auc": 0.9650448414659981,
+          "binary_cross_entropy": 0.21892956998562302,
+          "f1": 0.9217391304347827,
+          "label": "heldout238",
+          "mean_abs_margin": 3.9908984193198185,
+          "sample_count": 238,
+          "wrong_count": 18
+        }
+      ],
+      "source": {
+        "path": "/home/yclcg/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_aanone_20260507_1/e2e_output_calibration_public_temperature_fit_on_spu_smoke32.json"
+      },
+      "weighted_accuracy": 92.09302325581395,
+      "weighted_binary_cross_entropy": 0.22726252979374864
+    }
+  ],
+  "judgement": {
+    "best_accuracy_candidate": "spuaware_bias",
+    "best_accuracy_weighted_accuracy": 92.09302325581395,
+    "best_bce_candidate": "e2e_smoke32_affine",
+    "best_bce_weighted_binary_cross_entropy": 0.2259341954965903,
+    "best_bridge_candidate": "heldout128",
+    "best_bridge_weighted_accuracy": 91.86046511627907,
+    "reason": "Plaintext-static bridge calibration is numerically plausible, but on current held-out raw E2E logits it does not beat the existing spuaware_bias default in sample-weighted accuracy.",
+    "spuaware_bias_weighted_accuracy": 92.09302325581395,
+    "status": "bridge_candidate_not_better_than_current_spuaware_default"
+  },
+  "label": "e2e_plaintext_bridge_calibration_suite",
+  "manifest_type": "transshield_e2e_plaintext_bridge_calibration_report_v0"
+}

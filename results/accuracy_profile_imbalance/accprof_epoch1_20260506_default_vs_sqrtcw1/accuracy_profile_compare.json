@@ -1,0 +1,119 @@
+{
+  "labels": {
+    "baseline": "secure_static_accprof_epoch1_20260506_default1",
+    "candidate": "secure_static_accprof_epoch1_20260506_sqrtcw1"
+  },
+  "study_kind": "accuracy_profile_imbalance_epoch1",
+  "config": {
+    "baseline_accuracy_profile": "default",
+    "candidate_accuracy_profile": "sqrt_class_weight",
+    "only_changed_main_variable": "ACCURACY_PROFILE"
+  },
+  "train_metrics": {
+    "baseline": {
+      "train_lr": 1.553061224489796e-06,
+      "train_min_lr": 1.5530612244897957e-07,
+      "train_loss": 0.6451062458713038,
+      "train_class_acc": 0.7680697278911565,
+      "train_weight_decay": 0.04999999999999988,
+      "train_grad_norm": 2.0186834651596692,
+      "test_loss": 0.5111169191924009,
+      "test_acc1": 81.4885515984688,
+      "test_acc5": 100.0,
+      "epoch": 0,
+      "n_parameters": 22390184
+    },
+    "candidate": {
+      "train_lr": 1.553061224489796e-06,
+      "train_min_lr": 1.5530612244897957e-07,
+      "train_loss": 0.6821077871484821,
+      "train_class_acc": 0.7251275510204082,
+      "train_weight_decay": 0.04999999999999988,
+      "train_grad_norm": 2.4296364693009123,
+      "test_loss": 0.5629762167280371,
+      "test_acc1": 74.23664273560502,
+      "test_acc5": 100.0,
+      "epoch": 0,
+      "n_parameters": 22390184
+    },
+    "delta_candidate_minus_baseline": {
+      "test_acc1": -7.251908862863786,
+      "test_loss": 0.05185929753563623,
+      "train_loss": 0.03700154127717825,
+      "train_grad_norm": 0.41095300414124303
+    }
+  },
+  "plaintext_eval_compare": {
+    "baseline": {
+      "argmax_accuracy": 81.48854970932007,
+      "argmax_f1": 0.860431654676259,
+      "auc": 0.9458440445586975,
+      "eval_loss": 0.5109742879867554,
+      "threshold": 0.4041453003883362,
+      "threshold_accuracy": 89.31297659873962,
+      "threshold_f1": 0.9265091863517061
+    },
+    "candidate": {
+      "argmax_accuracy": 74.23664331436157,
+      "argmax_f1": 0.7919876733436055,
+      "auc": 0.9459202132723984,
+      "eval_loss": 0.562526285648346,
+      "threshold": 0.34952813386917114,
+      "threshold_accuracy": 89.31297659873962,
+      "threshold_f1": 0.9265091863517061
+    },
+    "delta_candidate_minus_baseline": {
+      "argmax_accuracy": -7.251906394958496,
+      "argmax_f1": -0.0684439813326535,
+      "auc": 7.616871370086375e-05,
+      "eval_loss": 0.051551997661590576,
+      "threshold_accuracy": 0.0,
+      "threshold_f1": 0.0
+    }
+  },
+  "threshold_search_compare": {
+    "baseline": {
+      "auc": 0.9458440542221069,
+      "checkpoint_path": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch1_20260506_default1/checkpoint-best.pth",
+      "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+      "eval_acc1": 89.31297659873962,
+      "eval_binary_threshold": 0.4041453003883362,
+      "eval_loss": 0.5109742879867554,
+      "finite_logits": true,
+      "pred_counts": [
+        151,
+        373
+      ],
+      "sample_count": 524,
+      "threshold_json": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch1_20260506_default1/threshold_best.json"
+    },
+    "candidate": {
+      "auc": 0.9459202289581299,
+      "checkpoint_path": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch1_20260506_sqrtcw1/checkpoint-best.pth",
+      "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+      "eval_acc1": 89.31297659873962,
+      "eval_binary_threshold": 0.34952813386917114,
+      "eval_loss": 0.562526285648346,
+      "finite_logits": true,
+      "pred_counts": [
+        151,
+        373
+      ],
+      "sample_count": 524,
+      "threshold_json": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch1_20260506_sqrtcw1/threshold_best.json"
+    },
+    "delta_candidate_minus_baseline": {
+      "eval_acc1": 0.0,
+      "auc": 7.617473602294922e-05,
+      "eval_loss": 0.051551997661590576
+    }
+  },
+  "command_checks": {
+    "candidate_has_sqrt_class_weight": true,
+    "candidate_command": "/data/wyb/conda_envs/transshield/bin/python training_compat/main.py --model deit-s --data_set image_folder --data_path /data/wyb/pneumoniamnist_imagefolder_subset/train --eval_data_path /data/wyb/pneumoniamnist_imagefolder_subset/val --nb_classes 2 --output_dir /data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch1_20260506_sqrtcw1 --log_dir /data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch1_20260506_sqrtcw1/tb --input_size 224 --batch_size 32 --num_workers 4 --base_rate 0.7 --ratio_weight 0.0 --lr 3e-6 --min_lr 1e-7 --warmup_epochs 0 --warmup_steps 20 --clip_grad 1.0 --device cuda --model_ema false --auto_resume false --use_amp false --mixup 0 --cutmix 0 --smoothing 0.1 --seed 0 --lr_scale 1.0 --groupa_lr_scale 0.1 --pretrained_fix_step 0 --class_weight_mode sqrt_inverse_freq --class_weight_power 1.0 --train_sampler_mode distributed --cls_distill_weight 1.0 --token_distill_weight 0.02 --use_square_gelu true --square_activation_mode fixed_square --use_approx_attn true --approx_attn_mode uniform --use_mask_pruning false --secure_static_train_depth 12 --secure_static_skip_pruning true --pruning_margin_weight 0.0 --pruning_margin_target 1e-4 --pruning_margin_mode hinge --pruning_margin_start_epoch 0 --finetune /data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth --teacher_checkpoint_path /data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth --model_key model\\|module --debug_nan true --epochs 1 --disable_eval false --save_ckpt true --save_ckpt_freq 1 --save_ckpt_num 2 --debug_max_steps 0 \n"
+  },
+  "judgement": {
+    "status": "candidate_eval_not_worse",
+    "reason": "sqrt_class_weight 在 1 epoch 下没有低于 default baseline，可考虑进入下一阶段。"
+  }
+}

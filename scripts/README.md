@@ -6,6 +6,19 @@
 
 - `artifacts/server_inference_friendly_pack/`
 
+如果你要**直接全量替换服务器仓库并清空旧运行产物**，不要再用黑名单式整仓同步。
+现在先本地构建一份 clean deploy repo，再 `rsync --delete` 到服务器：
+
+```bash
+cd /home/yclcg/Transshield_final
+export PYTHON_BIN=/home/yclcg/miniconda3/envs/transshield/bin/python
+bash scripts/build_clean_server_repo.sh /home/yclcg/Transshield_final_server_clean
+```
+
+说明文档见：
+
+- `docs/server_clean_deploy_20260505.md`
+
 推荐入口：
 
 - 完整对比链：`artifacts/server_inference_friendly_pack/run_full_final_comparison_suite.sh`
@@ -28,6 +41,9 @@
 
 ### 本地 → 服务器（黑名单）
 
+这组旧命令仍可用于“同步本地完整仓的增量代码”，但它**不是**当前推荐的服务器 clean replace 方案。
+如果你要清掉服务器旧产物、旧 bundle 和旧结果目录，改用上面的 clean deploy 方案。
+
 ```bash
 rsync -avP -e "ssh -p 9001" \
   --exclude '.git/' \
@@ -44,7 +60,7 @@ rsync -avP -e "ssh -p 9001" \
   --exclude 'artifacts/server_profile_reports/' \
   --exclude 'artifacts/spu_build_reports/' \
   /home/yclcg/Transshield_final/ \
-  wyb@10.204.244.1:/data/wyb/Transshield_final/
+  wyb@10.204.248.175:/data/wyb/Transshield_final/
 ```
 
 ### 服务器 → 本地（白名单，只回传日志 / 报告）
@@ -63,7 +79,7 @@ rsync -avP -e "ssh -p 9001" --prune-empty-dirs \
   --include='*.md' \
   --include='*.csv' \
   --exclude='*' \
-  wyb@10.204.244.1:/data/wyb/Transshield_final/artifacts/ \
+  wyb@10.204.248.175:/data/wyb/Transshield_final/artifacts/ \
   /home/yclcg/Transshield_final/artifacts/
 ```
 
@@ -82,8 +98,8 @@ rsync -avP -e "ssh -p 9001" --prune-empty-dirs \
   - 自动设置 `TMPDIR=/data/wyb/tmp`
 
 - `run_tracka_spu.sh`
-  - `followup`：跑 verified candidate 的 SPU follow-up / replay / compare
-  - 默认 bundle：`artifacts/frozen_bundle_verified_tracka_lr3e5_20260414/`
+  - `followup`：跑当前 delivery bundle 的 SPU follow-up / replay / compare
+  - 默认 bundle：`artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/`
   - 默认 temp root：`/data/wyb/bazel_clean/tmp`，避免服务器侧 `/tmp`
   - 运行后自动汇总 `[fastpath-profile]`，主通信展示使用 Python distributed RPC/cloudpickle bytes
   - `dual-profile`：一次性跑默认快分支与 diagnostic communication 分支

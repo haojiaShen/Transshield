@@ -20,14 +20,14 @@ case "$MODE" in
 esac
 
 PYTHON_BIN="${PYTHON_BIN:-python}"
-BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_verified_tracka_lr3e5_20260414}"
+BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430}"
 CONFIG_PATH="${CONFIG_PATH:-$REPO_ROOT/configs/openbumblebee/2pc.json}"
 
 RUN_NAME="${RUN_NAME:-transshield_e2e_approx_deploy}"
 E2E_RUN_DIR="${E2E_RUN_DIR:-$REPO_ROOT/artifacts/server_pipeline_run/${RUN_NAME}/e2e_secure_poc}"
 mkdir -p "$E2E_RUN_DIR"
 
-PUBLIC_CALIB_DATASET_DIR="${PUBLIC_CALIB_DATASET_DIR:-/data/wyb/pneumoniamnist_imagefolder_subset}"
+PUBLIC_CALIB_DATASET_DIR="${PUBLIC_CALIB_DATASET_DIR:-${DATA_ROOT:-/data/wyb/pneumoniamnist_imagefolder_subset}}"
 PUBLIC_CALIB_IMAGE_LIST="${PUBLIC_CALIB_IMAGE_LIST:-$E2E_RUN_DIR/public_calib_images.txt}"
 PUBLIC_CALIB_MAX_SAMPLES="${PUBLIC_CALIB_MAX_SAMPLES:-32}"
 PUBLIC_CALIB_PT="${PUBLIC_CALIB_PT:-$E2E_RUN_DIR/public_calibration_pixel_values.pt}"
@@ -88,8 +88,8 @@ require_safe_deploy_config() {
     echo "[e2e-approx-deploy] refusing E2E_SPU_BATCH_SIZE=$E2E_SPU_BATCH_SIZE; validated deploy baseline requires bsz=1." >&2
     exit 1
   fi
-  if [[ "$E2E_SPU_LAYER_NORM_POLICY" != "public_calibrated" ]]; then
-    echo "[e2e-approx-deploy] refusing layer norm policy $E2E_SPU_LAYER_NORM_POLICY; expected public_calibrated." >&2
+  if [[ "$E2E_SPU_LAYER_NORM_POLICY" != "public_calibrated" && "$E2E_SPU_LAYER_NORM_POLICY" != "exact" ]]; then
+    echo "[e2e-approx-deploy] refusing layer norm policy $E2E_SPU_LAYER_NORM_POLICY; expected public_calibrated or exact." >&2
     exit 1
   fi
   if [[ "$E2E_SPU_ATTENTION_POLICY" != "uniform" && "$E2E_SPU_ATTENTION_POLICY" != "identity" ]]; then
@@ -163,7 +163,9 @@ calibrate_ln() {
 
 infer_private_shares() {
   require_safe_deploy_config
-  require_file "$E2E_SPU_LAYER_NORM_CALIBRATION_JSON" "public layer-norm calibration JSON"
+  if [[ "$E2E_SPU_LAYER_NORM_POLICY" == "public_calibrated" ]]; then
+    require_file "$E2E_SPU_LAYER_NORM_CALIBRATION_JSON" "public layer-norm calibration JSON"
+  fi
   require_file "$E2E_INPUT_SHARE_PUBLIC_MANIFEST_JSON" "public share manifest"
   require_file "$E2E_INPUT_P1_SHARE_MANIFEST_JSON" "P1 share manifest"
   require_file "$E2E_INPUT_P2_SHARE_MANIFEST_JSON" "P2 share manifest"

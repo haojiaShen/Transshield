@@ -1,0 +1,38 @@
+{
+  "experiment": "secure_pruning_spu_depth10_batch8",
+  "date": "2026-05-11",
+  "bundle": "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+  "server_run_dir": "artifacts/server_pipeline_run/secure_pruning_spu_smoke8_batch8_depth10_partylocal_secret_20260510_1/e2e_secure_poc/",
+  "spu_results": {
+    "sample_count": 8,
+    "elapsed_sec": 804.35,
+    "sec_per_sample": 100.54,
+    "finite_logits": true,
+    "static_depth_limit": 10,
+    "backend": "jax_spu_secure_pruning_forward_backend_v0",
+    "host_plaintext_pixel_values_materialized": false,
+    "host_model_params_materialized": false,
+    "reveal_policy": "final_logits_only"
+  },
+  "vs_depth12_batch8": {
+    "threshold_match_ratio": 1.0,
+    "argmax_match_ratio": 0.875,
+    "logits_max_abs_error": 0.147,
+    "probabilities_max_abs_error": 0.053
+  },
+  "speedup_vs_baseline": {
+    "baseline_sec_per_sample": 213.9,
+    "current_sec_per_sample": 100.54,
+    "speedup": 2.13
+  },
+  "plaintext_cpu_accuracy_depth10": {
+    "argmax_acc": 79.96,
+    "threshold_acc": 91.41,
+    "argmax_delta_vs_d12": 3.24,
+    "threshold_delta_vs_d12": -0.57
+  },
+  "batch16_attempt": {
+    "status": "OOM_killed",
+    "reason": "62GB RAM insufficient for 16-sample batch in SPU"
+  }
+}

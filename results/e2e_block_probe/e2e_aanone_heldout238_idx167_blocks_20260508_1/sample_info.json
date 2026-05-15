@@ -1,0 +1,8 @@
+{
+  "source_index": 167,
+  "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00216.png",
+  "target": 1,
+  "spuaware_bias_score": -0.553375244140625,
+  "static_bias_score": -0.3208566904067993,
+  "raw_score_logit1_minus_logit0": -0.9060821533203125
+}

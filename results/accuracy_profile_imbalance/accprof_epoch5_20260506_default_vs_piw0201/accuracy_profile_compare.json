@@ -1,0 +1,219 @@
+{
+  "config_compare": {
+    "baseline": {
+      "batch_size": "32",
+      "class_weight_mode": "none",
+      "class_weight_power": "1.0",
+      "cls_distill_weight": "1.0",
+      "epochs": "5",
+      "finetune": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "lr": "3e-6",
+      "min_lr": "1e-7",
+      "model_ema": "false",
+      "pruning_margin_mode": "hinge",
+      "pruning_margin_stage_weights": null,
+      "pruning_margin_start_epoch": "0",
+      "pruning_margin_target": "1e-4",
+      "pruning_margin_weight": "0.0",
+      "secure_static_skip_pruning": "true",
+      "secure_static_train_depth": "12",
+      "teacher_checkpoint_path": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "token_distill_weight": "0.02",
+      "train_sampler_mode": "distributed",
+      "use_mask_pruning": "false"
+    },
+    "candidate": {
+      "batch_size": "32",
+      "class_weight_mode": "power_inverse_freq",
+      "class_weight_power": "0.20",
+      "cls_distill_weight": "1.0",
+      "epochs": "5",
+      "finetune": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "lr": "3e-6",
+      "min_lr": "1e-7",
+      "model_ema": "false",
+      "pruning_margin_mode": "hinge",
+      "pruning_margin_stage_weights": null,
+      "pruning_margin_start_epoch": "0",
+      "pruning_margin_target": "1e-4",
+      "pruning_margin_weight": "0.0",
+      "secure_static_skip_pruning": "true",
+      "secure_static_train_depth": "12",
+      "teacher_checkpoint_path": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "token_distill_weight": "0.02",
+      "train_sampler_mode": "distributed",
+      "use_mask_pruning": "false"
+    },
+    "changed": {
+      "class_weight_mode": {
+        "baseline": "none",
+        "candidate": "power_inverse_freq"
+      },
+      "class_weight_power": {
+        "baseline": "1.0",
+        "candidate": "0.20"
+      }
+    }
+  },
+  "distill_compare": {
+    "baseline": null,
+    "candidate": null,
+    "delta_candidate_minus_baseline": {
+      "mean_cls_kl": null,
+      "mean_effective_cls_term": null,
+      "mean_effective_token_term": null,
+      "mean_token_kl": null
+    }
+  },
+  "inputs": {
+    "baseline_distill_report_json": null,
+    "baseline_margin_report_json": null,
+    "baseline_plaintext_eval_json": "/data/wyb/Transshield_final/results/accuracy_profile_imbalance/secure_static_accprof_epoch5_20260506_default1/plaintext_eval.json",
+    "baseline_run_dir": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch5_20260506_default1",
+    "baseline_threshold_search_json": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch5_20260506_default1/threshold_eval.json",
+    "candidate_distill_report_json": null,
+    "candidate_margin_report_json": null,
+    "candidate_plaintext_eval_json": "/data/wyb/Transshield_final/results/accuracy_profile_imbalance/secure_static_accprof_epoch5_20260506_piw0201/plaintext_eval.json",
+    "candidate_run_dir": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch5_20260506_piw0201",
+    "candidate_threshold_search_json": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch5_20260506_piw0201/threshold_eval.json"
+  },
+  "judgement": {
+    "auc_delta": 0.0003808435685043188,
+    "reason": "候选 run 的 threshold/AUC 没有低于 baseline，可以继续做更长训练或更完整验证。",
+    "status": "candidate_eval_not_worse",
+    "threshold_accuracy_delta": 0.0
+  },
+  "labels": {
+    "baseline": "secure_static_accprof_epoch5_20260506_default1",
+    "candidate": "secure_static_accprof_epoch5_20260506_piw0201"
+  },
+  "margin_compare": {
+    "baseline": null,
+    "candidate": null,
+    "delta_candidate_minus_baseline": {
+      "focus_stage_margin_mean": null,
+      "focus_stage_violation_ratio": null,
+      "max_pruning_margin": null
+    }
+  },
+  "plaintext_eval_compare": {
+    "baseline": {
+      "argmax_accuracy": 82.44274854660034,
+      "argmax_f1": 0.8685714285714284,
+      "args_snapshot_summary": {
+        "approx_attn_mode": "uniform",
+        "eval_pruning_mode": "topk_argsort",
+        "eval_tie_policy": "lowest_index",
+        "model": "deit-s",
+        "secure_static_skip_pruning": true,
+        "secure_static_train_depth": 12,
+        "square_activation_mode": "fixed_square",
+        "use_approx_attn": true,
+        "use_mask_pruning": false,
+        "use_square_gelu": true
+      },
+      "auc": 0.9469484909073598,
+      "eval_loss": 0.5052919387817383,
+      "finite_logits": true,
+      "sample_count": 524,
+      "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+      "threshold": 0.40837156772613525,
+      "threshold_accuracy": 89.69465494155884,
+      "threshold_f1": 0.9291338582677164
+    },
+    "candidate": {
+      "argmax_accuracy": 79.96183037757874,
+      "argmax_f1": 0.8458149779735683,
+      "args_snapshot_summary": {
+        "approx_attn_mode": "uniform",
+        "eval_pruning_mode": "topk_argsort",
+        "eval_tie_policy": "lowest_index",
+        "model": "deit-s",
+        "secure_static_skip_pruning": true,
+        "secure_static_train_depth": 12,
+        "square_activation_mode": "fixed_square",
+        "use_approx_attn": true,
+        "use_mask_pruning": false,
+        "use_square_gelu": true
+      },
+      "auc": 0.9473293344758641,
+      "eval_loss": 0.5214591026306152,
+      "finite_logits": true,
+      "sample_count": 524,
+      "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+      "threshold": 0.3858505189418793,
+      "threshold_accuracy": 89.69465494155884,
+      "threshold_f1": 0.9291338582677164
+    },
+    "delta_candidate_minus_baseline": {
+      "argmax_accuracy": -2.4809181690216064,
+      "argmax_f1": -0.022756450597860134,
+      "auc": 0.0003808435685043188,
+      "eval_loss": 0.016167163848876953,
+      "threshold_accuracy": 0.0,
+      "threshold_f1": 0.0
+    },
+    "sample_count_match": true,
+    "sample_paths_match": true
+  },
+  "study_kind": "accuracy_profile_imbalance_epoch5",
+  "threshold_search_compare": {
+    "baseline": {
+      "auc": 0.9469484686851501,
+      "default_argmax_acc1": null,
+      "eval_acc1": 89.69465494155884,
+      "eval_binary_threshold": 0.40837156772613525,
+      "eval_loss": 0.5052919387817383,
+      "finite_logits": true,
+      "sample_count": 524
+    },
+    "candidate": {
+      "auc": 0.9473293423652649,
+      "default_argmax_acc1": null,
+      "eval_acc1": 89.69465494155884,
+      "eval_binary_threshold": 0.3858505189418793,
+      "eval_loss": 0.5214591026306152,
+      "finite_logits": true,
+      "sample_count": 524
+    },
+    "delta_candidate_minus_baseline": {
+      "auc": 0.0003808736801147461,
+      "eval_acc1": 0.0,
+      "eval_binary_threshold": -0.02252104878425598
+    }
+  },
+  "train_metrics": {
+    "baseline": {
+      "epoch": 4,
+      "n_parameters": 22390184,
+      "test_acc1": 79.58015511782115,
+      "test_acc5": 100.0,
+      "test_loss": 0.5213676149194891,
+      "train_class_acc": 0.7706207482993197,
+      "train_grad_norm": 1.9552969235141262,
+      "train_loss": 0.6383097378575072,
+      "train_lr": 1.9973169962536405e-07,
+      "train_min_lr": 1.9973169962536405e-08,
+      "train_weight_decay": 0.04999999999999988
+    },
+    "candidate": {
+      "epoch": 4,
+      "n_parameters": 22390184,
+      "test_acc1": 75.95420033695133,
+      "test_acc5": 100.0,
+      "test_loss": 0.5397360081022436,
+      "train_class_acc": 0.7553146258503401,
+      "train_grad_norm": 2.112578511238098,
+      "train_loss": 0.6543000149889057,
+      "train_lr": 1.9973169962536405e-07,
+      "train_min_lr": 1.9973169962536405e-08,
+      "train_weight_decay": 0.04999999999999988
+    },
+    "delta_candidate_minus_baseline": {
+      "test_acc1": -3.6259547808698187,
+      "test_loss": 0.018368393182754517,
+      "train_class_acc": -0.015306122448979553,
+      "train_loss": 0.015990277131398445
+    }
+  }
+}

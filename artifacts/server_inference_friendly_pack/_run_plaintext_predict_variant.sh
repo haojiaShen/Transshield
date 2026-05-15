@@ -35,7 +35,7 @@ case "$VARIANT" in
     HUMAN_LABEL="baseline"
     ;;
   modified)
-    BUNDLE_DIR="${BUNDLE_DIR:-artifacts/frozen_bundle_verified_tracka_lr3e5_20260414}"
+    BUNDLE_DIR="${BUNDLE_DIR:-artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430}"
     TARGET_REPO_ROOT="$REPO_ROOT"
     TARGET_CHECKPOINT="${MODIFIED_CHECKPOINT:-$BUNDLE_DIR/modified_plaintext_eval_checkpoint_light.pth}"
     TARGET_THRESHOLD_JSON="${MODIFIED_THRESHOLD_JSON:-$BUNDLE_DIR/threshold_best.json}"

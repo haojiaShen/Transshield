@@ -8,7 +8,7 @@ cd "$REPO_ROOT"
 PYTHON_BIN="${PYTHON_BIN:-python}"
 RUN_NAME="${RUN_NAME:-transshield_token_pruning}"
 SECURE_RUN_DIR="${SECURE_RUN_DIR:-artifacts/server_pipeline_run/${RUN_NAME}}"
-BUNDLE_DIR="${BUNDLE_DIR:-artifacts/frozen_bundle_verified_tracka_lr3e5_20260414}"
+BUNDLE_DIR="${BUNDLE_DIR:-artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430}"
 PLAINTEXT_EVAL_DEVICE="${PLAINTEXT_EVAL_DEVICE:-cpu}"
 INPUT_IMAGE="${INPUT_IMAGE:-}"
 

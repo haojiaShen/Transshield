@@ -1,0 +1,115 @@
+{
+  "labels": {
+    "baseline": "secure_static_accprof_epoch3_20260506_default1",
+    "candidate": "secure_static_accprof_epoch3_20260506_sqrtcw1"
+  },
+  "study_kind": "accuracy_profile_imbalance_epoch3",
+  "config": {
+    "baseline_accuracy_profile": "default",
+    "candidate_accuracy_profile": "sqrt_class_weight",
+    "only_changed_main_variable": "ACCURACY_PROFILE"
+  },
+  "train_metrics": {
+    "baseline": {
+      "train_lr": 3.764793421463784e-07,
+      "train_min_lr": 3.7647934214637844e-08,
+      "train_loss": 0.6350900964672063,
+      "train_class_acc": 0.7648809523809523,
+      "train_weight_decay": 0.04999999999999988,
+      "train_grad_norm": 1.9740702568673762,
+      "test_loss": 0.5196415104649283,
+      "test_acc1": 79.38931588908189,
+      "test_acc5": 100.0,
+      "epoch": 2,
+      "n_parameters": 22390184
+    },
+    "candidate": {
+      "train_lr": 3.764793421463784e-07,
+      "train_min_lr": 3.7647934214637844e-08,
+      "train_loss": 0.6697743794545025,
+      "train_class_acc": 0.7276785714285714,
+      "train_weight_decay": 0.04999999999999988,
+      "train_grad_norm": 2.304171229300856,
+      "test_loss": 0.5738410705869849,
+      "test_acc1": 71.18320858205547,
+      "test_acc5": 100.0,
+      "epoch": 2,
+      "n_parameters": 22390184
+    },
+    "delta_candidate_minus_baseline": {
+      "test_acc1": -8.206107307026414,
+      "test_loss": 0.05419956012205651,
+      "train_loss": 0.0346842829872962,
+      "train_grad_norm": 0.3301009724334796
+    }
+  },
+  "plaintext_eval_compare": {
+    "baseline": {
+      "argmax_accuracy": 81.67939186096191,
+      "argmax_f1": 0.8620689655172413,
+      "auc": 0.9471579548700372,
+      "eval_loss": 0.5078626871109009,
+      "threshold": 0.37590479850769043,
+      "threshold_accuracy": 89.69465494155884,
+      "threshold_f1": 0.9307692307692307
+    },
+    "candidate": {
+      "argmax_accuracy": 74.42747950553894,
+      "argmax_f1": 0.7938461538461538,
+      "auc": 0.9477292202227935,
+      "eval_loss": 0.5560901165008545,
+      "threshold": 0.3536151051521301,
+      "threshold_accuracy": 89.50381875038147,
+      "threshold_f1": 0.9277266754270695
+    },
+    "delta_candidate_minus_baseline": {
+      "argmax_accuracy": -7.251912355422974,
+      "argmax_f1": -0.06822281167108757,
+      "auc": 0.0005712653527563116,
+      "eval_loss": 0.04822742938995361,
+      "threshold_accuracy": -0.19083619117736816,
+      "threshold_f1": -0.003042555342161135
+    }
+  },
+  "threshold_search_compare": {
+    "baseline": {
+      "auc": 0.9471579790115356,
+      "checkpoint_path": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch3_20260506_default1/checkpoint-best.pth",
+      "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+      "eval_acc1": 89.69465494155884,
+      "eval_binary_threshold": 0.37590479850769043,
+      "eval_loss": 0.5078626871109009,
+      "finite_logits": true,
+      "pred_counts": [
+        133,
+        391
+      ],
+      "sample_count": 524,
+      "threshold_json": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch3_20260506_default1/threshold_best.json"
+    },
+    "candidate": {
+      "auc": 0.947729229927063,
+      "checkpoint_path": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch3_20260506_sqrtcw1/checkpoint-best.pth",
+      "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+      "eval_acc1": 89.50381875038147,
+      "eval_binary_threshold": 0.3536151051521301,
+      "eval_loss": 0.5560901165008545,
+      "finite_logits": true,
+      "pred_counts": [
+        152,
+        372
+      ],
+      "sample_count": 524,
+      "threshold_json": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_accprof_epoch3_20260506_sqrtcw1/threshold_best.json"
+    },
+    "delta_candidate_minus_baseline": {
+      "eval_acc1": -0.19083619117736816,
+      "auc": 0.0005712509155273438,
+      "eval_loss": 0.04822742938995361
+    }
+  },
+  "judgement": {
+    "status": "candidate_eval_not_improved",
+    "reason": "sqrt_class_weight 在 3 epoch 下未带来 threshold/AUC 同时改善。"
+  }
+}

@@ -21,7 +21,7 @@ from tools.transshield_stage2_bundle import DEFAULT_BUNDLE_MODEL_STATE_NAME, res
 DEFAULT_THRESHOLD_TOLERANCE = 5e-5
 DEFAULT_PIPELINE_SELECTION_MODE = 'blockwise_exact_kth'
 DEFAULT_PHASE3_SELECTION_MANIFEST = REPO_ROOT / 'results' / 'blockwise_exact_kth_selection_manifest_default.json'
-DEFAULT_PRESENTATION_BUNDLE_DIR = REPO_ROOT / 'artifacts' / 'frozen_bundle_verified_tracka_lr3e5_20260414'
+DEFAULT_PRESENTATION_BUNDLE_DIR = REPO_ROOT / 'artifacts' / 'frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430'
 RUNTIME_INPUT_FILES = [
     'stage2_secure_network_kth_manifest.json',
     'stage2_secure_network_kth_input_smoke8.pt',

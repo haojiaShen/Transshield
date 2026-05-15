@@ -9,7 +9,7 @@ REPO_ROOT="${REPO_ROOT:-$(cd "$SCRIPT_DIR/../.." && pwd)}"
 cd "$REPO_ROOT"
 
 PYTHON_BIN="${PYTHON_BIN:-python}"
-BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_verified_tracka_lr3e5_20260414}"
+BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430}"
 CLIENT_INPUT_IMAGE="${CLIENT_INPUT_IMAGE:-${1:-}}"
 
 if [[ -z "$CLIENT_INPUT_IMAGE" ]]; then

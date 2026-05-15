@@ -1,0 +1,159 @@
+{
+  "acceptance_readiness": {
+    "reason": "plaintext/fairness/boundary/consistency/secret-runtime 五个闭环都已有当前证据。",
+    "status": "p0_delivery_closure_ready"
+  },
+  "bundle_training_profile": {
+    "approx_attn_mode": "uniform",
+    "batch_size": 8,
+    "bundle_name": "frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
+    "checkpoint_path": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_depth12_uniform_fixed_square_lr1e5_b8_gpu2_workers0_epoch8_20260430/checkpoint-best.pth",
+    "epochs": 8,
+    "freeze_time_threshold_metrics": {
+      "args_snapshot_summary": {
+        "approx_attn_mode": "uniform",
+        "eval_pruning_mode": "topk_argsort",
+        "eval_tie_policy": "lowest_index",
+        "model": "deit-s",
+        "square_activation_mode": "fixed_square",
+        "use_approx_attn": true,
+        "use_mask_pruning": false,
+        "use_square_gelu": true
+      },
+      "auc": 0.9539369940757751,
+      "best_threshold": 0.5696036219596863,
+      "best_threshold_acc": 89.69465494155884,
+      "best_threshold_pred_counts": [
+        129,
+        395
+      ],
+      "checkpoint": "checkpoint-best.pth",
+      "checkpoint_path": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_depth12_uniform_fixed_square_lr1e5_b8_gpu2_workers0_epoch8_20260430/checkpoint-best.pth",
+      "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+      "default_argmax_acc1": 75.95419883728027,
+      "default_pred_counts": [
+        9,
+        515
+      ],
+      "eval_acc1": 89.69465494155884,
+      "eval_binary_threshold": 0.5696036219596863,
+      "eval_loss": 0.5419613122940063,
+      "finite_logits": true,
+      "sample_count": 524
+    },
+    "lr": 1e-05,
+    "pretrained_fix_step": 0,
+    "run_dir": "/data/wyb/Transshield_final/artifacts/train_runs/secure_static_depth12_uniform_fixed_square_lr1e5_b8_gpu2_workers0_epoch8_20260430",
+    "secure_static_skip_pruning": true,
+    "secure_static_train_depth": 12,
+    "square_activation_mode": "fixed_square",
+    "use_approx_attn": true,
+    "use_square_gelu": true
+  },
+  "current_plaintext_evidence": {
+    "baseline_depth0": {
+      "metrics": {
+        "argmax_accuracy": 74.80915784835815,
+        "argmax_f1": 0.8450704225352114,
+        "auc": 0.6635247072265067,
+        "eval_loss": 0.6060925722122192,
+        "threshold": 0.5010847449302673,
+        "threshold_accuracy": 75.38167834281921,
+        "threshold_f1": 0.8480565371024734
+      },
+      "secure_static_train_depth": 0
+    },
+    "delta_modified_minus_baseline": {
+      "argmax_accuracy": 0.3816843032836914,
+      "argmax_f1": 0.011757771297387865,
+      "auc": 0.2949062172712559,
+      "threshold_accuracy": 14.694654941558838,
+      "threshold_f1": 0.08544729921466221
+    },
+    "modified_depth_line": {
+      "metrics": {
+        "argmax_accuracy": 75.19084215164185,
+        "argmax_f1": 0.8568281938325992,
+        "auc": 0.9584309244977626,
+        "eval_loss": 0.5456902384757996,
+        "threshold": 0.5696036219596863,
+        "threshold_accuracy": 90.07633328437805,
+        "threshold_f1": 0.9335038363171356
+      },
+      "secure_static_train_depth": 12
+    }
+  },
+  "current_secret_evidence": {
+    "argmax_match_ratio": 0.9942748091603053,
+    "deployable_secret_profile": "secret_blockwise_stage + public_calibrated + uniform + fixed_square + clip0 + depth6 + bsz1",
+    "logits_max_abs_error": 0.040701448917388916,
+    "probabilities_max_abs_error": 0.01950448751449585,
+    "secret_runtime_accepted_count": 8,
+    "secret_runtime_complete": true,
+    "secret_runtime_mean_elapsed_sec": 93.89593839645386,
+    "secret_runtime_pending_count": 0,
+    "secret_runtime_unstable_count": 0,
+    "threshold_match_ratio": 0.9751908396946565
+  },
+  "evidence_matrix": [
+    {
+      "label": "training_semantics_match_static_secret_scope",
+      "reason": "current official bundle uses secure_static_train_depth>0, secure_static_skip_pruning=true, uniform attention and fixed_square activation.",
+      "status": "high"
+    },
+    {
+      "label": "current_bundle_supports_deployable_secret_line",
+      "reason": "depth6 clip0 guarded secret runtime is complete and stable on the current official line, but it is still shallower than the training depth12 setting.",
+      "status": "medium"
+    },
+    {
+      "label": "isolated_causal_attribution_of_secure_static_train_depth",
+      "reason": "the repo no longer retains a paired control bundle that differs only in secure_static_train_depth, so current evidence is deployment-oriented rather than a clean single-factor ablation.",
+      "status": "low"
+    }
+  ],
+  "inputs": {
+    "acceptance_json": "/home/yclcg/Transshield_final/results/delivery_acceptance/delivery_acceptance_20260505_clean/delivery_acceptance_report.json",
+    "baseline_eval_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/delivery_line_suite_20260505_clean/plaintext_baseline_eval.json",
+    "bundle_args_snapshot_json": "/home/yclcg/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/args_snapshot.json",
+    "bundle_manifest_json": "/home/yclcg/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/manifest.json",
+    "modified_eval_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/delivery_line_suite_20260505_clean/plaintext_modified_eval.json",
+    "plaintext_model_compare_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/delivery_line_suite_20260505_clean/plaintext_model_compare.json",
+    "plaintext_secure_compare_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/delivery_line_suite_20260505_clean/plaintext_vs_secure_score_compare.json",
+    "secret_isolated_eval_summary_json": "/home/yclcg/Transshield_final/artifacts/server_pipeline_run/secret_depth6_clip0_guarded_eval_20260505_clean/secret_isolated_eval_summary.json"
+  },
+  "judgement": {
+    "current_best_claim": "`secure_static_train_depth` 当前已经能被表述为官方 secure-friendly 主线中的训练-部署对齐设计选择，但还不能被表述为已经完成单因子因果归因的收益来源。",
+    "what_is_not_supported_yet": [
+      "一个只改变 secure_static_train_depth 的 paired control，用来证明它单独造成了收益",
+      "一个 train-depth 与 deploy-depth 精确对齐的保留式最小 ablation"
+    ],
+    "what_is_supported_now": [
+      "当前 official bundle 明确训练在 static-scope-compatible 配置上",
+      "当前 modified line 在 threshold accuracy 和 AUC 上显著优于 retained baseline",
+      "同一条 official line 可以被当前 depth6 clip0 guarded secret runtime 以较高一致性稳定承接"
+    ]
+  },
+  "key_findings": [
+    "当前 official bundle 训练口径为 secure_static_train_depth=12, secure_static_skip_pruning=true, approx_attn_mode=uniform, square_activation_mode=fixed_square。",
+    "相对 retained baseline depth0 line，当前 modified line 的 threshold accuracy 提升 14.6947 pt，AUC 提升 0.294906。",
+    "当前 modified line 同时保持较高 same-policy replay consistency：argmax_match_ratio=99.43%，threshold_match_ratio=97.52%。",
+    "由于 cleaned repo 已不再保留只改变 secure_static_train_depth 的 paired control bundle，当前还不能给出严格单因子归因结论。"
+  ],
+  "manifest_type": "transshield_secure_static_train_depth_evidence_v0",
+  "next_minimal_ablation": {
+    "goal": "retain one paired control bundle under the same uniform/fixed_square/static-skip-pruning stack, changing only secure_static_train_depth.",
+    "suggested_control": {
+      "accuracy_profile": "default",
+      "base_bundle": "frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
+      "mode": "epoch1_or_short_multi_epoch",
+      "secure_static_depth": 0
+    },
+    "suggested_runner": "bash artifacts/server_inference_friendly_pack/run_secure_static_distill_train.sh epoch1"
+  },
+  "official_line": {
+    "default_plaintext_bundle": "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
+    "default_secret_profile": "secret_blockwise_stage + public_calibrated + uniform + fixed_square + clip0 + depth6 + bsz1",
+    "method_core": "masking -> F_mux ; threshold compare -> F_less ; secure sidecar/replay"
+  }
+}

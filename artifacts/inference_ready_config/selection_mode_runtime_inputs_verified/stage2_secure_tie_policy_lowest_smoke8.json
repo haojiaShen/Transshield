@@ -1,12 +1,13 @@
 {
-  "bundle_dir": "/home/yclcg/Transshield_final/artifacts/frozen_candidates/tracka_lr3e5_timm_best_20260414",
+  "bundle_dir": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
   "constraints": {
+    "export_suite_single_forward_pass": true,
     "model_semantics_changed": false,
     "sidecar_is_read_only_reference": true,
     "source_reference_topk": true
   },
-  "data_path": "/home/yclcg/DynamicViT_exp_square/data/pneumoniamnist_imagefolder_subset/val",
-  "output_pt": "/home/yclcg/Transshield_final/artifacts/inference_ready_config/selection_mode_runtime_inputs_verified/stage2_secure_tie_policy_lowest_smoke8.pt",
+  "data_path": "/data/wyb/pneumoniamnist_imagefolder_subset/val",
+  "output_pt": "/data/wyb/Transshield_final/artifacts/server_pipeline_run/delivery_line_suite_20260505_clean/stage2_secure_tie_policy_lowest_smoke8.pt",
   "sample_count": 524,
   "selection_mode": "imagefolder",
   "stages": [
@@ -14,8 +15,8 @@
       "keep_count": 137,
       "pruning_layer": 3,
       "selected_equal_mask": {
-        "max_true_count": 1,
-        "mean_true_count": 1.0,
+        "max_true_count": 86,
+        "mean_true_count": 10.814885139465332,
         "min_true_count": 1,
         "shape": [
           524,
@@ -24,8 +25,8 @@
       },
       "stage_index": 0,
       "tie_keep_quota": {
-        "max": 1,
-        "mean": 1.0,
+        "max": 86,
+        "mean": 10.814885139465332,
         "min": 1,
         "shape": [
           524
@@ -36,9 +37,9 @@
       "keep_count": 96,
       "pruning_layer": 6,
       "selected_equal_mask": {
-        "max_true_count": 1,
-        "mean_true_count": 1.0,
-        "min_true_count": 1,
+        "max_true_count": 96,
+        "mean_true_count": 96.0,
+        "min_true_count": 96,
         "shape": [
           524,
           196
@@ -46,9 +47,9 @@
       },
       "stage_index": 1,
       "tie_keep_quota": {
-        "max": 1,
-        "mean": 1.0,
-        "min": 1,
+        "max": 96,
+        "mean": 96.0,
+        "min": 96,
         "shape": [
           524
         ]
@@ -58,8 +59,8 @@
       "keep_count": 67,
       "pruning_layer": 9,
       "selected_equal_mask": {
-        "max_true_count": 1,
-        "mean_true_count": 1.0,
+        "max_true_count": 35,
+        "mean_true_count": 6.700381755828857,
         "min_true_count": 1,
         "shape": [
           524,
@@ -68,8 +69,8 @@
       },
       "stage_index": 2,
       "tie_keep_quota": {
-        "max": 1,
-        "mean": 1.0,
+        "max": 35,
+        "mean": 6.700381755828857,
         "min": 1,
         "shape": [
           524

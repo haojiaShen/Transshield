@@ -1,0 +1,33 @@
+{
+  "configured_distill": {
+    "batch_size": "32",
+    "cls_distill_weight": "0.0",
+    "debug_max_steps": "0",
+    "epochs": "3",
+    "ratio_weight": "0.0",
+    "secure_static_skip_pruning": "false",
+    "secure_static_train_depth": "12",
+    "token_distill_weight": "0.0"
+  },
+  "inputs": {
+    "command_sh": "/data/wyb/Transshield_final/artifacts/train_runs/distill_comp_pair_epoch3_20260506_cls_only1_nodistill/command.sh",
+    "train_log": "/data/wyb/Transshield_final/artifacts/train_runs/distill_comp_pair_epoch3_20260506_cls_only1_nodistill/train_stdout.log"
+  },
+  "interpretation": {
+    "reason": "command.sh keeps both cls/token distill weights at 0, so this run acts as the no-distill reference.",
+    "status": "distill_disabled_reference"
+  },
+  "log_summary": {
+    "loss_info_line_count": 4,
+    "max_cls_kl": 0.1864,
+    "max_effective_cls_term": 0.0,
+    "max_effective_token_term": 0.0,
+    "max_token_kl": 0.4743,
+    "mean_cls_kl": 0.163475,
+    "mean_effective_cls_term": 0.0,
+    "mean_effective_token_term": 0.0,
+    "mean_token_kl": 0.47135,
+    "nonzero_effective_distill_line_count": 0
+  },
+  "manifest_type": "transshield_distill_log_report_v0"
+}

@@ -1,0 +1,23 @@
+{
+  "candidate_pt": "/data/wyb/Transshield_final/results/e2e_static_calibration/e2e_static_fullval_20260507_1/cpu_static_logits_raw.pt",
+  "label": "e2e_static_fullval_exactln_clip0_cpu_reference",
+  "manifest_type": "transshield_e2e_static_calibration_report_v0",
+  "metrics": {
+    "argmax_accuracy": 88.16793893129771,
+    "argmax_f1": 0.9171122994652406,
+    "auc": 0.946700942587832,
+    "best_threshold": 0.4733111560344696,
+    "best_threshold_accuracy": 89.31297709923665,
+    "best_threshold_f1": 0.9272727272727272,
+    "calibrated_argmax_accuracy": 89.12213740458014,
+    "calibrated_argmax_f1": 0.9258777633289988,
+    "calibrated_ce_loss": 0.5090911380224752,
+    "ce_loss": 0.5279052685992093
+  },
+  "public_logit_bias_calibration": {
+    "effective_class1_logit_bias": 0.10685693788042731,
+    "score_rule": "class1_score = logits @ [-1, 1] + public_class1_logit_bias",
+    "source_eval_binary_threshold": 0.4733111560344696
+  },
+  "sample_count": 524
+}

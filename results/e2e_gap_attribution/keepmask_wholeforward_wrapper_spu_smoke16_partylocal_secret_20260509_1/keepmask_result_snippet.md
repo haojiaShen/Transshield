@@ -1,0 +1,14 @@
+- `smoke16_partylocal_secret_20260509_1`：`/home/yclcg/Transshield_final/results/e2e_gap_attribution/keepmask_wholeforward_wrapper_spu_smoke16_partylocal_secret_20260509_1/`
+  - `sample_count = 16`
+  - `elapsed_sec = 3203.1877`
+  - `logits/probabilities max_abs_error = 0.0026 / 0.0013`
+  - `argmax / threshold match = 1.0 / 1.0`
+  - `input_pt = None`
+  - `input_mode = party_local_debug_share_load`
+  - `host_plaintext_pixel_values_materialized = false`
+  - `host_private_share_tensors_loaded = false`
+  - `private_input_paths_redacted = true`
+  - `spu_params_mode = secret`
+  - `spu_forward_graph_mode = monolithic`
+  - `reveal_policy = final_logits_only`
+  - `runtime_pruning_keep_mask_stage_count = 3`

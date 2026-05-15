@@ -12,7 +12,9 @@ PYTHON_BIN="${PYTHON_BIN:-python}"
 RUN_NAME="${RUN_NAME:-fair_external_$(date +%Y%m%d_%H%M%S)}"
 TRAIN_DATA_PATH="${TRAIN_DATA_PATH:-}"
 VAL_DATA_PATH="${VAL_DATA_PATH:-}"
-BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_verified_tracka_lr3e5_20260414}"
+# 默认对齐 current delivery bundle。
+# 如需重放历史 benchmark，请显式覆盖 BUNDLE_DIR。
+BUNDLE_DIR="${BUNDLE_DIR:-$REPO_ROOT/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430}"
 SECURE_RUN_DIR="${SECURE_RUN_DIR:-$REPO_ROOT/artifacts/server_pipeline_run/${RUN_NAME}_transshield}"
 FAIR_OUTPUT_DIR="${FAIR_OUTPUT_DIR:-$REPO_ROOT/results/fair_external_comparison/${RUN_NAME}}"
 
@@ -37,6 +39,15 @@ SECURE_EXPORT_DEVICE="${SECURE_EXPORT_DEVICE:-cpu}"
 
 RUN_TRANSSHIELD="${RUN_TRANSSHIELD:-1}"
 RUN_MPCVIT="${RUN_MPCVIT:-1}"
+
+case "$RUN_TRANSSHIELD" in
+  0|1|plaintext_only)
+    ;;
+  *)
+    echo "RUN_TRANSSHIELD 只支持 0 / 1 / plaintext_only，当前为：$RUN_TRANSSHIELD" >&2
+    exit 1
+    ;;
+esac
 
 if [[ -z "$TRAIN_DATA_PATH" || -z "$VAL_DATA_PATH" ]]; then
   echo "请先设置 TRAIN_DATA_PATH 和 VAL_DATA_PATH。" >&2
@@ -85,6 +96,17 @@ if [[ "$RUN_TRANSSHIELD" == "1" ]]; then
   RUN_NAME="$RUN_NAME" BUNDLE_DIR="$BUNDLE_DIR" SECURE_RUN_DIR="$SECURE_RUN_DIR" "$SCRIPT_DIR/run_secure_replay.sh"
   RUN_NAME="$RUN_NAME" BUNDLE_DIR="$BUNDLE_DIR" SECURE_RUN_DIR="$SECURE_RUN_DIR" "$SCRIPT_DIR/run_secure_score_compare.sh"
   RUN_NAME="$RUN_NAME" BUNDLE_DIR="$BUNDLE_DIR" SECURE_RUN_DIR="$SECURE_RUN_DIR" "$SCRIPT_DIR/run_secure_profile_summary.sh"
+elif [[ "$RUN_TRANSSHIELD" == "plaintext_only" ]]; then
+  echo "[fair] Step 1：仅运行 Transshield modified 明文评估。"
+  echo "[fair] 跳过 secure export / secure pipeline / replay / profile。"
+  RUN_NAME="$RUN_NAME" \
+  TRAIN_DATA_PATH="$TRAIN_DATA_PATH" \
+  VAL_DATA_PATH="$VAL_DATA_PATH" \
+  BUNDLE_DIR="$BUNDLE_DIR" \
+  SECURE_RUN_DIR="$SECURE_RUN_DIR" \
+  PLAINTEXT_EVAL_DEVICE="$PLAINTEXT_EVAL_DEVICE" \
+  PLAINTEXT_MAX_SAMPLES="$PLAINTEXT_MAX_SAMPLES" \
+  "$SCRIPT_DIR/run_plaintext_eval.sh" modified
 else
   echo "[fair] 跳过 Transshield 运行，复用 SECURE_RUN_DIR=$SECURE_RUN_DIR"
 fi

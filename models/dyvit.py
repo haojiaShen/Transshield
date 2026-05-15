@@ -16,6 +16,7 @@ DeiT model defs and weights from https://github.com/facebookresearch/deit,
 paper `DeiT: Data-efficient Image Transformers` - https://arxiv.org/abs/2012.12877
 
 Hacked together by / Copyright 2020 Ross Wightman
+import numpy as np
 """
 import math
 import logging
@@ -273,6 +274,8 @@ class Attention(nn.Module):
             attn = attn * attn
         elif mode == 'abs_square':
             attn = attn * attn
+        elif mode == 'uniform':
+            raise ValueError('uniform attention is handled before attention score materialization')
         else:
             raise ValueError(f'Unsupported approx_attn_mode: {mode}')
         if attn_policy is not None:
@@ -309,6 +312,14 @@ class Attention(nn.Module):
         B, N, C = x.shape
         qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]   # make torchscript happy (cannot use tensor as tuple)
+
+        if self.use_approx_attn and self.approx_attn_mode == 'uniform':
+            mean_value = v.mean(dim=2, keepdim=True)
+            attn_out = mean_value.expand(B, self.num_heads, N, C // self.num_heads)
+            x = attn_out.transpose(1, 2).reshape(B, N, C)
+            x = self.proj(x)
+            x = self.proj_drop(x)
+            return x
 
         attn = (q @ k.transpose(-2, -1)) * self.scale
 
@@ -530,7 +541,8 @@ class VisionTransformerDiffPruning(nn.Module):
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0., hybrid_backbone=None, norm_layer=None, 
                  pruning_loc=None, token_ratio=None, distill=False, act_layer='square',
                  use_mask_pruning=False, use_approx_attn=False, approx_attn_mode='relu',
-                 fp32_attention=False, eval_pruning_mode='topk_argsort', eval_tie_policy='lowest_index'):
+                 fp32_attention=False, eval_pruning_mode='topk_argsort', eval_tie_policy='lowest_index',
+                 secure_static_depth=0, secure_static_skip_pruning=True, mixed_attn_split=0):
         """
         Args:
             img_size (int, tuple): input image size
@@ -570,12 +582,23 @@ class VisionTransformerDiffPruning(nn.Module):
         self.pos_drop = nn.Dropout(p=drop_rate)
 
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]  # stochastic depth decay rule
-        self.blocks = nn.ModuleList([
-            Block(
+        # Mixed attention: first mixed_attn_split blocks use approx_attn_mode, rest use standard softmax
+        self.mixed_attn_split = int(mixed_attn_split or 0)
+        blocks_list = []
+        for i in range(depth):
+            if self.mixed_attn_split > 0 and i >= self.mixed_attn_split:
+                # Later blocks: standard softmax attention (no approx)
+                blk_use_approx = False
+                blk_approx_mode = approx_attn_mode
+            else:
+                # Early blocks (or all blocks if mixed_attn_split=0): use approx_attn
+                blk_use_approx = use_approx_attn
+                blk_approx_mode = approx_attn_mode
+            blocks_list.append(Block(
                 dim=embed_dim, num_heads=num_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, qk_scale=qk_scale,
                 drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[i], act_layer=act_layer, norm_layer=norm_layer,
-                use_approx_attn=use_approx_attn, approx_attn_mode=approx_attn_mode, fp32_attention=fp32_attention)
-            for i in range(depth)])
+                use_approx_attn=blk_use_approx, approx_attn_mode=blk_approx_mode, fp32_attention=fp32_attention))
+        self.blocks = nn.ModuleList(blocks_list)
         self.norm = norm_layer(embed_dim)
 
         # Representation layer
@@ -604,6 +627,8 @@ class VisionTransformerDiffPruning(nn.Module):
         self.approx_attn_mode = approx_attn_mode
         self.eval_pruning_mode = eval_pruning_mode
         self.eval_tie_policy = eval_tie_policy
+        self.secure_static_depth = int(secure_static_depth or 0)
+        self.secure_static_skip_pruning = bool(secure_static_skip_pruning)
         self.debug_nan = False
         self.debug_context = ""
         self._debug_tensor_logged = set()
@@ -893,8 +918,12 @@ class VisionTransformerDiffPruning(nn.Module):
         policy = torch.ones(B, init_n + 1, 1, dtype=x.dtype, device=x.device)
         self._check_finite('prev_decision_init', prev_decision)
         self._check_finite('policy_init', policy)
-        for i, blk in enumerate(self.blocks):
-            if i in self.pruning_loc:
+        block_limit = len(self.blocks)
+        secure_static_mode = self.secure_static_depth > 0
+        if secure_static_mode:
+            block_limit = max(0, min(self.secure_static_depth, len(self.blocks)))
+        for i, blk in enumerate(list(self.blocks)[:block_limit]):
+            if (not secure_static_mode or not self.secure_static_skip_pruning) and i in self.pruning_loc:
                 if self.use_mask_pruning:
                     x = self._apply_spatial_mask(x, prev_decision)
                     self._check_finite(f'block_{i}_masked_input', x)

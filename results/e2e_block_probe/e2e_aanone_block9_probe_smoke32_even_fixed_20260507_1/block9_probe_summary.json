@@ -1,0 +1,144 @@
+{
+  "items": [
+    {
+      "attn_out_cls": {
+        "candidate_l2_norm": 37.2840576171875,
+        "cosine_similarity": 0.999998927116394,
+        "l2_error": 0.05934013053774834,
+        "max_abs_error": 0.01399993896484375,
+        "mean_abs_error": 0.002352737123146653,
+        "name": "attn_out_cls",
+        "reference_l2_norm": 37.30787658691406,
+        "relative_l2_error_vs_reference": 0.0015905523435381526,
+        "shape": [
+          1,
+          384
+        ]
+      },
+      "bias_abs_margin": 0.033559203147888184,
+      "bias_correct": false,
+      "bias_score": 0.033559203147888184,
+      "block_output_cls": {
+        "candidate_l2_norm": 478.604736328125,
+        "cosine_similarity": 0.9999987483024597,
+        "l2_error": 1.6887303590774536,
+        "max_abs_error": 0.7425994873046875,
+        "mean_abs_error": 0.06129360571503639,
+        "name": "block_output_cls",
+        "reference_l2_norm": 477.10321044921875,
+        "relative_l2_error_vs_reference": 0.0035395493513603097,
+        "shape": [
+          1,
+          384
+        ]
+      },
+      "compare_json": "artifacts/server_pipeline_run/e2e_aanone_block9_probe_smoke32_even_fixed_20260507_1/wrong_idx13/e2e_secure_poc/block9_probe_compare_cpu_vs_spu_depth12.json",
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00456.png",
+      "label": "wrong_idx13",
+      "mlp_out_cls": {
+        "candidate_l2_norm": 198.79293823242188,
+        "cosine_similarity": 0.9999992847442627,
+        "l2_error": 1.0414783954620361,
+        "max_abs_error": 0.5072174072265625,
+        "mean_abs_error": 0.03806697204709053,
+        "name": "mlp_out_cls",
+        "reference_l2_norm": 197.77908325195312,
+        "relative_l2_error_vs_reference": 0.0052658672410534155,
+        "shape": [
+          1,
+          384
+        ]
+      },
+      "source_index": 13,
+      "target": 0,
+      "top_stage": {
+        "candidate_l2_norm": 478.604736328125,
+        "cosine_similarity": 0.9999987483024597,
+        "l2_error": 1.6887303590774536,
+        "max_abs_error": 0.7425994873046875,
+        "mean_abs_error": 0.06129360571503639,
+        "name": "block_output_cls",
+        "reference_l2_norm": 477.10321044921875,
+        "shape": [
+          1,
+          384
+        ]
+      }
+    },
+    {
+      "attn_out_cls": {
+        "candidate_l2_norm": 32.4957275390625,
+        "cosine_similarity": 0.9999994039535522,
+        "l2_error": 0.043936245143413544,
+        "max_abs_error": 0.012460574507713318,
+        "mean_abs_error": 0.0017133973306044936,
+        "name": "attn_out_cls",
+        "reference_l2_norm": 32.51626968383789,
+        "relative_l2_error_vs_reference": 0.0013512080435614025,
+        "shape": [
+          1,
+          384
+        ]
+      },
+      "bias_abs_margin": 1.8003896474838257,
+      "bias_correct": true,
+      "bias_score": 1.8003896474838257,
+      "block_output_cls": {
+        "candidate_l2_norm": 730.4146728515625,
+        "cosine_similarity": 0.9999996423721313,
+        "l2_error": 2.5781571865081787,
+        "max_abs_error": 1.032989501953125,
+        "mean_abs_error": 0.09660402685403824,
+        "name": "block_output_cls",
+        "reference_l2_norm": 727.9304809570312,
+        "relative_l2_error_vs_reference": 0.0035417629209847086,
+        "shape": [
+          1,
+          384
+        ]
+      },
+      "compare_json": "artifacts/server_pipeline_run/e2e_aanone_block9_probe_smoke32_even_fixed_20260507_1/correct_idx17/e2e_secure_poc/block9_probe_compare_cpu_vs_spu_depth12.json",
+      "image": "/data/wyb/pneumoniamnist_imagefolder_subset/val/1/00036.png",
+      "label": "correct_idx17",
+      "mlp_out_cls": {
+        "candidate_l2_norm": 550.8925170898438,
+        "cosine_similarity": 0.9999998807907104,
+        "l2_error": 2.1511032581329346,
+        "max_abs_error": 0.8900299072265625,
+        "mean_abs_error": 0.08022727817296982,
+        "name": "mlp_out_cls",
+        "reference_l2_norm": 548.7720947265625,
+        "relative_l2_error_vs_reference": 0.003919848109632412,
+        "shape": [
+          1,
+          384
+        ]
+      },
+      "source_index": 17,
+      "target": 1,
+      "top_stage": {
+        "candidate_l2_norm": 730.4146728515625,
+        "cosine_similarity": 0.9999996423721313,
+        "l2_error": 2.5781571865081787,
+        "max_abs_error": 1.032989501953125,
+        "mean_abs_error": 0.09660402685403824,
+        "name": "block_output_cls",
+        "reference_l2_norm": 727.9304809570312,
+        "shape": [
+          1,
+          384
+        ]
+      }
+    }
+  ],
+  "label": "e2e_aanone_block9_probe_smoke32_even_fixed_20260507_1",
+  "manifest_type": "transshield_e2e_block9_probe_summary_v1",
+  "next_recommendation": {
+    "reason": "The wrong sample has abs bias margin 0.0336, while fixed block9 probe cosine remains ~0.999999. Accuracy work should prioritize margin robustness or cumulative drift reduction; attention probe semantics no longer support attention-direction-drift as the main cause.",
+    "status": "boundary_margin_and_cumulative_numeric_drift_are_primary_next_axes"
+  },
+  "probe_block_index": 8,
+  "probe_block_ordinal": 9,
+  "probe_semantics_fix": "SPU attn_out_cls now records the projected Attention module output, matching CPU debug semantics. Earlier unprojected-context probe should not be used for attribution.",
+  "summary": "After probe semantic alignment, CPU/SPU block9 tensors are high-cosine for both boundary-wrong and high-margin-correct samples. The observed E2E errors are better explained by low final decision margin plus small cumulative numerical drift, not by a large attention-output direction error at block9."
+}

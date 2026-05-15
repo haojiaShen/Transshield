@@ -224,7 +224,7 @@ def build_remaining_blockers(checklist, communication_status):
 
 def build_next_actions():
     return [
-        'Decide whether to promote artifacts/frozen_bundle_verified_tracka_lr3e5_20260414 as the default presentation bundle',
+        'Keep artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430 as the default presentation bundle',
         'Keep Python fastpath RPC/cloudpickle metrics as the default fast-runtime communication display',
         'Run 1-2 additional lr=3e-5 confirmation seeds or a minimal stability ablation to show the candidate is not an isolated peak',
         'Convert the current matrices into presentation visuals: architecture, token pruning, CPU/SPU runtime, and external comparison',

@@ -24,7 +24,7 @@
         ],
         "runtime_config": {
           "cheetah_2pc_config": {
-            "enable_mul_lsb_error": true,
+            "enable_mul_lsb_error": false,
             "ot_kind": "YACL_Ferret"
           },
           "enable_hal_profile": true,

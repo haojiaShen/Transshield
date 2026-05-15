@@ -1,3 +1,14 @@
+# =============================================================================
+# Transshield E2E Secure ViT — 安全推理端到端执行器
+# =============================================================================
+# 角色映射：
+#   "client" / "client-side"  → 数据使用方（如医院），提交影像数据，获取诊断结果
+#   "server" / "server-side"  → 模型提供方的推理服务（内部含 P0/P1 两台 MPC 服务器）
+#   "client_pixel_package"    → 数据使用方提交的预处理后数据包
+#
+# 变量命名保持历史兼容，新增注释统一使用"数据使用方" / "模型提供方"术语。
+# =============================================================================
+
 import argparse
 import json
 import shutil
@@ -27,6 +38,8 @@ from integrations.openbumblebee.e2e_secure_vit.input_shares import (  # noqa: E4
     load_debug_party_share_metadata as load_debug_party_share_metadata_impl,
 )
 from integrations.openbumblebee.e2e_secure_vit.cpu_static_vit import (  # noqa: E402
+    run_external_keep_mask_student_whole_forward_limited,
+    run_runtime_pruning_student_whole_forward_limited,
     run_static_student_whole_forward_limited,
     run_static_student_whole_forward_probe,
 )
@@ -35,6 +48,9 @@ from integrations.openbumblebee.e2e_secure_vit.spu_static_vit import (  # noqa: 
     run_share_recomposition_audit_spu,
     run_static_vit_forward_spu,
     static_patch_embed_numpy,
+)
+from integrations.openbumblebee.e2e_secure_vit.static_vit_params import (  # noqa: E402
+    load_static_vit_spu_params_with_predictor,
 )
 from integrations.openbumblebee.e2e_secure_vit.debug_probe import (  # noqa: E402
     run_runtime_primitive_smoke,
@@ -51,7 +67,7 @@ from integrations.openbumblebee.e2e_secure_vit.static_vit_params import (  # noq
 )
 
 
-DEFAULT_BUNDLE_DIR = REPO_ROOT / "artifacts" / "frozen_bundle_verified_tracka_lr3e5_20260414"
+DEFAULT_BUNDLE_DIR = REPO_ROOT / "artifacts" / "frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430"
 DEFAULT_SPU_CONFIG = REPO_ROOT / "configs" / "openbumblebee" / "2pc.json"
 DEFAULT_E2E_SPU_TEMPLATE = REPO_ROOT / "configs" / "openbumblebee" / "2pc_e2e.template.json"
 DEFAULT_OUTPUT_PT_NAME = "e2e_static_whole_forward_candidate_from_server.pt"
@@ -162,7 +178,7 @@ def build_prepare_manifest(
         "commands": commands,
         "notes": [
             "CPU backend is the current local reference backend for the whole-forward contract.",
-            "SPU whole-forward execution now has an experimental static JAX backend; run the smoke command first on the server.",
+            "SPU whole-forward execution now has an experimental static JAX backend; run the smoke command first on the model provider server.",
             "Use the verify command to compare a future secure candidate against the static whole-forward plaintext reference.",
         ],
     }
@@ -219,7 +235,7 @@ def command_prepare(args):
         "# Transshield e2e secure whole-forward pack\n\n"
         "This pack freezes the current whole-forward contract for the new e2e track.\n\n"
         "Included artifacts:\n"
-        "- client pixel package\n"
+        "- 数据使用方数据包（client pixel package，历史变量名兼容）\n"
         "- static whole-forward plaintext reference\n"
         "- optional e2e contract JSON\n"
         "- command templates for CPU run / experimental SPU smoke run / verify\n",
@@ -294,12 +310,14 @@ def load_static_vit_spu_params(
     static_depth_limit: int = -1,
     attention_policy: str = "smoothed",
     activation_override: str = "bundle",
+    token_ratio_base_override: float = 0.0,
 ):
     return load_static_vit_spu_params_impl(
         bundle_dir,
         static_depth_limit=static_depth_limit,
         attention_policy=attention_policy,
         activation_override=activation_override,
+        token_ratio_base_override=token_ratio_base_override,
     )
 
 
@@ -360,6 +378,11 @@ def command_run(args):
     layer_norm_calibration_json = (
         Path(args.spu_layer_norm_calibration_json).expanduser().resolve()
         if getattr(args, "spu_layer_norm_calibration_json", "")
+        else None
+    )
+    runtime_pruning_keep_mask_pt = (
+        Path(args.runtime_pruning_keep_mask_pt).expanduser().resolve()
+        if getattr(args, "runtime_pruning_keep_mask_pt", "")
         else None
     )
 
@@ -459,21 +482,50 @@ def command_run(args):
     if sample_ids is not None and args.max_samples > 0:
         sample_ids = list(sample_ids)[: args.max_samples]
 
+    runtime_pruning_keep_masks = None
+    if runtime_pruning_keep_mask_pt is not None:
+        require_existing_file(runtime_pruning_keep_mask_pt, "runtime pruning keep-mask payload")
+        keep_mask_payload = helpers["load_tensor_payload"](runtime_pruning_keep_mask_pt)
+        runtime_pruning_keep_masks = keep_mask_payload.get("stage_keep_masks")
+        if not isinstance(runtime_pruning_keep_masks, list) or not runtime_pruning_keep_masks:
+            raise ValueError("runtime pruning keep-mask payload missing non-empty stage_keep_masks")
+        payload_sample_ids = keep_mask_payload.get("sample_ids")
+        if payload_sample_ids is not None and sample_ids is not None:
+            if list(payload_sample_ids)[: len(sample_ids)] != list(sample_ids):
+                raise ValueError("runtime pruning keep-mask payload sample_ids do not match current input ordering")
+        if args.max_samples > 0:
+            runtime_pruning_keep_masks = [mask[: args.max_samples] for mask in runtime_pruning_keep_masks]
+
     start = time.time()
     cls_features_cpu = None
     token_features_cpu = None
+    cpu_forward_mode = str(getattr(args, "cpu_forward_mode", "static_no_pruning"))
+    forward_scope = STATIC_FORWARD_SCOPE
     if runtime == "spu":
         if args.include_intermediates:
             raise ValueError(
                 "--include-intermediates is intentionally disabled for runtime=spu; "
                 "the e2e reveal policy only returns final logits."
             )
-        params, spu_metadata = load_static_vit_spu_params(
-            bundle_dir,
-            args.static_depth_limit,
-            attention_policy=args.spu_attention_policy,
-            activation_override=args.spu_activation_override,
-        )
+        predictor_params_np = None
+        if runtime_pruning_keep_masks is None:
+            # Secure pruning: load predictor params so pruning happens inside SPU
+            params, predictor_params_np, spu_metadata = load_static_vit_spu_params_with_predictor(
+                bundle_dir,
+                args.static_depth_limit,
+                attention_policy=args.spu_attention_policy,
+                activation_override=args.spu_activation_override,
+                token_ratio_base_override=getattr(args, 'spu_token_ratio_base_override', 0.0),
+            )
+            forward_scope = spu_metadata.get("forward_scope", forward_scope)
+        else:
+            params, spu_metadata = load_static_vit_spu_params(
+                bundle_dir,
+                args.static_depth_limit,
+                attention_policy=args.spu_attention_policy,
+                activation_override=args.spu_activation_override,
+                token_ratio_base_override=getattr(args, 'spu_token_ratio_base_override', 0.0),
+            )
         layer_norm_calibration = None
         if args.spu_layer_norm_policy == "public_calibrated":
             if layer_norm_calibration_json is None:
@@ -505,16 +557,53 @@ def command_run(args):
             layer_norm_policy=args.spu_layer_norm_policy,
             layer_norm_calibration=layer_norm_calibration,
             activation_clip_value=args.spu_activation_clip_value,
+            external_keep_masks_np=(
+                None
+                if runtime_pruning_keep_masks is None
+                else [numpy_from_torch_tensor(mask.float()) for mask in runtime_pruning_keep_masks]
+            ),
+            predictor_params_np=predictor_params_np,
+            pruning_metadata=(
+                {
+                    "pruning_loc": list(spu_metadata.get("pruning_loc", [])),
+                    "token_keep_counts": list(spu_metadata.get("token_keep_counts", [])),
+                }
+                if predictor_params_np is not None
+                else None
+            ),
+            token_recycle_scale=args.spu_token_recycle_scale,
         )
         logits_cpu = torch.from_numpy(logits_np).float()
         probabilities_cpu = torch.softmax(logits_cpu, dim=-1)
-        backend = "jax_spu_static_whole_forward_backend_v0"
+        if runtime_pruning_keep_masks is None:
+            if predictor_params_np is not None:
+                backend = "jax_spu_secure_pruning_forward_backend_v0"
+            else:
+                backend = "jax_spu_static_whole_forward_backend_v0"
+        else:
+            backend = "jax_spu_external_keep_mask_whole_forward_backend_v0"
+            forward_scope = "student_patch_embed_blocks_head_with_external_runtime_pruning_keep_masks"
     else:
         bundle = helpers["load_frozen_bundle"](bundle_dir, device=args.device)
         model = bundle["model"]
         pixel_values = pixel_values_cpu.to(args.device)
         with torch.no_grad():
-            if args.static_depth_limit >= 0:
+            if runtime_pruning_keep_masks is not None:
+                outputs = run_external_keep_mask_student_whole_forward_limited(
+                    model,
+                    pixel_values,
+                    runtime_pruning_keep_masks,
+                    args.static_depth_limit,
+                )
+                forward_scope = "student_patch_embed_blocks_head_with_external_runtime_pruning_keep_masks"
+            elif cpu_forward_mode == "runtime_pruning_reference":
+                outputs = run_runtime_pruning_student_whole_forward_limited(
+                    model,
+                    pixel_values,
+                    args.static_depth_limit,
+                )
+                forward_scope = "student_patch_embed_blocks_head_with_runtime_pruning_predictor_path"
+            elif args.static_depth_limit >= 0:
                 outputs = run_static_student_whole_forward_limited(model, pixel_values, args.static_depth_limit)
             else:
                 outputs = helpers["run_static_student_whole_forward"](model, pixel_values)
@@ -526,7 +615,12 @@ def command_run(args):
         probabilities_cpu = probabilities.detach().cpu()
         cls_features_cpu = cls_features.detach().cpu()
         token_features_cpu = token_features.detach().cpu()
-        backend = "cpu_plaintext_whole_forward_reference_backend"
+        if runtime_pruning_keep_masks is not None:
+            backend = "cpu_plaintext_external_keep_mask_whole_forward_reference_backend"
+        elif cpu_forward_mode == "runtime_pruning_reference":
+            backend = "cpu_plaintext_runtime_pruning_whole_forward_reference_backend"
+        else:
+            backend = "cpu_plaintext_whole_forward_reference_backend"
         spu_metadata = None
     elapsed_sec = time.time() - start
 
@@ -574,6 +668,9 @@ def command_run(args):
             redaction_label="p2_share_manifest",
         ),
         "input_source": input_source,
+        "runtime_pruning_keep_mask_pt": (
+            None if runtime_pruning_keep_mask_pt is None else str(runtime_pruning_keep_mask_pt)
+        ),
         "sample_ids": sample_ids,
         "targets": targets,
         "threshold": threshold,
@@ -582,6 +679,8 @@ def command_run(args):
         "argmax_predictions": argmax_predictions,
         "threshold_predictions": threshold_predictions,
     }
+    if runtime == "cpu":
+        payload["cpu_forward_mode"] = cpu_forward_mode
     if raw_logits_before_output_calibration is not None:
         payload["raw_logits_before_output_calibration"] = raw_logits_before_output_calibration
         payload["output_calibration"] = output_calibration
@@ -590,7 +689,7 @@ def command_run(args):
         payload["token_features"] = token_features_cpu
     if runtime == "spu":
         payload["spu_metadata"] = {
-        "config": str(Path(args.config).expanduser().resolve()),
+            "config": str(Path(args.config).expanduser().resolve()),
             "spu_batch_size": int(args.spu_batch_size),
             "spu_params_mode": args.spu_params_mode,
             "spu_block_chunk_size": int(args.spu_block_chunk_size),
@@ -600,10 +699,12 @@ def command_run(args):
                 str(layer_norm_calibration_json) if layer_norm_calibration_json is not None else None
             ),
             "spu_activation_clip_value": float(args.spu_activation_clip_value),
+            "spu_token_recycle_scale": float(args.spu_token_recycle_scale),
+            "spu_token_ratio_base_override": float(getattr(args, "spu_token_ratio_base_override", 0.0)),
             "static_forward_metadata": spu_metadata,
             "reveal_policy": "final_logits_only",
             "private_input_paths_redacted": redact_private_input_paths,
-    }
+        }
     output_pt.parent.mkdir(parents=True, exist_ok=True)
     torch.save(payload, output_pt)
 
@@ -632,6 +733,9 @@ def command_run(args):
             redaction_label="p2_share_manifest",
         ),
         "input_source": input_source,
+        "runtime_pruning_keep_mask_pt": (
+            None if runtime_pruning_keep_mask_pt is None else str(runtime_pruning_keep_mask_pt)
+        ),
         "output_pt": str(output_pt),
         "sample_count": int(logits_cpu.shape[0]),
         "elapsed_sec": float(elapsed_sec),
@@ -639,6 +743,10 @@ def command_run(args):
         "finite_logits": bool(torch.isfinite(logits_cpu).all().item()),
         "include_intermediates": bool(args.include_intermediates),
         "max_samples": int(args.max_samples),
+        "cpu_forward_mode": cpu_forward_mode if runtime == "cpu" else None,
+        "runtime_pruning_keep_mask_stage_count": (
+            None if runtime_pruning_keep_masks is None else len(runtime_pruning_keep_masks)
+        ),
         "static_depth_limit": int(args.static_depth_limit),
         "effective_static_depth": (
             int(spu_metadata["depth"])
@@ -663,7 +771,7 @@ def command_run(args):
         },
         "cls_features": tensor_stats(cls_features_cpu) if cls_features_cpu is not None else None,
         "token_features": tensor_stats(token_features_cpu) if token_features_cpu is not None else None,
-        "forward_scope": STATIC_FORWARD_SCOPE,
+        "forward_scope": forward_scope,
     }
     if runtime == "spu":
         summary["spu"] = {
@@ -677,9 +785,15 @@ def command_run(args):
                 str(layer_norm_calibration_json) if layer_norm_calibration_json is not None else None
             ),
             "spu_activation_clip_value": float(args.spu_activation_clip_value),
+            "spu_token_recycle_scale": float(args.spu_token_recycle_scale),
+            "spu_token_ratio_base_override": float(getattr(args, "spu_token_ratio_base_override", 0.0)),
+            "runtime_pruning_keep_mask_pt": (
+                None if runtime_pruning_keep_mask_pt is None else str(runtime_pruning_keep_mask_pt)
+            ),
             "spu_forward_graph_mode": (
                 "reveal_less_block_chunked" if int(args.spu_block_chunk_size) > 0 else "monolithic"
             ),
+            "reveal_policy": "final_logits_only",
             "input_mode": (
                 "party_local_debug_share_load"
                 if party_local_share_manifest_paths is not None
@@ -719,6 +833,15 @@ def command_run(args):
                 "When share manifests are used without party-local share loading, the runner no longer feeds "
                 "plaintext pixel_values as its input, but the driver may still materialize private share tensors."
             )
+        summary["spu_params_mode"] = summary["spu"]["spu_params_mode"]
+        summary["spu_forward_graph_mode"] = summary["spu"]["spu_forward_graph_mode"]
+        summary["reveal_policy"] = summary["spu"]["reveal_policy"]
+        summary["input_mode"] = summary["spu"]["input_mode"]
+        summary["spu_token_recycle_scale"] = summary["spu"]["spu_token_recycle_scale"]
+        summary["host_plaintext_pixel_values_materialized"] = summary["spu"]["host_plaintext_pixel_values_materialized"]
+        summary["host_private_share_tensors_loaded"] = summary["spu"]["host_private_share_tensors_loaded"]
+        summary["private_input_paths_redacted"] = summary["spu"]["private_input_paths_redacted"]
+        summary["driver_private_share_manifest_paths_recorded"] = summary["spu"]["driver_private_share_manifest_paths_recorded"]
     else:
         summary["privacy_note"] = (
             "This candidate uses the CPU reference backend to freeze the output contract. "
@@ -994,6 +1117,19 @@ def command_probe_block(args):
             attention_policy=args.spu_attention_policy,
             activation_override=args.spu_activation_override,
         )
+        layer_norm_calibration = None
+        layer_norm_calibration_json = (
+            Path(args.spu_layer_norm_calibration_json).expanduser().resolve()
+            if getattr(args, "spu_layer_norm_calibration_json", "")
+            else None
+        )
+        if args.spu_layer_norm_policy == "public_calibrated":
+            if layer_norm_calibration_json is None:
+                raise ValueError("--spu-layer-norm-calibration-json is required for public_calibrated policy")
+            layer_norm_calibration = load_public_layer_norm_calibration(
+                layer_norm_calibration_json,
+                expected_depth=int(spu_metadata["depth"]),
+            )
         logits_np, probe_tensors = run_static_vit_forward_spu(
             None if share_pair_cpu is not None else numpy_from_torch_tensor(pixel_values_cpu),
             params,
@@ -1009,6 +1145,9 @@ def command_probe_block(args):
             ),
             layer_norm_chunk_size=args.spu_layer_norm_chunk_size,
             layer_norm_policy=args.spu_layer_norm_policy,
+            layer_norm_calibration=layer_norm_calibration,
+            activation_clip_value=args.spu_activation_clip_value,
+            token_recycle_scale=args.spu_token_recycle_scale,
         )
         logits_cpu = torch.from_numpy(logits_np).float()
         probabilities_cpu = torch.softmax(logits_cpu, dim=-1)
@@ -1068,6 +1207,7 @@ def command_probe_block(args):
         "effective_static_depth": int(effective_static_depth),
         "probe_block_index": int(args.probe_block_index),
         "probe_block_ordinal": int(args.probe_block_index) + 1,
+        "spu_token_recycle_scale": float(getattr(args, "spu_token_recycle_scale", 0.0)),
         "elapsed_sec": float(elapsed_sec),
         "finite_logits": bool(torch.isfinite(logits_cpu).all().item()),
         "sample_ids": sample_ids,
@@ -1093,7 +1233,16 @@ def command_probe_block(args):
         summary["spu"] = {
             "config": str(Path(args.config).expanduser().resolve()),
             "spu_batch_size": int(args.spu_batch_size),
+            "spu_layer_norm_policy": args.spu_layer_norm_policy,
+            "spu_layer_norm_calibration_json": (
+                None if layer_norm_calibration_json is None else str(layer_norm_calibration_json)
+            ),
             "spu_params_mode": args.spu_params_mode,
+            "spu_attention_policy": args.spu_attention_policy,
+            "spu_activation_override": args.spu_activation_override,
+            "spu_activation_clip_value": float(args.spu_activation_clip_value),
+            "spu_token_recycle_scale": float(args.spu_token_recycle_scale),
+            "spu_token_ratio_base_override": float(getattr(args, "spu_token_ratio_base_override", 0.0)),
             "input_mode": (
                 "debug_per_party_additive_share_manifests"
                 if party_share_manifests is not None
@@ -1500,6 +1649,24 @@ def build_parser():
     )
     run_parser.add_argument("--config", default=str(DEFAULT_SPU_CONFIG))
     run_parser.add_argument("--device", default="cpu")
+    run_parser.add_argument(
+        "--cpu-forward-mode",
+        choices=["static_no_pruning", "runtime_pruning_reference"],
+        default="static_no_pruning",
+        help=(
+            "CPU-only reference mode. static_no_pruning keeps the existing static whole-forward contract; "
+            "runtime_pruning_reference replays DyViT eval-time pruning semantics inside the CPU whole-forward path."
+        ),
+    )
+    run_parser.add_argument(
+        "--runtime-pruning-keep-mask-pt",
+        default="",
+        help=(
+            "Optional explicit keep-mask payload exported from "
+            "`tools/transshield_e2e_secure_infer.py export-runtime-pruning-keep-mask-payload`. "
+            "When set, the runner replays whole-forward using external stage keep masks."
+        ),
+    )
     run_parser.add_argument("--include-intermediates", action="store_true")
     run_parser.add_argument("--max-samples", type=int, default=0)
     run_parser.add_argument(
@@ -1542,7 +1709,19 @@ def build_parser():
         default="",
         help="Public calibration JSON required when --spu-layer-norm-policy public_calibrated is used.",
     )
-    run_parser.add_argument("--spu-params-mode", choices=["secret", "public"], default="public")
+    spu_params_mode_choices = [
+        "secret",
+        "public",
+        "secret_patch_head_public_blocks",
+        "public_patch_head_secret_blocks",
+        "secret_patch_head_secret_blocks_split",
+        "secret_patch_public_head_secret_blocks",
+        "public_patch_secret_head_secret_blocks",
+        "secret_three_stage",
+        "secret_blockwise_stage",
+        "secret_block_group_stage",
+    ]
+    run_parser.add_argument("--spu-params-mode", choices=spu_params_mode_choices, default="public")
     run_parser.add_argument(
         "--spu-attention-policy",
         choices=["smoothed", "standard", "uniform", "identity"],
@@ -1568,6 +1747,18 @@ def build_parser():
         default=0.0,
         help="Clip MLP pre-activation to [-value, value] before the SPU-friendly activation; 0 disables clipping.",
     )
+    run_parser.add_argument(
+        "--spu-token-recycle-scale",
+        type=float,
+        default=0.0,
+        help="Scale factor for Dropped-Token Context Recycling: inject weighted summary of dropped tokens into CLS before masking. 0 disables (original behavior).",
+    )
+    run_parser.add_argument(
+        "--spu-token-ratio-base-override",
+        type=float,
+        default=0.0,
+        help="Override the base_rate for token pruning ratio computation (token_ratio=[r, r^2, r^3]). 0 uses bundle default (0.7 -> 137/96/67 tokens). Lower values = more aggressive pruning = fewer tokens = faster but potentially less accurate.",
+    )
     run_parser.set_defaults(func=command_run)
 
     audit_parser = subparsers.add_parser(
@@ -1583,7 +1774,7 @@ def build_parser():
     audit_parser.add_argument("--output-json", required=True)
     audit_parser.add_argument("--config", default=str(DEFAULT_SPU_CONFIG))
     audit_parser.add_argument("--max-samples", type=int, default=0)
-    audit_parser.add_argument("--spu-params-mode", choices=["secret", "public"], default="public")
+    audit_parser.add_argument("--spu-params-mode", choices=spu_params_mode_choices, default="public")
     audit_parser.add_argument(
         "--spu-attention-policy",
         choices=["smoothed", "standard"],
@@ -1631,11 +1822,16 @@ def build_parser():
     )
     probe_parser.add_argument(
         "--spu-layer-norm-policy",
-        choices=["exact", "affine"],
+        choices=["exact", "affine", "public_calibrated"],
         default="exact",
         help="Experimental SPU layer-norm policy for probe-block.",
     )
-    probe_parser.add_argument("--spu-params-mode", choices=["secret", "public"], default="public")
+    probe_parser.add_argument(
+        "--spu-layer-norm-calibration-json",
+        default="",
+        help="Public calibration JSON required when --spu-layer-norm-policy public_calibrated is used.",
+    )
+    probe_parser.add_argument("--spu-params-mode", choices=spu_params_mode_choices, default="public")
     probe_parser.add_argument(
         "--spu-attention-policy",
         choices=["smoothed", "standard", "uniform", "identity"],
@@ -1654,6 +1850,18 @@ def build_parser():
         ],
         default="bundle",
         help="Experimental SPU-only MLP activation override for e2e drift ablation; bundle preserves current behavior.",
+    )
+    probe_parser.add_argument(
+        "--spu-activation-clip-value",
+        type=float,
+        default=0.0,
+        help="Optional activation clipping value for SPU probe-block; 0 disables clipping.",
+    )
+    probe_parser.add_argument(
+        "--spu-token-recycle-scale",
+        type=float,
+        default=0.0,
+        help="Scale factor for Dropped-Token Context Recycling during SPU probe-block runs.",
     )
     probe_parser.set_defaults(func=command_probe_block)
 

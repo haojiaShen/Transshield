@@ -1,0 +1,107 @@
+{
+  "bundle_dir": "/home/yclcg/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+  "cls_features": {
+    "dtype": "torch.float32",
+    "max": 2.5656843185424805,
+    "mean": -0.02228260040283203,
+    "min": -3.1839053630828857,
+    "shape": [
+      4,
+      384
+    ],
+    "std": 0.7320318222045898
+  },
+  "device": "cpu",
+  "effective_static_depth": 12,
+  "finite_logits": true,
+  "forward_scope": "student_patch_embed_blocks_head_without_runtime_pruning_predictor_path",
+  "input_pt": "/home/yclcg/Transshield_final/results/e2e_gap_attribution/fullval_plaintext_static_gap_smoke4_verify_20260508_1/fullval_pixel_values.pt",
+  "logits": {
+    "dtype": "torch.float32",
+    "max": 0.7295882701873779,
+    "mean": 0.17024855315685272,
+    "min": -0.36981576681137085,
+    "shape": [
+      4,
+      2
+    ],
+    "std": 0.43059906363487244
+  },
+  "manifest_type": "transshield_e2e_static_whole_forward_reference_v0",
+  "output_pt": "/home/yclcg/Transshield_final/results/e2e_gap_attribution/runtime_pruning_smoke_local_20260508/static_reference.pt",
+  "per_sample": [
+    {
+      "argmax_prediction": 0,
+      "logits": [
+        0.7295882701873779,
+        -0.36981576681137085
+      ],
+      "probabilities": [
+        0.7501484155654907,
+        0.2498515546321869
+      ],
+      "sample_id": "sample_000000",
+      "target": 0,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_prediction": 0,
+      "logits": [
+        0.4355613589286804,
+        -0.1079159826040268
+      ],
+      "probabilities": [
+        0.6326209306716919,
+        0.3673790395259857
+      ],
+      "sample_id": "sample_000001",
+      "target": 0,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_prediction": 0,
+      "logits": [
+        0.7072069644927979,
+        -0.3554149866104126
+      ],
+      "probabilities": [
+        0.7431913018226624,
+        0.25680872797966003
+      ],
+      "sample_id": "sample_000002",
+      "target": 0,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_prediction": 0,
+      "logits": [
+        0.44968101382255554,
+        -0.12690246105194092
+      ],
+      "probabilities": [
+        0.6402809023857117,
+        0.3597191274166107
+      ],
+      "sample_id": "sample_000003",
+      "target": 0,
+      "threshold_prediction": 1
+    }
+  ],
+  "privacy_note": "This is a plaintext static whole-forward reference for the future e2e SPU path. It keeps the student blocks/head but bypasses runtime pruning decisions.",
+  "sample_count": 4,
+  "static_depth_limit": -1,
+  "status": "plaintext_static_whole_forward_reference_not_secure",
+  "threshold": 0.3577311038970947,
+  "token_features": {
+    "dtype": "torch.float32",
+    "max": 3.102299928665161,
+    "mean": -0.0028432176914066076,
+    "min": -9.035404205322266,
+    "shape": [
+      4,
+      196,
+      384
+    ],
+    "std": 0.8118844628334045
+  }
+}

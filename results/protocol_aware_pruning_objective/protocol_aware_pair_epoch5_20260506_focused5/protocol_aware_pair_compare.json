@@ -1,0 +1,286 @@
+{
+  "config_compare": {
+    "baseline": {
+      "batch_size": "32",
+      "cls_distill_weight": "1.0",
+      "epochs": "5",
+      "finetune": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "lr": "3e-6",
+      "min_lr": "1e-7",
+      "pruning_margin_mode": "hinge",
+      "pruning_margin_stage_weights": null,
+      "pruning_margin_start_epoch": "0",
+      "pruning_margin_target": "1e-4",
+      "pruning_margin_weight": "0.0",
+      "secure_static_skip_pruning": "false",
+      "secure_static_train_depth": "12",
+      "teacher_checkpoint_path": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "token_distill_weight": "0.02",
+      "use_mask_pruning": "false"
+    },
+    "candidate": {
+      "batch_size": "32",
+      "cls_distill_weight": "1.0",
+      "epochs": "5",
+      "finetune": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "lr": "3e-6",
+      "min_lr": "1e-7",
+      "pruning_margin_mode": "hinge",
+      "pruning_margin_stage_weights": "1.40,1.90,0.90",
+      "pruning_margin_start_epoch": "0",
+      "pruning_margin_target": "3.9e-05",
+      "pruning_margin_weight": "3.0",
+      "secure_static_skip_pruning": "false",
+      "secure_static_train_depth": "12",
+      "teacher_checkpoint_path": "/data/wyb/Transshield_final/artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430/modified_plaintext_eval_checkpoint_light.pth",
+      "token_distill_weight": "0.02",
+      "use_mask_pruning": "false"
+    },
+    "changed": {
+      "pruning_margin_stage_weights": {
+        "baseline": null,
+        "candidate": "1.40,1.90,0.90"
+      },
+      "pruning_margin_target": {
+        "baseline": "1e-4",
+        "candidate": "3.9e-05"
+      },
+      "pruning_margin_weight": {
+        "baseline": "0.0",
+        "candidate": "3.0"
+      }
+    }
+  },
+  "distill_compare": {
+    "baseline": null,
+    "candidate": null,
+    "delta_candidate_minus_baseline": {
+      "mean_cls_kl": null,
+      "mean_effective_cls_term": null,
+      "mean_effective_token_term": null,
+      "mean_token_kl": null
+    }
+  },
+  "inputs": {
+    "baseline_distill_report_json": null,
+    "baseline_margin_report_json": "/data/wyb/Transshield_final/results/protocol_aware_pruning_objective/protocol_aware_pair_epoch5_20260506_focused5_baseline/pruning_margin_log_report.json",
+    "baseline_plaintext_eval_json": "/data/wyb/Transshield_final/results/protocol_aware_pruning_objective/protocol_aware_pair_epoch5_20260506_focused5_baseline/plaintext_eval.json",
+    "baseline_run_dir": "/data/wyb/Transshield_final/artifacts/train_runs/protocol_aware_pair_epoch5_20260506_focused5_baseline",
+    "baseline_threshold_search_json": "/data/wyb/Transshield_final/artifacts/train_runs/protocol_aware_pair_epoch5_20260506_focused5_baseline/threshold_eval.json",
+    "candidate_distill_report_json": null,
+    "candidate_margin_report_json": "/data/wyb/Transshield_final/results/protocol_aware_pruning_objective/protocol_aware_pair_epoch5_20260506_focused5_focused/pruning_margin_log_report.json",
+    "candidate_plaintext_eval_json": "/data/wyb/Transshield_final/results/protocol_aware_pruning_objective/protocol_aware_pair_epoch5_20260506_focused5_focused/plaintext_eval.json",
+    "candidate_run_dir": "/data/wyb/Transshield_final/artifacts/train_runs/protocol_aware_pair_epoch5_20260506_focused5_focused",
+    "candidate_threshold_search_json": "/data/wyb/Transshield_final/artifacts/train_runs/protocol_aware_pair_epoch5_20260506_focused5_focused/threshold_eval.json"
+  },
+  "judgement": {
+    "auc_delta": 0.0009330667428353312,
+    "candidate_focus_stage_margin_mean": 0.0,
+    "focus_stage_index": 1,
+    "reason": "候选 run 的 focus stage violation ratio 仍接近 1.0，当前更像是 objective 已接线但尚未缓解边界歧义。",
+    "status": "no_boundary_relief_yet",
+    "threshold_accuracy_delta": -0.38167834281921387
+  },
+  "labels": {
+    "baseline": "protocol_aware_pair_epoch5_20260506_focused5_baseline",
+    "candidate": "protocol_aware_pair_epoch5_20260506_focused5_focused"
+  },
+  "margin_compare": {
+    "baseline": {
+      "all_stage_summaries": {},
+      "focus_stage_index": 1,
+      "focus_stage_loss_mean": null,
+      "focus_stage_margin_mean": null,
+      "focus_stage_violation_ratio": null,
+      "focus_stage_weight": null,
+      "interpretation_reason": "loss info lines exist, but margin_stats is empty/none in the parsed window.",
+      "interpretation_status": "loss_info_present_but_no_stage_margin_stats",
+      "max_pruning_margin": 0.0,
+      "nonzero_pruning_margin_line_count": 0,
+      "recipe_matches_mode": null,
+      "recipe_matches_stage_weights_csv": null,
+      "recipe_matches_target": null,
+      "recipe_matches_weight": null,
+      "selected_profile": null
+    },
+    "candidate": {
+      "all_stage_summaries": {
+        "0": {
+          "entry_count": 7,
+          "max_violation_ratio": 1.0,
+          "mean_margin_mean": 5.056285714285714e-09,
+          "mean_stage_loss_mean": 3.899428571428571e-05,
+          "mean_stage_weight": 1.4000000000000001,
+          "mean_violation_ratio": 1.0,
+          "ok_entry_count": 7,
+          "status_counts": {
+            "ok": 7
+          }
+        },
+        "1": {
+          "entry_count": 7,
+          "max_violation_ratio": 1.0,
+          "mean_margin_mean": 0.0,
+          "mean_stage_loss_mean": 3.9000000000000006e-05,
+          "mean_stage_weight": 1.9000000000000001,
+          "mean_violation_ratio": 1.0,
+          "ok_entry_count": 7,
+          "status_counts": {
+            "ok": 7
+          }
+        },
+        "2": {
+          "entry_count": 7,
+          "max_violation_ratio": 1.0,
+          "mean_margin_mean": 2.7407142857142855e-08,
+          "mean_stage_loss_mean": 3.8972857142857145e-05,
+          "mean_stage_weight": 0.9000000000000001,
+          "mean_violation_ratio": 1.0,
+          "ok_entry_count": 7,
+          "status_counts": {
+            "ok": 7
+          }
+        }
+      },
+      "focus_stage_index": 1,
+      "focus_stage_loss_mean": 3.9000000000000006e-05,
+      "focus_stage_margin_mean": 0.0,
+      "focus_stage_violation_ratio": 1.0,
+      "focus_stage_weight": 1.9000000000000001,
+      "interpretation_reason": "stage-wise pruning margin stats were parsed successfully from train_stdout.log.",
+      "interpretation_status": "protocol_margin_stats_available",
+      "max_pruning_margin": 3.899549e-05,
+      "nonzero_pruning_margin_line_count": 7,
+      "recipe_matches_mode": true,
+      "recipe_matches_stage_weights_csv": true,
+      "recipe_matches_target": true,
+      "recipe_matches_weight": true,
+      "selected_profile": "focused"
+    },
+    "delta_candidate_minus_baseline": {
+      "focus_stage_margin_mean": null,
+      "focus_stage_violation_ratio": null,
+      "max_pruning_margin": 3.899549e-05
+    }
+  },
+  "plaintext_eval_compare": {
+    "baseline": {
+      "argmax_accuracy": 75.57252049446106,
+      "argmax_f1": 0.858719646799117,
+      "args_snapshot_summary": {
+        "approx_attn_mode": "uniform",
+        "eval_pruning_mode": "topk_argsort",
+        "eval_tie_policy": "lowest_index",
+        "model": "deit-s",
+        "secure_static_skip_pruning": false,
+        "secure_static_train_depth": 12,
+        "square_activation_mode": "fixed_square",
+        "use_approx_attn": true,
+        "use_mask_pruning": false,
+        "use_square_gelu": true
+      },
+      "auc": 0.9576121108254785,
+      "eval_loss": 0.49684837460517883,
+      "finite_logits": true,
+      "sample_count": 524,
+      "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+      "threshold": 0.5835056304931641,
+      "threshold_accuracy": 91.22137427330017,
+      "threshold_f1": 0.9417721518987341
+    },
+    "candidate": {
+      "argmax_accuracy": 75.76335668563843,
+      "argmax_f1": 0.8596685082872928,
+      "args_snapshot_summary": {
+        "approx_attn_mode": "uniform",
+        "eval_pruning_mode": "topk_argsort",
+        "eval_tie_policy": "lowest_index",
+        "model": "deit-s",
+        "secure_static_skip_pruning": false,
+        "secure_static_train_depth": 12,
+        "square_activation_mode": "fixed_square",
+        "use_approx_attn": true,
+        "use_mask_pruning": false,
+        "use_square_gelu": true
+      },
+      "auc": 0.9585451775683138,
+      "eval_loss": 0.4924967586994171,
+      "finite_logits": true,
+      "sample_count": 524,
+      "sample_paths_sha256": "6bd7a08763ddecd63308cc7e5848df35aeaa8c3430c7278b6e8db77af4f3c610",
+      "threshold": 0.5799992680549622,
+      "threshold_accuracy": 90.83969593048096,
+      "threshold_f1": 0.9392405063291139
+    },
+    "delta_candidate_minus_baseline": {
+      "argmax_accuracy": 0.19083619117736816,
+      "argmax_f1": 0.0009488614881757451,
+      "auc": 0.0009330667428353312,
+      "eval_loss": -0.004351615905761719,
+      "threshold_accuracy": -0.38167834281921387,
+      "threshold_f1": -0.0025316455696201556
+    },
+    "sample_count_match": true,
+    "sample_paths_match": true
+  },
+  "study_kind": "protocol_aware_pruning",
+  "threshold_search_compare": {
+    "baseline": {
+      "auc": 0.9576120972633362,
+      "default_argmax_acc1": null,
+      "eval_acc1": 91.22137427330017,
+      "eval_binary_threshold": 0.5835056304931641,
+      "eval_loss": 0.49684837460517883,
+      "finite_logits": true,
+      "sample_count": 524
+    },
+    "candidate": {
+      "auc": 0.9585451483726501,
+      "default_argmax_acc1": null,
+      "eval_acc1": 90.83969593048096,
+      "eval_binary_threshold": 0.5799992680549622,
+      "eval_loss": 0.4924967586994171,
+      "finite_logits": true,
+      "sample_count": 524
+    },
+    "delta_candidate_minus_baseline": {
+      "auc": 0.0009330511093139648,
+      "eval_acc1": -0.38167834281921387,
+      "eval_binary_threshold": -0.0035063624382019043
+    }
+  },
+  "train_metrics": {
+    "baseline": {
+      "epoch": 4,
+      "n_parameters": 22390184,
+      "test_acc1": 75.76335898246474,
+      "test_acc5": 100.0,
+      "test_loss": 0.486571577462283,
+      "train_class_acc": 0.7706207482993197,
+      "train_grad_norm": 1.9552509302184695,
+      "train_loss": 0.6383061875291423,
+      "train_lr": 1.9973169962536405e-07,
+      "train_min_lr": 1.9973169962536405e-08,
+      "train_weight_decay": 0.04999999999999988
+    },
+    "candidate": {
+      "epoch": 4,
+      "n_parameters": 22390184,
+      "test_acc1": 76.14503818249885,
+      "test_acc5": 100.0,
+      "test_loss": 0.4861627058549361,
+      "train_class_acc": 0.7706207482993197,
+      "train_grad_norm": 1.9552516142527263,
+      "train_loss": 0.6384233167382325,
+      "train_lr": 1.9973169962536405e-07,
+      "train_min_lr": 1.9973169962536405e-08,
+      "train_weight_decay": 0.04999999999999988
+    },
+    "delta_candidate_minus_baseline": {
+      "test_acc1": 0.3816792000341138,
+      "test_loss": -0.00040887160734692785,
+      "train_class_acc": 0.0,
+      "train_loss": 0.00011712920909023872
+    }
+  }
+}

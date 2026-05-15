@@ -372,39 +372,6 @@ Transshield 通过 secure pruning 提升安全推理效率：
 
 ---
 
-## 创新点 8：PredictorLite — 轻量化 Token Pruning 预测器
-
-### 问题
-
-PredictorLG 是 DynamicViT 中负责 token pruning 决策的核心模块，每 stage 有约 241K 参数。在 SPU 安全推理中，PredictorLG 在 SPU 内部完整执行（创新点 2），其参数量直接影响 SPU 内存占用和计算量。
-
-### 方法
-
-PredictorLite 将 PredictorLG 的隐藏维度从 384 降至 192：
-
-- **PredictorLG**: `in(384→384) → out(384→192→96) → proj(96→2)` = 241K params/stage
-- **PredictorLite**: `in(384→192) → out(192→96→48) → proj(48→2)` = 98K params/stage
-- **参数减少**: 59.3%（总 predictor 参数从 723K 降至 294K）
-
-训练方式：从 LRD rank192 的 PredictorLG 模型微调而来，30 个 epoch，test_acc=99.5%，EMA_acc=100%。
-
-### 证据
-
-- 金融欺诈检测模型：`artifacts/frozen_bundle_finance_predictor_lite_20260515/`
-- SPU smoke8 验证（secret 模式）：
-  - `elapsed_sec = 1619.40s`，`per_sample = 202.43s`
-  - `finite_logits = true`
-  - `argmax_match_ratio = 1.0`（与 PredictorLG 完全一致）
-- PredictorLG 同配置 secret 模式对比：`per_sample = 199.37s`
-- SPU 运行时 predictor 计算仅占总时间极小比例（主瓶颈为 transformer block 的矩阵乘法），因此 predictor 参数量减少未带来显著端到端加速
-
-### 创新性
-
-- 首次在 MPC 安全推理场景下对 DynamicViT 的 token pruning 预测器进行架构压缩
-- 59.3% 的 predictor 参数减少降低了 SPU 内存占用
-- 精度无损失（argmax 完全一致）
-
-
 ## 2026-05-16 追加：分解式 LRD 验证结果
 
 ### 测试背景

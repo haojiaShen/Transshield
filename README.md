@@ -49,6 +49,24 @@
 
 详细规则见 `docs/data_source_policy.md`。
 
+
+
+## 模型文件说明
+
+本仓库的模型权重文件（`.pth`、`.pt`）已通过 `.gitignore` 排除，不会推送到 GitHub。如需获取模型文件，请联系项目维护者。
+
+### 必需的模型文件
+
+| 模型 | 路径 | 说明 |
+|------|------|------|
+| 医疗模型 | `artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507/` | 最佳医疗影像分类模型（86M） |
+| 金融模型 | `artifacts/frozen_bundle_finance_fraud_v3_20260511/` | 金融欺诈检测模型（172M） |
+| 基线模型 | `artifacts/baselines/baseline_plaintext_eval_checkpoint_light.pth` | 明文基线模型（86M） |
+
+### 数据文件
+
+训练和验证数据（`data/` 目录）同样通过 `.gitignore` 排除。如需获取数据，请联系项目维护者。
+
 ## 快速开始
 
 ### 运行 Secure Pruning（PredictorLG SPU 内部执行）
@@ -112,15 +130,12 @@ bash artifacts/server_inference_friendly_pack/run_full_final_comparison_suite.sh
 
 ## 当前建议阅读顺序
 
-1. `docs/transshield_master_plan_20260505.md`
-2. `docs/p0_delivery_closure_20260505.md`
-3. `docs/delivery_experiment_summary_20260510.md` ← **实验数据一站式汇总**
-4. `docs/final_delivery_mainline_20260505.md`
-5. `docs/architecture.md`
-6. `docs/current_work_status.md`
-7. `docs/handoff-next.md`
-8. `docs/secure_static_algorithm_progress_20260430.md`
-9. `docs/data_source_policy.md`
+1. `docs/transshield_竞赛作品报告_静态剪枝版_20260516.docx` ← **最新作品报告**
+2. `docs/transshield_master_plan_20260505.md`
+3. `docs/delivery_experiment_summary_20260510.md` ← **实验数据汇总**
+4. `docs/transshield_innovation.md` ← **创新点说明**
+5. `docs/current_work_status.md`
+6. `docs/handoff-next.md`
 
 ## 当前展示原则
 

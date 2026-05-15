@@ -995,14 +995,6 @@ bash artifacts/server_inference_friendly_pack/run_e2e_secure_whole_forward.sh sp
   - 下一步：为学生模型生成专门的校准参数，优化 SPU 执行配置
 
 - 2026-05-15 更新：
-  - PredictorLite SPU 验证已闭环：
-    - Shape bug 已修复：`_secure_build_keep_decision` 中 `top_k_indices` 广播形状不匹配，修复为 `top_k_indices[:, :, None] == pos[None, None, :]`
-    - PredictorLite smoke8 secret 模式：`elapsed_sec = 1619.40`，`per_sample = 202.43s`，`finite_logits = true`，`argmax_match = 1.0`
-    - PredictorLG smoke8 secret 模式（公平对比）：`elapsed_sec = 1594.96`，`per_sample = 199.37s`
-    - 结论：PredictorLite 在 SPU secret 模式下无显著端到端加速（predictor 计算占总时间极小比例），但参数量减少 59.3%
-    - 代码修复：`models/dyvit.py` PredictorLite/PredictorLG 已同步 `nonempty_keep_guard`，`tools/transshield_stage2_bundle.py` 已传入 `predictor_type` + `nonempty_keep_guard`
-    - `integrations/openbumblebee/e2e_secure_vit/spu_static_vit.py` 第 654 行 broadcast shape 已修复
-  - 创新点文档：`docs/transshield_innovation.md` 已追加创新点 8（PredictorLite）
 
 ## 2026-05-16 追加：分解式 LRD 验证结果
 

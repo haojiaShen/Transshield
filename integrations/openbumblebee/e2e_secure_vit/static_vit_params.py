@@ -37,10 +37,36 @@ def resolve_block_activation_params(state_dict, block_index: int, activation_kin
         alpha = scalar_state_value(state_dict, f"{prefix}.alpha", 0.0)
         beta = scalar_state_value(state_dict, f"{prefix}.beta", 1.0)
         return alpha, beta
+    if activation_kind == "pade_gelu":
+        # Padé GELU needs no parameters - it's a fixed formula
+        return np.asarray(0.0, dtype=np.float32), np.asarray(0.0, dtype=np.float32)
+    if activation_kind.startswith("lut_gelu"):
+        # LUT GELU uses breakpoints and values buffers
+        if "4" in activation_kind and "14" not in activation_kind and "48" not in activation_kind:
+            num_segments = 4
+        elif "8" in activation_kind and "18" not in activation_kind and "38" not in activation_kind:
+            num_segments = 8
+        elif "32" in activation_kind:
+            num_segments = 32
+        else:
+            num_segments = 16
+        breakpoints = state_dict.get(f"{prefix}.breakpoints", None)
+        values = state_dict.get(f"{prefix}.values", None)
+        if breakpoints is not None and values is not None:
+            return np.asarray(breakpoints, dtype=np.float32), np.asarray(values, dtype=np.float32)
+        # Fallback: compute from scratch
+        import numpy as np_lib
+        x_min, x_max = -8.0, 8.0
+        bp = np_lib.linspace(x_min, x_max, num_segments + 1).astype(np.float32)
+        vals = (0.5 * bp * (1 + np_lib.tanh(np_lib.sqrt(2 / np_lib.pi) * (bp + 0.044715 * bp**3)))).astype(np.float32)
+        return bp, vals
     raise ValueError(f"unsupported activation kind for SPU backend: {activation_kind}")
 
 
 def resolve_static_activation_kind(args_snapshot):
+    square_activation_mode = str(args_snapshot.get("square_activation_mode", ""))
+    if "lut_gelu" in square_activation_mode:
+        return square_activation_mode
     if not bool(args_snapshot.get("use_square_gelu", False)):
         return "gelu"
     activation_kind = str(args_snapshot.get("square_activation_mode", "fixed_square"))
@@ -66,6 +92,11 @@ def resolve_spu_activation_kind(base_activation_kind: str, activation_override: 
         "learnable_square",
         "learnable_quadratic",
         "learnable_quadratic_gelu_init",
+        "pade_gelu",
+        "lut_gelu_4",
+        "lut_gelu_8",
+        "lut_gelu_16",
+        "lut_gelu_32",
     }:
         return activation_override
     raise ValueError(f"unsupported SPU activation override: {activation_override}")

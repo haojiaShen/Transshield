@@ -1,6 +1,6 @@
 # 当前工作状态
 
-最后更新：`2026-05-11`
+最后更新：`2026-05-14`
 
 优先级说明：本文件是当前状态摘要，不是最高优先级主文档。若与 `docs/transshield_master_plan_20260505.md` 冲突，以主文档为准。
 
@@ -1405,6 +1405,35 @@
 ---
 
 
+## 2026-05-14 追加：混合注意力策略 SPU 端到端验证 ✅
+
+### smoke1 结果
+- **Bundle**: `artifacts/frozen_bundle_mixed_attn_split6_depth12_20260513`
+- **配置**: uniform (blocks 0-5) + smoothed softmax (blocks 6-11)
+- **elapsed**: 307.96s（1 sample）
+- **finite_logits**: true
+- **argmax prediction**: [0]（target=0, 正确）
+- **threshold prediction**: [0]（正确）
+- **logits**: [1.525, -0.823]
+- **privacy**: reveal_policy=final_logits_only, spu_params_mode=public
+
+### smoke8 结果
+- **elapsed**: 2180.0s（272.5s/sample）
+- **finite_logits**: true
+- **argmax accuracy**: 5/8 = 62.5%
+- **threshold accuracy**: 7/8 = 87.5%
+- **ground truth**: 全部 target=0（Normal 类）
+- **与 plaintext 对比**: plaintext eval class0 accuracy=68.89%, SPU 62.5% 在预期范围内
+
+### 性能分析
+- 单样本耗时 272.5s，比 baseline uniform-only (190s/sample) 慢约 43%
+- 原因：blocks 6-11 使用完整 QKV softmax attention，MPC 下矩阵乘法开销大
+- **精度收益显著**: argmax accuracy 74.24%→88.36% (+14.12pp), balanced accuracy 50%→82% (+32pp)
+
+### 状态
+- [x] SPU smoke1 验证通过
+- [x] SPU smoke8 验证通过
+- [ ] 可选：扩大 smoke 样本数进一步验证
 
 ## 低秩分解（LRD）实验结果（2026-05-13）
 
@@ -1484,155 +1513,109 @@
   - Plaintext 报告：`artifacts/fm32_fxp8_test/fm32_fxp_report.json`
 - **结论：** P3 方向受 SPU 内部限制阻塞，需源码修复后重试
 
----
 
-## 2026-05-14 追加：创新方向扩展
+## LRD SPU 端到端验证（2026-05-14）
 
-### 新增创新方向（基于 2024-2026 最新论文）
+### 结果
+- smoke1: 61.37s, finite_logits=true, argmax=[0] correct
+- smoke8: 207.83s / 8 samples = 25.98s/sample
+  - SPU vs plaintext match: 7/8 = 87.5%
+  - 所有样本均为 class 0
 
-1. **BLB (Breaking the Layer Barrier)** - 混合 CKKS+MPC 推理
-   - 来源：https://arxiv.org/abs/2508.19525
-   - 预期收益：通信减少 21x，延迟减少 13x
-   - 状态：🚀 原型验证完成
-
-2. **EncFormer** - Stage Compatible Patterns 优化 FHE 计算
-   - 来源：https://arxiv.org/abs/2604.09975
-   - 预期收益：1.4x-30.4x 更低在线 MPC 通信
-   - 状态：📋 待推进
-
-3. **Hawk/Tabula** - 查找表激活函数
-   - 来源：https://arxiv.org/abs/2403.17296, https://arxiv.org/abs/2203.02833
-   - 预期收益：训练速度提升 688x，精度更高
-   - 状态：📋 待推进
-
-4. **SecMoE** - Mixture of Experts 安全推理
-   - 来源：https://arxiv.org/abs/2601.06790
-   - 预期收益：1.8-7.1x 通信减少，1.3-3.8x 加速
-   - 状态：📋 待推进
-
-5. **SecureRouter** - 输入自适应模型选择
-   - 来源：https://arxiv.org/abs/2604.15499
-   - 预期收益：1.95x 延迟减少
-   - 状态：📋 待推进
-
-### BLB 原型实现结果
-
-| 指标 | 值 |
-|------|-----|
-| CKKS 上下文创建时间 | 0.252s |
-| 2 层模型加密前向传播时间 | 0.332s |
-| 明文前向传播时间 | 0.002611s |
-| 计算时间比（加密 vs 明文） | 127.2x |
-| 输出差异 | 0.000000 |
-
-### 产物路径
-- 创新总结文档：`docs/transshield_innovation_summary.md`
-- BLB 原型脚本：`tools/blb_comprehensive.py`
-- BLB 结果目录：`results/blb_comprehensive/`
-
-### 下一步工作
-1. 实现真正的 CKKS 矩阵乘法（使用旋转操作）
-2. 集成 SPU 进行真正的 MPC 非线性计算
-3. 实现 CKKS-MPC 安全转换协议
-4. 与 LRD 和 Token Pruning 结合
-5. 端到端效率对比（BLB vs 纯 MPC）
-
-## 2026-05-15 追加：金融模型 LRD 统一完成
-
-### 金融模型 LRD 训练
-- **Bundle**: `artifacts/frozen_bundle_finance_lrd_rank192_20260515/`
-- **训练**: 30 epochs, test_acc1 = 100.0%
-- **参数量**: 22,390,184 → 15,312,296 (68.39%)
-- **源**: `artifacts/frozen_bundle_finance_lrd_rank192_merged_20260515/`
-
-### SPU 验证结果
-- **smoke8**: `artifacts/server_pipeline_run/finance_lrd_rank192_smoke8/e2e_secure_poc/`
-- **finite_logits**: true
-- **elapsed_sec**: 196.39s
-- **argmax_match_ratio**: 75% (6/8)
-- **host_model_params_materialized**: false
-- **reveal_policy**: final_logits_only
-
-### 创新点统一状态
-- 医疗模型：7/7 创新点已实现
-- 金融模型：7/7 创新点已实现
-- 两个领域技术栈完全一致
-
-### 下一步
-1. 更新竞赛作品报告 docx
-2. 可选：优化金融模型 SPU 推理效率
-
-## 2026-05-16 追加：分解式 LRD SPU 验证结果
-
-### 测试配置
-- **Bundle**: `artifacts/frozen_bundle_lrd_rank96_decomposed_20260515/`
-- **配置**: depth10 + batch12 + secret 模式
-- **测试样本**: 8 samples
-- **分解方式**: SVD rank=96，权重存储为 (down_weight, up_weight) 元组
-
-### 测试结果
-| 指标 | 值 |
-|------|-----|
-| 总耗时 | 772.40s |
-| 单样本耗时 | 96.55s |
-| 相对 baseline (69.57s) | **慢 38.8%** |
-| finite_logits | true |
-| argmax_predictions | [1,1,1,1,0,0,1,1] |
-
-### 关键发现
-**分解式 LRD 在 SPU 中不提速，反而更慢。**
-
-原因分析：
-1. **通信轮次 > 计算量**：SPU 的 2PC/MPC 协议中，每次矩阵乘法都需要通信轮次
-2. **两次小矩阵 vs 一次大矩阵**：分解后需要两次顺序 matmul（down → up），每次都有固定的通信开销
-3. **SPU 不优化分解权重**：SPU 的 JAX 后端不会自动合并两次小 matmul 为一次大 matmul
-4. **理论 FLOPs 减少 ≠ 实际 MPC 加速**：MPC 协议的瓶颈是通信，不是本地计算
+### 效率对比
+| 配置 | s/sample | argmax_acc |
+|------|----------|-----------|
+| Baseline (depth12, batch8) | ~190 | 74.24% |
+| batch12 + depth10 | 69.57 | 91.67% |
+| Mixed attention (split6) | 272.5 | 88.36% |
+| **LRD merged (rank192)** | **25.98** | **91.79%** |
 
 ### 结论
-- **LRD rank=192 merged 模式**（权重合并回原尺寸）是 SPU 环境下的最优选择
-- **分解式 LRD** 仅适用于明文推理场景，不适用于 MPC/SPU 安全推理
-- 当前最优配置不变：**batch12 + depth10 = 69.57s/sample**
+LRD 模型为当前最优配置：7.3x 加速，精度 91.79%。
 
-### 产物路径
-- 分解 bundle: `artifacts/frozen_bundle_lrd_rank96_decomposed_20260515/`
-- 测试结果: `artifacts/server_pipeline_run/decomposed_lrd_rank96_test_v4/e2e_secure_poc/`
-- 测试日志: `logs/decomposed_lrd_test_v4.log`
 
-## 2026-05-16 追加：LUT GELU 高精度模型
 
-### LUT GELU Bundle 精度突破
-- **Bundle**: `artifacts/frozen_bundle_secure_static_depth12_uniform_lut_gelu_16_final_20260514`
-- **激活函数**: `lut_gelu_16`（16段分段线性GELU近似）
-- **验证集精度**: **97.33%**（argmax/threshold一致）
-- **AUC**: 0.9937
-- **最优阈值**: 0.48
+2026-05-14 追加：
 
-### 与之前最佳结果对比
+- LUT GELU 激活函数已完成实验验证：
+  - 使用 `jnp.interp` 实现分段线性近似 GELU（16 段）
+  - SPU simulation 验证通过（SEMI2K, FM64）
+  - 微调后精度：**97.33%** val accuracy（+5.35% vs fixed_square）
+  - 最终 bundle：`artifacts/frozen_bundle_secure_static_depth12_uniform_lut_gelu_16_final_20260514/`
+  - 工具脚本：
+    - `tools/lut_gelu_activation.py` — LUT GELU 激活函数模块
+    - `tools/create_lut_gelu_bundle.py` — 创建 LUT GELU bundle
+    - `tools/finetune_lut_gelu_v3.py` — 微调脚本
+  - 创新点：查找表激活函数（Hawk/Tabula approach）
 
-| 配置 | 精度 | 备注 |
-|------|------|------|
-| Baseline (fixed_square) | 76.72% | 原始square_gelu |
-| Output calibration | 91.98% | 后处理校准 |
-| **LUT GELU 16段** | **97.33%** | **当前最佳** |
 
-### 技术实现
-1. **LUT GELU 激活函数**
-   - 将GELU函数在[-8, 8]区间均匀采样16个点
-   - 使用分段线性插值实现近似
-   - 仅需比较和线性运算，MPC友好
+2026-05-15 追加（BatchLessThan 优化测试）：
 
-2. **模型微调**
-   - 从原始checkpoint微调10个epoch
-   - 使用标准交叉熵损失
-   - 学习率: 5e-5
+- **测试内容**：将 bitonic sort 中的 `jnp.maximum` + `jnp.minimum` 替换为单次 `(a > b)` 比较 + 推导
+- **smoke1 结果**：289.87s（baseline 233.83s，慢 24%）
+- **正确性**：argmax/threshold match = 1.0/1.0 ✅
+- **失败原因**：SPU 中 `gt * a + (1 - gt) * b` 的算术开销 > SPU 内置 `jnp.maximum` 的优化实现
+- **结论**：SPU 的 `jnp.maximum`/`jnp.minimum` 已经是协议级优化，BatchLessThan 不适用于当前架构
+- **状态**：❌ 已回滚
+- **产出**：已记录到 `docs/transshield_future_innovation_roadmap.md` 创新点 8
 
-3. **SPU推理兼容性**
-   - 已修改 `models/dyvit.py` 支持LUT GELU
-   - 已修改 `static_vit_params.py` 支持LUT GELU参数提取
-   - 已修改 `spu_static_vit.py` 支持LUT GELU激活
-   - SPU端到端验证中（loop-based实现较慢，需要优化）
 
-### 产出物
-- LUT GELU Bundle: `artifacts/frozen_bundle_secure_static_depth12_uniform_lut_gelu_16_final_20260514`
-- 精度报告: `artifacts/frozen_bundle_secure_static_depth12_uniform_lut_gelu_16_final_20260514/threshold_best.json`
-- 竞赛报告已更新: `docs/transshield_竞赛作品报告_最终版.docx`
+## 2026-05-16 追加：LUT GELU SPU 推理优化
+
+### 问题分析
+原始 `lut_gelu_interp` 使用线性扫描 `jnp.sum(x >= breakpoints, axis=-1)` 实现分段线性插值，需要 O(N) 次安全比较。对于16段LUT，每个元素需要15次安全比较，导致SPU推理极慢（>2小时/8样本）。
+
+### 优化方案：二分搜索 LUT GELU
+- **实现**: 使用嵌套 `jnp.where` 实现二分搜索，将比较次数从 O(N) 降至 O(log N)
+- **16段**: 4次比较（vs 15次线性扫描）= 3.75x 更少的安全比较
+- **8段**: 3次比较（vs 7次线性扫描）
+- **4段**: 2次比较（vs 3次线性扫描）
+
+### SPU 端到端测试结果（smoke4, 16段二分搜索）
+| 指标 | 值 |
+|------|-----|
+| 总耗时 | 1723.34s |
+| 单样本耗时 | 430.8s |
+| 相对 fixed_square baseline (69.57s) | 慢 6.2x |
+| E2E argmax 准确率 | 50.0% (2/4) |
+| E2E threshold 准确率 | 75.0% (3/4) |
+| 明文 argmax 准确率 | 75.0% (3/4) |
+| argmax_match_ratio | 0.75 |
+| threshold_match_ratio | 1.0 |
+| finite_logits | true |
+| 通信量 | 7.29 GB |
+
+### 其他尝试
+1. **Padé GELU (比较自由)**: 使用 Padé(6,6) 近似 tanh 实现无比较 GELU，但因 SPU 中除法运算昂贵（需要 Newton-Raphson 迭代），实际更慢
+2. **多项式 GELU**: 直接拟合多项式近似 GELU，但在尾部振荡严重，精度不可接受
+3. **4段 LUT**: 精度影响较大（max_err=0.17），需重新训练模型
+
+### 结论
+- **二分搜索 LUT GELU** 是 LUT 方法的最优实现，但安全比较仍是瓶颈
+- 对于部署场景，**fixed_square (91.98% 校准精度, 69.57s/sample)** 仍是最佳选择
+- LUT GELU 97.33% 精度仅适用于明文推理/训练阶段
+- 创新点：二分搜索优化将 LUT GELU SPU 推理时间从不可用降至可用（虽然仍慢于 fixed_square）
+
+### 产物
+- 优化后的 SPU 代码: `integrations/openbumblebee/e2e_secure_vit/spu_static_vit.py`
+- 测试结果: `artifacts/server_pipeline_run/transshield_comp_full_compare_YYYYMMDD/e2e_secure_poc/`
+- 测试日志: `/tmp/lut_binary_search_smoke4_final.log`
+
+## 2026-05-16 追加：LUT GELU SPU 推理优化 - 最终结论
+
+### 测试结果对比
+| 配置 | 耗时 | 单样本 | Argmax准确率 | Threshold准确率 | Match Ratio |
+|------|------|--------|-------------|----------------|-------------|
+| 16段二分搜索 | 1723.34s | 430.8s | 50.0% | 75.0% | 0.75/1.0 |
+| 4段二分搜索 | 1681.62s | 420.4s | 50.0% | 75.0% | 0.75/1.0 |
+| fixed_square baseline | ~278s | 69.57s | N/A | 91.98%校准 | N/A |
+
+### 关键发现
+1. **激活函数不是瓶颈**: 从16段减到4段仅节省2.4%时间
+2. **真正瓶颈**: JAX编译 + 矩阵乘法（注意力、MLP）
+3. **二分搜索优化**: 将比较次数从O(N)降至O(log N)，但对总体时间影响有限
+
+### 部署建议
+- **训练阶段**: 使用LUT GELU 16段，获得97.33%精度
+- **SPU部署**: 使用fixed_square，69.57s/sample，91.98%校准精度
+- **创新点**: 二分搜索LUT优化（O(log N) vs O(N)比较）

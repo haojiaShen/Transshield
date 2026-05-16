@@ -1597,3 +1597,42 @@
 - 分解 bundle: `artifacts/frozen_bundle_lrd_rank96_decomposed_20260515/`
 - 测试结果: `artifacts/server_pipeline_run/decomposed_lrd_rank96_test_v4/e2e_secure_poc/`
 - 测试日志: `logs/decomposed_lrd_test_v4.log`
+
+## 2026-05-16 追加：LUT GELU 高精度模型
+
+### LUT GELU Bundle 精度突破
+- **Bundle**: `artifacts/frozen_bundle_secure_static_depth12_uniform_lut_gelu_16_final_20260514`
+- **激活函数**: `lut_gelu_16`（16段分段线性GELU近似）
+- **验证集精度**: **97.33%**（argmax/threshold一致）
+- **AUC**: 0.9937
+- **最优阈值**: 0.48
+
+### 与之前最佳结果对比
+
+| 配置 | 精度 | 备注 |
+|------|------|------|
+| Baseline (fixed_square) | 76.72% | 原始square_gelu |
+| Output calibration | 91.98% | 后处理校准 |
+| **LUT GELU 16段** | **97.33%** | **当前最佳** |
+
+### 技术实现
+1. **LUT GELU 激活函数**
+   - 将GELU函数在[-8, 8]区间均匀采样16个点
+   - 使用分段线性插值实现近似
+   - 仅需比较和线性运算，MPC友好
+
+2. **模型微调**
+   - 从原始checkpoint微调10个epoch
+   - 使用标准交叉熵损失
+   - 学习率: 5e-5
+
+3. **SPU推理兼容性**
+   - 已修改 `models/dyvit.py` 支持LUT GELU
+   - 已修改 `static_vit_params.py` 支持LUT GELU参数提取
+   - 已修改 `spu_static_vit.py` 支持LUT GELU激活
+   - SPU端到端验证中（loop-based实现较慢，需要优化）
+
+### 产出物
+- LUT GELU Bundle: `artifacts/frozen_bundle_secure_static_depth12_uniform_lut_gelu_16_final_20260514`
+- 精度报告: `artifacts/frozen_bundle_secure_static_depth12_uniform_lut_gelu_16_final_20260514/threshold_best.json`
+- 竞赛报告已更新: `docs/transshield_竞赛作品报告_最终版.docx`

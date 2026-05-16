@@ -1,6 +1,6 @@
 # 当前工作状态
 
-最后更新：`2026-05-11`
+最后更新：`2026-05-16`
 
 优先级说明：本文件是当前状态摘要，不是最高优先级主文档。若与 `docs/transshield_master_plan_20260505.md` 冲突，以主文档为准。
 
@@ -1597,3 +1597,35 @@
 - 分解 bundle: `artifacts/frozen_bundle_lrd_rank96_decomposed_20260515/`
 - 测试结果: `artifacts/server_pipeline_run/decomposed_lrd_rank96_test_v4/e2e_secure_poc/`
 - 测试日志: `logs/decomposed_lrd_test_v4.log`
+
+## 2026-05-16 追加：金融 LRD rank192 完整隐私验证
+
+### 问题背景
+金融模型（LRD rank192）此前所有测试均为 plaintext input（`host_plaintext_pixel_values_materialized=true`），无完整隐私保护数据。
+
+### 修复
+- `spu_static_vit.py` 在 cleanup commit `f06e020` 中被截断（1479行 → 197行），丢失完整 ViT 前向推理路径
+- 从 git history 恢复原始完整文件（1479行），包含 party-local share chunk loading、full forward、secure pruning 等全部逻辑
+
+### 测试结果
+- **测试名称**：`finance_lrd_rank192_partylocal_secret_spu_smoke8_20260516_v2`
+- **配置**：LRD rank192 + party-local secret + batch8 + uniform attention
+- **隐私**：
+  - `host_plaintext_pixel_values_materialized = false` ✅（图片份额不暴露）
+  - `spu_params_mode = secret` ✅（模型参数不暴露）
+  - `input_mode = party_local_debug_share_load` ✅（份额从 party manifest 加载）
+- **效率**：
+  - `elapsed_sec = 942.44s`（8 samples）
+  - `sec_per_sample = 117.80s`
+- **精度**（与 plaintext reference 对比）：
+  - `argmax_match = 100%`（8/8）
+  - `logits max_abs_error = 0.001373`
+  - `logits mean_abs_error = 0.000418`
+  - `probabilities max_abs_error = 0.000645`
+- **产出物**：
+  - 结果 JSON：`artifacts/server_pipeline_run/finance_lrd_rank192_partylocal_secret_spu_smoke8_20260516_v2/e2e_secure_poc/e2e_static_whole_forward_candidate_from_server.json`
+  - 结果 PT：`artifacts/server_pipeline_run/finance_lrd_rank192_partylocal_secret_spu_smoke8_20260516_v2/e2e_secure_poc/e2e_static_whole_forward_candidate_from_server.pt`
+  - 测试脚本：`/tmp/run_finance_lrd_partylocal_v2.sh`（服务器）
+
+### 意义
+金融模型首次实现完整隐私保护推理，与医疗模型保持一致的隐私边界。

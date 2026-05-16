@@ -27,7 +27,7 @@ RUN_NAME="${RUN_NAME:-transshield_e2e_approx_deploy}"
 E2E_RUN_DIR="${E2E_RUN_DIR:-$REPO_ROOT/artifacts/server_pipeline_run/${RUN_NAME}/e2e_secure_poc}"
 mkdir -p "$E2E_RUN_DIR"
 
-PUBLIC_CALIB_DATASET_DIR="${PUBLIC_CALIB_DATASET_DIR:-${DATA_ROOT:-/data/wyb/pneumoniamnist_imagefolder_subset}}"
+PUBLIC_CALIB_DATASET_DIR="${PUBLIC_CALIB_DATASET_DIR:-/data/wyb/pneumoniamnist_imagefolder_subset}"
 PUBLIC_CALIB_IMAGE_LIST="${PUBLIC_CALIB_IMAGE_LIST:-$E2E_RUN_DIR/public_calib_images.txt}"
 PUBLIC_CALIB_MAX_SAMPLES="${PUBLIC_CALIB_MAX_SAMPLES:-32}"
 PUBLIC_CALIB_PT="${PUBLIC_CALIB_PT:-$E2E_RUN_DIR/public_calibration_pixel_values.pt}"
@@ -96,7 +96,7 @@ require_safe_deploy_config() {
     echo "[e2e-approx-deploy] refusing attention policy $E2E_SPU_ATTENTION_POLICY; expected uniform or identity." >&2
     exit 1
   fi
-  if [[ "$E2E_SPU_ACTIVATION_OVERRIDE" != "fixed_square" ]]; then
+  if [[ "$E2E_SPU_ACTIVATION_OVERRIDE" != "fixed_square" && "$E2E_SPU_ACTIVATION_OVERRIDE" != "lut_gelu_16" && "$E2E_SPU_ACTIVATION_OVERRIDE" != "lut_gelu_32" ]]; then
     echo "[e2e-approx-deploy] refusing activation $E2E_SPU_ACTIVATION_OVERRIDE; expected fixed_square." >&2
     exit 1
   fi

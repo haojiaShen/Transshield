@@ -56,9 +56,9 @@
     - 当前优先级转为交付材料整理与文档收口
 - 2026-05-13 更新：
   - 效率优化：batch12 + depth10 = 69.57s/sample（3.07x 加速），argmax_match=91.67%，threshold_match=100%
-  - 创新点：6 个有效创新点（ABY 混合协议已移除，fxp 精度约束验证为新增创新点 6）
+  - 创新点：5 个核心创新点（ABY 混合协议已移除，fxp 精度约束验证为新增创新点 6）
   - 作品报告：`docs/transshield_竞赛作品报告_最终版.docx`（含代码附录）
-  - 创新性文档：`docs/transshield_innovation.md` 已更新为 6 个创新点
+  - 创新性文档：`docs/transshield_innovation.md` 已更新为 5 个核心创新点
 - 2026-05-14 更新：
 - 当前不重训恢复路径：
   - public affine output calibration 已生成，`weights=[-8.0662, 8.0662]`、`bias=4.6998`；full-val static CE loss 从 bias-only `0.4287` 降到 `0.2025`，calibrated argmax accuracy 保持 `91.7939%`
@@ -881,7 +881,7 @@
   - fxp=12/14：精度崩塌，fxp=16 唯一正确，fxp=20 溢出
   - 核心发现：`fixed_square + FM64 + fxp=16` 形成三位一体约束
 - 创新点 7 已写入 `docs/transshield_innovation.md`
-- 项目现有 7 个创新点（5 核心 + 1 实验性 + 1 精度约束验证）
+- 项目现有 5 个核心创新点（5 核心 + 1 实验性 + 1 精度约束验证）
 - 新增配置：`configs/openbumblebee/2pc_fxp12.json`、`2pc_fxp14.json`、`2pc_fxp20.json`
 - 全部数据来自服务器实际 SPU 运行，非仿真
 

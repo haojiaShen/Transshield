@@ -96,7 +96,7 @@ require_safe_deploy_config() {
     echo "[e2e-approx-deploy] refusing attention policy $E2E_SPU_ATTENTION_POLICY; expected uniform or identity." >&2
     exit 1
   fi
-  if [[ "$E2E_SPU_ACTIVATION_OVERRIDE" != "fixed_square" && "$E2E_SPU_ACTIVATION_OVERRIDE" != "lut_gelu_16" && "$E2E_SPU_ACTIVATION_OVERRIDE" != "lut_gelu_32" ]]; then
+  if [[ "$E2E_SPU_ACTIVATION_OVERRIDE" != "fixed_square" ]]; then
     echo "[e2e-approx-deploy] refusing activation $E2E_SPU_ACTIVATION_OVERRIDE; expected fixed_square." >&2
     exit 1
   fi

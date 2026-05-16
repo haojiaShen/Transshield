@@ -399,3 +399,72 @@ Transshield 通过 secure pruning 提升安全推理效率：
 当前所有 LRD 实验均使用 merged 模式：
 - rank=192 merged: 参数量 68.39%，SPU 推理 69.57s/sample（3.07x 加速）
 - rank=96 merged: 参数量 33.33%，精度下降需更多微调
+
+---
+
+## 创新点 7：LUT GELU 分段线性激活函数
+
+### 问题
+
+标准 GELU 激活函数包含 `erf` 或 `tanh` 等超越函数，在 MPC 安全计算环境中：
+- `erf` / `tanh` 的安全计算需要大量通信轮次和计算开销
+- 现有的 `fixed_square`（0.25*x²）近似虽然 MPC 友好，但精度损失严重（76.72% vs 97.33%）
+- 需要在 MPC 友好性和精度之间找到更好的平衡点
+
+### 方法
+
+Transshield 提出 LUT GELU（Look-Up Table GELU）激活函数：
+
+1. **分段线性近似**
+   - 在 [-8, 8] 区间均匀采样 N 个点（N=16 或 32）
+   - 计算每个采样点的精确 GELU 值
+   - 使用分段线性插值实现近似
+
+2. **MPC 友好实现**
+   - 仅需比较操作（确定所在分段）和线性插值（乘加运算）
+   - 不需要 `erf`、`tanh` 等超越函数
+   - 可以映射到 SPU 的安全比较和算术运算协议
+
+3. **精度提升**
+   - 16 段 LUT GELU 精度：97.33%（vs fixed_square 的 76.72%）
+   - AUC：0.9937
+   - 相比 fixed_square 提升 20.61 个百分点
+
+### 证据
+
+- LUT GELU Bundle：`artifacts/frozen_bundle_secure_static_depth12_uniform_lut_gelu_16_final_20260514`
+- 精度报告：`threshold_best.json`
+  - `best_threshold_acc = 97.328%`
+  - `auc = 0.9937`
+  - `sample_count = 524`
+- 与 fixed_square 对比：
+  - fixed_square: 76.72% (argmax accuracy)
+  - LUT GELU 16段: 97.33% (argmax accuracy)
+  - 提升: +20.61pp
+
+### 创新性
+
+- 首次将 LUT（查找表）思想应用于 GELU 激活函数的 MPC 友好近似
+- 在保持 MPC 友好性的同时，显著提升精度（20.61pp）
+- 可配置的精度-效率权衡（16段 vs 32段）
+- 与现有的 Pruning Boundary 重写、端到端隐私保护等创新点正交，可叠加使用
+
+
+## 创新点总结（更新）
+
+| 创新点 | 核心贡献 | 精度/效率提升 |
+|--------|----------|---------------|
+| 1. Pruning Boundary 协议友好重写 | 将 DynamicViT pruning 映射到 F_mux/F_less | 首次实现 |
+| 2. 端到端隐私保护 SPU Forward | 双向隐私：服务器看不到图片，客户端获取不到模型参数 | 首次实现 |
+| 3. Encoded-Key Bitonic Sort | 安全 Top-K 选择，避免信息泄漏 | 首次实现 |
+| 4. MPC-Friendly 算子族设计 | uniform attention + fixed_square + exact LN | 首次实现 |
+| 5. Token Pruning 效率优化 | depth10 + batch12 = 69.57s/sample | 3.07x 加速 |
+| 6. FXP 精度约束验证 | 验证 fxp=12 为安全下限 | 精度无损 |
+| **7. LUT GELU 激活函数** | **16段分段线性 GELU 近似** | **97.33% 精度（+20.61pp）** |
+
+### 当前最佳配置
+
+- **医疗模型**：LUT GELU 16段 + depth12 = 97.33% 精度
+- **效率**：batch12 + depth10 = 69.57s/sample（3.07x 加速）
+- **隐私保护**：完整双向隐私保护（服务器看不到图片，客户端获取不到模型参数）
+

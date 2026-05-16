@@ -37,13 +37,6 @@ def resolve_block_activation_params(state_dict, block_index: int, activation_kin
         alpha = scalar_state_value(state_dict, f"{prefix}.alpha", 0.0)
         beta = scalar_state_value(state_dict, f"{prefix}.beta", 1.0)
         return alpha, beta
-    if activation_kind.startswith("lut_gelu"):
-        # LUT GELU uses breakpoints and values buffers
-        num_segments = 16 if "16" in activation_kind else 32
-        breakpoints = state_dict.get(f"{prefix}.breakpoints", None)
-        values = state_dict.get(f"{prefix}.values", None)
-        if breakpoints is not None and values is not None:
-            return np.asarray(breakpoints, dtype=np.float32), np.asarray(values, dtype=np.float32)
         # Fallback: compute from scratch
         import numpy as np_lib
         x_min, x_max = -8.0, 8.0
@@ -55,8 +48,6 @@ def resolve_block_activation_params(state_dict, block_index: int, activation_kin
 
 def resolve_static_activation_kind(args_snapshot):
     square_activation_mode = str(args_snapshot.get("square_activation_mode", ""))
-    if "lut_gelu" in square_activation_mode:
-        return square_activation_mode
     if not bool(args_snapshot.get("use_square_gelu", False)):
         return "gelu"
     activation_kind = str(args_snapshot.get("square_activation_mode", "fixed_square"))
@@ -82,8 +73,6 @@ def resolve_spu_activation_kind(base_activation_kind: str, activation_override: 
         "learnable_square",
         "learnable_quadratic",
         "learnable_quadratic_gelu_init",
-        "lut_gelu_16",
-        "lut_gelu_32",
     }:
         return activation_override
     raise ValueError(f"unsupported SPU activation override: {activation_override}")

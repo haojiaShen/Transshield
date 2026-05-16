@@ -496,17 +496,6 @@ def get_args_parser():
                         help='Approximate attention mode for student model.')
     parser.add_argument('--use_mask_pruning', type=utils.str2bool, default=False,
                         help='Use mask-based pruning in training instead of keeping pruned token features active.')
-    parser.add_argument('--pruning_margin_weight', type=float, default=0.0,
-                        help='Optional margin regularization weight for pruning boundary scores; 0 disables it.')
-    parser.add_argument('--pruning_margin_target', type=float, default=1e-4,
-                        help='Target minimum boundary margin used by pruning margin regularization.')
-    parser.add_argument('--pruning_margin_mode', type=str, default='hinge',
-                        choices=['hinge', 'softplus'],
-                        help='Penalty form for pruning margin regularization.')
-    parser.add_argument('--pruning_margin_stage_weights', type=str, default='',
-                        help='Optional comma-separated relative stage weights for pruning margin loss, e.g. 0,1,0.')
-    parser.add_argument('--pruning_margin_start_epoch', type=int, default=0,
-                        help='Optional epoch index after which pruning margin loss becomes active.')
     parser.add_argument('--eval_pruning_mode', type=str, default='topk_argsort',
                         choices=['topk_argsort', 'compare_network_tie', 'f_less_tie'],
                         help='Eval-time pruning selection mode. compare_network_tie/f_less_tie avoid argsort+scatter keep generation.')
@@ -644,8 +633,6 @@ def main(args):
     _freeze_patch_embed_proj_if_needed(model, args)
     _freeze_patch_embed_weight_if_needed(model, args)
     _freeze_patch_embed_bias_if_needed(model, args)
-    if args.pruning_margin_weight > 0 and hasattr(model, 'distill'):
-        model.collect_pruning_diagnostics = True
     utils.load_state_dict(teacher_model, pretrained)
     _load_teacher_checkpoint_if_needed(teacher_model, args)
     if args.debug_nan:
@@ -663,11 +650,6 @@ def main(args):
         distill_weight=0.5,
         cls_distill_weight=args.cls_distill_weight,
         token_distill_weight=args.token_distill_weight,
-        pruning_margin_weight=args.pruning_margin_weight,
-        pruning_margin_target=args.pruning_margin_target,
-        pruning_margin_mode=args.pruning_margin_mode,
-        pruning_margin_stage_weights=args.pruning_margin_stage_weights,
-        pruning_margin_start_epoch=args.pruning_margin_start_epoch,
     )
 
     model.eval()

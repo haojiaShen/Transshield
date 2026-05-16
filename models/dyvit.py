@@ -193,58 +193,6 @@ class QuadraticAct(nn.Module):
 
 
 
-class LUTGELU(nn.Module):
-    """LUT GELU activation module for PyTorch."""
-    
-    def __init__(self, num_segments=16, x_min=-8.0, x_max=8.0):
-        super().__init__()
-        self.num_segments = num_segments
-        self.x_min = x_min
-        self.x_max = x_max
-        
-        import numpy as np
-        # Precompute breakpoints and values
-        breakpoints = np.linspace(x_min, x_max, num_segments + 1)
-        values = 0.5 * breakpoints * (1 + np.tanh(np.sqrt(2 / np.pi) * (breakpoints + 0.044715 * breakpoints**3)))
-        
-        self.register_buffer('breakpoints', torch.tensor(breakpoints, dtype=torch.float32))
-        self.register_buffer('values', torch.tensor(values, dtype=torch.float32))
-    
-    def forward(self, x):
-        output_dtype = x.dtype
-        if x.dtype != torch.float32 or torch.is_autocast_enabled():
-            with torch.cuda.amp.autocast(enabled=False):
-                x = x.float()
-                result = self._lut_forward(x)
-            return result.to(output_dtype)
-        return self._lut_forward(x)
-    
-    def _lut_forward(self, x):
-        # Clamp x to the range
-        x_clamped = torch.clamp(x, self.x_min, self.x_max)
-        
-        # Find the segment for each x
-        result = torch.zeros_like(x)
-        for i in range(self.num_segments):
-            mask = (x_clamped >= self.breakpoints[i]) & (x_clamped <= self.breakpoints[i + 1])
-            if mask.any():
-                # Linear interpolation
-                t = (x_clamped[mask] - self.breakpoints[i]) / (self.breakpoints[i + 1] - self.breakpoints[i])
-                result[mask] = self.values[i] + t * (self.values[i + 1] - self.values[i])
-        
-        return result
-
-
-class LUTGELU16(LUTGELU):
-    """LUT GELU with 16 segments."""
-    def __init__(self):
-        super().__init__(num_segments=16)
-
-
-class LUTGELU32(LUTGELU):
-    """LUT GELU with 32 segments."""
-    def __init__(self):
-        super().__init__(num_segments=32)
 
 
 def get_act_layer(act_layer):
@@ -260,10 +208,6 @@ def get_act_layer(act_layer):
             return partial(QuadraticAct, init_alpha=0.0, init_beta=1.0, learnable=True)
         if act_layer == 'learnable_quadratic_gelu_init':
             return partial(QuadraticAct, init_alpha=0.3, init_beta=0.5, learnable=True)
-        if act_layer == 'lut_gelu_16':
-            return LUTGELU16
-        if act_layer == 'lut_gelu_32':
-            return LUTGELU32
         raise ValueError(f'Unsupported act_layer: {act_layer}')
     if isinstance(act_layer, nn.Module):
         return act_layer.__class__
@@ -678,7 +622,7 @@ class VisionTransformerDiffPruning(nn.Module):
         # Classifier head
         self.head = nn.Linear(self.num_features, num_classes) if num_classes > 0 else nn.Identity()
 
-        predictor_cls = PredictorLite if predictor_type == 'lite' else PredictorLG
+        predictor_cls = PredictorLG
         predictor_list = [predictor_cls(embed_dim, act_layer=act_layer, nonempty_keep_guard=nonempty_keep_guard) for _ in range(len(pruning_loc))]
 
         self.score_predictor = nn.ModuleList(predictor_list)
@@ -1230,53 +1174,3 @@ def checkpoint_filter_fn(state_dict, model):
     return out_dict
 
 
-class PredictorLite(nn.Module):
-    """Lightweight PredictorLG: 59% fewer params, 60% less SPU compute.
-    
-    Architecture change:
-        PredictorLG:  in(384->384) -> out(384->192->96) -> proj(96->2) = 241K params
-        PredictorLite: in(384->192) -> out(192->96->48) -> proj(48->2)  = 98K params
-    
-    Same interface as PredictorLG: forward(x, policy) -> log_probs
-    """
-    def __init__(self, embed_dim=384, hidden_dim=192, act_layer='gelu', nonempty_keep_guard=False):
-        super().__init__()
-        predictor_act_layer = get_act_layer(act_layer)
-        self.nonempty_keep_guard = bool(nonempty_keep_guard)
-        self.hidden_dim = hidden_dim
-        self.in_conv = nn.Sequential(
-            nn.LayerNorm(embed_dim),
-            nn.Linear(embed_dim, hidden_dim),
-            predictor_act_layer()
-        )
-        self.out_conv = nn.Sequential(
-            nn.Linear(hidden_dim, hidden_dim // 2),
-            predictor_act_layer(),
-            nn.Linear(hidden_dim // 2, hidden_dim // 4),
-            predictor_act_layer(),
-        )
-        self.out_proj = nn.Linear(hidden_dim // 4, 2)
-
-    def set_debug_nan(self, enabled):
-        pass  # PredictorLite has no debug logging
-
-    def set_debug_context(self, context):
-        pass  # PredictorLite has no debug logging
-
-    def forward(self, x, policy):
-        output_dtype = x.dtype
-        with torch.cuda.amp.autocast(enabled=False):
-            x = self.in_conv(x.float())
-            B, N, C = x.size()
-            policy_float = policy.float()
-            global_input = x[:, :, C//2:] * policy_float
-            active_count = torch.sum(policy_float, dim=1, keepdim=True)
-            if self.nonempty_keep_guard:
-                active_count = active_count.clamp_min(1.0)
-            global_x = global_input.sum(dim=1, keepdim=True) / active_count.clamp_min(1.0)
-            x = torch.cat([x[:, :, :C//2], global_x.expand(B, N, C//2)], dim=-1)
-            x = self.out_conv(x)
-            logits = self.out_proj(x)
-            logits = logits.clamp(-10.0, 10.0)
-            x = F.log_softmax(logits, dim=-1)
-        return x.to(output_dtype)

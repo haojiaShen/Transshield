@@ -1636,3 +1636,9 @@
 - LUT GELU Bundle: `artifacts/frozen_bundle_secure_static_depth12_uniform_lut_gelu_16_final_20260514`
 - 精度报告: `artifacts/frozen_bundle_secure_static_depth12_uniform_lut_gelu_16_final_20260514/threshold_best.json`
 - 竞赛报告已更新: `docs/transshield_竞赛作品报告_最终版.docx`
+
+### LUT GELU SPU 推理结论（2026-05-16）
+- 已实现二分搜索优化（O(log N) vs O(N)安全比较）
+- SPU测试结果：430.8s/sample，threshold_match_ratio=1.0
+- **结论**：激活函数不是SPU推理瓶颈（JAX编译+矩阵乘法占主导）
+- 部署建议：训练用LUT GELU（97.33%），SPU部署用fixed_square（69.57s/sample, 91.98%校准）

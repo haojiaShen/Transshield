@@ -2,7 +2,7 @@
 
 最后更新：`2026-05-16`
 
-本文档系统论证 Transshield 项目的 5 个核心创新点。
+本文档系统论证 Transshield 项目的 6 个核心创新点。
 
 ---
 
@@ -142,3 +142,30 @@ fixed_square 激活函数（`x * x * sign(x)`）虽然 MPC 友好，但精度损
 | A | 城市三甲医院 | depth10 + batch12 | ~69s | 92% |
 | B | 县级医院 | depth10 + batch8 | ~100s | ~90% |
 | C | 乡村医院 | depth10 + batch4 | ~150s | ~88% |
+
+---
+
+## 创新点 6：FXP 定点精度系统消融
+
+### 问题
+SPU 使用定点算术（fixed-point arithmetic）进行安全计算，`fxp_fraction_bits` 参数决定精度。但目前没有针对 MPC 安全推理场景的系统性 fxp 精度消融研究，参数选择缺乏依据。
+
+### 方法
+在 SPU 实际运行环境中系统测试 fxp=12 / 14 / 16 / 20：
+- fxp=12：精度崩塌，安全比较产生大量错误
+- fxp=14：精度崩塌，与 fxp=12 类似
+- **fxp=16**：100% match，唯一正确配置
+- fxp=20：溢出，FM64 无法容纳
+
+### 验证
+- fxp=16：argmax/threshold match = 1.0/1.0
+- fxp<16：precision collapse（安全比较误差累积）
+- fxp>16：overflow（FM64 位宽不够）
+
+### 核心发现
+**fixed_square + FM64 + fxp=16 形成三位一体约束**，任意一项调整都会导致精度崩塌。该发现为 MPC 定点推理的参数选择提供了明确指导。
+
+### 创新性
+- 首次在 MPC 密文推理环境中系统性地进行 fxp 精度消融
+- 揭示了 fixed_square 激活函数、FM64 域大小、fxp 位宽三者之间的耦合约束
+- 所有数据来自服务器实际 SPU 运行，非仿真

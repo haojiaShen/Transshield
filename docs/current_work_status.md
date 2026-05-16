@@ -1347,7 +1347,7 @@
 - 产物：`results/fxp_precision_ablation_20260512/`
 - 已更新创新性说明文档：`docs/transshield_innovation.md` 新增创新点 7
 - 新增配置文件：`configs/openbumblebee/2pc_fxp12.json`、`2pc_fxp14.json`、`2pc_fxp20.json`
-- 创新点总结：项目现有 5 个核心创新点（ABY 混合协议优化已验证无效并移除）
+- 创新点总结：项目现有 6 个核心创新点（ABY 混合协议优化已验证无效并移除）
 
 ## 2026-05-13 追加：batch12 + depth10 效率优化（当前最优配置）
 
@@ -1553,7 +1553,7 @@
 - **host_model_params_materialized**: false
 - **reveal_policy**: final_logits_only
 
-### 创新点统一状态：5 个核心创新点（Pruning Boundary重写 + E2E SPU Forward + Bitonic Sort Top-K + MPC-Friendly算子 + LUT GELU）
+### 创新点统一状态：6 个核心创新点（Pruning Boundary重写 + E2E SPU Forward + Bitonic Sort Top-K + MPC-Friendly算子 + LUT GELU + FXP定点精度消融）
 - 医疗模型：7/7 创新点已实现
 - 金融模型：7/7 创新点已实现
 - 两个领域技术栈完全一致

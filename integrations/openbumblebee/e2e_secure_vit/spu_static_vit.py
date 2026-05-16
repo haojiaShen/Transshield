@@ -147,61 +147,6 @@ def run_static_vit_forward_spu(
     def gelu_exact(x):
         return 0.5 * x * (1.0 + jsp_special.erf(x / jnp.sqrt(2.0)))
 
-    def gelu_pade(x):
-        """Comparison-free GELU via Padé(6,6) tanh approximation.
-        
-        GELU(x) = 0.5 * x * (1 + tanh(sqrt(2/pi) * (x + 0.044715*x^3)))
-        tanh(t) ≈ t*(135135 + t^2*(17325 + t^2*(378 + t^2))) / (135135 + t^2*(62370 + t^2*(3150 + 28*t^2)))
-        
-        Only arithmetic ops (mul/add/div), NO secure comparisons.
-        ~23 arithmetic ops per element, 0 comparison protocols.
-        """
-        # t = sqrt(2/pi) * (x + 0.044715 * x^3) = 0.7978845608 * (x + 0.044715 * x^3)
-        x2 = x * x
-        x3 = x2 * x
-        t = 0.7978845608 * (x + 0.044715 * x3)
-        t2 = t * t
-        # Padé(6,6) approximant for tanh
-        num = t * (135135.0 + t2 * (17325.0 + t2 * (378.0 + t2)))
-        den = 135135.0 + t2 * (62370.0 + t2 * (3150.0 + 28.0 * t2))
-        tanh_approx = num / den
-        return 0.5 * x * (1.0 + tanh_approx)
-
-    def lut_gelu_interp(x, breakpoints, values):
-        """Binary-search LUT GELU: O(log N) secure comparisons vs O(N) linear scan.
-        
-        Uses nested jnp.where to binary-search the segment index,
-        then linear interpolation within the found segment.
-        For 16 segments: 4 comparisons instead of 15 (3.75x fewer).
-        For 8 segments: 3 comparisons instead of 7 (2.3x fewer).
-        For 4 segments: 2 comparisons instead of 3.
-        
-        Key SPU benefit: eliminates the broadcasting to (..., N-1) shape
-        which multiplies memory and communication volume.
-        """
-        x_c = jnp.clip(x, breakpoints[0], breakpoints[-1])
-        n_seg = len(breakpoints) - 1
-        
-        # Precompute slopes and intercepts for all segments
-        # slopes[i] = (values[i+1] - values[i]) / (breakpoints[i+1] - breakpoints[i])
-        slopes = (values[1:] - values[:-1]) / (breakpoints[1:] - breakpoints[:-1])
-        intercepts = values[:-1] - slopes * breakpoints[:-1]
-        
-        def _interp_segment(seg_idx):
-            return slopes[seg_idx] * x_c + intercepts[seg_idx]
-        
-        def _binary_search(lo, hi):
-            if lo == hi:
-                return _interp_segment(lo)
-            mid = (lo + hi) // 2
-            return jnp.where(
-                x_c <= breakpoints[mid + 1],
-                _binary_search(lo, mid),
-                _binary_search(mid + 1, hi)
-            )
-        
-        return _binary_search(0, n_seg - 1)
-
     def activate(x, alpha, beta):
         if activation_clip_value > 0.0:
             x = jnp.clip(x, -activation_clip_value, activation_clip_value)
@@ -211,11 +156,6 @@ def run_static_vit_forward_spu(
             return alpha * (x * x)
         if activation_kind in {"learnable_quadratic", "learnable_quadratic_gelu_init"}:
             return alpha * (x * x) + beta * x
-        if activation_kind == "pade_gelu":
-            return gelu_pade(x)
-        if activation_kind.startswith("lut_gelu"):
-            # alpha contains breakpoints, beta contains values
-            return lut_gelu_interp(x, alpha, beta)
         raise ValueError(f"unsupported activation kind: {activation_kind}")
 
     def attention_softmax(attn):

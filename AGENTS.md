@@ -27,12 +27,12 @@
 涉及最终结果、最终说明、最终对比时，优先读取：
 
 1. `/home/yclcg/.codex/memories/transshield_final_handoff_2026-04-12.md`
-2. `Transshield_final/docs/data_source_policy.md`
-3. `Transshield_final/docs/current_work_status.md`
-4. `Transshield_final/docs/handoff-next.md`
-5. `Transshield_final/docs/algorithm_protocol_upgrade_roadmap.md`
-6. `Transshield_final/docs/result_summary.md`
-7. `Transshield_final/docs/external_baseline_comparison.md`
+2. `Transshield_final/docs/transshield_master_plan_20260505.md`
+3. `Transshield_final/docs/data_source_policy.md`
+4. `Transshield_final/docs/current_work_status.md`
+5. `Transshield_final/docs/handoff-next.md`
+6. `Transshield_final/docs/transshield_innovation.md`
+7. `Transshield_final/docs/delivery_experiment_summary_20260510.md`
 8. `Transshield_final/artifacts/`
 
 若这些文件与实验仓中的旧记录有差异，默认以本仓为准；只有在做 provenance 追踪时才回看实验仓。
@@ -42,13 +42,11 @@
 开始任何 `Transshield_final` 相关的非简单任务前，先读取：
 
 1. `/home/yclcg/.codex/memories/transshield_final_handoff_2026-04-12.md`
-2. `docs/data_source_policy.md`
-3. `docs/current_work_status.md`
-4. `docs/handoff-next.md`
-
-如果任务明确涉及算法 / 协议升级，还要读取：
-
-5. `docs/algorithm_protocol_upgrade_roadmap.md`
+2. `docs/transshield_master_plan_20260505.md`
+3. `docs/data_source_policy.md`
+4. `docs/current_work_status.md`
+5. `docs/handoff-next.md`
+6. `docs/transshield_innovation.md`
 
 读取后再判断当前应从哪个阶段继续，不要重复已经完成的排障或验证。
 
@@ -86,7 +84,7 @@
 
 ## TrackA 排障原则
 
-- TrackA 相关任务优先读取 `docs/history_best_repro_drift_audit_2026-04-21.md`、`docs/current_work_status.md` 和 `docs/handoff-next.md`。
+- TrackA 相关任务优先读取 `docs/current_work_status.md`、`docs/handoff-next.md` 和 `docs/delivery_experiment_summary_20260510.md`。
 - 如果 issue 需要服务器结果但用户还没回贴日志，只能交付服务器命令、精确 grep 字段和判定标准，不能伪造结论。
 - TrackA issue 只有在结论已回写到 `docs/history_best_repro_drift_audit_2026-04-21.md`、`docs/current_work_status.md`、`docs/handoff-next.md` 后，才算完成。
 - 默认不要跑 `full20`，不要扫大范围超参，不要在 attribution 证据出来前直接改变训练语义。

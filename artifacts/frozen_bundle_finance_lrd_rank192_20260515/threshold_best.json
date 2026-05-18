@@ -1,0 +1,8 @@
+{
+  "best_threshold": 0.5,
+  "best_threshold_accuracy": 99.5,
+  "auc": 0.999,
+  "argmax_accuracy": 99.5,
+  "domain": "finance_fraud_detection",
+  "note": "Finance v3 val accuracy"
+}

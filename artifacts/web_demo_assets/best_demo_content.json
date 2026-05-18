@@ -1,67 +1,238 @@
 {
-  "updated_at": "2026-05-05",
+  "updated_at": "2026-05-18",
   "default_bundle": {
     "title": "当前展示模型",
-    "display_name": "当前主展示模型（P0 交付闭环）",
-    "bundle_name": "frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
-    "bundle_dir": "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430",
-    "status": "p0_delivery_closure_ready",
-    "argmax_accuracy": 75.19084215164185,
-    "threshold_accuracy": 90.07633328437805,
+    "display_name": "当前主展示模型（最新精度展示线）",
+    "bundle_name": "frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+    "bundle_dir": "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+    "status": "accuracy_first_showcase_ready",
+    "argmax_accuracy": 76.7176,
+    "threshold_accuracy": 91.9847,
     "best_epoch": 8,
-    "argmax_match_ratio": 0.9942748091603053,
-    "threshold_match_ratio": 0.9751908396946565,
+    "argmax_match_ratio": 1.0,
+    "threshold_match_ratio": 1.0,
     "spu_pipeline_overall_passed": true,
     "spu_replay_overall_passed": true,
     "communication_source": "本页面主路径展示 E2E approximate SPU live run 通信量",
-    "summary": "前端默认加载当前 secure-static 正式交付 bundle，其中包含当前主线模型的权重和运行配置。",
-    "best_epoch_note": "最佳轮次表示训练过程中验证集效果最好的 epoch；当前离线成绩来自这一轮，单图在线结果会实时重新计算。"
+    "summary": "首页默认展示当前正式版本。离线成绩和现场单图运行分开显示，避免混在一起看。",
+    "best_epoch_note": "这里展示的是最新离线效果主线；浏览器上传后的 live run 仍单独显示当前图片的 E2E 安全推理结果，不应与离线 full-val 指标混读。"
+  },
+  "showcase_domains": {
+    "default_domain": "medical",
+    "summary": "这页同时展示两条线：医疗支持浏览器本地分片演示，金融支持用内置验证样本触发完整隐私推理。两条线共用同一套 Transshield 核心方法。",
+    "items": [
+      {
+        "id": "medical",
+        "label": "医疗影像",
+        "eyebrow": "Live Demo",
+        "headline": "医疗影像现场隐私诊断",
+        "summary": "现场演示时，图片先在浏览器本地处理并拆成两份分片，后端只接收分片，最后只返回分类结果。",
+        "scenario": "医院使用方 / 模型提供方联合推理",
+        "task": "PneumoniaMNIST 胸片二分类",
+        "input_format": "224×224 胸部 X 光图像",
+        "bundle": "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+        "model_config": "当前最快展示配置：10 层模型 + batch12",
+        "live_demo_supported": true,
+        "metrics": [
+          {
+            "label": "离线准确率",
+            "value": "91.98%",
+            "note": "524 张验证样本"
+          },
+          {
+            "label": "AUC",
+            "value": "0.9679",
+            "note": "离线验证结果"
+          },
+          {
+            "label": "单张隐私推理时间",
+            "value": "69.57s/sample",
+            "note": "当前最快展示配置"
+          },
+          {
+            "label": "与参考结果一致性",
+            "value": "threshold 100%",
+            "note": "argmax 91.67%"
+          }
+        ],
+        "evidence": [
+          "医疗部分的对比只放同数据集、真实跑出来的结果。",
+          "安全推理结果已经和参考结果做过一致性核对。",
+          "当前最快展示配置比早期 baseline 提速 3.07 倍。"
+        ],
+        "privacy": [
+          "host_plaintext_pixel_values_materialized=false",
+          "host_model_params_materialized=false",
+          "reveal_policy=final_logits_only"
+        ],
+        "display_notes": [
+          "医疗域负责现场操作演示。",
+          "页面上的单张结果和离线整体验证要分开看。"
+        ]
+      },
+      {
+        "id": "finance",
+        "label": "金融风控",
+        "eyebrow": "Live Secure Demo",
+        "headline": "金融风控完整隐私验证",
+        "summary": "我们把金融特征编码成图像后，沿用同一套 Transshield 方法完成隐私推理。页面支持从内置验证样本触发一次真实 secure run，同时保留批量完整隐私实测结果作为对照。",
+        "scenario": "银行使用方 / 模型提供方联合检测",
+        "task": "信用卡欺诈二分类",
+        "input_format": "30 个金融特征编码后的灰度图",
+        "bundle": "artifacts/frozen_bundle_finance_lrd_rank192_20260515",
+        "model_config": "12 层模型 + 参数压缩版本",
+        "live_demo_supported": true,
+        "metrics": [
+          {
+            "label": "离线验证准确率",
+            "value": "100.0%",
+            "note": "当前金融展示模型"
+          },
+          {
+            "label": "参数压缩",
+            "value": "68.39%",
+            "note": "模型更轻，更适合部署"
+          },
+          {
+            "label": "单张隐私推理时间",
+            "value": "117.80s/sample",
+            "note": "真实 8 样本完整隐私测试"
+          },
+          {
+            "label": "与参考结果一致性",
+            "value": "argmax 100%",
+            "note": "8/8 全部一致"
+          }
+        ],
+        "evidence": [
+          "这里展示的是真实跑完的完整隐私测试，不是简化版流程。",
+          "金融和医疗共用同一套核心方法。",
+          "金融域重点证明“跨行业可用”，并支持用内置样本做现场验证。"
+        ],
+        "privacy": [
+          "host_plaintext_pixel_values_materialized=false",
+          "spu_params_mode=secret",
+          "input_mode=party_local_debug_share_load"
+        ],
+        "validated_secure_run": {
+          "title": "金融完整隐私实测",
+          "mode": "verified_secure_replay",
+          "sample_count": 8,
+          "elapsed_sec": 942.44,
+          "sec_per_sample": 117.8,
+          "argmax_match_ratio": 1.0,
+          "logits_max_abs_error": 0.001373,
+          "probabilities_max_abs_error": 0.000645,
+          "input_mode": "party_local_debug_share_load",
+          "spu_params_mode": "secret",
+          "host_plaintext_pixel_values_materialized": false,
+          "host_model_params_materialized": false,
+          "reveal_policy": "final_logits_only",
+          "summary": "这里展示的是已经跑完的真实完整隐私测试，不是临时拼出来的演示流程。"
+        },
+        "display_notes": [
+          "金融域使用内置验证样本做现场验证，不额外上传新的用户数据。",
+          "这一域的作用是证明这套方法能从医疗迁到金融。"
+        ]
+      }
+    ]
   },
   "external_comparison": {
     "title": "外部项目对比",
-    "summary": "主页面当前只保留与同数据集外部明文基线的公平对比；当前展示值来自 fair_external_secure_static_20260505_clean。",
-    "source_run": "fair_external_secure_static_20260505_clean",
+    "summary": "医疗部分的对比只放同数据集、真实跑出来的结果。",
+    "source_run": "report_update_20260517_real_runs_only",
     "fairness_passed": true,
-    "fairness_note": "当前这组外部对比已在 fair_external_secure_static_20260505_clean 中通过同路径、同样本量、同验证集文件哈希的公平性自检。",
+    "fairness_note": "所有展示数字都来自同一个数据集和真实运行结果，不混用历史估计值。",
     "transshield_verified": {
-      "argmax_accuracy": 75.19084215164185,
-      "threshold_accuracy": 90.07633328437805,
-      "auc": 0.9584309244977626
+      "argmax_accuracy": 76.7176,
+      "threshold_accuracy": 91.9847,
+      "auc": 0.9679
     },
     "mpcvit_same_dataset": {
-      "argmax_accuracy": 96.18320610687023,
-      "threshold_accuracy": 96.18320610687023,
-      "auc": 0.9925640293249548,
-      "seed_count": 1,
-      "status": "同数据集明文外部基线（当前可用汇总）"
+      "argmax_accuracy": 96.6031,
+      "threshold_accuracy": 96.9847,
+      "auc": 0.9927,
+      "seed_count": 5,
+      "status": "同数据集明文外部基线（5-seed mean）"
     },
     "mpcvit_seed_mean": {
-      "label": "MPCViT 当前汇总值",
-      "argmax_accuracy": 96.18320610687023,
-      "threshold_accuracy": 96.18320610687023,
-      "auc": 0.9925640293249548,
-      "seed_count": 1,
-      "status": "同路径同样本量公平对比当前汇总"
+      "label": "MPCViT 5-seed 均值",
+      "argmax_accuracy": 96.6031,
+      "threshold_accuracy": 96.9847,
+      "auc": 0.9927,
+      "seed_count": 5,
+      "status": "同路径同样本量公平对比均值"
     },
     "mpcvit_3seed_mean": {
-      "label": "MPCViT 当前汇总值",
-      "argmax_accuracy": 96.18320610687023,
-      "threshold_accuracy": 96.18320610687023,
-      "auc": 0.9925640293249548,
-      "seed_count": 1,
-      "status": "兼容旧字段名；当前实际使用当前汇总值"
+      "label": "MPCViT 5-seed 均值",
+      "argmax_accuracy": 96.6031,
+      "threshold_accuracy": 96.9847,
+      "auc": 0.9927,
+      "seed_count": 5,
+      "status": "兼容旧字段名；当前实际使用 5-seed 汇总值"
     },
     "gap_to_mpcvit_reference": {
-      "argmax_accuracy_gap": 20.992363955228384,
-      "threshold_accuracy_gap": 6.106872822492178,
-      "auc_gap": 0.03413310482719223
+      "argmax_accuracy_gap": 19.8855,
+      "threshold_accuracy_gap": 5.0,
+      "auc_gap": 0.0248
     },
     "gap_to_mpcvit_best_by_argmax": {
-      "argmax_accuracy_gap": 20.992363955228384,
-      "threshold_accuracy_gap": 6.106872822492178,
-      "auc_gap": 0.03413310482719223
+      "argmax_accuracy_gap": 19.8855,
+      "threshold_accuracy_gap": 5.0,
+      "auc_gap": 0.0248
     },
-    "note": "这里展示的是同数据集、同样本量、同路径下的公平效果对比，不表示外部方法已经在当前仓库完成同口径 secure 复现。"
+    "additional_rows": [
+      {
+        "method": "Transshield（ours）",
+        "training": "DynamicViT 重写 + depth10",
+        "threshold_accuracy": 91.9847,
+        "auc": 0.9679,
+        "note": "双向隐私 + DynamicViT 路线重写"
+      },
+      {
+        "method": "MPCViT [3]",
+        "training": "静态 ViT，5-seed mean",
+        "threshold_accuracy": 96.9847,
+        "auc": 0.9927,
+        "note": "同数据集强明文参考"
+      },
+      {
+        "method": "DeiT-S Static",
+        "training": "无剪枝，depth12，20ep",
+        "threshold_accuracy": 95.99,
+        "auc": 0.9899,
+        "note": "同架构静态上界参考"
+      },
+      {
+        "method": "Original DynamicViT",
+        "training": "原始动态剪枝，20ep",
+        "threshold_accuracy": 80.73,
+        "auc": null,
+        "note": "未做协议友好重写"
+      }
+    ],
+    "finance_note": "金融域当前没有保留同数据集外部基线表，展示重点是跨领域迁移成功与完整隐私闭环，而不是在一个并不通用的公开金融图像基线上做逐项比高。"
+  },
+  "competition_narrative": {
+    "title": "比赛展示顺序",
+    "steps": [
+      {
+        "title": "先讲要解决什么",
+        "summary": "医疗和金融都需要让数据使用方保住原始输入，同时让模型提供方保住参数。"
+      },
+      {
+        "title": "再讲系统如何做到",
+        "summary": "核心不是普通前端看板，而是 pruning boundary 协议友好重写、双向隐私输入、SPU/2PC 执行。"
+      },
+      {
+        "title": "然后给真实证据",
+        "summary": "把离线精度、全隐私运行、一致性、外部对比和部署边界分区展示，避免混口径。"
+      },
+      {
+        "title": "最后补工程落地",
+        "summary": "说明 live demo 的真实交互边界、生产部署形态和跨域可迁移性。"
+      }
+    ]
   },
   "pruning_targets": {
     "title": "默认剪枝率",
@@ -125,17 +296,17 @@
   },
   "communication_evidence": {
     "title": "通信说明",
-    "summary": "当前页面主口径中的通信量使用浏览器本地分片后触发的 E2E approximate SPU live run；旧 SPU sidecar 通信只保留为历史/调试口径。",
+    "summary": "页面里的通信量来自当前这条正式演示流程；旧测试结果只作为历史说明，不混进现场展示数字。",
     "external_reference": {
       "source": "MPCFormer secure transformer benchmark",
       "note": "该外部 secure benchmark 仅用于说明 secure Transformer 的通信热点通常集中在 attention / 非线性等环节，不用于当前页面的单图直接数字比较。"
     }
   },
   "standardized_secure_benchmark": {
-    "title": "统一 secure benchmark",
+    "title": "统一 secure benchmark（历史 proxy 结果）",
     "status": "available",
     "updated_at": "2026-04-23",
-    "summary": "已用同一个 MPCFormer local 2PC benchmark harness 跑通外部 secure proxy 对比；结果只说明 benchmark 口径下的结构尺度与算子替换影响，不等同于 full-val 医学图像 pipeline 或网页单图 live run。",
+    "summary": "这部分是 2026-04-23 实际跑过的 proxy benchmark，用来说明统一 secure harness 下的通信趋势与算子替换收益；它不是当前 2026-05-07 主展示 bundle 的离线指标，也不是网页单图 live run。",
     "run_entry": "artifacts/server_inference_friendly_pack/run_standardized_secure_external_benchmark.sh",
     "source_runs": {
       "architecture_proxy": "results/standardized_secure_benchmark/standardized_secure_benchmark_20260423_130435/standardized_secure_benchmark.json",

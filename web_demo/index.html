@@ -1,1814 +1,1147 @@
 <!doctype html>
 <html lang="zh-CN">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Transshield 安全推理成果展示页</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transshield | 医疗与金融双领域隐私推理展示</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <style>
       :root {
-        --bg: #0b1020;
-        --panel: #121933;
-        --panel-2: #1a2345;
-        --panel-3: #0f1730;
-        --text: #eaf0ff;
-        --muted: #aab6dc;
-        --accent: #6ea8fe;
-        --accent-2: #a78bfa;
-        --secure: #5ee0a0;
-        --warning: #ffd166;
-        --danger: #ff7a90;
-        --user: #2a3c78;
-        --border: #2a386c;
-        --border-soft: rgba(170, 182, 220, 0.16);
-        --shadow: 0 20px 60px rgba(0, 0, 0, 0.34);
+        --bg: #f3f1ea;
+        --bg-soft: #f8f6f0;
+        --text: #0d1524;
+        --text-soft: rgba(13, 21, 36, 0.76);
+        --text-dim: rgba(13, 21, 36, 0.56);
+        --line: rgba(13, 21, 36, 0.08);
+        --line-strong: rgba(13, 21, 36, 0.14);
+        --card: rgba(255, 255, 255, 0.88);
+        --card-strong: #ffffff;
+        --card-dark: #101a2d;
+        --card-dark-soft: rgba(16, 26, 45, 0.92);
+        --card-dark-text: rgba(247, 249, 252, 0.94);
+        --card-dark-dim: rgba(247, 249, 252, 0.68);
+        --accent: #2d63f7;
+        --accent-soft: rgba(45, 99, 247, 0.1);
+        --accent-strong: #1848cc;
+        --ok: #0f8a61;
+        --warn: #b25d00;
+        --shadow: 0 18px 48px rgba(15, 23, 37, 0.08);
+        --radius-xl: 28px;
+        --radius-lg: 20px;
+        --radius-md: 14px;
+        --maxw: 1220px;
+        --hero-title: clamp(2.85rem, 6vw, 5.4rem);
+        --h2: clamp(2rem, 3.3vw, 3.2rem);
+        --h3: clamp(1.26rem, 1.8vw, 1.72rem);
+        --body: clamp(1rem, 1.08vw, 1.12rem);
+        --small: clamp(0.92rem, 0.95vw, 1rem);
       }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        min-height: 100vh;
-        background:
-          radial-gradient(circle at 12% 12%, rgba(110, 168, 254, 0.22), transparent 34%),
-          radial-gradient(circle at 86% 8%, rgba(94, 224, 160, 0.12), transparent 28%),
-          radial-gradient(circle at 70% 92%, rgba(167, 139, 250, 0.18), transparent 32%),
-          linear-gradient(180deg, #070d1c 0%, #101936 100%);
-        color: var(--text);
-      }
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background-image:
-          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-        background-size: 42px 42px;
-        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 78%);
-      }
-      .app {
-        width: min(1320px, 100%);
-        margin: 0 auto;
-        padding: 24px;
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 18px;
-      }
-      .card {
-        position: relative;
-        background: linear-gradient(180deg, rgba(18, 25, 51, 0.92), rgba(12, 18, 39, 0.94));
-        border: 1px solid var(--border-soft);
-        border-radius: 24px;
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(18px);
-      }
-      .hero {
-        padding: 26px;
-        overflow: hidden;
-      }
-      .hero::after {
-        content: "";
-        position: absolute;
-        inset: auto -80px -120px auto;
-        width: 360px;
-        height: 360px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(94, 224, 160, 0.18), transparent 68%);
-        pointer-events: none;
-      }
-      .hero-layout {
-        position: relative;
-        z-index: 1;
-        display: grid;
-        grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr);
-        gap: 22px;
-        align-items: end;
-      }
-      .hero h1 {
-        margin: 10px 0 12px;
-        font-size: clamp(34px, 5vw, 58px);
-        line-height: 1.02;
-        letter-spacing: -0.05em;
-      }
-      .hero-lead {
-        max-width: 780px;
-        color: var(--muted);
-        line-height: 1.75;
-        font-size: 16px;
-      }
-      .hero-tags {
-        margin-top: 18px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-      .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-      }
-      .kpi-card {
-        min-height: 132px;
-        padding: 16px;
-        border-radius: 20px;
-        background: rgba(15, 23, 48, 0.82);
-        border: 1px solid rgba(170, 182, 220, 0.13);
-      }
-      .kpi-card.primary {
-        background: linear-gradient(160deg, rgba(94, 224, 160, 0.16), rgba(15, 23, 48, 0.86));
-        border-color: rgba(94, 224, 160, 0.28);
-      }
-      .kpi-label {
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-      .kpi-value {
-        margin-top: 10px;
-        color: var(--text);
-        font-size: 30px;
-        font-weight: 900;
-        letter-spacing: -0.03em;
-      }
-      .kpi-card.primary .kpi-value { color: #b9ffd9; }
-      .kpi-sub {
-        margin-top: 8px;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.45;
-      }
-      .control-panel {
-        padding: 18px;
-      }
-      .control-grid {
-        display: grid;
-        grid-template-columns: 280px 360px minmax(0, 1fr);
-        gap: 16px;
-        align-items: start;
-      }
-      .control-copy h2 {
-        margin: 0 0 8px;
-        font-size: 20px;
-      }
-      .control-copy p {
-        margin: 0;
-        color: var(--muted);
-        line-height: 1.65;
-      }
-      .control-panel .preview {
-        margin-top: 0;
-        aspect-ratio: 4 / 3;
-      }
-      .run-actions {
-        display: grid;
-        gap: 12px;
-      }
-      .run-actions .secure-actions,
-      .run-actions .reference-actions {
-        margin-top: 0;
-      }
-      .run-feedback {
-        min-width: 0;
-        display: grid;
-        gap: 12px;
-      }
-      .run-feedback .meta,
-      .run-feedback .compare-box {
-        margin-top: 0;
-      }
-      .feedback-head {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        align-items: flex-start;
-      }
-      .feedback-head h3 {
-        margin: 2px 0 4px;
-        font-size: 18px;
-      }
-      .feedback-head p {
-        margin: 0;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.55;
-      }
-      .result-layout {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 14px;
-      }
-      .result-column {
-        min-width: 0;
-        padding: 14px;
-        border-radius: 18px;
-        background: rgba(15, 23, 48, 0.72);
-        border: 1px solid rgba(170, 182, 220, 0.12);
-      }
-      .result-column h4,
-      .subcard-title {
-        margin: 0 0 10px;
-        color: #dce6ff;
-        font-size: 13px;
-        font-weight: 900;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-      }
-      .section-head {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 18px;
-        margin-bottom: 14px;
-      }
-      .section-head h3 {
-        margin: 4px 0 0;
-        font-size: 20px;
-      }
-      .section-head p {
-        margin: 6px 0 0;
-        color: var(--muted);
-        line-height: 1.6;
-      }
-      .section-eyebrow {
-        color: var(--secure);
-        font-size: 12px;
-        font-weight: 900;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 16px;
-      }
-      .brand-mark {
-        width: 42px;
-        height: 42px;
-        border-radius: 14px;
-        display: grid;
-        place-items: center;
-        background: linear-gradient(135deg, rgba(94, 224, 160, 0.95), rgba(110, 168, 254, 0.95));
-        color: #061120;
-        font-weight: 900;
-        box-shadow: 0 10px 28px rgba(94, 224, 160, 0.16);
-      }
-      .brand h1 { margin: 0; font-size: 23px; letter-spacing: -0.02em; }
-      .brand p { margin: 3px 0 0; font-size: 12px; color: var(--muted); }
-      .kicker {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 10px;
-        padding: 5px 10px;
-        border: 1px solid rgba(110, 168, 254, 0.24);
-        border-radius: 999px;
-        background: rgba(110, 168, 254, 0.10);
-        color: #cfe0ff;
-        font-size: 12px;
-        font-weight: 700;
-      }
-      .preview {
-        margin-top: 16px;
-        width: 100%;
-        aspect-ratio: 1;
-        border-radius: 18px;
-        background:
-          linear-gradient(135deg, rgba(110, 168, 254, 0.08), rgba(94, 224, 160, 0.04)),
-          #070c1a;
-        border: 1px dashed rgba(170, 182, 220, 0.28);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
-      }
-      .preview img { width: 100%; height: 100%; object-fit: contain; display: none; background: #050916; }
-      .preview span { color: var(--muted); padding: 20px; text-align: center; }
-      .meta, .compare-box {
-        margin-top: 14px;
-        padding: 12px;
-        border-radius: 16px;
-        background: rgba(26, 35, 69, 0.78);
-        border: 1px solid rgba(170, 182, 220, 0.12);
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 1.7;
-      }
-      .section-title {
-        margin: 16px 0 8px;
-        color: #dce6ff;
-        font-size: 13px;
-        font-weight: 800;
-        letter-spacing: 0.03em;
-        text-transform: uppercase;
-      }
-      .actions { margin-top: 16px; display: grid; gap: 10px; }
-      .secure-actions {
-        margin-top: 12px;
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 8px;
-      }
-      .reference-actions {
-        margin-top: 8px;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
-      input[type="file"], button {
-        width: 100%;
-        border-radius: 12px;
-        border: 1px solid rgba(170, 182, 220, 0.18);
-      }
-      input[type="file"] {
-        background: rgba(13, 20, 48, 0.86);
-        color: var(--muted);
-        padding: 10px;
-      }
-      button {
-        padding: 12px 14px;
-        border: 0;
-        background: linear-gradient(135deg, var(--accent), #94c5ff);
-        color: #08101f;
-        font-weight: 700;
-        cursor: pointer;
-        transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
-        box-shadow: 0 10px 22px rgba(110, 168, 254, 0.16);
-      }
-      button:hover:not(:disabled) {
-        transform: translateY(-1px);
-        box-shadow: 0 14px 26px rgba(110, 168, 254, 0.22);
-      }
-      button:disabled {
-        cursor: wait;
-        opacity: 0.62;
-      }
-      .ghost {
-        background: rgba(13, 20, 48, 0.92);
-        color: var(--text);
-        box-shadow: none;
-      }
-      .secure-primary {
-        background: linear-gradient(135deg, var(--secure), #a7f3d0);
-        color: #071322;
-        box-shadow: 0 12px 24px rgba(94, 224, 160, 0.16);
-      }
-      .small-button {
-        padding: 10px 12px;
-        font-size: 13px;
-      }
-      input[type="file"]:focus {
-        border-color: rgba(110, 168, 254, 0.55);
-        box-shadow: 0 0 0 3px rgba(110, 168, 254, 0.12);
-      }
-      .pipeline-note {
-        margin-top: 14px;
-        padding: 12px;
-        border-radius: 16px;
-        background: rgba(94, 224, 160, 0.07);
-        border: 1px solid rgba(94, 224, 160, 0.22);
-        color: #dfffee;
-        font-size: 13px;
-        line-height: 1.65;
-      }
-      .privacy-flow {
-        margin-top: 12px;
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-      }
-      .privacy-step {
-        min-height: 74px;
-        padding: 10px;
-        border-radius: 12px;
-        background: rgba(15, 23, 48, 0.72);
-        border: 1px solid rgba(170, 182, 220, 0.12);
-      }
-      .privacy-step b {
-        display: block;
-        color: #dce6ff;
-        font-size: 12px;
-        margin-bottom: 4px;
-      }
-      .privacy-step span {
-        display: block;
-        color: var(--muted);
-        font-size: 12px;
-        line-height: 1.45;
-      }
-      .tag {
-        display: inline-block;
-        padding: 2px 8px;
-        border-radius: 999px;
-        background: rgba(110, 168, 254, 0.16);
-        color: #bcd6ff;
-        font-size: 12px;
-        margin-right: 6px;
-      }
-      .tag.secure { background: rgba(94, 224, 160, 0.16); color: #b9ffd9; }
-      .tag.ref { background: rgba(255, 209, 102, 0.14); color: #ffe8a3; }
-      .metric-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      }
-      .metric {
-        min-width: 0;
-        padding: 10px;
-        border-radius: 14px;
-        background: rgba(15, 23, 48, 0.76);
-        border: 1px solid rgba(170, 182, 220, 0.10);
-      }
-      .metric.wide { grid-column: 1 / -1; }
-      .metric span {
-        display: block;
-        color: var(--muted);
-        font-size: 12px;
-        line-height: 1.35;
-      }
-      .metric b {
-        display: block;
-        margin-top: 4px;
-        color: var(--text);
-        font-size: 14px;
-        overflow-wrap: anywhere;
-      }
-      .metric.secure b { color: #b9ffd9; }
-      .metric.warn b { color: #ffe8a3; }
-      .meta-note {
-        margin-top: 10px;
-        color: var(--muted);
-        font-size: 12px;
-        line-height: 1.55;
-      }
-      .meta-note code {
-        padding: 1px 6px;
-        border-radius: 999px;
-        background: rgba(110, 168, 254, 0.12);
-        color: #d7e6ff;
-      }
-      .result-note {
-        margin-top: 10px;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.55;
-      }
-      .result-note.secure { color: #b9ffd9; }
-      .result-note.warn { color: #ffe8a3; }
-      .empty-state {
-        color: var(--muted);
-        text-align: center;
-        padding: 8px;
-      }
-      .process {
-        display: grid;
-        grid-template-rows: auto 1fr;
-        overflow: hidden;
-        min-height: auto;
-      }
-      .process-header {
-        padding: 20px 22px;
-        border-bottom: 1px solid rgba(170, 182, 220, 0.13);
-        background: linear-gradient(90deg, rgba(94, 224, 160, 0.10), transparent);
-      }
-      .process-header h2 { margin: 0; font-size: 20px; }
-      .process-header p { margin: 6px 0 0; color: var(--muted); line-height: 1.6; }
-      .process-body {
-        padding: 20px;
-        overflow: auto;
-        display: grid;
-        gap: 16px;
-        align-content: start;
-      }
-      .flow-card {
-        padding: 16px;
-        border-radius: 18px;
-        background: rgba(15, 23, 48, 0.72);
-        border: 1px solid rgba(170, 182, 220, 0.12);
-      }
-      .flow-card h3 {
-        margin: 0 0 10px;
-        font-size: 16px;
-        color: #eaf0ff;
-      }
-      .flow-card p {
-        margin: 0;
-        color: var(--muted);
-        line-height: 1.65;
-      }
-      .panel-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 12px;
-      }
-      .panel-item {
-        overflow: hidden;
-        border-radius: 18px;
-        border: 1px solid rgba(170, 182, 220, 0.12);
-        background: rgba(7, 12, 26, 0.55);
-      }
-      .panel-item img {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-      .panel-item span {
-        display: block;
-        padding: 10px 12px;
-        color: var(--muted);
-        font-size: 12px;
-        line-height: 1.5;
-        white-space: normal;
-        overflow-wrap: anywhere;
-      }
-      .panel-item span b { color: #eaf0ff; }
-      .legend-note {
-        margin-top: 12px;
-        padding: 12px 14px;
-        border-radius: 16px;
-        background: rgba(26, 35, 69, 0.62);
-        border: 1px solid rgba(170, 182, 220, 0.12);
-      }
-      .legend-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-        align-items: center;
-      }
-      .legend-item {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.5;
-      }
-      .legend-swatch {
-        width: 14px;
-        height: 14px;
-        border-radius: 4px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-      }
-      .legend-swatch.keep {
-        background: rgba(76, 175, 80, 0.35);
-        border-color: rgba(76, 175, 80, 0.8);
-      }
-      .legend-swatch.prune {
-        background: rgba(17, 24, 39, 0.85);
-        border-color: rgba(203, 213, 225, 0.65);
-      }
-      .flow-steps {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 10px;
-      }
-      .flow-step {
-        padding: 14px;
-        border-radius: 16px;
-        background: rgba(18, 25, 51, 0.82);
-        border: 1px solid rgba(170, 182, 220, 0.12);
-      }
-      .flow-step strong {
-        display: block;
-        margin-bottom: 6px;
-        color: #dce6ff;
-      }
-      .flow-step span {
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.5;
-      }
-      .stage-bars {
-        display: grid;
-        gap: 12px;
-      }
-      .stage-card-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
-        gap: 14px;
-      }
-      .stage-explanations {
-        display: grid;
-        gap: 12px;
-      }
-      .stage-explanation {
-        padding: 14px;
-        border-radius: 16px;
-        background: rgba(18, 25, 51, 0.82);
-        border: 1px solid rgba(170, 182, 220, 0.12);
-      }
-      .stage-explanation b {
-        display: block;
-        margin-bottom: 6px;
-        color: #dce6ff;
-      }
-      .stage-explanation span {
-        display: block;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.6;
-      }
-      .stage-row {
-        display: grid;
-        grid-template-columns: 88px 1fr 100px;
-        gap: 12px;
-        align-items: center;
-      }
-      .stage-name { color: #dce6ff; font-weight: 700; }
-      .bar-track {
-        height: 12px;
-        border-radius: 999px;
-        background: rgba(170, 182, 220, 0.12);
-        overflow: hidden;
-      }
-      .bar-fill {
-        height: 100%;
-        border-radius: inherit;
-        background: linear-gradient(90deg, var(--secure), var(--accent));
-      }
-      .stage-value {
-        color: var(--muted);
-        font-size: 13px;
-        text-align: right;
-      }
-      .insight-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px;
-      }
-      .insight {
-        padding: 14px;
-        border-radius: 16px;
-        background: rgba(26, 35, 69, 0.62);
-        border: 1px solid rgba(170, 182, 220, 0.12);
-      }
-      .insight b { display: block; margin-bottom: 6px; color: #b9ffd9; }
-      .insight span { color: var(--muted); font-size: 13px; line-height: 1.55; }
-      .method-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px;
-      }
-      .external-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-        gap: 14px;
-      }
-      .external-card {
-        padding: 16px;
-        border-radius: 18px;
-        background: rgba(15, 23, 48, 0.72);
-        border: 1px solid rgba(170, 182, 220, 0.12);
-      }
-      .external-card.highlight {
-        background: linear-gradient(160deg, rgba(94, 224, 160, 0.12), rgba(15, 23, 48, 0.82));
-        border-color: rgba(94, 224, 160, 0.24);
-      }
-      .external-card h4 {
-        margin: 0 0 10px;
-        color: #eaf0ff;
-        font-size: 16px;
-      }
-      .external-card p {
-        margin: 8px 0 0;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.62;
-      }
-      .overview-table {
-        width: 100%;
-        margin-top: 12px;
-        border-collapse: collapse;
-        font-size: 13px;
-      }
-      .overview-table th,
-      .overview-table td {
-        padding: 10px 12px;
-        border-bottom: 1px solid rgba(170, 182, 220, 0.12);
-        vertical-align: top;
-        text-align: left;
-      }
-      .overview-table th {
-        color: #dce6ff;
-        font-weight: 850;
-        background: rgba(26, 35, 69, 0.54);
-      }
-      .overview-table td {
-        color: var(--muted);
-        line-height: 1.55;
-      }
-      .overview-table strong { color: var(--text); }
-      .summary-note strong,
-      .external-card strong {
-        color: #eaf0ff;
-      }
-      .method-card {
-        padding: 16px;
-        border-radius: 18px;
-        background: rgba(26, 35, 69, 0.62);
-        border: 1px solid rgba(170, 182, 220, 0.12);
-      }
-      .method-card b {
-        display: block;
-        margin-bottom: 10px;
-        color: #b9ffd9;
-        font-size: 15px;
-      }
-      .method-card span {
-        display: block;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.58;
-      }
-      .method-card span + span { margin-top: 6px; }
-      .summary-stack {
-        display: grid;
-        gap: 12px;
-      }
-      .summary-note {
-        padding: 12px 14px;
-        border-radius: 16px;
-        background: rgba(26, 35, 69, 0.62);
-        border: 1px solid rgba(170, 182, 220, 0.12);
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.65;
-      }
-      .pill-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-      .seed-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-      }
-      .seed-card {
-        padding: 14px;
-        border-radius: 16px;
-        background: rgba(18, 25, 51, 0.82);
-        border: 1px solid rgba(170, 182, 220, 0.12);
-      }
-      .seed-card b {
-        display: block;
-        margin-bottom: 6px;
-        color: #dce6ff;
-      }
-      .seed-card span {
-        display: block;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.6;
-      }
-      .details-stack {
-        display: grid;
-        gap: 10px;
-      }
-      details.detail-panel {
-        border-radius: 16px;
-        background: rgba(15, 23, 48, 0.62);
-        border: 1px solid rgba(170, 182, 220, 0.12);
-        overflow: hidden;
-      }
-      details.detail-panel summary {
-        cursor: pointer;
-        padding: 14px 16px;
-        color: #dce6ff;
-        font-weight: 850;
-        list-style: none;
-      }
-      details.detail-panel summary::-webkit-details-marker { display: none; }
-      details.detail-panel summary::after {
-        content: "+";
-        float: right;
-        color: var(--muted);
-      }
-      details.detail-panel[open] summary::after { content: "−"; }
-      .detail-body {
-        padding: 0 16px 16px;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.65;
-      }
-      .comparison-status {
-        padding: 14px;
-        border-radius: 16px;
-        background: rgba(94, 224, 160, 0.10);
-        border: 1px solid rgba(94, 224, 160, 0.25);
-        color: #b9ffd9;
-        font-weight: 800;
-        line-height: 1.55;
-      }
-      .comparison-status.warn {
-        background: rgba(255, 209, 102, 0.09);
-        border-color: rgba(255, 209, 102, 0.24);
-        color: #ffe8a3;
-      }
-      .log-tail {
-        max-height: 220px;
-        overflow: auto;
-        white-space: pre-wrap;
-        word-break: break-word;
-        margin: 0;
-        padding: 12px;
-        border-radius: 12px;
-        background: rgba(7, 13, 28, 0.72);
-        color: #dce6ff;
-        font-size: 12px;
-        line-height: 1.55;
-      }
-      @media (max-width: 900px) {
-        .app { grid-template-columns: 1fr; padding: 14px; }
-        .process { min-height: 70vh; }
-        .hero-layout,
-        .control-grid,
-        .result-layout,
-        .stage-card-grid,
-        .external-grid,
-        .flow-steps,
-        .insight-grid,
-        .method-grid,
-        .panel-grid,
-        .kpi-grid { grid-template-columns: 1fr; }
-        .seed-grid { grid-template-columns: 1fr; }
-        .stage-row { grid-template-columns: 72px 1fr; }
-        .stage-value { grid-column: 2; text-align: left; }
-      }
-    </style>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
 
-      :root {
-        --bg: #f2f2f4;
-        --panel: rgba(253, 253, 253, 0.84);
-        --panel-2: rgba(255, 255, 255, 0.9);
-        --panel-3: rgba(247, 247, 248, 0.94);
-        --text: #0f1012;
-        --muted: rgba(15, 16, 18, 0.64);
-        --accent: #0071e3;
-        --accent-2: #005ec2;
-        --secure: #0071e3;
-        --warning: #a86800;
-        --danger: #b63d3d;
-        --user: rgba(15, 16, 18, 0.06);
-        --border: rgba(15, 16, 18, 0.14);
-        --border-soft: rgba(15, 16, 18, 0.08);
-        --blueprint-line: rgba(15, 16, 18, 0.035);
-        --shadow: none;
+      * {
+        box-sizing: border-box;
+        min-width: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
       }
 
       body {
-        font-family: "Manrope", "Aptos", "Segoe UI", sans-serif;
-        background:
-          radial-gradient(circle at 12% 0%, rgba(0, 113, 227, 0.1), transparent 26%),
-          radial-gradient(circle at 88% 14%, rgba(15, 16, 18, 0.04), transparent 18%),
-          linear-gradient(180deg, #fcfcfd 0%, #f2f2f4 100%);
-        color: var(--text);
-      }
-
-      body::before {
-        background-image:
-          linear-gradient(var(--blueprint-line) 1px, transparent 1px),
-          linear-gradient(90deg, var(--blueprint-line) 1px, transparent 1px);
-        background-size: 34px 34px;
-        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.82), transparent 88%);
-      }
-
-      .app {
-        width: min(1460px, 100%);
-        padding: 28px clamp(16px, 3vw, 40px) 72px;
-        gap: 24px;
-      }
-
-      .card {
-        border-radius: 28px;
-        border: 1px solid var(--border);
-        background: var(--panel);
-        box-shadow: none;
-        backdrop-filter: blur(18px);
-      }
-
-      .card::before {
-        content: "";
-        position: absolute;
-        inset: 0 0 auto 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(0, 113, 227, 0.45), transparent);
-        pointer-events: none;
-      }
-
-      .hero,
-      .control-panel,
-      .flow-card {
-        padding: clamp(18px, 2.3vw, 34px);
-      }
-
-      .hero::after {
-        width: 460px;
-        height: 460px;
-        inset: auto -120px -180px auto;
-        background: radial-gradient(circle, rgba(0, 113, 227, 0.12), transparent 68%);
-      }
-
-      .hero-layout {
-        grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
-        align-items: stretch;
-        gap: 20px;
-      }
-
-      .hero h1 {
-        color: #0f1012;
-      }
-
-      .hero-layout > div:first-child > h1 {
-        margin: 12px 0 12px;
-        max-width: 860px;
-        font-size: clamp(38px, 5vw, 68px);
-        line-height: 0.96;
-        letter-spacing: -0.06em;
-      }
-
-      .hero-lead {
-        max-width: 840px;
-        color: rgba(15, 16, 18, 0.68);
-        font-size: 16px;
-        line-height: 1.8;
-      }
-
-      .hero-summary {
-        max-width: 900px;
-        margin: 18px 0 0;
-        padding: 14px 16px;
-        border-radius: 18px;
-        border: 1px solid rgba(0, 113, 227, 0.14);
-        background:
-          linear-gradient(180deg, rgba(0, 113, 227, 0.06), rgba(255, 255, 255, 0.9)),
-          rgba(255, 255, 255, 0.9);
-        color: rgba(15, 16, 18, 0.7);
-        line-height: 1.75;
-      }
-
-      .hero-proof {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px;
-        margin-top: 18px;
-      }
-
-      .proof-card {
-        padding: 14px 16px;
-        border-radius: 18px;
-        border: 1px solid rgba(15, 16, 18, 0.08);
-        background: rgba(255, 255, 255, 0.8);
-      }
-
-      .proof-card b {
-        display: block;
-        margin-bottom: 8px;
-        color: #020201;
-        font-size: 14px;
-        letter-spacing: -0.02em;
-      }
-
-      .proof-card span {
-        display: block;
-        color: rgba(15, 16, 18, 0.62);
-        font-size: 13px;
-        line-height: 1.65;
-      }
-
-      .hero-aside {
-        display: grid;
-        gap: 12px;
-        align-content: start;
-      }
-
-      .board-label {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: rgba(15, 16, 18, 0.56);
-        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-        font-size: 11px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-      }
-
-      .board-label::before {
-        content: "";
-        width: 22px;
-        height: 1px;
-        background: rgba(0, 113, 227, 0.42);
-      }
-
-      .brand {
-        margin-bottom: 18px;
-      }
-
-      .brand-mark {
-        width: 52px;
-        height: 52px;
-        border-radius: 16px;
-        background:
-          linear-gradient(135deg, rgba(0, 113, 227, 0.12), rgba(255, 255, 255, 0.96)),
-          #ffffff;
-        color: var(--accent);
-        box-shadow: none;
-        border: 1px solid rgba(0, 113, 227, 0.14);
-        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-        font-size: 15px;
-        letter-spacing: 0.12em;
-      }
-
-      .brand h1 {
         margin: 0;
-        font-size: 15px;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        color: #020201;
-      }
-
-      .brand p {
-        margin: 4px 0 0;
-        color: rgba(15, 16, 18, 0.56);
-        font-size: 12px;
-        letter-spacing: 0.03em;
-      }
-
-      .kicker,
-      .section-eyebrow {
-        color: var(--accent);
-        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-        font-weight: 500;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-      }
-
-      .kicker {
-        padding: 7px 12px;
-        background: rgba(0, 113, 227, 0.08);
-        border: 1px solid rgba(0, 113, 227, 0.14);
-        border-radius: 999px;
-      }
-
-      .hero-tags,
-      .pill-list {
-        gap: 10px;
-      }
-
-      .tag {
-        background: rgba(15, 16, 18, 0.04);
-        border: 1px solid rgba(15, 16, 18, 0.08);
-        color: rgba(15, 16, 18, 0.7);
-        border-radius: 10px;
-        padding: 8px 12px;
-      }
-
-      .tag.secure,
-      .tag.ref {
-        color: var(--accent);
-        background: rgba(0, 113, 227, 0.08);
-        border-color: rgba(0, 113, 227, 0.16);
-      }
-
-      .kpi-grid {
-        gap: 12px;
-        align-content: start;
-        padding: 18px;
-        border-radius: 22px;
-        border: 1px solid rgba(0, 113, 227, 0.14);
+        font-family: "IBM Plex Sans", sans-serif;
+        font-size: var(--body);
+        color: var(--text);
         background:
-          linear-gradient(180deg, rgba(0, 113, 227, 0.06), rgba(255, 255, 255, 0.88)),
-          rgba(255, 255, 255, 0.9);
+          radial-gradient(circle at top right, rgba(45, 99, 247, 0.08), transparent 24%),
+          linear-gradient(rgba(13, 21, 36, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(13, 21, 36, 0.035) 1px, transparent 1px),
+          var(--bg);
+        background-size: auto, 34px 34px, 34px 34px, auto;
       }
 
-      .kpi-card {
-        min-height: 162px;
-        padding: 18px;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.82);
-        border: 1px solid rgba(15, 16, 18, 0.08);
+      button,
+      input {
+        font: inherit;
       }
 
-      .kpi-card.primary {
-        background: linear-gradient(180deg, rgba(0, 113, 227, 0.08), rgba(255, 255, 255, 0.92));
-        border-color: rgba(0, 113, 227, 0.18);
-      }
-
-      .kpi-label {
-        color: var(--accent);
-        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-        font-size: 11px;
-        letter-spacing: 0.14em;
-      }
-
-      .kpi-value,
-      .kpi-card.primary .kpi-value {
-        color: #020201;
-        font-size: clamp(28px, 4vw, 42px);
-        line-height: 1;
-        letter-spacing: -0.05em;
-      }
-
-      .kpi-sub {
-        color: rgba(15, 16, 18, 0.62);
-      }
-
-      .control-grid {
-        grid-template-columns: minmax(0, 310px) minmax(0, 380px) minmax(0, 1fr);
-        gap: 16px;
-      }
-
-      .control-copy h2 {
-        margin: 8px 0 8px;
-        font-size: 28px;
-        line-height: 1.08;
-        letter-spacing: -0.05em;
-      }
-
-      .control-copy p {
-        color: rgba(15, 16, 18, 0.68);
-        line-height: 1.75;
-      }
-
-      .preview {
-        min-height: 430px;
-        border-radius: 22px;
-        border: 1px solid rgba(0, 113, 227, 0.14);
-        background:
-          linear-gradient(180deg, rgba(0, 113, 227, 0.06), rgba(255, 255, 255, 0.9)),
-          rgba(255, 255, 255, 0.9);
-      }
-
-      .preview::before {
-        content: "";
-        position: absolute;
-        inset: 12px;
-        border-radius: 18px;
-        border: 1px dashed rgba(15, 16, 18, 0.16);
-        background:
-          linear-gradient(rgba(15, 16, 18, 0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(15, 16, 18, 0.03) 1px, transparent 1px);
-        background-size: 24px 24px;
-        pointer-events: none;
-      }
-
-      .preview img {
-        position: relative;
-        z-index: 1;
-        border-radius: 18px;
-        border: 1px solid rgba(15, 16, 18, 0.08);
-        box-shadow: none;
-        background: #fff;
-      }
-
-      .preview span {
-        position: relative;
-        z-index: 1;
-        color: rgba(15, 16, 18, 0.58);
-        line-height: 1.8;
-      }
-
-      .pipeline-note,
-      .summary-note,
-      .meta-note,
-      .result-note,
-      .comparison-status,
-      .empty-state,
-      .external-card,
-      .method-card,
-      .stage-explanation,
-      .seed-card,
-      .panel-item,
-      .flow-step,
-      .result-column,
-      .detail-panel,
-      .stage-row,
-      .privacy-step {
-        background: rgba(255, 255, 255, 0.78);
-        border: 1px solid rgba(15, 16, 18, 0.08);
-      }
-
-      .pipeline-note,
-      .summary-note,
-      .meta-note,
-      .result-note,
-      .comparison-status,
-      .empty-state {
-        color: rgba(15, 16, 18, 0.66);
-        line-height: 1.7;
-      }
-
-      .privacy-flow {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .privacy-step {
-        gap: 8px;
-      }
-
-      .privacy-step b {
-        color: #020201;
-        font-size: 14px;
-        letter-spacing: -0.02em;
-      }
-
-      .privacy-step span {
-        color: rgba(15, 16, 18, 0.62);
-      }
-
-      input[type="file"] {
-        color: rgba(15, 16, 18, 0.66);
-        background: rgba(255, 255, 255, 0.84);
-        border: 1px dashed rgba(15, 16, 18, 0.18);
-        font-family: "Manrope", "Aptos", "Segoe UI", sans-serif;
-      }
-
-      input[type="file"]::file-selector-button {
-        margin-right: 12px;
-        padding: 10px 14px;
-        border: 1px solid rgba(0, 113, 227, 0.16);
-        border-radius: 12px;
-        background: rgba(0, 113, 227, 0.08);
-        color: var(--accent);
-        font-family: "Manrope", "Aptos", "Segoe UI", sans-serif;
-        font-weight: 700;
-        cursor: pointer;
-      }
-
-      .visually-hidden-file {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-      }
-
-      .native-file-input {
+      img {
         display: block;
-        min-height: 48px;
-        padding: 10px;
-        color: rgba(15, 16, 18, 0.72);
-        background: rgba(255, 255, 255, 0.82);
-        border: 1px solid rgba(0, 113, 227, 0.18);
-        box-shadow: none;
-        cursor: pointer;
+        max-width: 100%;
       }
 
-      .file-picker-button {
-        color: #0071e3;
-        background: rgba(0, 113, 227, 0.08);
-        border: 1px solid rgba(0, 113, 227, 0.18);
-        box-shadow: none;
+      a {
+        color: inherit;
+        text-decoration: none;
       }
 
-      .file-name-status {
-        padding: 10px 12px;
-        border-radius: 14px;
-        background: rgba(255, 255, 255, 0.72);
-        border: 1px dashed rgba(15, 16, 18, 0.14);
-        color: rgba(15, 16, 18, 0.62);
-        font-size: 13px;
-        line-height: 1.45;
-      }
-
-      .control-panel > *,
-      .control-grid > *,
-      .run-actions,
-      .run-actions > * {
-        position: relative;
-        z-index: 1;
-      }
-
-      .run-actions,
-      .run-actions button,
-      .run-actions input,
-      .file-picker-button,
-      .native-file-input {
-        pointer-events: auto;
-      }
-
-      button {
-        color: #ffffff;
-        background: linear-gradient(135deg, #0071e3, #005ec2);
-        border-radius: 16px;
-        box-shadow: none;
-      }
-
-      .feedback-head h3 {
-        margin: 8px 0 6px;
-        font-size: 28px;
-        line-height: 1.08;
-        letter-spacing: -0.05em;
-        color: #020201;
-      }
-
-      .feedback-head p,
-      .section-head p {
-        color: rgba(15, 16, 18, 0.64);
-      }
-
-      .result-column,
-      .external-card,
-      .panel-item,
-      .method-card,
-      .flow-step,
-      .seed-card,
-      .stage-explanation,
-      .stage-row {
-        border-radius: 22px;
-      }
-
-      .result-column h4,
-      .subcard-title,
-      .section-head h3 {
-        color: #020201;
-      }
-
-      .result-column h4,
-      .subcard-title {
-        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.14em;
-        color: var(--accent);
-      }
-
-      .section-head {
-        margin-bottom: 16px;
-      }
-
-      .section-head h3 {
-        margin: 8px 0 8px;
-        font-size: clamp(28px, 3vw, 38px);
-        line-height: 1.06;
-        letter-spacing: -0.05em;
-      }
-
-      .section-head > div {
-        max-width: 980px;
-      }
-
-      .metric {
-        background: rgba(255, 255, 255, 0.88);
-        border: 1px solid rgba(15, 16, 18, 0.08);
-      }
-
-      .metric span {
-        color: rgba(15, 16, 18, 0.52);
-        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-        font-size: 11px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      .metric b {
-        color: #020201;
-      }
-
-      .metric.secure {
-        border-color: rgba(0, 113, 227, 0.18);
-        background: linear-gradient(180deg, rgba(0, 113, 227, 0.07), rgba(255, 255, 255, 0.92));
-      }
-
-      .metric.warn,
-      .comparison-status.warn,
-      .result-note.warn {
-        border-color: rgba(168, 104, 0, 0.18);
-        background: linear-gradient(180deg, rgba(255, 191, 71, 0.14), rgba(255, 255, 255, 0.92));
-        color: #7c5200;
-      }
-
-      .comparison-status {
-        color: #020201;
-        border-color: rgba(0, 113, 227, 0.18);
-        background: linear-gradient(180deg, rgba(0, 113, 227, 0.08), rgba(255, 255, 255, 0.92));
-      }
-
-      .external-card.highlight {
-        background: linear-gradient(180deg, rgba(0, 113, 227, 0.08), rgba(255, 255, 255, 0.94));
-        border-color: rgba(0, 113, 227, 0.18);
-      }
-
-      .external-card h4,
-      .method-card b,
-      .stage-explanation b,
-      .seed-card b,
-      .panel-item b,
-      .flow-step strong {
-        color: #020201;
-      }
-
-      .external-card p,
-      .method-card span,
-      .stage-explanation span,
-      .seed-card span,
-      .panel-item span,
-      .flow-step span,
-      .stage-value {
-        color: rgba(15, 16, 18, 0.64);
-      }
-
-      .overview-table th {
-        color: rgba(15, 16, 18, 0.54);
-        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.12em;
-      }
-
-      .overview-table th,
-      .overview-table td {
-        border-bottom: 1px solid rgba(15, 16, 18, 0.08);
-      }
-
-      .overview-table .muted {
-        color: rgba(15, 16, 18, 0.58);
-      }
-
-      .panel-grid {
-        gap: 12px;
-      }
-
-      .panel-item {
-        gap: 12px;
-        background: linear-gradient(180deg, rgba(0, 113, 227, 0.06), rgba(255, 255, 255, 0.94));
-      }
-
-      .panel-item img {
-        background: #fff;
-        border: 1px solid rgba(15, 16, 18, 0.08);
-      }
-
-      .panel-item.placeholder::after {
-        content: "";
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        border-radius: 16px;
-        border: 1px dashed rgba(15, 16, 18, 0.16);
-        background:
-          radial-gradient(circle at 50% 50%, rgba(0, 113, 227, 0.12), transparent 38%),
-          linear-gradient(rgba(15, 16, 18, 0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(15, 16, 18, 0.03) 1px, transparent 1px);
-        background-size: auto, 20px 20px, 20px 20px;
-      }
-
-      .legend-item {
-        color: rgba(15, 16, 18, 0.62);
-      }
-
-      .legend-swatch.keep {
-        background: rgba(0, 113, 227, 0.92);
-      }
-
-      .legend-swatch.prune {
-        background: rgba(15, 16, 18, 0.2);
-      }
-
-      .stage-name {
-        color: #020201;
-        font-size: 15px;
-        letter-spacing: -0.02em;
-      }
-
-      .bar-track {
-        background: rgba(15, 16, 18, 0.08);
-      }
-
-      .bar-fill {
-        background: linear-gradient(90deg, #8bc4ff 0%, #0071e3 100%);
-      }
-
-      .detail-panel {
-        background: rgba(255, 255, 255, 0.84);
-      }
-
-      .detail-panel summary {
-        color: #020201;
-      }
-
-      @media (max-width: 1040px) {
-        .hero-proof {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      .log-tail {
-        color: rgba(15, 16, 18, 0.68);
+      [hidden] {
+        display: none !important;
       }
 
       code {
-        font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-        color: #020201;
+        font-family: "IBM Plex Mono", monospace;
       }
 
-      @media (max-width: 1220px) {
-        .hero-layout,
-        .control-grid {
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(16px);
+        background: rgba(243, 241, 234, 0.86);
+        border-bottom: 1px solid rgba(13, 21, 36, 0.06);
+      }
+
+      .header-inner,
+      .section-inner {
+        width: min(calc(100vw - 28px), var(--maxw));
+        margin: 0 auto;
+      }
+
+      .header-inner {
+        min-height: 76px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .brand-mark {
+        width: 46px;
+        height: 46px;
+        display: grid;
+        place-items: center;
+        border-radius: 15px;
+        background: linear-gradient(135deg, var(--accent), #86a7ff);
+        color: #fff;
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+      }
+
+      .brand-copy {
+        display: grid;
+        gap: 2px;
+      }
+
+      .brand-copy strong {
+        font-size: 1.12rem;
+        letter-spacing: -0.03em;
+      }
+
+      .brand-copy span {
+        color: var(--text-dim);
+        font-size: 0.94rem;
+      }
+
+      .top-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .top-nav a {
+        padding: 9px 13px;
+        border-radius: 999px;
+        color: var(--text-soft);
+        font-size: 0.98rem;
+        transition: 160ms ease;
+      }
+
+      .top-nav a:hover,
+      .top-nav a.active {
+        background: rgba(13, 21, 36, 0.06);
+        color: var(--text);
+      }
+
+      .section {
+        padding: 84px 14px;
+      }
+
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding-top: 96px;
+      }
+
+      .section-inner {
+        display: grid;
+        gap: 26px;
+      }
+
+      .eyebrow,
+      .pill,
+      .mini-pill,
+      .toggle-button,
+      .sample-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border-radius: 999px;
+        font-size: var(--small);
+        font-weight: 600;
+        letter-spacing: 0.03em;
+      }
+
+      .eyebrow {
+        width: fit-content;
+        padding: 9px 13px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.72);
+        color: var(--text-soft);
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        font-family: "Syne", sans-serif;
+        letter-spacing: -0.045em;
+        line-height: 1.04;
+      }
+
+      h1 {
+        font-size: var(--hero-title);
+        max-width: 10.2ch;
+      }
+
+      h2 {
+        font-size: var(--h2);
+        max-width: 14ch;
+      }
+
+      h3 {
+        font-size: var(--h3);
+      }
+
+      p {
+        margin: 0;
+        line-height: 1.72;
+      }
+
+      .lead {
+        color: var(--text-soft);
+        max-width: 64ch;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
+        gap: 26px;
+        align-items: start;
+      }
+
+      .hero-copy {
+        display: grid;
+        gap: 18px;
+      }
+
+      .hero-chip-row,
+      .toggle-row,
+      .domain-card-pills,
+      .sample-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .pill,
+      .mini-pill,
+      .sample-chip {
+        padding: 9px 13px;
+        background: rgba(255, 255, 255, 0.76);
+        border: 1px solid var(--line);
+        color: var(--text-soft);
+      }
+
+      .toggle-row {
+        margin-top: 2px;
+      }
+
+      .toggle-button {
+        padding: 12px 18px;
+        border: 1px solid var(--line-strong);
+        background: rgba(255, 255, 255, 0.82);
+        color: var(--text);
+        cursor: pointer;
+        transition: 160ms ease;
+      }
+
+      .toggle-button.active,
+      .toggle-button:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+
+      .card,
+      .card-dark {
+        padding: 22px;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow);
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+      }
+
+      .card-dark {
+        background: var(--card-dark-soft);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: var(--card-dark-text);
+      }
+
+      .card-kicker,
+      .mini-label {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--text-dim);
+        font-size: 0.84rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .card-dark .card-kicker,
+      .card-dark .mini-label {
+        color: var(--card-dark-dim);
+      }
+
+      .hero-metrics,
+      .metric-grid,
+      .dual-grid,
+      .triple-grid,
+      .proof-grid,
+      .innovation-grid,
+      .workflow-grid,
+      .sample-grid,
+      .panel-grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .hero-metrics,
+      .metric-grid.two,
+      .proof-grid,
+      .panel-grid,
+      .dual-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .metric-grid.three,
+      .triple-grid,
+      .innovation-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .workflow-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .sample-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .metric-card,
+      .data-card,
+      .step-card,
+      .sample-card {
+        padding: 18px;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--line);
+        background: var(--card-strong);
+      }
+
+      .card-dark .metric-card {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+
+      .metric-value,
+      .data-value {
+        display: block;
+        font-size: clamp(1.24rem, 2vw, 2.1rem);
+        line-height: 1.08;
+        letter-spacing: -0.05em;
+        font-weight: 700;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+      }
+
+      .data-card strong,
+      .sample-card strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.84rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+      }
+
+      .metric-note,
+      .data-note,
+      .muted {
+        color: var(--text-soft);
+        line-height: 1.62;
+        font-size: var(--small);
+      }
+
+      .card-dark .metric-note {
+        color: var(--card-dark-dim);
+      }
+
+      .list,
+      .compact-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 10px;
+      }
+
+      .list li,
+      .compact-list li {
+        line-height: 1.64;
+      }
+
+      .list li::before,
+      .compact-list li::before {
+        content: "•";
+        margin-right: 10px;
+        color: var(--accent);
+      }
+
+      .section-intro {
+        display: grid;
+        gap: 14px;
+        max-width: 76ch;
+      }
+
+      .domain-card {
+        display: grid;
+        gap: 16px;
+      }
+
+      .domain-card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      .note-box,
+      .status-box,
+      .hint-box {
+        padding: 15px 16px;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--text-soft);
+        line-height: 1.6;
+      }
+
+      .status-box.warn {
+        color: var(--warn);
+      }
+
+      .status-box.ok {
+        color: var(--ok);
+      }
+
+      .demo-switch-card {
+        display: grid;
+        gap: 14px;
+      }
+
+      .panel {
+        display: grid;
+        gap: 16px;
+      }
+
+      .preview-box,
+      .finance-preview-box {
+        min-height: 320px;
+        display: grid;
+        place-items: center;
+        padding: 18px;
+        border-radius: var(--radius-xl);
+        border: 1px dashed rgba(13, 21, 36, 0.16);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(246, 249, 255, 0.9));
+        overflow: hidden;
+      }
+
+      .preview-box img,
+      .finance-preview-box img {
+        width: 100%;
+        max-height: 280px;
+        object-fit: contain;
+        border-radius: 18px;
+      }
+
+      .preview-placeholder {
+        max-width: 26ch;
+        text-align: center;
+        color: var(--text-soft);
+      }
+
+      .action-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .native-file-input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .button,
+      .button-secondary {
+        padding: 12px 18px;
+        border-radius: 999px;
+        border: 0;
+        cursor: pointer;
+        transition: 160ms ease;
+      }
+
+      .button {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 14px 28px rgba(45, 99, 247, 0.22);
+      }
+
+      .button-secondary {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid var(--line-strong);
+        color: var(--text);
+      }
+
+      .button:hover,
+      .button-secondary:hover {
+        transform: translateY(-1px);
+      }
+
+      button:disabled {
+        cursor: wait;
+        opacity: 0.72;
+        transform: none;
+      }
+
+      .sample-card {
+        cursor: pointer;
+        transition: 160ms ease;
+      }
+
+      .sample-card.active,
+      .sample-card:hover {
+        border-color: rgba(45, 99, 247, 0.34);
+        box-shadow: 0 12px 26px rgba(45, 99, 247, 0.12);
+      }
+
+      .sample-thumb {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 16px;
+        object-fit: contain;
+        background: #fff;
+        border: 1px solid rgba(13, 21, 36, 0.06);
+        margin-bottom: 14px;
+      }
+
+      .step-no {
+        width: 46px;
+        height: 46px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 1.14rem;
+        margin-bottom: 14px;
+      }
+
+      .table-card {
+        border-radius: var(--radius-xl);
+        background: var(--card);
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .table-head {
+        padding: 20px 22px 12px;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border-top: 1px solid var(--line);
+      }
+
+      table {
+        width: 100%;
+        min-width: 720px;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 15px 16px;
+        text-align: left;
+        vertical-align: top;
+        line-height: 1.6;
+        border-bottom: 1px solid var(--line);
+      }
+
+      th {
+        background: rgba(45, 99, 247, 0.06);
+        color: var(--text-dim);
+        font-size: 0.82rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      tbody tr.highlight td {
+        background: rgba(45, 99, 247, 0.04);
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(45, 99, 247, 0.08);
+        border: 1px solid rgba(45, 99, 247, 0.16);
+        color: var(--accent);
+        font-size: var(--small);
+        font-weight: 600;
+      }
+
+      .mono {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.94em;
+      }
+
+      .observe {
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+          opacity 0.62s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.62s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .observe.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 1080px) {
+        .hero-grid,
+        .panel-grid,
+        .dual-grid,
+        .proof-grid,
+        .hero-metrics {
           grid-template-columns: 1fr;
+        }
+
+        .triple-grid,
+        .innovation-grid,
+        .workflow-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
 
-      @media (max-width: 1040px) {
-        .result-layout,
-        .kpi-grid,
-        .metric-grid,
-        .stage-card-grid,
-        .method-grid,
-        .seed-grid,
-        .flow-steps,
-        .panel-grid {
+      @media (max-width: 760px) {
+        .header-inner {
+          padding: 14px 0;
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .top-nav {
+          justify-content: flex-start;
+        }
+
+        .section {
+          padding: 62px 14px;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-top: 92px;
+        }
+
+        h1,
+        h2 {
+          max-width: none;
+        }
+
+        .sample-grid,
+        .metric-grid.two,
+        .metric-grid.three,
+        .workflow-grid,
+        .triple-grid,
+        .innovation-grid {
           grid-template-columns: 1fr;
         }
 
-        .metric.wide {
-          grid-column: auto;
+        .action-row,
+        .toggle-row {
+          flex-direction: column;
+        }
+
+        .button,
+        .button-secondary,
+        .toggle-button {
+          width: 100%;
+        }
+
+        .domain-card-header {
+          flex-direction: column;
         }
       }
 
-      @media (max-width: 720px) {
-        .app {
-          padding: 16px 12px 40px;
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          transition-duration: 0.12s !important;
+          animation-duration: 0.01ms !important;
         }
 
-        .card {
-          border-radius: 22px;
-        }
-
-        .hero,
-        .control-panel,
-        .flow-card {
-          padding: 16px;
-        }
-
-        .privacy-flow {
-          grid-template-columns: 1fr;
-        }
-
-        .hero-layout > div:first-child > h1 {
-          font-size: 34px;
+        html {
+          scroll-behavior: auto;
         }
       }
     </style>
   </head>
   <body>
-    <div class="app">
-      <section class="card hero">
-        <div class="hero-layout">
-          <div>
-            <div class="brand">
-              <div class="brand-mark">TS</div>
-              <div>
-                <h1>Transshield 成果展示</h1>
-                <p>医疗影像隐私保护推理演示</p>
-              </div>
-            </div>
-            <span class="kicker">结论先行</span>
-            <h1>面向医疗影像隐私保护的安全动态剪枝推理系统</h1>
-            <p class="hero-lead">
-              在保护患者影像隐私的前提下，通过安全掩码动态剪枝与安全友好算子替换，降低安全推理通信与计算开销，
-              同时保持接近明文模型的效果。
-            </p>
-            <p class="hero-summary">
-              答辩建议按“结论摘要 → 现场隐私推理演示 → 外部基线对比 → 三阶段剪枝机制 → 工程附录”顺序阅读；
-              这页把离线结果、在线演示和机制说明分开摆放，避免把不同口径的数据混在一起。
-            </p>
-            <div class="hero-tags">
-              <span class="tag secure">安全掩码动态剪枝</span>
-              <span class="tag">安全友好算子替换</span>
-              <span class="tag ref">同数据集外部基线对比</span>
-            </div>
-            <div class="hero-proof">
-              <div class="proof-card">
-                <b>问题定义</b>
-                <span>医疗影像推理需要保护输入隐私，但直接把标准 Transformer 搬到密态环境会带来较重的计算与通信代价。</span>
-              </div>
-              <div class="proof-card">
-                <b>核心方法</b>
-                <span>用安全掩码保留动态剪枝语义，再配合安全友好激活替换，把明文剪枝流程改写成可执行的安全协议路径。</span>
-              </div>
-              <div class="proof-card">
-                <b>现场证据</b>
-                <span>右侧先给默认稳定版本摘要，下方再现场上传一张图，展示本地分片、E2E 推理结果与三阶段保留率变化。</span>
-              </div>
-            </div>
-          </div>
-          <div class="hero-aside">
-            <div class="board-label">Default Summary / Latest Stable Bundle</div>
-            <div class="kpi-grid" id="bestContentBox">
-              <p class="empty-state">正在读取默认 bundle 与最新稳定性摘要...</p>
-            </div>
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="brand-mark">TS</div>
+          <div class="brand-copy">
+            <strong>Transshield</strong>
+            <span>双领域隐私推理展示系统</span>
           </div>
         </div>
-      </section>
+        <nav class="top-nav" id="topNav">
+          <a href="#hero">结论</a>
+          <a href="#domains">领域</a>
+          <a href="#live">演示</a>
+          <a href="#workflow">工作方式</a>
+          <a href="#evidence">证据</a>
+          <a href="#innovation">创新</a>
+        </nav>
+      </div>
+    </header>
 
-      <section class="card control-panel">
-        <div class="control-grid">
-          <div class="preview" id="previewBox">
-            <img id="previewImage" alt="preview" />
-            <span id="previewText">先上传一张图片，然后查看模型处理流程。</span>
-          </div>
-          <div class="control-copy">
-            <span class="section-eyebrow">现场演示</span>
-            <h2>选择一张图，浏览器本地生成密态 share 后做 E2E 隐私分析</h2>
-            <p>
-              原图只在浏览器本地读取和预处理；页面会把像素张量拆成两份 share，
-              后端只接收密态 share 并触发 E2E SPU 推理，最终只显示分析结果。
-            </p>
-            <div class="pipeline-note">
-              <span class="tag secure">主路径</span>浏览器本地分片 + E2E 全隐私近似推理。
-              <span class="tag ref">部署边界</span>当前网页是单进程演示，生产环境应拆成独立 P1/P2 服务。
-            </div>
-            <div class="pipeline-note">
-              当前网页演示不上传原图；若部署为两个独立 P1/P2 信任域，share0/share1 分别上传并由 SPU/2PC 联合计算，
-              即可实现服务端不接触原图或完整 pixel_values 的全程隐私推理。
-            </div>
-            <div class="pipeline-note">
-              协议口径：这里的 2PC 是基于秘密共享的 MPC 路径，不是同态加密；页面中的 share0/share1 是 additive shares。
-            </div>
-            <div class="privacy-flow">
-              <div class="privacy-step">
-                <b>1. 本地读图</b>
-                <span>图片只进入浏览器内存，不提交原文件。</span>
+    <main>
+      <section class="section hero" id="hero">
+        <div class="section-inner">
+          <div class="hero-grid">
+            <div class="hero-copy observe visible">
+              <span class="eyebrow">Conclusion First / 先看结论</span>
+              <h1>同一套 Transshield 框架，已经同时落到医疗与金融隐私推理</h1>
+              <p class="lead" id="heroLead">
+                这套系统解决的是同一个问题：数据使用方不直接交出原始输入，模型提供方也不直接交出模型参数。
+                页面上既展示真实结果，也保留现场可操作的隐私推理入口。
+              </p>
+              <div class="hero-chip-row" id="heroChips">
+                <span class="pill">输入不明文直传</span>
+                <span class="pill">模型参数不直接交付</span>
+                <span class="pill">医疗现场演示</span>
+                <span class="pill">金融现场验证</span>
+                <span class="pill">真实运行数据</span>
               </div>
-              <div class="privacy-step">
-                <b>2. 本地分片</b>
-                <span>Canvas 预处理后生成 share0/share1。</span>
+              <div class="toggle-row" id="heroDemoToggles">
+                <button class="toggle-button active" type="button" data-demo-toggle="medical">先看医疗现场演示</button>
+                <button class="toggle-button" type="button" data-demo-toggle="finance">切到金融现场验证</button>
               </div>
-              <div class="privacy-step">
-                <b>3. E2E 计算</b>
-                <span>SPU 在 share 上执行 full-depth 近似推理。</span>
-              </div>
-              <div class="privacy-step">
-                <b>4. 只出结果</b>
-                <span>最终只 reveal logits / prediction。</span>
+              <div class="note-box">
+                这页先展示结果，再解释怎么做到。所有关键数字都来自仓库当前保留的正式结果，不混入旧实验或估计值。
               </div>
             </div>
-            <div class="run-actions">
-              <button id="selectImageButton" class="file-picker-button" type="button">选择图片</button>
-              <input id="imageInput" class="native-file-input" type="file" accept="image/*" />
-              <div id="fileNameBox" class="file-name-status">尚未选择图片</div>
-              <button id="uploadButton" type="button">本地生成密态 share 并开始分析</button>
-            </div>
-          </div>
-          <div class="run-feedback">
-            <div class="feedback-head">
-              <div>
-                <span class="section-eyebrow">本次运行结果</span>
-                <h3>操作后立即看结果</h3>
-                <p>这里专门放现场运行证据：浏览器本地分片状态、E2E 推理输出，以及这次执行暴露了哪些边界字段。</p>
-              </div>
-            </div>
-            <div class="result-layout">
-              <div class="result-column">
-                <h4>本地隐私准备</h4>
-                <div class="meta" id="metaBox">
-                  <div class="empty-state">选择图片后点击分析，浏览器会在本地生成两份 share；原图不会上传到后端。</div>
+            <aside class="card-dark observe visible">
+              <span class="card-kicker">Current Snapshot</span>
+              <div class="hero-metrics" id="heroMetrics">
+                <div class="metric-card">
+                  <span class="mini-label">Loading</span>
+                  <span class="metric-value">...</span>
+                  <div class="metric-note">正在读取展示数据。</div>
                 </div>
               </div>
-              <div class="result-column">
-                <h4>E2E 推理结果</h4>
-                <div class="compare-box" id="compareBox">
-                  <div class="empty-state">E2E 推理完成后，会显示最终类别、概率和 candidate JSON。</div>
+              <div style="height:16px;"></div>
+              <ul class="list" id="heroNotes">
+                <li>正在读取当前项目摘要。</li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="domains">
+        <div class="section-inner">
+          <div class="section-intro observe">
+            <span class="eyebrow">Two Domains / 两条展示线</span>
+            <h2>医疗负责现场操作，金融负责证明同框架也能跨到另一个行业</h2>
+            <p class="lead">
+              评委不需要先理解仓库结构。只要看这两张卡片，就能知道每个领域解决什么问题、现场看什么结果、以及隐私边界在哪里。
+            </p>
+          </div>
+          <div class="dual-grid" id="domainCards">
+            <div class="card observe">
+              <h3>正在读取领域信息</h3>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="live">
+        <div class="section-inner">
+          <div class="section-intro observe">
+            <span class="eyebrow">Live Demo / 现场演示</span>
+            <h2>不靠静态截图，直接触发一次真实隐私推理</h2>
+            <p class="lead" id="liveLead">
+              医疗演示强调“浏览器本地先分片，再上传 share”；金融演示强调“用内置验证样本触发完整 secure run”。
+            </p>
+          </div>
+
+          <div class="card demo-switch-card observe">
+            <div style="display:flex; justify-content:space-between; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+              <div>
+                <span class="card-kicker">Current Live Track</span>
+                <h3 id="liveTrackTitle">医疗影像现场演示</h3>
+              </div>
+              <div class="toggle-row" id="liveDemoToggles">
+                <button class="toggle-button active" type="button" data-demo-toggle="medical">医疗现场演示</button>
+                <button class="toggle-button" type="button" data-demo-toggle="finance">金融现场验证</button>
+              </div>
+            </div>
+            <p class="lead" id="liveTrackSummary">
+              选择一张医疗影像后，浏览器先在本地生成两份 share，再调用后端执行隐私推理。
+            </p>
+          </div>
+
+          <div id="medicalPanel" class="panel-grid">
+            <div class="card panel observe">
+              <div>
+                <span class="card-kicker">Step 1</span>
+                <h3>选择一张医疗影像</h3>
+              </div>
+              <div class="preview-box">
+                <img id="medicalPreviewImage" alt="医疗影像预览" hidden />
+                <div class="preview-placeholder" id="medicalPreviewPlaceholder">
+                  先选择一张胸片。浏览器会先在本地完成预处理和 share 生成，原图不会直接上传到后端。
+                </div>
+              </div>
+              <div class="action-row">
+                <button id="medicalSelectButton" class="button-secondary" type="button">选择图片</button>
+                <input id="medicalFileInput" class="native-file-input" type="file" accept="image/*" />
+                <button id="medicalRunButton" class="button" type="button">本地生成 share 并运行</button>
+              </div>
+              <div class="status-box" id="medicalFileStatus">尚未选择图片</div>
+              <div class="hint-box">
+                医疗现场演示的重点是：服务端收到的是两份 share，而不是原始图片或明文像素。
+              </div>
+            </div>
+
+            <div class="card panel observe">
+              <div>
+                <span class="card-kicker">Step 2</span>
+                <h3>查看本次医疗隐私推理结果</h3>
+              </div>
+              <div class="metric-grid two" id="medicalResultGrid">
+                <div class="data-card">
+                  <strong>等待运行</strong>
+                  <span class="data-value">N/A</span>
+                  <p class="data-note">完成后显示当前图片的分类结果与概率。</p>
+                </div>
+              </div>
+              <div class="metric-grid two" id="medicalPrivacyGrid">
+                <div class="data-card">
+                  <strong>隐私边界</strong>
+                  <span class="data-value">待运行</span>
+                  <p class="data-note">完成后显示这次运行中后端有没有接收到原图和明文像素。</p>
+                </div>
+              </div>
+              <div class="status-box" id="medicalRuntimeStatus">
+                运行后，这里显示本次完整隐私推理耗时、通信量和演示边界说明。
+              </div>
+            </div>
+          </div>
+
+          <div id="financePanel" class="panel-grid" hidden>
+            <div class="card panel observe">
+              <div>
+                <span class="card-kicker">Step 1</span>
+                <h3>选择一条金融验证样本</h3>
+              </div>
+              <div class="sample-grid" id="financeSampleGrid">
+                <div class="sample-card">
+                  <strong>Loading</strong>
+                  <p class="data-note">正在读取金融样本。</p>
+                </div>
+              </div>
+              <div class="finance-preview-box">
+                <img id="financePreviewImage" alt="金融样本预览" hidden />
+                <div class="preview-placeholder" id="financePreviewPlaceholder">
+                  选择一个内置验证样本后，这里显示它的图像编码形式。现场按钮会触发一次完整 secure run。
+                </div>
+              </div>
+              <div class="action-row">
+                <button id="financeRunButton" class="button" type="button">运行一次金融隐私推理</button>
+              </div>
+              <div class="status-box" id="financeSelectionStatus">
+                请选择一个金融样本。这个演示不会上传新的用户数据，而是调用内置验证样本触发一次真实 secure run。
+              </div>
+            </div>
+
+            <div class="card panel observe">
+              <div>
+                <span class="card-kicker">Step 2</span>
+                <h3>查看本次金融隐私推理结果</h3>
+              </div>
+              <div class="metric-grid two" id="financeResultGrid">
+                <div class="data-card">
+                  <strong>等待运行</strong>
+                  <span class="data-value">N/A</span>
+                  <p class="data-note">完成后显示本次样本的类别、概率和耗时。</p>
+                </div>
+              </div>
+              <div class="metric-grid two" id="financePrivacyGrid">
+                <div class="data-card">
+                  <strong>批量实测对照</strong>
+                  <span class="data-value">已验证</span>
+                  <p class="data-note">右侧会同时保留批量完整隐私测试结果，便于对照理解。</p>
+                </div>
+              </div>
+              <div class="status-box" id="financeRuntimeStatus">
+                运行后，这里显示本次完整隐私推理结果，并和批量实测对照说明放在一起看。
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="workflow">
+        <div class="section-inner">
+          <div class="section-intro observe">
+            <span class="eyebrow">How It Works / 系统工作方式</span>
+            <h2>先看流程，再看谁拿不到什么</h2>
+            <p class="lead">
+              这里不讲仓库里的脚本名，只讲真实部署时的角色关系：数据使用方保留输入，模型提供方保留参数，安全计算层只负责完成推理。
+            </p>
+          </div>
+          <div class="workflow-grid">
+            <div class="step-card observe">
+              <div class="step-no">1</div>
+              <h3>输入先在本地处理</h3>
+              <p class="muted">医疗现场演示中，浏览器本地先生成 share；金融现场演示中，按钮调用的是内置验证样本的 secure run。</p>
+            </div>
+            <div class="step-card observe">
+              <div class="step-no">2</div>
+              <h3>模型参数留在服务侧</h3>
+              <p class="muted">模型提供方保留模型控制权，数据使用方拿不到完整参数副本。</p>
+            </div>
+            <div class="step-card observe">
+              <div class="step-no">3</div>
+              <h3>两方在隐私环境里完成推理</h3>
+              <p class="muted">分片后的输入和受保护的模型参数一起进入 secure runtime，只在需要的边界上揭示最终结果。</p>
+            </div>
+            <div class="step-card observe">
+              <div class="step-no">4</div>
+              <h3>页面只展示最后结果</h3>
+              <p class="muted">前端只展示分类结论、概率、耗时和一致性证据，不展示原始输入或模型参数。</p>
+            </div>
+          </div>
+          <div class="dual-grid">
+            <div class="card observe">
+              <h3>谁看不到什么</h3>
+              <div class="metric-grid two" style="margin-top:14px;">
+                <div class="data-card">
+                  <strong>数据使用方</strong>
+                  <span class="data-value">保留原始数据</span>
+                  <p class="data-note">可以使用模型能力，但拿不到完整模型参数。</p>
+                </div>
+                <div class="data-card">
+                  <strong>模型提供方</strong>
+                  <span class="data-value">保留模型控制权</span>
+                  <p class="data-note">可以提供推理能力，但看不到原始图片或原始金融特征。</p>
+                </div>
+                <div class="data-card">
+                  <strong>安全计算层</strong>
+                  <span class="data-value">处理分片后的输入</span>
+                  <p class="data-note">完整隐私路径只返回最终 logits / 分类结果。</p>
+                </div>
+                <div class="data-card">
+                  <strong>页面输出</strong>
+                  <span class="data-value">只展示最后结论</span>
+                  <p class="data-note">不会把原始输入或模型参数直接展示给评委。</p>
                 </div>
               </div>
             </div>
-            <div class="result-column">
-              <h4>本次安全推理开销</h4>
-              <div class="summary-stack" id="runtimeBox">
-                <div class="summary-note">运行后，这里会显示浏览器本地分片触发的 E2E SPU 耗时、隐私字段和通信证据。</div>
+            <div class="card observe">
+              <h3>部署边界</h3>
+              <p class="lead">
+                这页是比赛演示前端，作用是把隐私边界和真实结果展示清楚。正式部署时，两份 share 应分别送往独立计算节点，而不是继续使用单进程演示后端。
+              </p>
+              <div class="metric-grid two" style="margin-top:14px;">
+                <div class="data-card">
+                  <strong>现场演示</strong>
+                  <span class="data-value">强调可见性</span>
+                  <p class="data-note">重点是让人当场看到输入不会明文直传、模型参数不会直接交付。</p>
+                </div>
+                <div class="data-card">
+                  <strong>正式落地</strong>
+                  <span class="data-value">强调职责分离</span>
+                  <p class="data-note">正式上线时，应把 share 上传接口和计算节点拆开，真正形成双向隐私边界。</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="card flow-card">
-        <div class="section-head">
-          <div>
-            <span class="section-eyebrow">实验比较</span>
-            <h3>与外部同数据集基线相比</h3>
-            <p>这里统一展示离线验证集效果与外部基线对比；通信 / 时间只有在同一 secure benchmark 口径下重新运行后才显示。</p>
+      <section class="section" id="evidence">
+        <div class="section-inner">
+          <div class="section-intro observe">
+            <span class="eyebrow">Evidence / 真实证据</span>
+            <h2>医疗看同数据集外部对比，金融看完整隐私实测</h2>
+            <p class="lead" id="fairnessNote">
+              当前没有读取到公平性说明。
+            </p>
           </div>
-        </div>
-        <div class="external-grid" id="externalComparisonBox">
-          <div class="summary-note">正在读取外部 baseline 摘要...</div>
-        </div>
-      </section>
 
-      <section class="card flow-card">
-        <div class="section-head">
-          <div>
-            <span class="section-eyebrow">动态剪枝可视化</span>
-            <h3>原图 → 第一阶段 → 第二阶段 → 第三阶段</h3>
-            <p>绿色表示继续参与后续计算的 token，灰色表示在当前阶段被安全置零；这是计算路径可视化，不是病灶分割图。</p>
-          </div>
-        </div>
-        <div class="panel-grid" id="summaryBoard">
-          <p class="empty-state">上传图片后会显示原图和 3 张阶段叠加图。</p>
-        </div>
-        <div class="legend-note">
-          <div class="legend-row">
-            <span class="legend-item"><span class="legend-swatch keep"></span>继续保留的 token</span>
-            <span class="legend-item"><span class="legend-swatch prune"></span>本阶段被 masking 停用的 token</span>
-          </div>
-        </div>
-      </section>
+          <div class="proof-grid">
+            <div class="table-card observe">
+              <div class="table-head">
+                <h3>医疗域同数据集对比</h3>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>方法</th>
+                      <th>训练 / 配置</th>
+                      <th>Threshold Accuracy</th>
+                      <th>AUC</th>
+                      <th>说明</th>
+                    </tr>
+                  </thead>
+                  <tbody id="comparisonTable">
+                    <tr>
+                      <td colspan="5">正在读取对比数据。</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-      <section class="card flow-card">
-        <div class="section-head">
-          <div>
-            <span class="section-eyebrow">Token 保留率变化</span>
-            <h3>三阶段逐步缩小后续安全推理的对象规模</h3>
-            <p>随着保留 token 数逐步下降，后续需要安全比较、传输和计算的对象规模也会继续下降，因此安全推理会更快。</p>
-          </div>
-        </div>
-        <div class="stage-card-grid">
-          <div class="stage-bars" id="stageBars">
-            <p>上传图片后会显示各 stage 的 token 保留数量和密度。</p>
-          </div>
-          <div class="stage-explanations" id="stageExplanations">
-            <p>上传图片后会显示每个 pruning stage 的简要解释。</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="card flow-card">
-        <div class="section-head">
-          <div>
-            <span class="section-eyebrow">核心方法设计</span>
-            <h3>三项核心设计：把明文动态剪枝改写成可执行的安全推理流程</h3>
-            <p>本项目的核心创新不是简单更换模型，而是将明文 Transformer 的动态剪枝思想改写为可在安全两方计算中执行的密态协议流程，并结合安全友好算子替换降低在线推理开销。</p>
-          </div>
-        </div>
-        <div class="summary-stack">
-          <div class="summary-note"><strong>创新点总结：</strong>本项目把动态 token 剪枝、激活函数改写和安全边界选择统一到同一套可验证的安全推理框架中，重点解决“能否在密态下执行”而不是只追求明文效果。</div>
-          <div class="summary-note"><strong>工程落地总结：</strong>本系统已完成从离线模型训练、算子改造，到浏览器本地分片触发 E2E SPU 隐私推理与通信量展示的演示闭环。</div>
-        </div>
-        <div class="method-grid" id="methodContentBox">
-          <div class="method-card">
-            <b>安全友好的激活替换</b>
-            <span>把复杂非线性激活替换成 square / quadratic 形式，减少安全协议中的高代价运算。</span>
-          </div>
-          <div class="method-card">
-            <b>安全掩码动态剪枝</b>
-            <span>不用直接删短张量，而是用 mask 表示保留 / 置零，让明文参考路径与安全 replay 更容易对齐。</span>
-          </div>
-          <div class="method-card">
-            <b>E2E 隐私输入执行</b>
-            <span>把输入隐私边界前移到浏览器本地分片，后端只处理 share 并只 reveal 最终 logits。</span>
+            <div class="triple-grid">
+              <div class="card observe" id="financeVerifiedCard">
+                <h3>金融批量完整隐私实测</h3>
+                <p class="lead">正在读取金融完整隐私验证结果。</p>
+              </div>
+              <div class="card observe" id="medicalProofCard">
+                <h3>医疗主展示线</h3>
+                <p class="lead">正在读取医疗主展示线摘要。</p>
+              </div>
+              <div class="card observe" id="proofNoteCard">
+                <h3>怎么读这些证据</h3>
+                <p class="lead">正在读取展示说明。</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="card flow-card">
-        <div class="section-head">
-          <div>
-            <span class="section-eyebrow">附录</span>
-            <h3>附录（复现实验与工程细节）</h3>
-            <p>旧 bundle、多 seed 和工程细节都默认收起；历史 fastpath 与 archived profile 已从当前展示口径中移除，避免答辩主线被次要材料打断。</p>
+      <section class="section" id="innovation">
+        <div class="section-inner">
+          <div class="section-intro observe">
+            <span class="eyebrow">Innovation / 当前保留的关键实现</span>
+            <h2>这里只放现在还在代码和结果里生效的做法</h2>
+            <p class="lead">
+              不再堆中间实验。下面每一点都能在当前仓库逻辑和当前展示结果里找到对应价值。
+            </p>
+          </div>
+          <div class="innovation-grid" id="innovationGrid">
+            <div class="card observe">
+              <span class="tag">Loading</span>
+              <h3 style="margin-top:12px;">正在读取创新摘要</h3>
+            </div>
           </div>
         </div>
-        <div class="details-stack" id="detailsContentBox">
-          <p class="empty-state">正在读取详细摘要...</p>
-        </div>
       </section>
-    </div>
+    </main>
 
     <script>
-      const imageInput = document.getElementById('imageInput');
-      const selectImageButton = document.getElementById('selectImageButton');
-      const fileNameBox = document.getElementById('fileNameBox');
-      const uploadButton = document.getElementById('uploadButton');
-      const previewImage = document.getElementById('previewImage');
-      const previewText = document.getElementById('previewText');
-      const metaBox = document.getElementById('metaBox');
-      const compareBox = document.getElementById('compareBox');
-      const stageBars = document.getElementById('stageBars');
-      const summaryBoard = document.getElementById('summaryBoard');
-      const stageExplanations = document.getElementById('stageExplanations');
-      const bestContentBox = document.getElementById('bestContentBox');
-      const runtimeBox = document.getElementById('runtimeBox');
-      const methodContentBox = document.getElementById('methodContentBox');
-      const detailsContentBox = document.getElementById('detailsContentBox');
-      const externalComparisonBox = document.getElementById('externalComparisonBox');
+      const topNav = document.getElementById('topNav');
+      const heroMetrics = document.getElementById('heroMetrics');
+      const heroNotes = document.getElementById('heroNotes');
+      const domainCards = document.getElementById('domainCards');
+      const liveTrackTitle = document.getElementById('liveTrackTitle');
+      const liveTrackSummary = document.getElementById('liveTrackSummary');
+      const fairnessNote = document.getElementById('fairnessNote');
+      const comparisonTable = document.getElementById('comparisonTable');
+      const financeVerifiedCard = document.getElementById('financeVerifiedCard');
+      const medicalProofCard = document.getElementById('medicalProofCard');
+      const proofNoteCard = document.getElementById('proofNoteCard');
+      const innovationGrid = document.getElementById('innovationGrid');
 
-      let latestDemoSummary = null;
-      let latestLiveRunState = null;
-      let latestSecurePrediction = null;
+      const medicalPanel = document.getElementById('medicalPanel');
+      const financePanel = document.getElementById('financePanel');
+      const medicalSelectButton = document.getElementById('medicalSelectButton');
+      const medicalFileInput = document.getElementById('medicalFileInput');
+      const medicalRunButton = document.getElementById('medicalRunButton');
+      const medicalPreviewImage = document.getElementById('medicalPreviewImage');
+      const medicalPreviewPlaceholder = document.getElementById('medicalPreviewPlaceholder');
+      const medicalFileStatus = document.getElementById('medicalFileStatus');
+      const medicalResultGrid = document.getElementById('medicalResultGrid');
+      const medicalPrivacyGrid = document.getElementById('medicalPrivacyGrid');
+      const medicalRuntimeStatus = document.getElementById('medicalRuntimeStatus');
+
+      const financeSampleGrid = document.getElementById('financeSampleGrid');
+      const financePreviewImage = document.getElementById('financePreviewImage');
+      const financePreviewPlaceholder = document.getElementById('financePreviewPlaceholder');
+      const financeRunButton = document.getElementById('financeRunButton');
+      const financeSelectionStatus = document.getElementById('financeSelectionStatus');
+      const financeResultGrid = document.getElementById('financeResultGrid');
+      const financePrivacyGrid = document.getElementById('financePrivacyGrid');
+      const financeRuntimeStatus = document.getElementById('financeRuntimeStatus');
+
       const E2E_INPUT_SIZE = 224;
       const E2E_RESIZE_SIZE = 256;
       const E2E_CHANNELS = 3;
       const E2E_FLOAT_COUNT = E2E_CHANNELS * E2E_INPUT_SIZE * E2E_INPUT_SIZE;
       const IMAGENET_MEAN = [0.485, 0.456, 0.406];
       const IMAGENET_STD = [0.229, 0.224, 0.225];
+
+      const state = {
+        summary: null,
+        activeDemo: 'medical',
+        medicalPreviewUrl: null,
+        medicalLiveResult: null,
+        financeSelectedSampleId: null,
+        financeLiveResult: null,
+      };
 
       function escapeHtml(value) {
         return String(value ?? '')
@@ -1819,31 +1152,405 @@
           .replace(/'/g, '&#039;');
       }
 
-      function metric(label, value, variant = '') {
-        return `<div class="metric ${variant}">
-          <span>${escapeHtml(label)}</span>
-          <b>${escapeHtml(value)}</b>
-        </div>`;
+      function asNumber(value) {
+        const parsed = Number(value);
+        return Number.isFinite(parsed) ? parsed : null;
       }
 
-      function kpi(label, value, subtext, variant = '') {
-        return `<div class="kpi-card ${variant}">
-          <div class="kpi-label">${escapeHtml(label)}</div>
-          <div class="kpi-value">${escapeHtml(value)}</div>
-          <div class="kpi-sub">${escapeHtml(subtext)}</div>
-        </div>`;
+      function percent(value, digits = 2) {
+        const parsed = asNumber(value);
+        return parsed === null ? 'N/A' : `${parsed.toFixed(digits)}%`;
       }
 
-      function detailPanel(title, bodyHtml, open = false) {
-        return `<details class="detail-panel"${open ? ' open' : ''}>
-          <summary>${escapeHtml(title)}</summary>
-          <div class="detail-body">${bodyHtml}</div>
-        </details>`;
+      function auc(value, digits = 4) {
+        const parsed = asNumber(value);
+        return parsed === null ? 'N/A' : parsed.toFixed(digits);
       }
 
-      function setButtonBusy(button, isBusy, busyText) {
+      function fixed(value, digits = 4) {
+        const parsed = asNumber(value);
+        return parsed === null ? 'N/A' : parsed.toFixed(digits);
+      }
+
+      function seconds(value, digits = 2) {
+        const parsed = asNumber(value);
+        return parsed === null ? 'N/A' : `${parsed.toFixed(digits)}s`;
+      }
+
+      function bytes(value) {
+        const parsed = asNumber(value);
+        if (parsed === null) return 'N/A';
+        const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        let size = Math.abs(parsed);
+        let index = 0;
+        while (size >= 1024 && index < units.length - 1) {
+          size /= 1024;
+          index += 1;
+        }
+        return `${parsed < 0 ? '-' : ''}${size.toFixed(2)} ${units[index]}`;
+      }
+
+      function boolText(value) {
+        if (value === null || value === undefined) return 'N/A';
+        return value ? '是' : '否';
+      }
+
+      function getDomains() {
+        const items = Array.isArray(state.summary?.showcase_domains?.items) ? state.summary.showcase_domains.items : [];
+        return items;
+      }
+
+      function getDomain(id) {
+        return getDomains().find((item) => item.id === id) || null;
+      }
+
+      function financeSamples() {
+        return Array.isArray(getDomain('finance')?.sample_library?.items) ? getDomain('finance').sample_library.items : [];
+      }
+
+      function predictionName(prediction, keyBase) {
+        return prediction?.[`${keyBase}_name`] || prediction?.[keyBase] || 'N/A';
+      }
+
+      function metricCard(label, value, note) {
+        return `
+          <div class="metric-card">
+            <span class="mini-label">${escapeHtml(label)}</span>
+            <span class="metric-value">${escapeHtml(value)}</span>
+            <div class="metric-note">${escapeHtml(note)}</div>
+          </div>
+        `;
+      }
+
+      function dataCard(label, value, note) {
+        return `
+          <div class="data-card">
+            <strong>${escapeHtml(label)}</strong>
+            <span class="data-value">${escapeHtml(value)}</span>
+            <p class="data-note">${escapeHtml(note)}</p>
+          </div>
+        `;
+      }
+
+      function privacyLineToHuman(line) {
+        const mapping = {
+          'host_plaintext_pixel_values_materialized=false': '服务端看不到原始输入',
+          'host_model_params_materialized=false': '数据使用方拿不到模型参数',
+          'reveal_policy=final_logits_only': '页面只展示最终分类结果',
+          'spu_params_mode=secret': '模型参数以受保护方式参与计算',
+          'input_mode=party_local_debug_share_load': '输入以分片方式进入计算',
+        };
+        return mapping[line] || line;
+      }
+
+      function renderHero() {
+        const medical = getDomain('medical');
+        const finance = getDomain('finance');
+        heroMetrics.innerHTML = [
+          metricCard('医疗离线 threshold accuracy', medical?.metrics?.[0]?.value || 'N/A', medical?.metrics?.[0]?.note || '当前主展示线'),
+          metricCard('医疗全隐私效率', medical?.metrics?.[2]?.value || 'N/A', medical?.metrics?.[2]?.note || '当前现场演示配置'),
+          metricCard('金融离线验证准确率', finance?.metrics?.[0]?.value || 'N/A', finance?.metrics?.[0]?.note || '当前金融展示模型'),
+          metricCard('金融全隐私效率', finance?.metrics?.[2]?.value || 'N/A', finance?.metrics?.[2]?.note || '完整隐私实测'),
+        ].join('');
+
+        heroNotes.innerHTML = `
+          <li>医疗线支持现场上传，并在浏览器本地先生成 share。</li>
+          <li>金融线支持从内置验证样本触发一次真实 secure run。</li>
+          <li>页面只展示当前正式保留方案，不混入已经废弃的中间实验。</li>
+        `;
+      }
+
+      function renderDomains() {
+        const items = getDomains();
+        domainCards.innerHTML = items.map((item) => {
+          const metricHtml = (item.metrics || []).slice(0, 4).map((metric) => dataCard(metric.label || '指标', metric.value || 'N/A', metric.note || 'N/A')).join('');
+          const evidenceHtml = (item.evidence || []).map((line) => `<li>${escapeHtml(line)}</li>`).join('');
+          const privacyHtml = (item.privacy || []).map((line) => `<li>${escapeHtml(privacyLineToHuman(line))}</li>`).join('');
+          return `
+            <div class="card domain-card observe">
+              <div class="domain-card-header">
+                <div>
+                  <span class="eyebrow">${escapeHtml(item.eyebrow || 'Domain')}</span>
+                  <h3 style="margin-top:14px;">${escapeHtml(item.headline || item.label || 'N/A')}</h3>
+                  <p class="lead" style="margin-top:10px;">${escapeHtml(item.summary || 'N/A')}</p>
+                </div>
+                <div class="domain-card-pills">
+                  <span class="mini-pill">${escapeHtml(item.scenario || 'N/A')}</span>
+                  <span class="mini-pill">${escapeHtml(item.task || 'N/A')}</span>
+                </div>
+              </div>
+              <div class="metric-grid two">${metricHtml}</div>
+              <div class="dual-grid">
+                <div>
+                  <h3>隐私边界</h3>
+                  <ul class="compact-list" style="margin-top:12px;">${privacyHtml}</ul>
+                </div>
+                <div>
+                  <h3>这条线要证明什么</h3>
+                  <ul class="compact-list" style="margin-top:12px;">${evidenceHtml}</ul>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+        revealObserved();
+      }
+
+      function renderEvidence() {
+        const external = state.summary?.external_comparison || {};
+        const medical = getDomain('medical');
+        const finance = getDomain('finance');
+        const verified = finance?.validated_secure_run || {};
+        fairnessNote.textContent = external?.fairness_note || '医疗对比只保留同数据集真实运行结果。';
+
+        const rows = Array.isArray(external.additional_rows) ? external.additional_rows : [];
+        comparisonTable.innerHTML = rows.length ? rows.map((row, index) => `
+          <tr class="${index === 0 ? 'highlight' : ''}">
+            <td>${escapeHtml(row.method || 'N/A')}</td>
+            <td>${escapeHtml(row.training || 'N/A')}</td>
+            <td>${escapeHtml(percent(row.threshold_accuracy, 2))}</td>
+            <td>${escapeHtml(row.auc === null || row.auc === undefined ? 'N/A' : auc(row.auc, 4))}</td>
+            <td>${escapeHtml(row.note || 'N/A')}</td>
+          </tr>
+        `).join('') : '<tr><td colspan="5">当前没有读取到对比数据。</td></tr>';
+
+        financeVerifiedCard.innerHTML = `
+          <h3>金融批量完整隐私实测</h3>
+          <div class="metric-grid two" style="margin-top:14px;">
+            ${dataCard('样本数', String(verified.sample_count ?? 'N/A'), '这是已经完成的批量完整隐私验证样本数。')}
+            ${dataCard('总耗时', seconds(verified.elapsed_sec), '这一组数字来自真实 secure run。')}
+            ${dataCard('单样本耗时', `${fixed(verified.sec_per_sample, 2)}s/sample`, '和页面上金融主展示效率一致。')}
+            ${dataCard('Argmax 一致性', percent((verified.argmax_match_ratio ?? 0) * 100, 2), '与参考结果逐项核对后得到。')}
+          </div>
+          <div class="note-box" style="margin-top:14px;">
+            这组结果的作用是给现场单次按钮提供“批量实测对照”。单次演示看过程，批量实测看稳定性。
+          </div>
+        `;
+
+        medicalProofCard.innerHTML = `
+          <h3>医疗主展示线</h3>
+          <div class="metric-grid two" style="margin-top:14px;">
+            ${dataCard(medical?.metrics?.[0]?.label || '离线指标', medical?.metrics?.[0]?.value || 'N/A', medical?.metrics?.[0]?.note || 'N/A')}
+            ${dataCard(medical?.metrics?.[2]?.label || '全隐私效率', medical?.metrics?.[2]?.value || 'N/A', medical?.metrics?.[2]?.note || 'N/A')}
+          </div>
+          <ul class="list" style="margin-top:14px;">
+            ${(medical?.evidence || []).map((line) => `<li>${escapeHtml(line)}</li>`).join('')}
+          </ul>
+        `;
+
+        proofNoteCard.innerHTML = `
+          <h3>怎么读这些证据</h3>
+          <ul class="list" style="margin-top:14px;">
+            <li>医疗重点看同数据集外部对比，判断效果处于什么位置。</li>
+            <li>金融重点看完整隐私实测，证明同框架能够跨行业迁移。</li>
+            <li>现场按钮负责给人看过程，批量实测负责证明系统不是一次性演示。</li>
+          </ul>
+        `;
+      }
+
+      function renderInnovation() {
+        const finance = getDomain('finance');
+        const cards = [
+          {
+            tag: 'Boundary Rewrite',
+            title: '先处理动态裁剪边界，而不是直接把动态模型降级成静态模型',
+            text: 'Transshield 重点攻克的是按样本变化的 token 保留边界，让它变成更适合进入安全计算的表达，而不是直接放弃动态思路。',
+          },
+          {
+            tag: 'Browser Shares',
+            title: '医疗现场演示直接在浏览器本地生成 share',
+            text: '演示按钮按下前，原图先在浏览器里完成预处理与分片。这样现场就能直接说明服务端没有收到原始图片或明文像素。',
+          },
+          {
+            tag: 'Secret Params',
+            title: '不只保护输入，也保护模型参数',
+            text: '模型参数按 secret 方式参与 secure runtime，页面最终只拿到分类结果。这是双向隐私，而不是只做输入脱敏。',
+          },
+          {
+            tag: 'Verified Consistency',
+            title: '不是“能跑就算”，而是先做一致性验收',
+            text: '当前展示线之前，先做 secure replay / keep-mask 一致性核对，确保安全链路没有把原模型语义跑偏。',
+          },
+          {
+            tag: 'Cross-Domain',
+            title: '同一框架同时落到医疗与金融',
+            text: '医疗负责现场演示，金融负责跨行业完整隐私验证。两边共用同一套主框架，证明方法不是只对单一数据集有效。',
+          },
+          {
+            tag: 'Compressed Finance',
+            title: '金融线保留参数压缩后的部署版本',
+            text: `金融最终展示线保留参数压缩版本，在当前记录中仍保持 ${finance?.metrics?.[0]?.value || 'N/A'} 的离线验证准确率，更适合部署展示。`,
+          },
+        ];
+
+        innovationGrid.innerHTML = cards.map((card) => `
+          <div class="card observe">
+            <span class="tag">${escapeHtml(card.tag)}</span>
+            <h3 style="margin-top:12px;">${escapeHtml(card.title)}</h3>
+            <p class="lead" style="margin-top:10px;">${escapeHtml(card.text)}</p>
+          </div>
+        `).join('');
+        revealObserved();
+      }
+
+      function setActiveDemo(nextDemo) {
+        state.activeDemo = nextDemo === 'finance' ? 'finance' : 'medical';
+        document.querySelectorAll('[data-demo-toggle]').forEach((button) => {
+          button.classList.toggle('active', button.getAttribute('data-demo-toggle') === state.activeDemo);
+        });
+        const finance = getDomain('finance');
+        if (state.activeDemo === 'finance') {
+          liveTrackTitle.textContent = '金融内置样本现场验证';
+          liveTrackSummary.textContent = finance?.live_demo_supported
+            ? '从内置验证样本中选择一条，直接触发一次真实 secure run，同时保留批量完整隐私实测结果作为对照。'
+            : '当前环境未配置金融现场验证所需的远端 secure runtime，因此这里先展示已验证结果。';
+          medicalPanel.hidden = true;
+          financePanel.hidden = false;
+        } else {
+          liveTrackTitle.textContent = '医疗影像现场演示';
+          liveTrackSummary.textContent = '选择一张医疗影像后，浏览器先在本地生成两份 share，再触发一次完整隐私推理。';
+          medicalPanel.hidden = false;
+          financePanel.hidden = true;
+        }
+      }
+
+      function selectedFinanceSample() {
+        return financeSamples().find((sample) => sample.id === state.financeSelectedSampleId) || null;
+      }
+
+      function renderFinanceSampleGrid() {
+        const samples = financeSamples();
+        if (!samples.length) {
+          financeSampleGrid.innerHTML = `
+            <div class="sample-card">
+              <strong>不可用</strong>
+              <p class="data-note">当前没有读取到可展示的金融样本。</p>
+            </div>
+          `;
+          return;
+        }
+        if (!state.financeSelectedSampleId || !samples.some((sample) => sample.id === state.financeSelectedSampleId)) {
+          state.financeSelectedSampleId = samples[0].id;
+        }
+        financeSampleGrid.innerHTML = samples.map((sample) => `
+          <button class="sample-card ${sample.id === state.financeSelectedSampleId ? 'active' : ''}" type="button" data-sample-id="${escapeHtml(sample.id)}">
+            <img class="sample-thumb" src="${escapeHtml(sample.preview_url)}" alt="${escapeHtml(sample.label)}" />
+            <strong>${escapeHtml(sample.category_label)}</strong>
+            <span class="data-value" style="font-size:1.18rem;">${escapeHtml(sample.label)}</span>
+            <p class="data-note">真实标签：${escapeHtml(sample.ground_truth_label)}</p>
+          </button>
+        `).join('');
+
+        const sample = selectedFinanceSample();
+        if (sample) {
+          financePreviewImage.src = sample.preview_url;
+          financePreviewImage.hidden = false;
+          financePreviewPlaceholder.hidden = true;
+          financeSelectionStatus.textContent = `已选择：${sample.label}（真实标签：${sample.ground_truth_label}）`;
+        }
+      }
+
+      function setMedicalIdle() {
+        medicalResultGrid.innerHTML = dataCard('等待运行', 'N/A', '运行完成后显示当前图片的分类结果与概率。');
+        medicalPrivacyGrid.innerHTML = `
+          ${dataCard('浏览器本地分片', '待运行', '完成后显示 share 是否在浏览器本地生成。')}
+          ${dataCard('服务端是否收到原图', '待运行', '完成后显示服务端是否接收到原始图片。')}
+        `;
+        medicalRuntimeStatus.textContent = '运行后，这里显示本次完整隐私推理耗时、通信量和演示边界说明。';
+      }
+
+      function setMedicalPending() {
+        medicalResultGrid.innerHTML = `
+          ${dataCard('当前状态', '运行中', '浏览器正在本地生成 share，并准备触发完整隐私推理。')}
+          ${dataCard('页面输出', '只显示最终结果', '不会把原图或模型参数直接展示到页面上。')}
+        `;
+        medicalPrivacyGrid.innerHTML = `
+          ${dataCard('浏览器本地分片', '进行中', '这一步发生在浏览器端，不在后端。')}
+          ${dataCard('服务端是否收到原图', '否', '这条路径不会把原图直接发给后端。')}
+        `;
+        medicalRuntimeStatus.textContent = '运行中：完成后会显示本次完整隐私推理耗时、通信量和边界说明。';
+      }
+
+      function setMedicalFailure(message) {
+        medicalRuntimeStatus.className = 'status-box warn';
+        medicalRuntimeStatus.textContent = message;
+      }
+
+      function renderMedicalResult(payload) {
+        const prediction = payload?.result?.prediction || {};
+        const profile = payload?.result?.profile || {};
+        const communication = profile?.communication || {};
+        const privacy = payload?.privacy || {};
+        medicalRuntimeStatus.className = 'status-box ok';
+        medicalResultGrid.innerHTML = `
+          ${dataCard('Argmax 类别', predictionName(prediction, 'argmax_label'), '当前图片的最大概率类别。')}
+          ${dataCard('Threshold 类别', predictionName(prediction, 'threshold_label'), '按固定阈值给出的类别。')}
+          ${dataCard('类别 0 概率', fixed(prediction.prob_class_0, 4), '仅对应这张图片。')}
+          ${dataCard('类别 1 概率', fixed(prediction.prob_class_1, 4), '仅对应这张图片。')}
+        `;
+        medicalPrivacyGrid.innerHTML = `
+          ${dataCard('浏览器本地生成 share', boolText(privacy.browser_generated_shares), '这一步发生在浏览器内。')}
+          ${dataCard('服务端是否收到原图', boolText(privacy.server_received_plain_image), '显示“否”表示原图没有直传后端。')}
+          ${dataCard('服务端是否收到明文像素', boolText(privacy.server_received_plain_pixel_values), '显示“否”表示后端没有收到明文 pixel values。')}
+          ${dataCard('演示边界', boolText(privacy.server_received_share0_and_share1_in_demo_process), '当前是演示后端；正式部署时应拆成独立节点。')}
+        `;
+        medicalRuntimeStatus.textContent = `本次完整隐私推理耗时 ${seconds(profile.total_pipeline_duration_sec)}，通信量 ${bytes(communication.total_bytes)}。生产部署时应将两份 share 发送到独立计算节点。`;
+      }
+
+      function setFinanceIdle() {
+        const finance = getDomain('finance');
+        const verified = finance?.validated_secure_run || {};
+        financeResultGrid.innerHTML = dataCard('等待运行', 'N/A', '选择样本后点击按钮，触发一次真实 secure run。');
+        financePrivacyGrid.innerHTML = `
+          ${dataCard('批量实测对照', `${fixed(verified.sec_per_sample, 2)}s/sample`, '这里保留的是已完成的批量完整隐私测试结果。')}
+          ${dataCard('Argmax 一致性', percent((verified.argmax_match_ratio ?? 0) * 100, 2), '批量实测里和参考结果逐项核对后的结果。')}
+        `;
+        financeRuntimeStatus.className = 'status-box';
+        financeRuntimeStatus.textContent = '运行后，这里显示本次样本的完整隐私推理结果，并与批量实测对照一起看。';
+      }
+
+      function setFinancePending() {
+        financeResultGrid.innerHTML = `
+          ${dataCard('当前状态', '运行中', '正在服务器侧执行完整 secure run。')}
+          ${dataCard('页面输出', '只显示最终结果', '不会展示原始金融特征或模型参数。')}
+        `;
+        financePrivacyGrid.innerHTML = `
+          ${dataCard('输入进入方式', '内置样本触发', '当前按钮调用的是内置验证样本。')}
+          ${dataCard('参数参与方式', 'Secret', '模型参数按受保护方式参与 secure runtime。')}
+        `;
+        financeRuntimeStatus.className = 'status-box';
+        financeRuntimeStatus.textContent = '运行中：金融这条线是完整 secure run，耗时通常明显高于普通页面交互。';
+      }
+
+      function setFinanceFailure(message) {
+        financeRuntimeStatus.className = 'status-box warn';
+        financeRuntimeStatus.textContent = message;
+      }
+
+      function renderFinanceResult(payload) {
+        const sample = payload?.sample || selectedFinanceSample();
+        const prediction = payload?.result?.prediction || {};
+        const profile = payload?.result?.profile || {};
+        const privacy = payload?.privacy || {};
+        financeResultGrid.innerHTML = `
+          ${dataCard('本次样本', sample?.label || 'N/A', sample?.ground_truth_label ? `真实标签：${sample.ground_truth_label}` : 'N/A')}
+          ${dataCard('Argmax 类别', predictionName(prediction, 'argmax_label'), '本次 secure run 的最终分类结果。')}
+          ${dataCard('类别 0 概率', fixed(prediction.prob_class_0, 4), '仅对应这条样本。')}
+          ${dataCard('类别 1 概率', fixed(prediction.prob_class_1, 4), '仅对应这条样本。')}
+        `;
+        financePrivacyGrid.innerHTML = `
+          ${dataCard('输入是否明文暴露', boolText(privacy.host_plaintext_pixel_values_materialized), '显示“否”表示宿主侧没有明文装载 pixel values。')}
+          ${dataCard('参数是否直接交付', boolText(privacy.host_model_params_materialized), '显示“否”表示数据使用方拿不到完整模型参数。')}
+          ${dataCard('最终揭示边界', privacy.reveal_policy || 'N/A', '这里只展示最终 logits / 分类结果。')}
+          ${dataCard('演示路径', '内置样本 secure run', '页面按钮调用的是完整隐私推理，不是静态截图。')}
+        `;
+        financeRuntimeStatus.className = 'status-box ok';
+        financeRuntimeStatus.textContent = `本次金融完整隐私推理耗时 ${seconds(profile.total_pipeline_duration_sec)}。这条线同时保留批量实测结果作为稳定性对照。`;
+      }
+
+      function setButtonBusy(button, busy, busyText) {
         if (!button) return;
-        if (isBusy) {
+        if (busy) {
           button.dataset.originalText = button.textContent;
           button.textContent = busyText;
           button.disabled = true;
@@ -1851,194 +1558,6 @@
         }
         button.textContent = button.dataset.originalText || button.textContent;
         button.disabled = false;
-      }
-
-      function setMainActionDisabled(disabled) {
-        uploadButton.disabled = disabled;
-        selectImageButton.disabled = disabled;
-      }
-
-      function setClientSideFailure(message, details = '') {
-        const safeMessage = message || '前端事件处理失败';
-        metaBox.innerHTML = `<div class="result-note warn">${escapeHtml(safeMessage)}</div>`;
-        compareBox.innerHTML = `<div class="result-note warn">
-          浏览器端还没有成功提交到后端。${details ? `<br><code>${escapeHtml(details)}</code>` : ''}
-        </div>`;
-        runtimeBox.innerHTML = `<div class="metric-grid">
-          ${metric('当前状态', '前端未完成提交', 'warn wide')}
-          ${metric('建议处理', '重新选择 PNG/JPG 图片后再点击按钮', 'wide')}
-        </div>`;
-      }
-
-      window.addEventListener('error', (event) => {
-        setClientSideFailure('前端脚本运行错误', `${event.message || 'unknown'} @ ${event.filename || 'inline'}:${event.lineno || 0}`);
-      });
-
-      window.addEventListener('unhandledrejection', (event) => {
-        const reason = event.reason;
-        const message = reason && reason.message ? reason.message : String(reason || 'unknown promise rejection');
-        setClientSideFailure('前端异步处理错误', message);
-      });
-
-      function updateSummaryBoard(assets, stages = []) {
-        if (!assets) {
-          summaryBoard.innerHTML = '<p class="empty-state">上传图片后会显示原图和 3 张阶段叠加图。</p>';
-          return;
-        }
-        const overlayCount = Array.isArray(assets.overlay_urls) ? assets.overlay_urls.length : 0;
-        if (!assets.original_panel_url || overlayCount < 3) {
-          summaryBoard.innerHTML = `
-            <div class="panel-item">
-              <span>四图资源未准备完整</span>
-              <code>original_panel_url=${escapeHtml(assets.original_panel_url || 'N/A')}</code>
-              <code>overlay_count=${escapeHtml(String(overlayCount))}</code>
-              <code>overlay_urls=${escapeHtml(JSON.stringify(assets.overlay_urls || []))}</code>
-            </div>
-          `;
-          return;
-        }
-        const panels = [
-          { title: '原图', subtitle: '输入影像', url: assets.original_panel_url },
-          ...assets.overlay_urls.slice(0, 3).map((url, index) => {
-            const stage = stages[index] || {};
-            const layer = stage.pruning_layer === undefined ? `第 ${index + 1} 阶段` : `第 ${stage.pruning_layer} 层`;
-            const keep = stage.keep_count === undefined ? '保留数量待生成' : `保留 ${stage.keep_count}/196`;
-            const density = stage.density_percent || '';
-            return {
-              title: `第 ${index + 1} 阶段`,
-              subtitle: `${layer} · ${keep}${density ? `（${density}）` : ''}`,
-              url,
-            };
-          }),
-        ];
-        summaryBoard.innerHTML = panels.map((panel) => `
-          <div class="panel-item">
-            <img src="${escapeHtml(panel.url)}" alt="${escapeHtml(panel.title)}" loading="lazy" />
-            <span><b>${escapeHtml(panel.title)}</b><br>${escapeHtml(panel.subtitle)}</span>
-          </div>
-        `).join('');
-      }
-
-      function updateStageBars(stages) {
-        if (!stages || stages.length === 0) {
-          stageBars.innerHTML = '<p>上传图片后会显示各 stage 的 token 保留数量和密度。</p>';
-          return;
-        }
-        stageBars.innerHTML = stages.map((stage) => {
-          const width = Math.max(0, Math.min(100, Number(stage.density || 0) * 100));
-          return `<div class="stage-row">
-            <div class="stage-name">第 ${escapeHtml(stage.stage_index)} 阶段</div>
-            <div class="bar-track"><div class="bar-fill" style="width:${width}%"></div></div>
-            <div class="stage-value">第 ${escapeHtml(stage.pruning_layer)} 层，保留 ${escapeHtml(stage.keep_count)}/196（${escapeHtml(stage.density_percent)}）</div>
-          </div>`;
-        }).join('');
-      }
-
-      function updateStageExplanations(items) {
-        if (!items || items.length === 0) {
-          stageExplanations.innerHTML = '<p>上传图片后会显示每个 pruning stage 的解释。</p>';
-          return;
-        }
-        stageExplanations.innerHTML = items.map((item, index) => {
-          const stageBenefit = index === 0
-            ? '收益：先把高贡献较低的 token 排除在后续安全比较之外，后面的协议只需要关注更小的集合。'
-            : (index === items.length - 1
-              ? '收益：最终只保留最关键的 token，后续安全推理的比较、传输和计算负担都降到更低水平。'
-              : '收益：在上一阶段基础上继续压缩活跃集合，使后续安全计算与通信对象继续减少。');
-          return `
-          <div class="stage-explanation">
-            <b>${escapeHtml(item.title)}</b>
-            <span>${escapeHtml(item.summary)}</span>
-            <span>${escapeHtml(item.reason)}</span>
-            <span>${escapeHtml(stageBenefit)}</span>
-          </div>
-        `;
-        }).join('');
-      }
-
-      function restorePruningStoryFromSummary(summary) {
-        const targets = Array.isArray(summary?.pruning_targets?.stages) ? summary.pruning_targets.stages : [];
-        if (!summaryBoard || !targets.length) {
-          updateSummaryBoard(null);
-          updateStageBars(null);
-          updateStageExplanations(null);
-          return;
-        }
-        summaryBoard.innerHTML = [
-          `
-            <div class="panel-item placeholder">
-              <span class="panel-kicker">Input</span>
-              <b>浏览器本地读图与标准化</b>
-              <span>当前主路径不会把原图上传到后端，因此这里先展示流程位说明，而不是伪造一张阶段图。</span>
-            </div>
-          `,
-          ...targets.map((stage, index) => `
-            <div class="panel-item placeholder">
-              <span class="panel-kicker">Stage ${escapeHtml(stage.stage ?? index + 1)}</span>
-              <b>目标保留约 ${escapeHtml(stage.target_tokens_after)} / 196 个 token</b>
-              <span>这是当前正式展示口径里的默认收缩目标，用来解释后续为什么能减少安全比较、通信和计算对象。</span>
-            </div>
-          `),
-        ].join('');
-
-        updateStageBars(targets.map((stage, index) => ({
-          stage_index: stage.stage ?? index + 1,
-          pruning_layer: stage.stage ?? index + 1,
-          keep_count: stage.target_tokens_after,
-          density: Number(stage.keep_ratio ?? 0),
-          density_percent: humanRatioPercent(stage.keep_ratio ?? 0),
-        })));
-
-        updateStageExplanations(targets.map((stage, index) => ({
-          title: `Stage ${stage.stage ?? index + 1} 目标`,
-          summary: `默认保留 ${stage.target_tokens_after}/196 个 token，保留率 ${humanRatioPercent(stage.keep_ratio ?? 0)}。`,
-          reason: index === 0
-            ? '先缩小后续需要进入安全比较的候选集合。'
-            : (index === targets.length - 1
-              ? '最后只保留最关键的 token，进一步压低后续密态负担。'
-              : '在上一阶段基础上继续压缩活跃 token 集，减少后续对象规模。'),
-        })));
-      }
-
-      function humanSeconds(value) {
-        return (value === null || value === undefined || Number.isNaN(Number(value))) ? 'N/A' : `${Number(value).toFixed(4)}s`;
-      }
-
-      function humanPercent(value, digits = 3) {
-        return (value === null || value === undefined) ? 'N/A' : `${Number(value).toFixed(digits)}%`;
-      }
-
-      function humanAuc(value, digits = 3) {
-        return (value === null || value === undefined) ? 'N/A' : Number(value).toFixed(digits);
-      }
-
-      function humanFixed(value, digits = 6) {
-        return (value === null || value === undefined || Number.isNaN(Number(value)))
-          ? 'N/A'
-          : Number(value).toFixed(digits);
-      }
-
-      function humanPoints(value, digits = 3) {
-        if (value === null || value === undefined) return 'N/A';
-        const number = Number(value);
-        return `${number >= 0 ? '+' : ''}${number.toFixed(digits)}`;
-      }
-
-      function humanRatioPercent(value, digits = 1) {
-        return (value === null || value === undefined) ? 'N/A' : `${(Number(value) * 100).toFixed(digits)}%`;
-      }
-
-      function humanBytes(value) {
-        if (value === null || value === undefined) return 'N/A';
-        const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        const sign = Number(value) < 0 ? '-' : '';
-        let size = Math.abs(Number(value));
-        let unit = 0;
-        while (size >= 1024 && unit < units.length - 1) {
-          size /= 1024;
-          unit += 1;
-        }
-        return `${sign}${size.toFixed(2)} ${units[unit]}`;
       }
 
       function loadImageElement(file) {
@@ -2063,6 +1582,7 @@
         const scale = E2E_RESIZE_SIZE / shortSide;
         const resizedWidth = Math.round(image.naturalWidth * scale);
         const resizedHeight = Math.round(image.naturalHeight * scale);
+
         const resizeCanvas = document.createElement('canvas');
         resizeCanvas.width = resizedWidth;
         resizeCanvas.height = resizedHeight;
@@ -2112,8 +1632,8 @@
           const count = Math.min(chunkSize, target.length - offset);
           const view = count === random.length ? random : new Uint32Array(count);
           crypto.getRandomValues(view);
-          for (let i = 0; i < count; i += 1) {
-            target[offset + i] = (view[i] / 4294967296) * 4 - 2;
+          for (let index = 0; index < count; index += 1) {
+            target[offset + index] = (view[index] / 4294967296) * 4 - 2;
           }
           offset += count;
         }
@@ -2124,776 +1644,185 @@
         const share0 = new Float32Array(pixelTensor.length);
         const share1 = new Float32Array(pixelTensor.length);
         fillRandomUniformMinus2To2(share0);
-        for (let i = 0; i < pixelTensor.length; i += 1) {
-          share1[i] = pixelTensor[i] - share0[i];
+        for (let index = 0; index < pixelTensor.length; index += 1) {
+          share1[index] = pixelTensor[index] - share0[index];
         }
         return { share0, share1 };
       }
 
-      function boolStatus(value) {
-        return value ? '通过' : '未通过';
-      }
-
-      const configLabelMap = {
-        lr: '学习率（整体步长）',
-        lr_scale: '主干倍率（主网络步长）',
-        groupa_lr_scale: 'Group-A 倍率（局部参数步长）',
-        activation_lr_scale: '激活层倍率（激活相关参数步长）',
-        ratio_weight: '比例损失权重（保留率约束）',
-        train_sampler_mode: '采样器（类不平衡采样）',
-        warmup_steps: '预热步数（前期缓启动）',
-        clip_grad: '梯度裁剪（限制梯度峰值）',
-        use_mask_pruning: 'Mask 剪枝（用 masking 表达保留）',
-        use_square_gelu: 'Square GELU（激活开关）',
-        square_activation_mode: '激活形式（square 版本）',
-        freeze_patch_embed_proj: '冻结 Patch Embedding（前端投影层）',
-        pretrained_fix_step: '预训练冻结步数（起始锁定步数）',
-      };
-
-      function configLabel(key, value) {
-        return `${configLabelMap[key] || key} = ${value}`;
-      }
-
-      function communicationSourceLabel(raw) {
-        if (!raw) return 'N/A';
-        if (raw === 'Python distributed RPC/cloudpickle fastpath') {
-          return 'Python RPC fastpath';
-        }
-        return raw;
-      }
-
-      function renderRuntimePlaceholder() {
-        if (!runtimeBox) return;
-        runtimeBox.innerHTML = `<div class="metric-grid">
-          ${metric('E2E SPU 推理耗时', '等待运行', 'secure')}
-          ${metric('E2E SPU 通信量', '等待运行', 'secure')}
-          ${metric('浏览器本地分片', '等待选择图片', 'secure')}
-          ${metric('当前说明', '这里显示本次浏览器本地分片触发的 E2E live run。', 'wide')}
-        </div>
-        <div class="meta-note">点击主按钮后，页面才会显示本次 E2E approximate SPU 的耗时、隐私字段和通信证据；这些数字不是静态示例值。</div>`;
-      }
-
-      function runtimeModeLabel(mode) {
-        if (mode === 'spu') return 'SPU 安全推理（真实安全执行）';
-        if (mode === 'e2e') return 'E2E 全隐私近似路径（full-depth SPU）';
-        if (mode === 'cpu') return 'CPU reference（本地参考路径）';
-        if (mode === 'both') return 'CPU reference 与 SPU 安全推理对比';
-        return String(mode || 'secure pipeline');
-      }
-
-      function renderFailureDetails(details) {
-        if (!details) return '';
-        return `<details class="detail-panel">
-          <summary>查看失败日志尾部</summary>
-          <div class="detail-body"><pre class="log-tail">${escapeHtml(details)}</pre></div>
-        </details>`;
-      }
-
-      function setRunFailure(mode, message, details = '') {
-        const label = runtimeModeLabel(mode);
-        const safeMessage = message || 'secure 运行失败';
-        compareBox.innerHTML = `<div class="result-note warn">
-          ${escapeHtml(label)}失败：${escapeHtml(safeMessage)}
-        </div>
-        ${renderFailureDetails(details)}`;
-        runtimeBox.innerHTML = `<div class="metric-grid">
-          ${metric('当前状态', '运行失败', 'warn wide')}
-          ${metric('失败路径', label, 'warn wide')}
-          ${metric('本次通信量', '未生成')}
-          ${metric('建议处理', '检查后端日志、SPU 进程或重新上传后再运行', 'wide')}
-        </div>
-        ${renderFailureDetails(details)}`;
-      }
-
-      function setUploadFailure(message) {
-        const safeMessage = message || '上传或分析失败';
-        metaBox.innerHTML = `<div class="result-note warn">${escapeHtml(safeMessage)}</div>`;
-        compareBox.innerHTML = '<div class="empty-state">上传成功后才能运行 SPU 安全推理。</div>';
-        runtimeBox.innerHTML = `<div class="result-note warn">${escapeHtml(safeMessage)}</div>`;
-      }
-
-      function renderHeroCards(summary) {
-        if (!bestContentBox) return;
-        const currentArgmax = latestSecurePrediction?.argmax_label;
-        const currentThreshold = latestSecurePrediction?.threshold_label;
-        const currentProb1 = latestSecurePrediction?.prob_class_1;
-        const currentProbText = currentProb1 !== null && currentProb1 !== undefined
-          ? humanFixed(currentProb1)
-          : '等待上传';
-        const liveRunValue = latestLiveRunState?.hasLiveRun ? '已完成' : '待运行';
-        const liveRunSub = latestLiveRunState?.hasLiveRun
-          ? `本次图片已经完成 E2E SPU 隐私推理，通信量为 ${humanBytes(latestLiveRunState.totalBytes)}。`
-          : '这里展示当前图片是否已经完成本次 E2E SPU 隐私推理。';
-        bestContentBox.innerHTML = [
-          kpi(
-            '当前图片的 argmax 类别',
-            currentArgmax === null || currentArgmax === undefined ? '等待上传' : classValue(currentArgmax),
-            '这是当前浏览器选择图片在 E2E 隐私路径下直接取最大概率得到的类别。',
-            'primary',
-          ),
-          kpi(
-            '当前图片的阈值判定类别',
-            currentThreshold === null || currentThreshold === undefined ? '等待上传' : classValue(currentThreshold),
-            '这是当前浏览器选择图片在固定二分类阈值下得到的类别判定结果。',
-          ),
-          kpi(
-            '当前图片的类别 1 概率',
-            currentProbText,
-            '这是当前浏览器选择图片属于类别 1 的 E2E 隐私推理概率。',
-            'primary',
-          ),
-          kpi(
-            '当前图片的安全推理状态',
-            liveRunValue,
-            liveRunSub,
-          ),
-        ].join('') + `
-          <div class="summary-note" style="grid-column: 1 / -1;">
-            这里展示的是<strong>当前浏览器选择图片</strong>的即时结果，不是数据集级的准确率。
-            验证集上的最佳准确率、AUC 以及与外部基线的统一对比，放在下方“与外部同数据集基线相比”区统一展示。
-          </div>
-        `;
-      }
-
-      function renderStandardizedBenchmarkBlock(benchmark) {
-        const profiles = Array.isArray(benchmark?.profiles) ? benchmark.profiles : [];
-        const comparisons = Array.isArray(benchmark?.comparisons) ? benchmark.comparisons : [];
-        const roleLabel = (role) => {
-          if (role === 'current_project') return '本项目当前方案';
-          if (role === 'external_baseline') return '外部对照方案';
-          return '参考 profile';
-        };
-        const groupLabel = (group) => {
-          if (group === 'same_shape_operator_proxy') return '同形状算子替换收益';
-          if (group === 'architecture_proxy') return '不同结构规模 proxy 对比';
-          return group || 'benchmark';
-        };
-        const profileTitle = (profile) => {
-          if (profile?.profile_id === 'transshield_ops_same_shape_proxy') return '本项目安全友好算子配置';
-          if (profile?.profile_id === 'baseline_ops_same_shape_proxy') return '外部 baseline 算子配置';
-          if (profile?.profile_id === 'transshield_final_arch_proxy') return '本项目最终模型结构 proxy';
-          if (profile?.profile_id === 'mpcvit_vit_7_4_32_arch_proxy') return 'MPCViT 结构 proxy';
-          return profile?.display_name || profile?.profile_id || 'N/A';
-        };
-        const profileSourceText = (profile) => {
-          const source = String(profile?.model_source || '');
-          if (source.includes('MPCFormer baseline transformer ops proxy')) {
-            return '外部对照来自 MPCFormer benchmark 自带的 baseline transformer 算子配置，对应 ReLU + softmax。';
-          }
-          if (source.includes('Transshield operator replacement proxy')) {
-            return '本项目对照来自 Transshield 当前安全友好算子配置，对应 quad + softmax_2QUAD。';
-          }
-          if (source.includes('external_baselines/mpcvit')) {
-            return '外部对照来自 MPCViT 当前同数据集模型结构的 proxy，不是 full pipeline secure 复现。';
-          }
-          if (source.includes('frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430')) {
-            return '本项目对照来自当前最终展示模型的 transformer 结构 proxy。';
-          }
-          return source ? `来源：${source}` : '来源信息未写入。';
-        };
-        const ratioReductionText = (ratio) => {
-          const number = Number(ratio);
-          if (!Number.isFinite(number)) return 'N/A';
-          return `${((1 - number) * 100).toFixed(1)}%`;
-        };
-        const currentProfile = profiles.find((profile) => profile?.role === 'current_project') || null;
-        const externalProfile = profiles.find((profile) => profile?.role === 'external_baseline') || null;
-        const primaryComparison = comparisons.find((comparison) => comparison?.comparison_group === 'same_shape_operator_proxy')
-          || comparisons[0]
-          || null;
-        if (!profiles.length) {
-          return `
-            <div class="external-card">
-              <h4>统一 secure benchmark（待运行）</h4>
-              <p><strong>当前状态：</strong>${escapeHtml(benchmark?.summary || '尚未写入统一 benchmark 数字。')}</p>
-              <p><strong>运行入口：</strong><code>${escapeHtml(benchmark?.run_entry || 'artifacts/server_inference_friendly_pack/run_standardized_secure_external_benchmark.sh')}</code></p>
-              <p><strong>口径：</strong>${escapeHtml(benchmark?.scope_note || '只用于同一 secure transformer harness 下的通信 / 时间对比，不等同于 full-val 医学图像 pipeline。')}</p>
-            </div>
-          `;
-        }
-        const profileRows = profiles.map((profile) => {
-          const config = profile.config || {};
-          const metrics = profile.metrics || {};
-          const shape = `固定结构：${config.num_hidden_layers ?? 'N/A'} 层，hidden ${config.hidden_size ?? 'N/A'}，seq ${config.sequence_length ?? 'N/A'}，heads ${config.num_attention_heads ?? 'N/A'}`;
-          return `
-            <tr>
-              <td>
-                <strong>${escapeHtml(profileTitle(profile))}</strong>
-                <br><span class="muted">${escapeHtml(profileSourceText(profile))}</span>
-              </td>
-              <td>${escapeHtml(roleLabel(profile.role))}</td>
-              <td>${escapeHtml(shape)}<br><span class="muted">算子配置：act=${escapeHtml(config.hidden_act || 'N/A')}，softmax=${escapeHtml(config.softmax_act || 'N/A')}</span></td>
-              <td>${escapeHtml(humanSeconds(metrics.total_time_mean_sec))}</td>
-              <td>${escapeHtml(humanBytes(metrics.module_comm_byte_mean))}</td>
-            </tr>
-          `;
-        }).join('');
-        const comparisonRows = comparisons.map((comparison) => `
-          <tr>
-            <td>${escapeHtml(groupLabel(comparison.comparison_group))}</td>
-            <td>${escapeHtml(profileTitle({ profile_id: comparison.left_profile_id, display_name: comparison.left_display_name }))}</td>
-            <td>${escapeHtml(profileTitle({ profile_id: comparison.right_profile_id, display_name: comparison.right_display_name }))}</td>
-            <td>${escapeHtml(humanBytes(comparison.module_comm_delta_bytes))}</td>
-            <td>${escapeHtml(humanFixed(comparison.module_comm_ratio_left_over_right, 3))}×</td>
-            <td>${escapeHtml(humanSeconds(comparison.time_delta_sec))}</td>
-            <td>${escapeHtml(humanFixed(comparison.time_ratio_left_over_right, 3))}×</td>
-          </tr>
-        `).join('');
-        return `
-          <div class="external-card">
-            <h4>统一 secure benchmark（同一 harness）</h4>
-            <p><strong>这部分在比较什么：</strong>这里对比的不是网页单图结果，也不是全验证集 secure pipeline，而是把两组 transformer proxy 放进同一个 <code>MPCFormer local 2PC benchmark</code> 中，专门观察<strong>安全友好算子替换</strong>对通信和时间的影响。</p>
-            <p><strong>具体外部对照是谁：</strong>${escapeHtml(externalProfile ? profileSourceText(externalProfile) : '当前没有读到外部对照 profile。')}</p>
-            <p><strong>本项目这边是谁：</strong>${escapeHtml(currentProfile ? profileSourceText(currentProfile) : '当前没有读到本项目 profile。')}</p>
-            ${primaryComparison ? `
-              <div class="summary-note">
-                <strong>${escapeHtml(groupLabel(primaryComparison.comparison_group))}：</strong>
-                在完全相同的 transformer 形状下，本项目安全友好算子配置把平均通信量压到外部 baseline 的 <strong>${escapeHtml(humanFixed(primaryComparison.module_comm_ratio_left_over_right, 3))}×</strong>，
-                也就是通信量约下降 <strong>${escapeHtml(ratioReductionText(primaryComparison.module_comm_ratio_left_over_right))}</strong>；
-                平均运行时间压到 <strong>${escapeHtml(humanFixed(primaryComparison.time_ratio_left_over_right, 3))}×</strong>，
-                也就是时间约下降 <strong>${escapeHtml(ratioReductionText(primaryComparison.time_ratio_left_over_right))}</strong>。
-              </div>
-            ` : ''}
-            <table class="overview-table">
-              <thead>
-                <tr>
-                  <th>对照项</th>
-                  <th>角色</th>
-                  <th>固定结构与算子</th>
-                  <th>平均时间</th>
-                  <th>平均通信</th>
-                </tr>
-              </thead>
-              <tbody>${profileRows}</tbody>
-            </table>
-            ${comparisonRows ? `
-              <table class="overview-table compact">
-                <thead>
-                  <tr>
-                    <th>分组</th>
-                    <th>本项目方案</th>
-                    <th>外部对照方案</th>
-                    <th>通信差值</th>
-                    <th>通信比例</th>
-                    <th>时间差值</th>
-                    <th>时间比例</th>
-                  </tr>
-                </thead>
-                <tbody>${comparisonRows}</tbody>
-              </table>
-            ` : ''}
-            <div class="meta-note">解读方式：如果这里显示的是“同形状算子替换收益”，它说明的是算子设计本身更适合安全计算；不能直接把这里的数字当成单图 live run 或 full-val sidecar 的真实通信量。</div>
-          </div>
-        `;
-      }
-
-      function renderExternalComparisonSection(summary) {
-        if (!externalComparisonBox) return;
-        const externalComparison = summary?.external_comparison;
-        const communication = summary?.communication_evidence;
-        const standardizedBenchmark = summary?.standardized_secure_benchmark;
-        const e2eDeploy = summary?.e2e_secure_approx_deploy;
-        const bundle = summary?.default_bundle;
-        const verified = externalComparison?.transshield_verified || {};
-        const mpcvit = externalComparison?.mpcvit_same_dataset || {};
-        const gaps = externalComparison?.gap_to_mpcvit_reference || externalComparison?.gap_to_mpcvit_best_by_argmax || {};
-        const externalReference = communication?.external_reference || {};
-        const secureMatch = Math.min(
-          Number(bundle?.argmax_match_ratio ?? 0),
-          Number(bundle?.threshold_match_ratio ?? 0),
-        );
-        const liveCommValue = latestLiveRunState?.hasLiveRun
-          ? humanBytes(latestLiveRunState.totalBytes)
-          : '等待本次 E2E SPU 隐私推理';
-        const liveCommConclusion = latestLiveRunState?.hasLiveRun
-          ? '这是本次浏览器分片触发的 E2E SPU 隐私推理通信量，不是历史平均值，也不是静态示例值。'
-          : '运行本次 E2E SPU 隐私推理后，这里会显示真实 live run 的通信量。';
-        externalComparisonBox.innerHTML = `
-          <div class="external-card highlight">
-            <h4>离线验证集效果对比表</h4>
-            <p><strong>说明：</strong>这里展示的是验证集上的已验证最佳成绩与外部基线对比，不是当前浏览器选择图片的单样本结果。</p>
-            <table class="overview-table">
-              <thead>
-                <tr>
-                  <th>指标</th>
-                  <th>本项目 Transshield</th>
-                  <th>对比对象</th>
-                  <th>结论</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>准确率</strong></td>
-                  <td><strong>${humanPercent(verified.threshold_accuracy)}</strong></td>
-                  <td>同数据集明文参考模型 MPCViT：${humanPercent(mpcvit.threshold_accuracy)}</td>
-                  <td>相对明文参考模型下降 ${Math.abs(Number(gaps.threshold_accuracy_gap ?? 0)).toFixed(3)} 个百分点，但整体效果保持接近强基线。</td>
-                </tr>
-                <tr>
-                  <td><strong>AUC</strong></td>
-                  <td><strong>${humanAuc(verified.auc)}</strong></td>
-                  <td>同数据集明文参考模型 MPCViT：${humanAuc(mpcvit.auc)}</td>
-                  <td>相对明文参考模型下降 ${Math.abs(Number(gaps.auc_gap ?? 0)).toFixed(3)}，说明判别能力仍保持在较高水平。</td>
-                </tr>
-                <tr>
-                  <td><strong>安全一致性</strong></td>
-                  <td><strong>${humanRatioPercent(secureMatch)}</strong></td>
-                  <td>与本次明文参考结果逐项对比</td>
-                  <td>表示安全推理输出与明文参考结果完全一致，结果可信。</td>
-                </tr>
-                <tr>
-                  <td><strong>Token 数变化</strong></td>
-                  <td><strong>196 → 137 → 96 → 67</strong></td>
-                  <td>原始 196 个 patch token</td>
-                  <td>三阶段逐步压缩后续计算对象，为后面的安全比较、通信和推理减负。</td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="meta-note"><strong>当前单图 E2E SPU live run 通信量：</strong>${liveCommValue}。${liveCommConclusion}</div>
-            ${externalComparison?.fairness_note ? `<p><strong>公平性说明：</strong>${escapeHtml(externalComparison.fairness_note)}</p>` : ''}
-            <p><strong>结论：</strong>主页面只展示当前最终模型与外部 baseline；本项目的核心价值是让动态剪枝和算子改造能够进入可验证的安全推理流程。</p>
-          </div>
-          ${e2eDeploy ? `
-          <div class="external-card">
-            <h4>${escapeHtml(e2eDeploy.title || 'E2E 全隐私近似部署路径')}</h4>
-            <p><strong>当前状态：</strong>${escapeHtml(e2eDeploy.status || 'N/A')}</p>
-            <p><strong>部署口径：</strong>${escapeHtml(e2eDeploy.summary || '')}</p>
-            <table class="overview-table compact">
-              <thead>
-                <tr>
-                  <th>项目</th>
-                  <th>E2E 近似路径</th>
-                  <th>原始明文路径</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>验证集准确率</td>
-                  <td>${escapeHtml(e2eDeploy.accuracy_comparison?.e2e_accuracy_status || '尚未完成数据集级评测')}</td>
-                  <td>Argmax ${humanPercent(verified.argmax_accuracy)} / Threshold ${humanPercent(verified.threshold_accuracy)}</td>
-                </tr>
-                <tr>
-                  <td>当前已验证样本</td>
-                  <td>${escapeHtml(String(e2eDeploy.latest_validated_run?.sample_count ?? 'N/A'))} 张，${escapeHtml(e2eDeploy.latest_validated_run?.decision || 'N/A')}</td>
-                  <td>完整验证集离线评估</td>
-                </tr>
-                <tr>
-                  <td>隐私输入状态</td>
-                  <td>${escapeHtml(e2eDeploy.privacy_fields_summary || '')}</td>
-                  <td>明文 pixel_values 直接进入模型</td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="meta-note">${escapeHtml(e2eDeploy.accuracy_comparison?.current_conclusion || '')}</div>
-            <div class="meta-note">评测入口：<code>${escapeHtml(e2eDeploy.eval_entry || 'artifacts/server_inference_friendly_pack/run_e2e_secure_approx_eval.sh')}</code></div>
-          </div>
-          ` : ''}
-          <div class="external-card">
-            <h4>为什么选这些对比对象</h4>
-            <p><strong>对比对象 1：MPCViT 同数据集明文基线。</strong> 选择它，是因为它能说明本项目相对强明文参考模型还有多少效果差距，帮助评委快速判断“效果是否接近可用”。</p>
-            <p><strong>对比对象 2：统一 secure benchmark。</strong> 只有当外部模型也在同一个 MPCFormer local 2PC benchmark harness 下重新运行后，才展示通信 / 时间数字。</p>
-            <p><strong>本项目主要优化的瓶颈：</strong> 激活函数、剪枝边界选择、密态下的 token 保留表达，以及只保护关键选择边界而不是整网全密态执行。</p>
-            <p><strong>外部比较结论：</strong> 本项目侧重点不是刷新明文 SOTA，而是把动态剪枝真正改写成可在安全两方计算中执行的流程，并给出在线 SPU 推理与通信量证据。</p>
-            <div class="flow-steps">
-              <div class="flow-step">
-                <strong>1. 动态剪枝可视化</strong>
-                <span>展示哪些 token 被继续保留，哪些 token 被安全置零。</span>
-              </div>
-              <div class="flow-step">
-                <strong>2. Token 数逐层减少</strong>
-                <span>从 196 逐步减到 137、96、67，后续只在更小集合上继续处理。</span>
-              </div>
-              <div class="flow-step">
-                <strong>3. 安全开销继续下降</strong>
-                <span>后续需要安全比较、通信和计算的对象更少，因此推理负担变轻。</span>
-              </div>
-              <div class="flow-step">
-                <strong>4. 结果仍与明文一致</strong>
-                <span>最终 secure 输出与明文参考结果对齐，形成完整证据链闭环。</span>
-              </div>
-            </div>
-          </div>
-          ${renderStandardizedBenchmarkBlock(standardizedBenchmark)}
-        `;
-      }
-
-      function setBestContent(summary) {
-        latestDemoSummary = summary;
-        const bundle = summary?.default_bundle;
-        const externalComparison = summary?.external_comparison;
-        const pruning = summary?.pruning_targets;
-        const operatorReplacements = summary?.operator_replacements;
-        const communication = summary?.communication_evidence;
-        const standardizedBenchmark = summary?.standardized_secure_benchmark;
-        const e2eDeploy = summary?.e2e_secure_approx_deploy;
-        const closure = summary?.plaintext_stability_closure;
-        if (!bundle && !externalComparison && !pruning && !operatorReplacements && !communication && !standardizedBenchmark && !e2eDeploy && !closure) {
-          bestContentBox.innerHTML = '<p class="empty-state">当前没有可展示的最佳摘要。</p>';
-          if (detailsContentBox) detailsContentBox.innerHTML = '<p class="empty-state">当前没有可展示的详细摘要。</p>';
-          if (externalComparisonBox) externalComparisonBox.innerHTML = '<p class="empty-state">当前没有外部 baseline 摘要。</p>';
-          return;
-        }
-
-        const keyConfigs = Array.isArray(closure?.key_configs) ? closure.key_configs : [];
-        const configItems = keyConfigs.length > 0
-          ? keyConfigs.map((item) => `${item.label}=${item.value}${item.meaning ? `（${item.meaning}）` : ''}`)
-          : Object.entries(closure?.config || {}).map(([key, value]) => configLabel(key, value));
-        renderHeroCards(summary);
-        renderExternalComparisonSection(summary);
-        restorePruningStoryFromSummary(summary);
-        if (!latestLiveRunState) {
-          renderRuntimePlaceholder();
-        }
-
-        if (methodContentBox) {
-          const items = operatorReplacements?.items || [];
-          const findItem = (name) => items.find((item) => String(item.name || '').toLowerCase().includes(name));
-          const activation = findItem('activation');
-          const masking = findItem('mask');
-          const boundary = findItem('boundary') || findItem('pruning');
-          methodContentBox.innerHTML = `
-            <div class="method-card">
-              <b>安全友好的激活替换</b>
-              <span>做了什么：${escapeHtml(activation ? `${activation.before} → ${activation.after}` : 'GELU → 平方 / 二次近似激活')}</span>
-              <span>为什么适合安全推理：复杂非线性更少，密态协议实现更直接。</span>
-              <span>带来什么收益：${escapeHtml(activation?.effect || '减少高代价非线性环节，降低安全计算负担。')}</span>
-            </div>
-            <div class="method-card">
-              <b>安全掩码动态剪枝</b>
-              <span>做了什么：${escapeHtml(masking ? `${masking.before} → ${masking.after}` : '直接删 token → 用 mask 表达保留 / 置零')}</span>
-              <span>为什么适合安全推理：张量形状保持稳定，明文参考路径与安全 replay 更容易对齐。</span>
-              <span>带来什么收益：三阶段目标保留约 137 / 96 / 67 个 token，后续安全比较和传输对象持续减少。</span>
-            </div>
-            <div class="method-card">
-              <b>稀疏感知安全执行</b>
-              <span>做了什么：${escapeHtml(boundary ? `${boundary.before} → ${boundary.after}` : 'top-k 边界 → 阈值比较 + F_less / tie policy')}</span>
-              <span>为什么适合安全推理：只保护关键选择边界，而不是把整网全部放入安全协议。</span>
-              <span>带来什么收益：把在线安全执行重点集中在真正关键的 pruning 决策位置，主流程可验证且结果可信。</span>
-            </div>
-          `;
-        }
-
-        const verified = externalComparison?.transshield_verified || {};
-        const mpcvit = externalComparison?.mpcvit_same_dataset || {};
-        const gaps = externalComparison?.gap_to_mpcvit_reference || externalComparison?.gap_to_mpcvit_best_by_argmax || {};
-        const mpcvitSeedMean = externalComparison?.mpcvit_seed_mean || externalComparison?.mpcvit_3seed_mean || {};
-        const mpcvitSeedMeanLabel = mpcvitSeedMean?.label || 'MPCViT 多随机种子均值';
-
-        const bundleDetail = bundle ? `
-          <div class="summary-note">${escapeHtml(bundle.summary || '')}</div>
-          <div class="metric-grid">
-            ${metric('展示名称', bundle.display_name || bundle.title || 'N/A', 'wide')}
-            ${metric('Bundle', bundle.bundle_name || 'N/A', 'wide')}
-            ${metric('目录', bundle.bundle_dir || 'N/A', 'wide')}
-            ${metric('状态', bundle.status || 'N/A')}
-            ${metric('最佳轮次', bundle.best_epoch === null || bundle.best_epoch === undefined ? 'N/A' : `epoch ${bundle.best_epoch}`)}
-            ${metric('Argmax 准确率', humanPercent(externalComparison?.transshield_verified?.argmax_accuracy ?? bundle.argmax_accuracy), 'secure')}
-            ${metric('Threshold 准确率', humanPercent(externalComparison?.transshield_verified?.threshold_accuracy ?? bundle.threshold_accuracy), 'secure')}
-            ${metric('Argmax 一致率', humanRatioPercent(bundle.argmax_match_ratio))}
-            ${metric('Threshold 一致率', humanRatioPercent(bundle.threshold_match_ratio))}
-            ${metric('Secure 验证', bundle.spu_pipeline_overall_passed && bundle.spu_replay_overall_passed ? 'pipeline / replay 均通过' : '部分未通过', 'secure wide')}
-          </div>
-          <div class="meta-note">${escapeHtml(bundle.best_epoch_note || '')}</div>
-          <div class="meta-note">通信统计来源：<code>${escapeHtml(communicationSourceLabel(bundle.communication_source))}</code></div>
-        ` : '';
-
-        const externalDetail = externalComparison ? `
-          <div class="summary-note">${escapeHtml(externalComparison.summary || '')}</div>
-          <div class="metric-grid">
-            ${metric('本项目 argmax 准确率', humanPercent(verified.argmax_accuracy), 'secure')}
-            ${metric('外部基线 MPCViT argmax 准确率', humanPercent(mpcvit.argmax_accuracy))}
-            ${metric('argmax 差值（百分点）', `${humanPoints(-(gaps.argmax_accuracy_gap ?? 0))} pt`, 'warn')}
-            ${metric('本项目 threshold 准确率', humanPercent(verified.threshold_accuracy), 'secure')}
-            ${metric('外部基线 MPCViT threshold 准确率', humanPercent(mpcvit.threshold_accuracy))}
-            ${metric('threshold 差值（百分点）', `${humanPoints(-(gaps.threshold_accuracy_gap ?? 0))} pt`, 'warn')}
-            ${metric('本项目 AUC', humanAuc(verified.auc), 'secure')}
-            ${metric('外部基线 MPCViT AUC', humanAuc(mpcvit.auc))}
-            ${metric('AUC 差值', humanPoints(-(gaps.auc_gap ?? 0), 3), 'warn')}
-            ${metric(mpcvitSeedMeanLabel, humanPercent(mpcvitSeedMean?.argmax_accuracy), 'wide')}
-          </div>
-          <div class="meta-note">主比较对象：<code>${escapeHtml(mpcvit.status || 'same-dataset external baseline')}</code>。</div>
-          ${externalComparison?.source_run ? `<div class="meta-note">当前公平对比来源：<code>${escapeHtml(externalComparison.source_run)}</code></div>` : ''}
-          ${externalComparison?.fairness_note ? `<div class="meta-note">${escapeHtml(externalComparison.fairness_note)}</div>` : ''}
-          <div class="meta-note">${escapeHtml(externalComparison.note || '')}</div>
-        ` : '';
-
-        const pruningDetail = pruning ? `
-          <div class="summary-note">${escapeHtml(pruning.summary || '')}</div>
-          <div class="seed-grid">
-            ${(pruning.stages || []).map((stage) => `
-              <div class="seed-card">
-                <b>Stage ${escapeHtml(stage.stage)}</b>
-                <span>目标保留：${escapeHtml(humanRatioPercent(stage.keep_ratio))}</span>
-                <span>目标剪枝：${escapeHtml(humanRatioPercent(stage.prune_ratio))}</span>
-                <span>约 ${escapeHtml(stage.target_tokens_after)} / 196 tokens</span>
-              </div>
-            `).join('')}
-          </div>
-          ${pruning.visual_note ? `<div class="meta-note">${escapeHtml(pruning.visual_note)}</div>` : ''}
-        ` : '';
-
-        const operatorDetail = operatorReplacements ? `
-          <div class="summary-note">${escapeHtml(operatorReplacements.summary || '')}</div>
-          <div class="seed-grid">
-            ${(operatorReplacements.items || []).map((item) => `
-              <div class="seed-card">
-                <b>${escapeHtml(item.name)}</b>
-                <span>替换：${escapeHtml(item.before)} → ${escapeHtml(item.after)}</span>
-                <span>作用：${escapeHtml(item.effect)}</span>
-                ${item.scope ? `<span>范围：${escapeHtml(item.scope)}</span>` : ''}
-              </div>
-            `).join('')}
-          </div>
-        ` : '';
-
-        const closureDetail = closure ? `
-          <div class="summary-note">${escapeHtml(closure.summary || '')}</div>
-          <div class="summary-note"><strong>这两个 Seed 是干什么的：</strong>它们表示两次独立训练，训练配置相同，只是随机种子不同。作用是检查这套训练方案换一次随机初始化后是否仍然稳定，而不是表示当前网页会同时调用两个模型做在线推理。</div>
-          <div class="seed-grid">
-            ${(closure.seed_results || []).map((item) => `
-              <div class="seed-card">
-                <b>独立训练 Seed ${escapeHtml(item.seed)}</b>
-                <span>最好准确率：${escapeHtml(humanPercent(item.best_acc1))}</span>
-                <span>最终准确率：${escapeHtml(humanPercent(item.final_acc1))}</span>
-                <span>差值：${escapeHtml(humanPercent(item.best_final_gap))}</span>
-              </div>
-            `).join('')}
-          </div>
-          <div class="summary-note">
-            稳定判据：最好准确率 ≥ ${escapeHtml(humanPercent(closure.criterion?.min_best_acc1_percent))}，
-            最终准确率 ≥ ${escapeHtml(humanPercent(closure.criterion?.min_final_acc1_percent))}，
-            差值 ≤ ${escapeHtml(humanPercent(closure.criterion?.max_best_final_gap_percent))}；
-            判定结果：<code>${escapeHtml(boolStatus(closure.criterion?.achieved))}</code>。
-          </div>
-          <div class="meta-note">阅读方式：如果两次独立训练的最好准确率、最终准确率和最好-最终差值都落在可接受范围内，就说明这套训练方案不是“碰巧一次训得好”，而是具有可复现的稳定性。</div>
-          <div class="pill-list">
-            ${configItems.map((text) => `<span class="tag">${escapeHtml(text)}</span>`).join('')}
-          </div>
-          ${(closure.notes || []).map((note) => `<div class="meta-note">${escapeHtml(note)}</div>`).join('')}
-        ` : '';
-
-        const communicationDetail = communication ? `
-          <div class="summary-note">${escapeHtml(communication.summary || '')}</div>
-          <div class="seed-grid">
-            <div class="seed-card">
-              <b>本次同口径查看方式</b>
-              <span>上传图片后点击：Run SPU Secure</span>
-              <span>或点击：CPU/SPU 成本对比</span>
-              <span>页面会显示同一张图的 SPU live 通信量。</span>
-            </div>
-            <div class="seed-card">
-              <b>当前页面只认 live run</b>
-              <span>当前图片的通信量只来自本次 SPU 真实运行。</span>
-              <span>不再显示历史固定样本或旧 profile 的通信数字。</span>
-              <span>避免把不同样本量、不同阶段的数据混在一起比较。</span>
-            </div>
-            <div class="seed-card">
-              <b>外部 secure benchmark</b>
-              <span>${escapeHtml(communication.external_reference?.source || 'N/A')}</span>
-              <span>这里只作瓶颈背景说明，不作当前单图直接数字比较。</span>
-              <span>如果要做公平对比，必须重新跑同输入、同样本量、同协议口径。</span>
-            </div>
-          </div>
-          <div class="meta-note">${escapeHtml(communication.external_reference?.note || '')}</div>
-        ` : '';
-
-        const standardizedBenchmarkDetail = standardizedBenchmark ? `
-          <div class="summary-note">${escapeHtml(standardizedBenchmark.summary || '')}</div>
-          <div class="meta-note">运行入口：<code>${escapeHtml(standardizedBenchmark.run_entry || 'artifacts/server_inference_friendly_pack/run_standardized_secure_external_benchmark.sh')}</code></div>
-          <div class="meta-note">${escapeHtml(standardizedBenchmark.scope_note || standardizedBenchmark.scope?.summary || '')}</div>
-        ` : '';
-
-        const e2eDeployDetail = e2eDeploy ? `
-          <div class="summary-note">${escapeHtml(e2eDeploy.summary || '')}</div>
-          <div class="seed-grid">
-            ${(e2eDeploy.deploy_config || []).map((item) => `
-              <div class="seed-card">
-                <b>${escapeHtml(item.name)}</b>
-                <span>${escapeHtml(item.value)}</span>
-              </div>
-            `).join('')}
-          </div>
-          <div class="meta-note">${escapeHtml(e2eDeploy.accuracy_comparison?.current_conclusion || '')}</div>
-          <div class="meta-note">评测入口：<code>${escapeHtml(e2eDeploy.eval_entry || 'artifacts/server_inference_friendly_pack/run_e2e_secure_approx_eval.sh')}</code></div>
-        ` : '';
-
-        if (detailsContentBox) {
-          detailsContentBox.innerHTML = [
-            bundleDetail ? detailPanel('展示模型与 secure 验证', bundleDetail) : '',
-            externalDetail ? detailPanel(externalComparison?.title || '外部项目对比', externalDetail) : '',
-            pruningDetail ? detailPanel(pruning?.title || '默认剪枝率', pruningDetail) : '',
-            operatorDetail ? detailPanel(operatorReplacements?.title || '算子替换完整列表', operatorDetail) : '',
-            closureDetail ? detailPanel(closure?.title || '多随机种子结果', closureDetail) : '',
-            communicationDetail ? detailPanel(communication?.title || '通信与瓶颈证据', communicationDetail) : '',
-            standardizedBenchmarkDetail ? detailPanel(standardizedBenchmark?.title || '统一 secure benchmark', standardizedBenchmarkDetail) : '',
-            e2eDeployDetail ? detailPanel(e2eDeploy?.title || 'E2E 全隐私近似部署路径', e2eDeployDetail) : '',
-          ].join('');
-        }
-      }
-
-      function classValue(value) {
-        return value === null || value === undefined ? 'N/A' : String(value);
-      }
-
-      function setBrowserPrivatePending() {
-        metaBox.innerHTML = `<div class="metric-grid">
-          ${metric('原图上传到后端', 'false', 'secure')}
-          ${metric('明文 pixel_values 上传到后端', 'false', 'secure')}
-          ${metric('浏览器本地预处理', 'resize + center crop + normalize', 'wide')}
-          ${metric('浏览器本地分片', 'Float32 share0 / share1', 'wide')}
-        </div>
-        <div class="meta-note">图片只在浏览器本地用于生成密态 share；提交给后端的是两份 Float32 share，不是原图。</div>`;
-        compareBox.innerHTML = '<div class="comparison-status warn">E2E 隐私推理正在运行，完成后会显示最终结果。</div>';
-        runtimeBox.innerHTML = `<div class="metric-grid">
-          ${metric('当前状态', '浏览器已生成 share，后端正在运行 E2E SPU', 'secure wide')}
-          ${metric('输入张量形状', '1 x 3 x 224 x 224')}
-          ${metric('上传数据', 'share0 + share1，约 1.2 MB', 'secure')}
-          ${metric('Reveal policy', 'final logits only', 'wide')}
-        </div>`;
-      }
-
-      function setBrowserPrivateResult(payload) {
-        const result = payload.result || {};
-        const prediction = result.prediction || {};
-        const e2e = result.e2e || {};
-        const profile = result.profile || {};
-        const comm = profile.communication || {};
-        const privacy = payload.privacy || {};
-        latestSecurePrediction = prediction;
-        latestLiveRunState = {
-          hasLiveRun: true,
-          totalBytes: comm.total_bytes,
-          runtimeLabel: 'E2E approximate SPU',
-        };
-        metaBox.innerHTML = `<div class="metric-grid">
-          ${metric('原图上传到后端', String(Boolean(privacy.server_received_plain_image)), privacy.server_received_plain_image ? 'warn' : 'secure')}
-          ${metric('明文 pixel_values 上传到后端', String(Boolean(privacy.server_received_plain_pixel_values)), privacy.server_received_plain_pixel_values ? 'warn' : 'secure')}
-          ${metric('浏览器本地生成 share', String(Boolean(privacy.browser_generated_shares)), 'secure')}
-          ${metric('Demo 单进程同时接收两份 share', String(Boolean(privacy.server_received_share0_and_share1_in_demo_process)), 'warn wide')}
-        </div>
-        <div class="meta-note">${escapeHtml(privacy.production_note || '生产部署需要把 P1/P2 share 分别上传到独立 party。')}</div>`;
-        compareBox.innerHTML = `<div class="comparison-status">
-          E2E 隐私推理完成：最终输出 class ${escapeHtml(classValue(prediction.threshold_label ?? prediction.argmax_label))}。
-        </div>
-        <div class="metric-grid">
-          ${metric('Argmax 类别', classValue(prediction.argmax_label), 'secure')}
-          ${metric('Threshold 类别', classValue(prediction.threshold_label), 'secure')}
-          ${metric('类别 0 概率', humanFixed(prediction.prob_class_0))}
-          ${metric('类别 1 概率', humanFixed(prediction.prob_class_1), 'secure')}
-          ${metric('finite logits', String(e2e.finite_logits), e2e.finite_logits ? 'secure' : 'warn')}
-          ${metric('输入模式', e2e.input_mode || 'N/A', 'secure wide')}
-        </div>
-        ${e2e.candidate_json ? `<div class="result-note">Candidate JSON：<code>${escapeHtml(e2e.candidate_json)}</code></div>` : ''}`;
-        runtimeBox.innerHTML = `<div class="metric-grid">
-          ${metric('本次运行路径', 'Browser shares -> E2E approx SPU', 'secure wide')}
-          ${metric('样本数', profile.sample_count ? `${profile.sample_count} 张` : '1 张')}
-          ${metric('E2E SPU 耗时', humanSeconds(profile.total_pipeline_duration_sec), 'secure')}
-          ${metric('通信量', humanBytes(comm.total_bytes), 'secure wide')}
-          ${metric('通信统计来源', `${comm.source || 'logs/spu_nodes'} · ${comm.status || 'unknown'}`, 'wide')}
-          ${comm.request_bytes !== null && comm.request_bytes !== undefined ? metric('发送方向通信量', humanBytes(comm.request_bytes)) : ''}
-          ${comm.response_bytes !== null && comm.response_bytes !== undefined ? metric('接收方向通信量', humanBytes(comm.response_bytes)) : ''}
-          ${metric('host 明文 pixel_values', e2e.host_plaintext_pixel_values_materialized === false ? 'false' : String(e2e.host_plaintext_pixel_values_materialized), 'secure')}
-          ${metric('host 私有 share tensor', e2e.host_private_share_tensors_loaded === false ? 'false' : String(e2e.host_private_share_tensors_loaded), 'secure')}
-          ${metric('近似配置', `depth=${e2e.effective_static_depth || 'N/A'}, LN=${e2e.layer_norm_policy || 'N/A'}, attn=${e2e.attention_policy || 'N/A'}, act=${e2e.activation_kind || 'N/A'}`, 'wide')}
-        </div>
-        ${e2e.privacy_note ? `<div class="result-note">${escapeHtml(e2e.privacy_note)}</div>` : ''}`;
-        if (latestDemoSummary) {
-          renderHeroCards(latestDemoSummary);
-          renderExternalComparisonSection(latestDemoSummary);
-        }
-      }
-
-      async function runBrowserPrivateAnalysis() {
-        const file = imageInput.files[0];
+      async function runMedicalDemo() {
+        const file = medicalFileInput.files[0];
         if (!file) {
-          setClientSideFailure('请先选择图片。');
-          imageInput.focus();
+          setMedicalFailure('请先选择一张医疗影像。');
           return;
         }
-        setButtonBusy(uploadButton, true, '本地分片并分析中...');
-        setMainActionDisabled(true);
-        setBrowserPrivatePending();
+        setButtonBusy(medicalRunButton, true, '运行中...');
+        medicalSelectButton.disabled = true;
+        medicalFileInput.disabled = true;
+        setMedicalPending();
         try {
-          previewImage.src = URL.createObjectURL(file);
-          previewImage.style.display = 'block';
-          previewText.style.display = 'none';
           const { share0, share1 } = await buildBrowserPrivateShares(file);
           const form = new FormData();
+          form.append('domain', 'medical');
           form.append('share0', new Blob([share0.buffer], { type: 'application/octet-stream' }), 'share0.bin');
           form.append('share1', new Blob([share1.buffer], { type: 'application/octet-stream' }), 'share1.bin');
           const response = await fetch('/api/e2e/analyze_private_shares', { method: 'POST', body: form });
           const payload = await response.json();
           if (!response.ok) {
-            setRunFailure('e2e', payload.error || 'E2E 隐私分析失败', payload.details || '');
-            return;
+            throw new Error(payload?.details || payload?.error || 'medical live demo failed');
           }
-          setBrowserPrivateResult(payload);
+          state.medicalLiveResult = payload;
+          renderMedicalResult(payload);
+          renderHero();
         } catch (error) {
-          setRunFailure('e2e', error.message);
+          setMedicalFailure(`医疗现场演示失败：${error?.message || 'unknown error'}`);
         } finally {
-          setButtonBusy(uploadButton, false);
-          setMainActionDisabled(false);
+          setButtonBusy(medicalRunButton, false);
+          medicalSelectButton.disabled = false;
+          medicalFileInput.disabled = false;
         }
       }
 
-      uploadButton.addEventListener('click', async (event) => {
-        event.preventDefault();
-        metaBox.innerHTML = '<div class="empty-state">按钮点击已收到，正在检查图片并准备浏览器本地分片。</div>';
-        await runBrowserPrivateAnalysis();
-      });
-
-      selectImageButton.addEventListener('click', (event) => {
-        event.preventDefault();
-        metaBox.innerHTML = '<div class="empty-state">选择图片按钮点击已收到，正在打开浏览器文件选择器；如果系统拦截弹窗，请直接点击下方原生文件选择框。</div>';
-        try {
-          if (typeof imageInput.showPicker === 'function') {
-            imageInput.showPicker();
-            return;
-          }
-          imageInput.click();
-        } catch (error) {
-          setClientSideFailure('浏览器拦截了脚本触发的文件选择器，请直接点击下方原生文件选择框。', error.message);
-          imageInput.focus();
+      async function runFinanceDemo() {
+        const sample = selectedFinanceSample();
+        const finance = getDomain('finance');
+        if (!sample) {
+          setFinanceFailure('请先选择一个金融样本。');
+          return;
         }
-      });
-
-      imageInput.addEventListener('change', () => {
-        const file = imageInput.files[0];
-        if (file) {
-          fileNameBox.textContent = `已选择：${file.name}`;
-          latestLiveRunState = null;
-          latestSecurePrediction = null;
-          previewImage.src = URL.createObjectURL(file);
-          previewImage.style.display = 'block';
-          previewText.style.display = 'none';
-          metaBox.innerHTML = '<div class="empty-state">图片已在浏览器本地载入；点击主按钮后会生成 share 并启动 E2E 推理。</div>';
-          restorePruningStoryFromSummary(latestDemoSummary);
-          compareBox.innerHTML = '<div class="empty-state">点击“本地生成密态 share 并开始分析”后，会显示 E2E 推理结果。</div>';
-          renderRuntimePlaceholder();
-          if (latestDemoSummary) {
-            renderHeroCards(latestDemoSummary);
-            renderExternalComparisonSection(latestDemoSummary);
-          }
-        } else {
-          fileNameBox.textContent = '尚未选择图片';
+        if (!finance?.live_demo_supported) {
+          setFinanceFailure('当前环境未配置金融现场验证所需的远端 secure runtime。');
+          return;
         }
-      });
-
-      async function loadDemoSummary() {
+        setButtonBusy(financeRunButton, true, '运行中...');
+        setFinancePending();
         try {
-          const response = await fetch('/api/demo_summary');
+          const form = new FormData();
+          form.append('domain', 'finance');
+          form.append('sample_id', sample.id);
+          const response = await fetch('/api/e2e/analyze_private_shares', { method: 'POST', body: form });
           const payload = await response.json();
           if (!response.ok) {
-            throw new Error(payload.error || 'summary unavailable');
+            throw new Error(payload?.details || payload?.error || 'finance live demo failed');
           }
-          setBestContent(payload);
+          state.financeLiveResult = payload;
+          renderFinanceResult(payload);
         } catch (error) {
-          bestContentBox.innerHTML = `<div class="result-note warn">最佳摘要加载失败：${escapeHtml(error.message)}</div>`;
-          externalComparisonBox.innerHTML = `<div class="result-note warn">外部比较摘要加载失败：${escapeHtml(error.message)}</div>`;
-          detailsContentBox.innerHTML = `<div class="result-note warn">详细摘要加载失败：${escapeHtml(error.message)}</div>`;
+          setFinanceFailure(`金融现场验证失败：${error?.message || 'unknown error'}`);
+        } finally {
+          setButtonBusy(financeRunButton, false);
         }
       }
 
-      loadDemoSummary();
+      function revealObserved() {
+        document.querySelectorAll('.observe').forEach((element) => {
+          observer.observe(element);
+        });
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.18, rootMargin: '0px 0px -12% 0px' });
+
+      function initActiveNav() {
+        const sections = Array.from(document.querySelectorAll('section[id]'));
+        const links = Array.from(topNav.querySelectorAll('a'));
+        const navObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            links.forEach((link) => {
+              link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`);
+            });
+          });
+        }, { threshold: 0.24, rootMargin: '-18% 0px -56% 0px' });
+        sections.forEach((section) => navObserver.observe(section));
+      }
+
+      async function loadSummary() {
+        const candidates = ['/api/demo_summary', '/artifacts/web_demo_assets/best_demo_content.json', '../artifacts/web_demo_assets/best_demo_content.json'];
+        let lastError = null;
+        for (const url of candidates) {
+          try {
+            const response = await fetch(url, { cache: 'no-store' });
+            if (!response.ok) throw new Error(`${url} -> HTTP ${response.status}`);
+            state.summary = await response.json();
+            break;
+          } catch (error) {
+            lastError = error;
+          }
+        }
+        if (!state.summary) {
+          heroMetrics.innerHTML = metricCard('加载失败', 'N/A', lastError?.message || 'summary unavailable');
+          heroNotes.innerHTML = '<li>未能读取展示数据。</li>';
+          return;
+        }
+        renderHero();
+        renderDomains();
+        renderEvidence();
+        renderInnovation();
+        renderFinanceSampleGrid();
+        setMedicalIdle();
+        setFinanceIdle();
+        setActiveDemo(state.summary?.showcase_domains?.default_domain || 'medical');
+        revealObserved();
+      }
+
+      medicalSelectButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        medicalFileInput.click();
+      });
+
+      medicalFileInput.addEventListener('change', () => {
+        const file = medicalFileInput.files[0];
+        state.medicalLiveResult = null;
+        if (!file) {
+          medicalFileStatus.textContent = '尚未选择图片';
+          medicalPreviewImage.hidden = true;
+          medicalPreviewPlaceholder.hidden = false;
+          return;
+        }
+        if (state.medicalPreviewUrl) URL.revokeObjectURL(state.medicalPreviewUrl);
+        state.medicalPreviewUrl = URL.createObjectURL(file);
+        medicalPreviewImage.src = state.medicalPreviewUrl;
+        medicalPreviewImage.hidden = false;
+        medicalPreviewPlaceholder.hidden = true;
+        medicalFileStatus.textContent = `已选择：${file.name}`;
+        medicalRuntimeStatus.className = 'status-box';
+        setMedicalIdle();
+      });
+
+      medicalRunButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        runMedicalDemo();
+      });
+
+      financeRunButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        runFinanceDemo();
+      });
+
+      document.addEventListener('click', (event) => {
+        const demoToggle = event.target.closest('[data-demo-toggle]');
+        if (demoToggle) {
+          setActiveDemo(demoToggle.getAttribute('data-demo-toggle'));
+          document.getElementById('live')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+        const sampleButton = event.target.closest('[data-sample-id]');
+        if (sampleButton) {
+          state.financeSelectedSampleId = sampleButton.getAttribute('data-sample-id');
+          state.financeLiveResult = null;
+          renderFinanceSampleGrid();
+          setFinanceIdle();
+        }
+      });
+
+      loadSummary();
+      initActiveNav();
     </script>
   </body>
 </html>

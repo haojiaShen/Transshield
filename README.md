@@ -5,9 +5,8 @@
 当前仓库的**最高优先级主文档**是：
 
 - `docs/transshield_master_plan_20260505.md`
-- `docs/p0_delivery_closure_20260505.md`
 
-如果 `README.md`、`docs/final_delivery_mainline_20260505.md`、`docs/current_work_status.md`、`docs/handoff-next.md` 与其他旧摘要之间存在冲突，**一律以 `docs/transshield_master_plan_20260505.md` 为准**。
+如果 `README.md`、`docs/current_work_status.md`、`docs/handoff-next.md`、`docs/transshield_innovation.md` 与其他旧摘要之间存在冲突，**一律以 `docs/transshield_master_plan_20260505.md` 为准**。
 
 当前正式主线已经收束为：
 
@@ -59,8 +58,8 @@
 
 | 模型 | 路径 | 说明 |
 |------|------|------|
-| 医疗模型 | `artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507/` | 最佳医疗影像分类模型（86M） |
-| 金融模型 | `artifacts/frozen_bundle_finance_fraud_v3_20260511/` | 金融欺诈检测模型（172M） |
+| 医疗模型 | `artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507/` | 医疗主展示 bundle 元数据（权重本地保留，86M） |
+| 金融模型 | `artifacts/frozen_bundle_finance_lrd_rank192_20260515/` | 金融主展示 bundle 元数据（LRD rank192，权重本地保留，171M） |
 | 基线模型 | `artifacts/baselines/baseline_plaintext_eval_checkpoint_light.pth` | 明文基线模型（86M） |
 
 ### 数据文件
@@ -130,12 +129,13 @@ bash artifacts/server_inference_friendly_pack/run_full_final_comparison_suite.sh
 
 ## 当前建议阅读顺序
 
-1. `docs/transshield_竞赛作品报告_静态剪枝版_20260516.docx` ← **最新作品报告**
+1. `docs/transshield_竞赛作品报告_最终版.docx` ← **最新作品报告**
 2. `docs/transshield_master_plan_20260505.md`
 3. `docs/delivery_experiment_summary_20260510.md` ← **实验数据汇总**
 4. `docs/transshield_innovation.md` ← **创新点说明**
-5. `docs/current_work_status.md`
-6. `docs/handoff-next.md`
+5. `docs/data_source_policy.md`
+6. `docs/current_work_status.md`
+7. `docs/handoff-next.md`
 
 ## 当前展示原则
 

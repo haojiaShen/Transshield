@@ -1,24 +1,49 @@
+# ==================== Python缓存 ====================
 __pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+*.egg
+
+# ==================== 系统文件 ====================
 .DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# ==================== IDE配置 ====================
+.vscode/
+.idea/
+*.code-workspace
+
+# ==================== Jupyter ====================
 .ipynb_checkpoints/
+
+# ==================== 训练产物（不随Git分发） ====================
 data/
 pretrained/
 outputs/
-*.pth
-*.pth.tar
-*.pt
-*.log
-*.bak.*
 checkpoint-*
 checkpoint-best*
 train_stdout.log
 log.txt
+
+# ==================== 日志和临时文件 ====================
 logs/
+tmp/
 backups/
 _server_debug_snapshot/
 OUT_DIR=*/
-artifacts/bazel_distdir_cache/
+
+# ==================== 模型权重（使用LFS或单独分发） ====================
+*.pth
+*.pth.tar
+*.pt
+*.h5
+*.ckpt
+
+# ==================== 旧的运行记录 ====================
 artifacts/server_pipeline_run/
 artifacts/server_runs/
 artifacts/server_bundles/
@@ -26,17 +51,51 @@ artifacts/server_profile_reports/
 artifacts/train_runs/
 artifacts/web_demo_runs/
 artifacts/web_demo_uploads/
+artifacts/web_demo_audit/
+artifacts/bazel_distdir_cache/
+
+# ==================== 旧的结果数据 ====================
+results/
+
+# ==================== 旧的文档快照 ====================
+docs/report_snapshots/
+docs/report_evidence/
+
+# ==================== 旧的参考代码 ====================
+references/
+
+# ==================== 金融数据（已移除） ====================
+# data/ 已在上面排除
+
+# ==================== 敏感配置 ====================
 artifacts/server_inference_friendly_pack/final_compare_env.local.sh
+*.env
+.env.*
+secrets.yaml
+
+# ==================== 构建产物 ====================
+dist/
+build/
+*.egg-info/
+
+# ==================== 临时测试文件 ====================
+*.test
+*.tmp
+*.temp
+
+# ==================== 保留的资产（白名单） ====================
 !artifacts/frozen_bundle_full/
 !artifacts/frozen_bundle_full/**
 !artifacts/baselines/
 !artifacts/baselines/**
+!artifacts/server_inference_friendly_pack/
+!artifacts/web_demo_assets/
 
-# Keep artifact metadata and small configs in Git, but never store tensor/checkpoint
-# binaries through the normal Git object database. Use Git LFS or external artifact
-# storage if these files need versioning.
-artifacts/**/*.pth
-artifacts/**/*.pth.tar
-artifacts/**/*.pt
-artifacts/**/*.log
-artifacts/**/*.bak.*
+# ==================== 保留的文档 ====================
+!docs/*.md
+!docs/*.docx
+
+# ==================== 保留的图件资产 ====================
+!web_demo/assets/*.png
+!web_demo/assets/*.jpg
+!web_demo/assets/*.svg

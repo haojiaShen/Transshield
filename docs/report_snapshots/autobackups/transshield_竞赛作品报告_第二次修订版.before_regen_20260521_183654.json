@@ -1,0 +1,8 @@
+{
+  "created_at": "2026-05-21T18:36:54.736392+08:00",
+  "source_path": "/home/yclcg/Transshield_final/docs/transshield_竞赛作品报告_第二次修订版.docx",
+  "backup_path": "/home/yclcg/Transshield_final/docs/report_snapshots/autobackups/transshield_竞赛作品报告_第二次修订版.before_regen_20260521_183654.docx",
+  "source_size_bytes": 5718104,
+  "source_sha256": "510e0e026f77084b4ed76a0d6b603cfd9d577eb8846220473193f359a649251c",
+  "generator": "/home/yclcg/Transshield_final/tools/generate_competition_report.py"
+}

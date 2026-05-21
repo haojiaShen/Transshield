@@ -57,7 +57,7 @@
 - 2026-05-13 更新：
   - 效率优化：batch12 + depth10 = 69.57s/sample（3.07x 加速），argmax_match=91.67%，threshold_match=100%
   - 创新点：5 个核心创新点（ABY 混合协议已移除，fxp 精度约束验证为新增创新点 6）
-  - 作品报告：`docs/transshield_竞赛作品报告_最终版.docx`（含代码附录）
+  - 作品报告：`docs/transshield_竞赛作品报告_第二次修订版.docx`（含代码附录；旧 `最终版` 作为历史留存）
   - 创新性文档：`docs/transshield_innovation.md` 已更新为 5 个核心创新点
 - 2026-05-14 更新：
 - 当前不重训恢复路径：

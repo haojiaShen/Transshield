@@ -11,6 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
+// TransShield local vendor notice:
+// This file is redistributed as part of a locally adapted SPU subtree used by
+// TransShield. See `spu_vendored/MODIFICATIONS.md` for vendored-tree notes.
 
 #include "libspu/mpc/cheetah/protocol.h"
 

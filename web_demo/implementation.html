@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>密捷 TransShield｜系统实现</title>
+    <link rel="stylesheet" href="/site.css" />
+    <script defer src="/site.js"></script>
+  </head>
+  <body data-page="implementation">
+    <header class="shell-header" id="siteHeader"></header>
+    <main class="page-main">
+      <section class="page-section hero">
+        <div class="page-inner">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <span class="eyebrow">Implementation Hub / 系统实现目录</span>
+              <h1>实现层拆成三页：密态改写、控制面链路、仓内交付落点</h1>
+              <p class="lead">当前实现不再在同一页里混放公式、前端、服务端和交付文件。每类实现问题单独拆页，便于直接定位代码与证据。</p>
+              <div class="breadcrumb"><a href="/index.html">首页</a><span>系统实现</span></div>
+            </div>
+            <aside class="hero-panel">
+              <div class="hero-panel-head"><div><div class="mini-kicker">本组子页</div><h3>先看算法改写，再看工程闭环</h3></div></div>
+              <div class="list-card"><strong>实现 1</strong><p class="data-note">DynamicViT 密态改写、关键公式和安全友好算子族。</p></div>
+              <div class="list-card"><strong>实现 2</strong><p class="data-note">浏览器工作线程、服务端权威快检、审计与 replay 守卫。</p></div>
+              <div class="list-card"><strong>实现 3</strong><p class="data-note">仓内代码、脚本、报告生成链和许可证映射落点。</p></div>
+            </aside>
+          </div>
+        </div>
+      </section>
+      <section class="page-section">
+        <div class="page-inner">
+          <div class="page-card-grid three">
+            <article class="card route-card">
+              <div class="mini-kicker">Implementation 1</div>
+              <h3>DynamicViT 密态改写</h3>
+              <p class="lead route-summary">查看删 token 如何改写成固定图可执行的 keep-mask 表达，以及 F<sub>less</sub> / F<sub>mux</sub> 的落点。</p>
+              <div class="route-tags"><span class="route-tag">式 3-1</span><span class="route-tag">式 3-2</span><span class="route-tag">same-shape operator</span></div>
+              <a class="route-link" href="/implementation-rewrite.html">进入本页</a>
+            </article>
+            <article class="card route-card">
+              <div class="mini-kicker">Implementation 2</div>
+              <h3>控制面与快检链路</h3>
+              <p class="lead route-summary">查看浏览器工作线程、本地 DQA、服务端权威快检和审计链如何闭环。</p>
+              <div class="route-tags"><span class="route-tag">worker</span><span class="route-tag">authority checks</span><span class="route-tag">audit chain</span></div>
+              <a class="route-link" href="/implementation-control.html">进入本页</a>
+            </article>
+            <article class="card route-card">
+              <div class="mini-kicker">Implementation 3</div>
+              <h3>关键交付物与仓内落点</h3>
+              <p class="lead route-summary">查看演示程序、自动化验证脚本、报告生成脚本、复现文档和许可证映射文件的位置。</p>
+              <div class="route-tags"><span class="route-tag">repo paths</span><span class="route-tag">report generator</span><span class="route-tag">reproduce</span></div>
+              <a class="route-link" href="/implementation-delivery.html">进入本页</a>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="shell-footer" id="siteFooter"></footer>
+  </body>
+</html>

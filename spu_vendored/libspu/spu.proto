@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+// TransShield local modification notice:
+// This vendored SPU file is distributed inside a locally adapted TransShield tree.
+// See `spu_vendored/MODIFICATIONS.md` and `docs/transshield_bumblebee_spu_modifications.md`
+// for the maintained change inventory and provenance notes.
 
 // This file defines data structures that used to access and control SPU.
 // - IO access (data infeed & outfeed).

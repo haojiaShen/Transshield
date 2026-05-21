@@ -1,0 +1,644 @@
+{
+  "updated_at": "2026-05-19",
+  "default_bundle": {
+    "title": "当前正式主线",
+    "display_name": "医疗正式主线 + 金融压力测试口径（2026-05-20）",
+    "bundle_name": "frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+    "bundle_dir": "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+    "status": "medical_formal_mainline_finance_boundary_stress_locked",
+    "argmax_accuracy": 74.2366,
+    "threshold_accuracy": 92.7481,
+    "best_epoch": 8,
+    "argmax_match_ratio": 1.0,
+    "threshold_match_ratio": 1.0,
+    "spu_pipeline_overall_passed": true,
+    "spu_replay_overall_passed": true,
+    "communication_source": "页面把现场单次演示、医疗离线结果和金融批量实测分开展示，避免口径混用。",
+    "summary": "首页默认展示当前已锁定的正式口径：医疗采用动态安全剪枝与完整隐私推理；金融只保留低秩压缩压力样本与完整隐私压力验证，不再作为正式交付场景。",
+    "best_epoch_note": "医疗正式精度采用动态路径单独校准结果；金融区只引用当前保留的低秩压缩批量压力实测结果。"
+  },
+  "showcase_domains": {
+    "default_domain": "medical",
+    "summary": "本页展示一条正式主线和一条压力测试线：医疗用于现场正式演示，金融只做边界压力验证，两条线共用同一套动态安全剪枝与双向隐私方法。",
+    "items": [
+      {
+        "id": "medical",
+        "label": "医疗影像",
+        "eyebrow": "Formal Live Demo",
+        "headline": "医疗影像正式主线现场演示",
+        "summary": "现场演示时，图片先在浏览器本地完成预处理、质量预检、审计摘要并生成两份分片；正式部署时由医院侧服务器与 AI 公司侧服务器协同完成完整隐私推理，后端只接收分片并返回最终诊断结果。",
+        "scenario": "医院侧服务器与 AI 公司侧服务器协同推理",
+        "task": "PneumoniaMNIST 胸片二分类",
+        "input_format": "224×224 胸部 X 光图像",
+        "bundle": "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_aanone_20260507",
+        "model_config": "正式方案：动态安全剪枝部署档；另保留小样本快速演示档",
+        "live_demo_supported": true,
+        "metrics": [
+          {
+            "label": "验证集准确率",
+            "value": "92.75%",
+            "note": "动态路径单独校准，524 张验证样本"
+          },
+          {
+            "label": "正式判类阈值",
+            "value": "0.66196",
+            "note": "用于医疗正式部署"
+          },
+          {
+            "label": "完整隐私推理效率",
+            "value": "86.91s/sample",
+            "note": "32 张正式验证批次"
+          },
+          {
+            "label": "安全链路一致性",
+            "value": "argmax 100% / threshold 100%",
+            "note": "与动态参考路径逐项核对"
+          }
+        ],
+        "evidence": [
+          "医疗正式主线保留动态安全剪枝与完整隐私。",
+          "动态路径单独校准后，验证集阈值精度达到 92.7481%。",
+          "正式大样本验证批次达到 86.91s/sample；69.57s/sample 仅用于小样本工程展示。",
+          "浏览器端先做本地 DQA、审计哈希链和分片生成；服务端进入 SPU 前再做权威张量合法性快检。"
+        ],
+        "privacy": [
+          "host_plaintext_pixel_values_materialized=false",
+          "host_model_params_materialized=false",
+          "reveal_policy=final_logits_only"
+        ],
+        "display_notes": [
+          "医疗域负责现场上传与浏览器本地控制面演示。",
+          "正式部署参与方固定为医院侧服务器与 AI 公司侧服务器两方。",
+          "正式汇报默认引用 92.75% 与 86.91s/sample；小样本快档只作工程展示说明。"
+        ]
+      },
+      {
+        "id": "finance",
+        "label": "金融风控",
+        "eyebrow": "Boundary Stress Test",
+        "headline": "金融风控边界压力验证",
+        "summary": "金融特征先编码为图像，再沿用同一套动态安全剪枝与双向隐私方法完成推理。该区域不再作为正式交付场景，只保留内置压力样本与批量完整隐私实测，用于观察极端分布输入和动态路由稳定性。",
+        "scenario": "银行侧服务器与 AI 公司侧服务器协同检测",
+        "task": "信用卡欺诈二分类",
+        "input_format": "30 个金融特征编码后的灰度图",
+        "bundle": "artifacts/frozen_bundle_finance_lrd_rank192_20260515",
+        "model_config": "正式方案：低秩压缩 + 动态安全剪枝",
+        "live_demo_supported": true,
+        "metrics": [
+          {
+            "label": "压力样本一致性",
+            "value": "100.0%",
+            "note": "8 条压力样本全部一致"
+          },
+          {
+            "label": "参数压缩比例",
+            "value": "68.39%",
+            "note": "正式部署保留压缩模型"
+          },
+          {
+            "label": "压力样本推理效率",
+            "value": "105.16s/sample",
+            "note": "8 条压力样本批量实测"
+          },
+          {
+            "label": "动态 / 静态对照",
+            "value": "预测 100% 一致",
+            "note": "静态仅略快，保留为回退方案"
+          }
+        ],
+        "evidence": [
+          "金融域不再作为正式交付场景，只保留低秩压缩 + 动态安全剪枝 + 完整隐私的边界压力验证。",
+          "动态与静态同条件预测一致，静态只保留为回退方案。",
+          "金融域重点观察极端分布输入和动态路由稳定性，并支持现场触发真实完整隐私推理。"
+        ],
+        "privacy": [
+          "host_plaintext_pixel_values_materialized=false",
+          "host_model_params_materialized=false",
+          "reveal_policy=final_logits_only",
+          "spu_params_mode=secret",
+          "input_mode=party_local_debug_share_load"
+        ],
+        "validated_secure_run": {
+          "title": "金融动态全隐私批量实测",
+          "mode": "verified_dynamic_secure_pruning",
+          "sample_count": 8,
+          "elapsed_sec": 841.2836337089539,
+          "sec_per_sample": 105.16045421361923,
+          "argmax_match_ratio": 1.0,
+          "threshold_match_ratio": 1.0,
+          "logits_max_abs_error": 0.3179891109466553,
+          "probabilities_max_abs_error": 0.13837793469429016,
+          "input_mode": "party_local_debug_share_load",
+          "spu_params_mode": "secret",
+          "spu_pruning_mode": "secure_internal_pruning",
+          "host_plaintext_pixel_values_materialized": false,
+          "host_model_params_materialized": false,
+          "reveal_policy": "final_logits_only",
+          "summary": "这里展示的是已经跑完的真实 dynamic secure pruning 批量完整隐私压力测试，不是临时拼出来的演示流程。"
+        },
+        "display_notes": [
+          "金融域使用内置压力样本做现场验证，不额外上传新的用户数据。",
+          "正式部署参与方固定为银行侧服务器与 AI 公司侧服务器两方。",
+          "这一域的作用是观察同一套方法在边界压力输入下的稳定性。"
+        ]
+      }
+    ]
+  },
+  "external_comparison": {
+    "title": "外部项目对比",
+    "summary": "医疗部分的对比只放同数据集、真实跑出来的结果。",
+    "source_run": "medical_dynamic_secure_mainline_locked",
+    "fairness_passed": true,
+    "fairness_note": "医疗对比只保留同数据集真实结果；动态正式主线与静态对照线已分开展示，不再混用旧口径。",
+    "transshield_verified": {
+      "argmax_accuracy": 74.2366,
+      "threshold_accuracy": 92.7481,
+      "auc": 0.9639150500297546
+    },
+    "mpcvit_same_dataset": {
+      "argmax_accuracy": 96.6031,
+      "threshold_accuracy": 96.9847,
+      "auc": 0.9927,
+      "seed_count": 5,
+      "status": "同数据集明文外部基线（5-seed mean）"
+    },
+    "mpcvit_seed_mean": {
+      "label": "MPCViT 5-seed 均值",
+      "argmax_accuracy": 96.6031,
+      "threshold_accuracy": 96.9847,
+      "auc": 0.9927,
+      "seed_count": 5,
+      "status": "同路径同样本量公平对比均值"
+    },
+    "mpcvit_3seed_mean": {
+      "label": "MPCViT 5-seed 均值",
+      "argmax_accuracy": 96.6031,
+      "threshold_accuracy": 96.9847,
+      "auc": 0.9927,
+      "seed_count": 5,
+      "status": "兼容旧字段名；当前实际使用 5-seed 汇总值"
+    },
+    "gap_to_mpcvit_reference": {
+      "argmax_accuracy_gap": 22.3665,
+      "threshold_accuracy_gap": 4.2366,
+      "auc_gap": 0.028784949970245363
+    },
+    "gap_to_mpcvit_best_by_argmax": {
+      "argmax_accuracy_gap": 22.3665,
+      "threshold_accuracy_gap": 4.2366,
+      "auc_gap": 0.028784949970245363
+    },
+    "additional_rows": [
+      {
+        "method": "Transshield（ours）",
+        "training": "动态安全剪枝正式主线",
+        "threshold_accuracy": 92.7481,
+        "auc": 0.9639150500297546,
+        "note": "医疗正式主线；动态路径单独校准；完整隐私"
+      },
+      {
+        "method": "Transshield（static control）",
+        "training": "固定结构静态对照线",
+        "threshold_accuracy": 91.9847,
+        "auc": 0.9679,
+        "note": "仅作静态对照，不代表正式主线"
+      },
+      {
+        "method": "MPCViT [3]",
+        "training": "静态 ViT，5-seed mean",
+        "threshold_accuracy": 96.9847,
+        "auc": 0.9927,
+        "note": "同数据集强明文参考"
+      },
+      {
+        "method": "DeiT-S Static",
+        "training": "无剪枝，depth12，20ep",
+        "threshold_accuracy": 95.99,
+        "auc": 0.9899,
+        "note": "同架构静态上界参考"
+      },
+      {
+        "method": "Original DynamicViT",
+        "training": "原始动态剪枝，可复现基线（5 epoch）",
+        "threshold_accuracy": 75.38167834281921,
+        "auc": 0.6635247072265067,
+        "note": "当前仓内可复现的未安全化边界重写基线"
+      }
+    ],
+    "finance_note": "金融域当前不主打外部基线表，展示重点是边界压力样本、静态回退对照和完整隐私闭环，而不是把它包装成第二条正式主线。"
+  },
+  "competition_narrative": {
+    "title": "比赛展示顺序",
+    "steps": [
+      {
+        "title": "先讲要解决什么",
+        "summary": "医疗和金融都需要让业务使用方侧服务器保住原始输入，同时让 AI 公司侧服务器保住参数，两方在 2PC 环境里完成联合推理。"
+      },
+      {
+        "title": "再讲系统如何做到",
+        "summary": "核心不是普通前端看板，而是动态剪枝边界重写、双向隐私输入以及 SPU/2PC 执行链路。"
+      },
+      {
+        "title": "然后给真实证据",
+        "summary": "把离线精度、全隐私运行、一致性、外部对比和部署边界分区展示，避免混口径。"
+      },
+      {
+        "title": "最后补工程落地",
+        "summary": "说明 live demo 的真实交互边界、生产部署形态和跨域可迁移性。"
+      }
+    ]
+  },
+  "pruning_targets": {
+    "title": "默认剪枝率",
+    "base_rate": 0.7,
+    "summary": "默认采用三阶段 token pruning。这里给的是配置目标；单图页面展示的是当前图片的实际保留量。",
+    "visual_note": "图里绿色表示继续保留，灰色表示本阶段被 masking 停用；这不是病灶分割图。",
+    "stages": [
+      {
+        "stage": 1,
+        "keep_ratio": 0.7,
+        "prune_ratio": 0.3,
+        "target_tokens_after": 137
+      },
+      {
+        "stage": 2,
+        "keep_ratio": 0.49,
+        "prune_ratio": 0.51,
+        "target_tokens_after": 96
+      },
+      {
+        "stage": 3,
+        "keep_ratio": 0.343,
+        "prune_ratio": 0.657,
+        "target_tokens_after": 67
+      }
+    ]
+  },
+  "operator_replacements": {
+    "title": "安全友好算子设计",
+    "summary": "项目把最不利于安全计算的环节改写成更适合协议实现的形式，同时保持原有 pruning 语义。",
+    "items": [
+      {
+        "name": "Activation",
+        "before": "GELU",
+        "after": "Square / quadratic activation",
+        "effect": "减少复杂非线性，便于后续 secure 协议实现。",
+        "scope": "当前展示模型已启用"
+      },
+      {
+        "name": "Mask pruning",
+        "before": "直接删 token",
+        "after": "用 masking 表达保留 / 置零",
+        "effect": "保留张量形状，更容易和 secure 路径对齐。",
+        "scope": "当前展示模型已启用"
+      },
+      {
+        "name": "Pruning boundary",
+        "before": "argsort / top-k 边界",
+        "after": "threshold compare + F_less / tie policy",
+        "effect": "把排序边界改写成可安全比较的形式。",
+        "scope": "legacy secure sidecar 已验证；最终 Web 主路径已切到 E2E"
+      },
+      {
+        "name": "Attention",
+        "before": "softmax attention",
+        "after": "normalized approximate attention",
+        "effect": "针对 secure 场景里的高通信热点准备替代配方。",
+        "scope": "repo 已提供 secure-friendly recipe"
+      }
+    ]
+  },
+  "communication_evidence": {
+    "title": "通信说明",
+    "summary": "页面里的通信量来自当前这条正式演示流程；旧测试结果只作为历史说明，不混进现场展示数字。",
+    "external_reference": {
+      "source": "MPCFormer secure transformer benchmark",
+      "note": "该外部 secure benchmark 仅用于说明 secure Transformer 的通信热点通常集中在 attention / 非线性等环节，不用于当前页面的单图直接数字比较。"
+    }
+  },
+  "standardized_secure_benchmark": {
+    "title": "统一 secure benchmark（历史 proxy 结果）",
+    "status": "available",
+    "updated_at": "2026-04-23",
+    "summary": "这部分是 2026-04-23 实际跑过的 proxy benchmark，用来说明统一 secure harness 下的通信趋势与算子替换收益；它不是当前 2026-05-07 主展示 bundle 的离线指标，也不是网页单图 live run。",
+    "run_entry": "artifacts/server_inference_friendly_pack/run_standardized_secure_external_benchmark.sh",
+    "source_runs": {
+      "architecture_proxy": "results/standardized_secure_benchmark/standardized_secure_benchmark_20260423_130435/standardized_secure_benchmark.json",
+      "same_shape_operator_proxy": "results/standardized_secure_benchmark/standardized_secure_benchmark_20260423_132121_same_shape/standardized_secure_benchmark.json"
+    },
+    "scope_note": "该 benchmark 只用于同一 secure transformer harness 下的 proxy 开销对比，不等同于 full-val 医学图像 pipeline，也不能和网页单图 live run 混用。",
+    "scope": {
+      "benchmark_harness": "MPCFormer local 2PC configurable transformer benchmark",
+      "is_full_val_image_pipeline": false,
+      "is_single_image_live_run": false,
+      "summary": "这些结果只表示同一 secure transformer benchmark harness 下的通信 / 时间 profile，不能和当前网页单图 live run 或 full-val Transshield SPU sidecar 通信量混为一谈。"
+    },
+    "key_takeaway": "固定同一 DeiT-S 形状时，Transshield secure-friendly ops 将通信压到 baseline ops 的 0.149x、时间压到 0.528x，说明算子替换本身是正向优化；architecture_proxy 变重主要来自结构尺度差异。",
+    "profiles": [
+      {
+        "comparison_group": "same_shape_operator_proxy",
+        "profile_id": "transshield_ops_same_shape_proxy",
+        "display_name": "Transshield secure-friendly ops same-shape proxy",
+        "role": "current_project",
+        "model_source": "Transshield operator replacement proxy",
+        "scope_note": "固定 DeiT-S 形状，仅替换 secure-friendly activation / softmax proxy，用于观察算子配置开销。",
+        "config": {
+          "batch_size": 1,
+          "num_hidden_layers": 12,
+          "hidden_size": 384,
+          "intermediate_size": 1536,
+          "sequence_length": 197,
+          "num_attention_heads": 6,
+          "hidden_act": "quad",
+          "softmax_act": "softmax_2QUAD",
+          "warmup": 1,
+          "repeats": 3,
+          "world_size": 2
+        },
+        "metrics": {
+          "measurement_count": 6,
+          "module_comm_byte_mean": 923846912.0,
+          "module_comm_mib_mean": 881.049072265625,
+          "total_time_mean_sec": 8.10450275739034,
+          "communication_breakdown_byte_mean": {
+            "act_comm_byte": 116195328.0,
+            "embed_comm_byte": 38076416.0,
+            "linear_comm_byte": 558739584.0,
+            "norm_comm_byte": 60825600.0,
+            "softmax_comm_byte": 150009984.0
+          }
+        }
+      },
+      {
+        "comparison_group": "same_shape_operator_proxy",
+        "profile_id": "baseline_ops_same_shape_proxy",
+        "display_name": "External baseline ops same-shape proxy",
+        "role": "external_baseline",
+        "model_source": "MPCFormer baseline transformer ops proxy",
+        "scope_note": "固定 DeiT-S 形状，使用外部 secure transformer benchmark 中的 baseline 非线性 / softmax 配置。",
+        "config": {
+          "batch_size": 1,
+          "num_hidden_layers": 12,
+          "hidden_size": 384,
+          "intermediate_size": 1536,
+          "sequence_length": 197,
+          "num_attention_heads": 6,
+          "hidden_act": "relu",
+          "softmax_act": "softmax",
+          "warmup": 1,
+          "repeats": 3,
+          "world_size": 2
+        },
+        "metrics": {
+          "measurement_count": 6,
+          "module_comm_byte_mean": 6206195456.0,
+          "module_comm_mib_mean": 5918.689208984375,
+          "total_time_mean_sec": 15.336534976959229,
+          "communication_breakdown_byte_mean": {
+            "act_comm_byte": 1684832256.0,
+            "embed_comm_byte": 38076416.0,
+            "linear_comm_byte": 558739584.0,
+            "norm_comm_byte": 60825600.0,
+            "softmax_comm_byte": 3863721600.0
+          }
+        }
+      },
+      {
+        "comparison_group": "architecture_proxy",
+        "profile_id": "transshield_final_arch_proxy",
+        "display_name": "Transshield 当前最终模型 proxy",
+        "role": "current_project",
+        "model_source": "artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430 · DeiT-S / 224px / formal medical bundle source with dynamic secure pruning runtime",
+        "scope_note": "同一 MPCFormer local 2PC benchmark harness；使用当前最终模型的 transformer 结构参数近似。",
+        "config": {
+          "batch_size": 1,
+          "num_hidden_layers": 12,
+          "hidden_size": 384,
+          "intermediate_size": 1536,
+          "sequence_length": 197,
+          "num_attention_heads": 6,
+          "hidden_act": "quad",
+          "softmax_act": "softmax",
+          "warmup": 1,
+          "repeats": 3,
+          "world_size": 2
+        },
+        "metrics": {
+          "measurement_count": 6,
+          "module_comm_byte_mean": 4637558528.0,
+          "module_comm_mib_mean": 4422.720458984375,
+          "total_time_mean_sec": 13.48206889629364,
+          "communication_breakdown_byte_mean": {
+            "act_comm_byte": 116195328.0,
+            "embed_comm_byte": 38076416.0,
+            "linear_comm_byte": 558739584.0,
+            "norm_comm_byte": 60825600.0,
+            "softmax_comm_byte": 3863721600.0
+          }
+        }
+      },
+      {
+        "comparison_group": "architecture_proxy",
+        "profile_id": "mpcvit_vit_7_4_32_arch_proxy",
+        "display_name": "MPCViT vit_7_4_32 proxy",
+        "role": "external_baseline",
+        "model_source": "external_baselines/mpcvit · vit_7_4_32 / 32px",
+        "scope_note": "同一 MPCFormer local 2PC benchmark harness；使用 MPCViT 当前同数据集 baseline 的结构参数近似。",
+        "config": {
+          "batch_size": 1,
+          "num_hidden_layers": 7,
+          "hidden_size": 256,
+          "intermediate_size": 512,
+          "sequence_length": 65,
+          "num_attention_heads": 4,
+          "hidden_act": "relu",
+          "softmax_act": "softmax_2RELU",
+          "warmup": 1,
+          "repeats": 3,
+          "world_size": 2
+        },
+        "metrics": {
+          "measurement_count": 6,
+          "module_comm_byte_mean": 275312832.0,
+          "module_comm_mib_mean": 262.55877685546875,
+          "total_time_mean_sec": 4.562192837397258,
+          "communication_breakdown_byte_mean": {
+            "act_comm_byte": 108093440.0,
+            "embed_comm_byte": 21037056.0,
+            "linear_comm_byte": 79249856.0,
+            "norm_comm_byte": 8110080.0,
+            "softmax_comm_byte": 58822400.0
+          }
+        }
+      }
+    ],
+    "comparisons": [
+      {
+        "comparison_group": "same_shape_operator_proxy",
+        "left_display_name": "Transshield secure-friendly ops same-shape proxy",
+        "left_profile_id": "transshield_ops_same_shape_proxy",
+        "right_display_name": "External baseline ops same-shape proxy",
+        "right_profile_id": "baseline_ops_same_shape_proxy",
+        "module_comm_delta_bytes": -5282348544.0,
+        "module_comm_ratio_left_over_right": 0.1488588167339859,
+        "time_delta_sec": -7.232032219568888,
+        "time_ratio_left_over_right": 0.5284441870061329,
+        "scope_note": "同一模型形状、同一 2PC benchmark harness；主要用于观察算子配置导致的安全开销差异。"
+      },
+      {
+        "comparison_group": "architecture_proxy",
+        "left_display_name": "Transshield 当前最终模型 proxy",
+        "left_profile_id": "transshield_final_arch_proxy",
+        "right_display_name": "MPCViT vit_7_4_32 proxy",
+        "right_profile_id": "mpcvit_vit_7_4_32_arch_proxy",
+        "module_comm_delta_bytes": 4362245696.0,
+        "module_comm_ratio_left_over_right": 16.844687166633772,
+        "time_delta_sec": 8.919876058896381,
+        "time_ratio_left_over_right": 2.955172956692728,
+        "scope_note": "同一 MPCFormer local 2PC benchmark harness；各 profile 使用各自模型结构参数。这不是 full-val 医学图像 pipeline 通信量。"
+      }
+    ]
+  },
+  "e2e_secure_approx_deploy": {
+    "title": "E2E 全隐私近似部署路径",
+    "status": "secret_depth6_clip0_showcase_ready",
+    "summary": "当前 Web 主路径默认使用 secret_blockwise_stage 的 depth6 + clip0 展示线：driver 不读取 plaintext pixel_values，不读取私有 share tensor，P1/P2 device function 各自加载 share，最终只 reveal logits。该口径当前可展示，但不要外推成 secret full-depth 已稳定。",
+    "run_entry": "artifacts/server_inference_friendly_pack/run_e2e_secure_whole_forward.sh",
+    "eval_entry": "artifacts/server_inference_friendly_pack/run_e2e_secure_secret_isolated_eval.sh",
+    "privacy_fields_summary": "finite_logits=true, input_pt=null, input_mode=party_local_debug_share_load, host_plaintext_pixel_values_materialized=false, host_private_share_tensors_loaded=false, private_input_paths_redacted=true",
+    "deploy_config": [
+      {
+        "name": "Depth",
+        "value": "12 / full static depth"
+      },
+      {
+        "name": "Input",
+        "value": "split public + P1/P2 party manifests, party-local share load"
+      },
+      {
+        "name": "Params",
+        "value": "secret_blockwise_stage"
+      },
+      {
+        "name": "LayerNorm",
+        "value": "public_calibrated"
+      },
+      {
+        "name": "Attention",
+        "value": "uniform"
+      },
+      {
+        "name": "Activation",
+        "value": "fixed_square"
+      },
+      {
+        "name": "Batch",
+        "value": "E2E_SPU_BATCH_SIZE=1, fresh runtime per request"
+      },
+      {
+        "name": "Output calibration",
+        "value": "secret depth6 clip0 balanced8 calibration"
+      }
+    ],
+    "latest_validated_run": {
+      "sample_count": 8,
+      "elapsed_sec": 0.0,
+      "logits": [
+        [
+          -0.012359619140625,
+          0.1743316650390625
+        ]
+      ],
+      "probabilities": [
+        [
+          0.45346227288246155,
+          0.5465376973152161
+        ]
+      ],
+      "argmax_predictions": [
+        1
+      ],
+      "threshold_predictions": [
+        0
+      ],
+      "decision": "balanced8 accepted raw path completed with no outlier; offline output calibration reaches argmax 100% / threshold 100% on the accepted 8 samples"
+    },
+    "accuracy_comparison": {
+      "original_plaintext_argmax_accuracy": 93.70229244232178,
+      "original_plaintext_threshold_accuracy": 94.08397078514099,
+      "e2e_accuracy_status": "balanced8 accepted raw + offline output calibration: argmax 100%, threshold 100%",
+      "current_conclusion": "当前 Web 展示线应表述为 secret depth6 clip0 showcase，而不是 secret full-depth。depth8+ 对这个 bundle 仍会出现 unstable / outlier。",
+      "recommended_eval": "继续扩大 secret 数据集级评测时，保持单样本 fresh runtime、logit guard 和 depth6 + clip0 口径。"
+    },
+    "limitations": [
+      "public-calibrated LN replaces private per-sample LN",
+      "uniform attention replaces secret softmax attention",
+      "fixed_square activation replaces original bundle activation for stable full-depth SPU",
+      "formal dynamic secure pruning mainline evidence is tracked separately; this browser-facing approximate showcase path should not be read as the only mainline record",
+      "current web demo generates shares in the browser and does not upload the raw image or plaintext pixel_values; production deployment still needs independent P1/P2 upload endpoints and trust domains"
+    ]
+  },
+  "plaintext_stability_closure": {
+    "title": "两次独立训练稳定性验证",
+    "status": "closed_for_current_scope",
+    "summary": "这里的 Seed 1 / Seed 2 表示两次独立训练实验：训练配置相同，只有随机种子不同，用来验证当前训练方案是否稳定。它们不参与网页当前图片的在线推理，也不是部署时同时使用的两个模型。",
+    "criterion": {
+      "achieved": true,
+      "min_best_acc1_percent": 85.0,
+      "min_final_acc1_percent": 83.0,
+      "max_best_final_gap_percent": 3.0
+    },
+    "key_configs": [
+      {
+        "label": "学习率",
+        "value": "2e-5",
+        "meaning": "整体更新步长"
+      },
+      {
+        "label": "ratio_weight",
+        "value": "3.0",
+        "meaning": "控制剪枝比例约束"
+      },
+      {
+        "label": "warmup_steps",
+        "value": "50",
+        "meaning": "前期缓启动"
+      },
+      {
+        "label": "clip_grad",
+        "value": "1.0",
+        "meaning": "限制梯度峰值"
+      },
+      {
+        "label": "Square GELU",
+        "value": "on",
+        "meaning": "启用安全友好激活"
+      },
+      {
+        "label": "Mask pruning",
+        "value": "on",
+        "meaning": "用 masking 表达 token 保留"
+      }
+    ],
+    "seed_results": [
+      {
+        "seed": 1,
+        "best_acc1": 87.21,
+        "final_acc1": 85.878,
+        "best_final_gap": 1.332
+      },
+      {
+        "seed": 2,
+        "best_acc1": 92.748,
+        "final_acc1": 91.031,
+        "best_final_gap": 1.717
+      }
+    ],
+    "notes": [
+      "Seed 1 / Seed 2：表示两次独立训练，只改变随机初始化、数据打乱和增强顺序，用来检查训练稳定性。",
+      "它们不是当前网页上传图片的两种模式，也不是 secure / plaintext 两条在线推理路径。",
+      "debug80：只看数值是否有限、流程是否跑通。",
+      "full20：训练跑完整后，再看最终精度和稳定性。"
+    ]
+  }
+}

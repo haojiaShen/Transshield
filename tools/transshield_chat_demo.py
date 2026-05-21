@@ -1,27 +1,37 @@
 import argparse
-import cgi
+import email.policy
+import hashlib
+import heapq
 import json
 import os
 import re
 import shlex
 import signal
+import socket
 import stat
 import subprocess
 import sys
+import threading
 import time
 import uuid
+from collections import OrderedDict, deque
+from dataclasses import dataclass, field
+from email.parser import BytesParser
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Optional
 from urllib.parse import urlparse
 
+import numpy as np
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-HTML_PATH = REPO_ROOT / 'web_demo' / 'index.html'
-DEMO_SUMMARY_PATH = REPO_ROOT / 'artifacts' / 'web_demo_assets' / 'best_demo_content.json'
+WEB_DEMO_ROOT = REPO_ROOT / 'web_demo'
+HTML_PATH = WEB_DEMO_ROOT / 'index.html'
+DEMO_SUMMARY_PATH = REPO_ROOT / 'artifacts' / 'web_demo_assets' / 'demo_content_summary.json'
 ALLOWED_UPLOAD_SUFFIXES = {'.png', '.jpg', '.jpeg', '.webp', '.bmp'}
 DEFAULT_MAX_UPLOAD_MB = 10
 DEFAULT_SECURE_TIMEOUT_SEC = 600
@@ -33,10 +43,74 @@ DEFAULT_FINANCE_SAMPLES_PER_CLASS = 2
 E2E_SHARE_SHAPE = [1, 3, 224, 224]
 E2E_SHARE_FLOAT_COUNT = 1 * 3 * 224 * 224
 E2E_SHARE_BYTE_COUNT = E2E_SHARE_FLOAT_COUNT * 4
+MEDICAL_CONTROL_PLANE_CONTRACT_VERSION = 'medical_control_plane_v7'
+MEDICAL_MULTIPART_MAX_BYTES = 5 * 1024 * 1024
+MEDICAL_MULTIPART_MAX_BOUNDARIES = 12
+MEDICAL_MULTIPART_MAX_CONTENT_DISPOSITION = 10
+MEDICAL_MULTIPART_MAX_HEADER_BYTES = 8 * 1024
+MEDICAL_MULTIPART_MAX_TOP_LEVEL_PARTS = 7
+JSON_PART_MAX_BYTES = 4096
+QUALITY_SUMMARY_MAX_BYTES = 1024
+CONTROL_PLANE_METRICS_MAX_BYTES = 1024
+AUDIT_MANIFEST_MAX_BYTES = 2048
+MEDICAL_REQUEST_FIELDS = {
+    'domain',
+    'client_contract_version',
+    'share0',
+    'share1',
+    'client_quality_summary',
+    'client_audit_manifest',
+    'client_control_plane_metrics',
+}
+FINANCE_REQUEST_FIELDS = {'domain', 'sample_id'}
+JSON_INT_MAX_DIGITS = 32
+JSON_FLOAT_MAX_CHARS = 64
+JSON_FLOAT_MAX_EXPONENT = 6
+REPLAY_NONCE_TTL_SEC = 600.0
+REPLAY_PAYLOAD_TTL_SEC = 120.0
+REPLAY_GUARD_MAX_ITEMS = 20_000
+IP_WINDOW_LIMIT = 6
+IP_WINDOW_SEC = 60.0
+IP_INFLIGHT_LIMIT = 2
+IP_SHARD_COUNT = 64
+IP_SHARD_CAPACITY = 1536
+IP_STALE_TTL_SEC = 600.0
+IP_GUARD_EVICT_BATCH = 500
+REPLAY_GUARD_EVICT_BATCH = 500
+REQUEST_JSON_PARSE_RE = re.compile(rb'[\r\n]')
 SPU_LINK_DETAILS_RE = re.compile(
     r'Link details: total send bytes (?P<send>\d+), recv bytes (?P<recv>\d+), '
     r'send actions (?P<send_actions>\d+), recv actions (?P<recv_actions>\d+)'
 )
+HEX_SHA256_RE = re.compile(r'^[0-9a-f]{64}$')
+WEB_DEMO_ALLOWED_EXTENSIONS = {
+    '.html',
+    '.css',
+    '.js',
+    '.png',
+    '.jpg',
+    '.jpeg',
+    '.webp',
+    '.svg',
+    '.json',
+}
+
+
+@dataclass
+class IpState:
+    window: deque = field(default_factory=deque)
+    inflight: int = 0
+    last_seen_monotonic: float = 0.0
+
+
+@dataclass
+class RawPart:
+    name: str
+    headers: dict
+    body_start: int
+    body_end: int
+    filename: Optional[str] = None
+    content_type: Optional[str] = None
 
 
 def bool_from_env(name: str, default: bool = False) -> bool:
@@ -88,7 +162,7 @@ def build_manifest_demo_summary(manifest):
     return {
         'updated_at': None,
         'default_bundle': {
-            'title': '当前默认展示 bundle',
+            'title': '当前正式展示口径',
             'bundle_name': manifest.get('bundle_name'),
             'bundle_dir': 'artifacts/frozen_bundle_secure_static_depth12_uniform_fixed_square_epoch8_20260430',
             'status': manifest.get('status'),
@@ -99,8 +173,8 @@ def build_manifest_demo_summary(manifest):
             'threshold_match_ratio': verified.get('threshold_match_ratio'),
             'spu_pipeline_overall_passed': verified.get('spu_pipeline_overall_passed'),
             'spu_replay_overall_passed': verified.get('spu_replay_overall_passed'),
-            'communication_source': '本页面仅展示当前 E2E SPU live run 通信量',
-            'summary': '前端默认加载当前 secure-static 正式交付 bundle，里面放的是当前主展示模型的权重、阈值和运行配置。',
+            'communication_source': '本页面仅展示当前保留的正式运行通信量',
+            'summary': '前端默认加载当前正式展示口径：医疗采用动态安全剪枝与完整隐私推理；金融只保留低秩压缩压力样本与完整隐私压力验证。',
         },
         'plaintext_stability_closure': None,
     }
@@ -140,6 +214,245 @@ def public_sample_metadata(sample: dict):
         'ground_truth_index': sample['ground_truth_index'],
         'ground_truth_label': sample['ground_truth_label'],
         'preview_url': sample['preview_url'],
+    }
+
+
+def parse_content_type_boundary(content_type: str) -> Optional[bytes]:
+    match = re.search(r'boundary=(?:"([^"]+)"|([^;]+))', content_type, re.IGNORECASE)
+    if not match:
+        return None
+    value = match.group(1) or match.group(2)
+    if not value:
+        return None
+    return value.encode('utf-8', 'strict')
+
+
+def parse_part_headers_bytes(header_bytes: bytes) -> dict:
+    headers = {}
+    for line in header_bytes.split(b'\r\n'):
+        if not line:
+            continue
+        if b':' not in line:
+            raise ValueError('invalid multipart header line')
+        key, value = line.split(b':', 1)
+        headers[key.decode('ascii', 'strict').strip().lower()] = value.decode('latin-1').strip()
+    return headers
+
+
+def parse_content_disposition(value: str) -> dict:
+    pieces = [piece.strip() for piece in value.split(';') if piece.strip()]
+    if not pieces:
+        return {}
+    result = {'_kind': pieces[0].lower()}
+    for piece in pieces[1:]:
+        if '=' not in piece:
+            continue
+        key, raw = piece.split('=', 1)
+        result[key.strip().lower()] = raw.strip().strip('"')
+    return result
+
+
+def build_mime_message(content_type: str, body: bytes) -> bytes:
+    return (
+        f'Content-Type: {content_type}\r\nMIME-Version: 1.0\r\n\r\n'.encode('utf-8')
+        + body
+    )
+
+
+def strict_json_int(value: str):
+    if len(value.lstrip('+-')) > JSON_INT_MAX_DIGITS:
+        raise ValueError('json integer token too large')
+    return int(value)
+
+
+def strict_json_float(value: str):
+    if len(value) > JSON_FLOAT_MAX_CHARS:
+        raise ValueError('json float token too large')
+    lower = value.lower()
+    if 'e' in lower:
+        _, exponent = lower.split('e', 1)
+        exponent_value = int(exponent)
+        if abs(exponent_value) > JSON_FLOAT_MAX_EXPONENT:
+            raise ValueError('json float exponent too large')
+    return float(value)
+
+
+def strict_json_constant(value: str):
+    raise ValueError(f'json constant not allowed: {value}')
+
+
+def ensure_sha256_hex(name: str, value) -> str:
+    text = str(value or '').strip().lower()
+    if not HEX_SHA256_RE.fullmatch(text):
+        raise ValueError(f'{name} must be a lowercase 64-char sha256 hex string')
+    return text
+
+
+def server_sha256_hex(payload: bytes) -> str:
+    return hashlib.sha256(payload).hexdigest()
+
+
+def make_share_digest(label: str, payload: bytes) -> str:
+    length_prefix = len(payload).to_bytes(8, byteorder='big', signed=False)
+    digest = hashlib.blake2s()
+    digest.update(label.encode('ascii'))
+    digest.update(b'|')
+    digest.update(length_prefix)
+    digest.update(payload)
+    return digest.hexdigest()
+
+
+def make_payload_fingerprint(share0_bytes: bytes, share1_bytes: bytes) -> str:
+    share0_digest = make_share_digest('share0', share0_bytes)
+    share1_digest = make_share_digest('share1', share1_bytes)
+    payload = f'v7|l0:{len(share0_bytes)}|l1:{len(share1_bytes)}|s0:{share0_digest}|s1:{share1_digest}'
+    return hashlib.blake2s(payload.encode('utf-8')).hexdigest()
+
+
+def bytes_to_float32_aligned(payload: bytes) -> np.ndarray:
+    if len(payload) % 4 != 0:
+        raise ValueError('payload length is not aligned to 4 bytes')
+    return np.frombuffer(payload, dtype='<u4').copy()
+
+
+def flush_tiny_values_inplace(values: np.ndarray, threshold: float = 1e-30):
+    mask = np.abs(values) < threshold
+    if np.any(mask):
+        values[mask] = np.float32(0.0)
+
+
+def contains_subnormal_values(share_u32: np.ndarray) -> bool:
+    exponent_mask = np.uint32(0x7F800000)
+    mantissa_mask = np.uint32(0x007FFFFF)
+    exponent_zero = (share_u32 & exponent_mask) == 0
+    mantissa_nonzero = (share_u32 & mantissa_mask) != 0
+    return bool(np.any(exponent_zero & mantissa_nonzero))
+
+
+def compute_luma_metrics(rgb_tensor: np.ndarray) -> dict:
+    rgb = np.clip(rgb_tensor.astype(np.float32, copy=False), 0.0, 1.0)
+    r = rgb[0, 0]
+    g = rgb[0, 1]
+    b = rgb[0, 2]
+    luma = 0.299 * r + 0.587 * g + 0.114 * b
+    p05, p95 = np.percentile(luma, [5, 95])
+    overexposed_ratio = float(np.mean(luma >= 0.95))
+    underexposed_ratio = float(np.mean(luma <= 0.05))
+    effective_luma_ratio = float(np.mean((luma >= 0.02) & (luma <= 0.98)))
+    lap = (
+        -4.0 * luma[1:-1, 1:-1]
+        + luma[:-2, 1:-1]
+        + luma[2:, 1:-1]
+        + luma[1:-1, :-2]
+        + luma[1:-1, 2:]
+    )
+    return {
+        'mean_luma': float(np.mean(luma)),
+        'std_luma': float(np.std(luma)),
+        'overexposed_ratio': overexposed_ratio,
+        'underexposed_ratio': underexposed_ratio,
+        'effective_luma_ratio': effective_luma_ratio,
+        'dynamic_range_p95_p05': float(p95 - p05),
+        'laplacian_variance': float(np.var(lap)),
+    }
+
+
+def validate_quality_summary_object(payload: dict):
+    required_keys = (
+        'mean_luma',
+        'std_luma',
+        'overexposed_ratio',
+        'underexposed_ratio',
+        'effective_luma_ratio',
+        'dynamic_range_p95_p05',
+        'laplacian_variance',
+    )
+    for key in required_keys:
+        value = payload.get(key)
+        if not isinstance(value, (int, float)) or not np.isfinite(float(value)):
+            raise ValueError(f'client_quality_summary.{key} must be a finite number')
+
+
+def validate_control_plane_metrics_object(payload: Optional[dict]):
+    if payload is None:
+        return
+    allowed_keys = {
+        'decode_ms',
+        'preprocess_ms',
+        'dqa_ms',
+        'hash_ms',
+        'share_build_ms',
+        'total_ms',
+    }
+    for key, value in payload.items():
+        if key not in allowed_keys:
+            continue
+        if not isinstance(value, (int, float)) or not np.isfinite(float(value)) or float(value) < 0.0:
+            raise ValueError(f'client_control_plane_metrics.{key} must be a finite non-negative number')
+
+
+def build_quality_assurance(server_summary: dict, client_summary: Optional[dict]) -> dict:
+    severe_reasons = []
+    warning_reasons = []
+    if server_summary['overexposed_ratio'] > 0.40:
+        severe_reasons.append('overexposed_ratio>0.40')
+    elif server_summary['overexposed_ratio'] > 0.15:
+        warning_reasons.append('overexposed_ratio>0.15')
+    if server_summary['underexposed_ratio'] > 0.40:
+        severe_reasons.append('underexposed_ratio>0.40')
+    elif server_summary['underexposed_ratio'] > 0.15:
+        warning_reasons.append('underexposed_ratio>0.15')
+    if server_summary['laplacian_variance'] < 1e-4 and (
+        server_summary['effective_luma_ratio'] < 0.10
+        or server_summary['dynamic_range_p95_p05'] < 0.02
+    ):
+        severe_reasons.append('degenerate_structure')
+    elif server_summary['laplacian_variance'] < 5e-4:
+        warning_reasons.append('laplacian_variance<5e-4')
+    if server_summary['effective_luma_ratio'] < 0.20:
+        warning_reasons.append('effective_luma_ratio<0.20')
+    if server_summary['dynamic_range_p95_p05'] < 0.05:
+        warning_reasons.append('dynamic_range_p95_p05<0.05')
+
+    drift = {}
+    significant_drift_keys = []
+    if isinstance(client_summary, dict):
+        for key in (
+            'mean_luma',
+            'std_luma',
+            'overexposed_ratio',
+            'underexposed_ratio',
+            'effective_luma_ratio',
+            'dynamic_range_p95_p05',
+            'laplacian_variance',
+        ):
+            client_value = client_summary.get(key)
+            if isinstance(client_value, (int, float)):
+                abs_diff = float(abs(float(client_value) - float(server_summary[key])))
+                drift[key] = {
+                    'client': float(client_value),
+                    'server': float(server_summary[key]),
+                    'abs_diff': abs_diff,
+                    'within_tolerance_1e-4': abs_diff <= 1e-4,
+                }
+                if abs_diff > 1e-4:
+                    significant_drift_keys.append(key)
+
+    if severe_reasons:
+        status = 'block'
+    elif warning_reasons:
+        status = 'warn'
+    else:
+        status = 'pass'
+
+    return {
+        'status': status,
+        'integrity_status': 'client_summary_drifted' if significant_drift_keys else 'consistent',
+        'integrity_reasons': significant_drift_keys,
+        'server_quality_summary': server_summary,
+        'client_vs_server_drift': drift,
+        'blocking_reasons': severe_reasons,
+        'warning_reasons': warning_reasons,
     }
 
 
@@ -189,6 +502,31 @@ class DemoState:
         self.finance_samples = self.build_finance_sample_library()
         self.finance_samples_by_id = {sample['id']: sample for sample in self.finance_samples}
         self.demo_summary = self.build_demo_summary()
+        self.audit_dir = self.repo_root / 'artifacts' / 'web_demo_audit'
+        self.audit_dir.mkdir(parents=True, exist_ok=True)
+        self.audit_events_path = self.audit_dir / 'audit_events.jsonl'
+        self.audit_rejections_path = self.audit_dir / 'audit_rejections.jsonl'
+        self.audit_lock = threading.Lock()
+        self.replay_lock = threading.Lock()
+        self.recent_nonces = {}
+        self.recent_payloads = {}
+        self.nonce_expiry_heap = []
+        self.payload_expiry_heap = []
+        self.ip_shards = [
+            {
+                'lock': threading.Lock(),
+                'states': OrderedDict(),
+            }
+            for _ in range(IP_SHARD_COUNT)
+        ]
+        self.global_inflight = threading.BoundedSemaphore(4)
+        self.cleaner_stop = threading.Event()
+        self.cleaner_threads = [
+            threading.Thread(target=self._replay_guard_cleaner, name='web-demo-replay-cleaner', daemon=True),
+            threading.Thread(target=self._ip_guard_cleaner, name='web-demo-ip-cleaner', daemon=True),
+        ]
+        for thread in self.cleaner_threads:
+            thread.start()
 
     def build_finance_profile(self):
         profile = {
@@ -265,31 +603,33 @@ class DemoState:
             if item.get('id') == 'medical':
                 item['live_demo_supported'] = True
                 item['live_demo_mode'] = 'browser_private_shares'
-                item['demo_note'] = '浏览器本地生成两份 share，再触发一次完整隐私推理。'
+                item['demo_note'] = '浏览器本地完成控制面预检与分片，再触发一次完整隐私推理；正式落地时由医院侧服务器和 AI 公司侧服务器两方协同执行。'
             elif item.get('id') == 'finance':
-                item['eyebrow'] = 'Live Secure Demo'
+                item['eyebrow'] = 'Boundary Stress Test'
                 item['live_demo_supported'] = self.finance_live_supported()
                 item['live_demo_mode'] = 'builtin_sample_secure_run'
                 item['summary'] = (
-                    '金融特征先编码成图像，再沿用同一套 Transshield 方法。页面支持从内置验证样本中触发一次完整隐私推理，'
-                    '同时保留已经跑完的批量实测结果作为对照。'
+                    '金融特征先编码为图像，再沿用同一套动态安全剪枝与双向隐私方法。'
+                    '这一域只作为边界压力测试：重点观察极端分布输入、稀疏样本和动态路由稳定性。'
+                    '页面支持从内置压力样本中触发一次完整隐私推理，同时保留已经完成的批量实测结果作为压力测试对照。'
                 )
                 item['sample_library'] = {
-                    'title': '金融内置验证样本',
+                    'title': '金融边界压力样本',
                     'summary': (
-                        '选择一条内置验证样本，直接触发一次完整隐私推理。'
+                        '选择一条内置压力样本，直接触发一次真实完整隐私推理。'
                         if self.finance_live_supported()
-                        else '当前环境未配置远端 secure runtime，因此金融域先显示已验证结果。'
+                        else '当前环境未配置远端完整隐私运行环境，因此金融域先展示已验证的边界压力结果。'
                     ),
                     'items': [public_sample_metadata(sample) for sample in self.finance_samples],
                 }
                 item['display_notes'] = [
-                    '金融域也支持现场触发一次真实 secure run。',
-                    '页面同时保留批量实测结果，便于和单次现场结果对照理解。',
+                    '金融域支持现场触发一次真实完整隐私推理，但只作为边界压力验证。',
+                    '正式部署参与方固定为银行侧服务器与 AI 公司侧服务器两方。',
+                    '页面同时保留批量动态实测结果，便于和单次压力样本结果对照理解。',
                 ]
         if summary.get('showcase_domains'):
             summary['showcase_domains']['summary'] = (
-                '这页同时展示两条线：医疗支持浏览器本地分片演示；金融支持从内置验证样本触发完整隐私推理。'
+                '这页展示一条正式主线和一条压力测试线：医疗支持浏览器本地控制面演示；金融只保留边界压力验证。'
             )
         summary['runtime_capability'] = {
             'medical_live_demo': True,
@@ -297,6 +637,194 @@ class DemoState:
             'execution_mode': self.e2e_execution_mode,
         }
         return summary
+
+    def record_audit_event(self, accepted: bool, payload: dict):
+        path = self.audit_events_path if accepted else self.audit_rejections_path
+        with self.audit_lock:
+            with path.open('a', encoding='utf-8') as handle:
+                handle.write(json.dumps(payload, ensure_ascii=False, sort_keys=True) + '\n')
+
+    def shard_index_for_ip(self, ip: str) -> int:
+        return hashlib.blake2s(ip.encode('utf-8'), digest_size=1).digest()[0] % IP_SHARD_COUNT
+
+    def check_ip_rate_limit(self, ip: str):
+        now = time.monotonic()
+        shard_index = self.shard_index_for_ip(ip)
+        shard = self.ip_shards[shard_index]
+        with shard['lock']:
+            states = shard['states']
+            state = states.get(ip)
+            if state is None:
+                if len(states) >= IP_SHARD_CAPACITY and not self._evict_idle_ip_locked(states, now, attempts=8):
+                    return False, 'ip_state_saturated'
+                state = IpState()
+                states[ip] = state
+            while state.window and state.window[0] <= now - IP_WINDOW_SEC:
+                state.window.popleft()
+            if len(state.window) >= IP_WINDOW_LIMIT:
+                state.last_seen_monotonic = now
+                states.move_to_end(ip)
+                return False, 'rate_limited_ip'
+            state.window.append(now)
+            state.last_seen_monotonic = now
+            states.move_to_end(ip)
+            return True, None
+
+    def reserve_ip_inflight(self, ip: str):
+        now = time.monotonic()
+        shard_index = self.shard_index_for_ip(ip)
+        shard = self.ip_shards[shard_index]
+        with shard['lock']:
+            states = shard['states']
+            state = states.get(ip)
+            if state is None:
+                if len(states) >= IP_SHARD_CAPACITY and not self._evict_idle_ip_locked(states, now, attempts=8):
+                    return None, 'ip_state_saturated'
+                state = IpState()
+                states[ip] = state
+            if state.inflight >= IP_INFLIGHT_LIMIT:
+                state.last_seen_monotonic = now
+                states.move_to_end(ip)
+                return None, 'busy_retry_later'
+            state.inflight += 1
+            state.last_seen_monotonic = now
+            states.move_to_end(ip)
+        if not self.global_inflight.acquire(blocking=False):
+            with shard['lock']:
+                state = shard['states'].get(ip)
+                if state is not None and state.inflight > 0:
+                    state.inflight -= 1
+                    state.last_seen_monotonic = time.monotonic()
+                    shard['states'].move_to_end(ip)
+            return None, 'busy_retry_later'
+        return shard_index, None
+
+    def release_ip_inflight(self, ip: str):
+        shard = self.ip_shards[self.shard_index_for_ip(ip)]
+        with shard['lock']:
+            state = shard['states'].get(ip)
+            if state is not None and state.inflight > 0:
+                state.inflight -= 1
+                state.last_seen_monotonic = time.monotonic()
+                shard['states'].move_to_end(ip)
+        try:
+            self.global_inflight.release()
+        except ValueError:
+            return
+
+    def _evict_idle_ip_locked(self, states: OrderedDict, now: float, attempts: int) -> bool:
+        for _ in range(attempts):
+            if not states:
+                return True
+            oldest_ip, oldest_state = next(iter(states.items()))
+            while oldest_state.window and oldest_state.window[0] <= now - IP_WINDOW_SEC:
+                oldest_state.window.popleft()
+            if (
+                oldest_state.inflight == 0
+                and not oldest_state.window
+                and oldest_state.last_seen_monotonic <= now - IP_STALE_TTL_SEC
+            ):
+                states.popitem(last=False)
+                return True
+            states.move_to_end(oldest_ip)
+        return False
+
+    def check_and_remember_replay(self, audit_nonce: str, payload_fingerprint: str):
+        now = time.monotonic()
+        with self.replay_lock:
+            nonce_expiry = self.recent_nonces.get(audit_nonce)
+            if nonce_expiry is not None:
+                if nonce_expiry > now:
+                    return False, 'duplicate_nonce'
+                self.recent_nonces.pop(audit_nonce, None)
+            payload_expiry = self.recent_payloads.get(payload_fingerprint)
+            if payload_expiry is not None:
+                if payload_expiry > now:
+                    return False, 'duplicate_payload'
+                self.recent_payloads.pop(payload_fingerprint, None)
+            if len(self.recent_nonces) >= REPLAY_GUARD_MAX_ITEMS:
+                self._opportunistic_replay_cleanup_locked(now)
+            if len(self.recent_payloads) >= REPLAY_GUARD_MAX_ITEMS:
+                self._opportunistic_replay_cleanup_locked(now)
+            if len(self.recent_nonces) >= REPLAY_GUARD_MAX_ITEMS or len(self.recent_payloads) >= REPLAY_GUARD_MAX_ITEMS:
+                return False, 'guard_cache_saturated'
+            nonce_deadline = now + REPLAY_NONCE_TTL_SEC
+            payload_deadline = now + REPLAY_PAYLOAD_TTL_SEC
+            self.recent_nonces[audit_nonce] = nonce_deadline
+            self.recent_payloads[payload_fingerprint] = payload_deadline
+            heapq.heappush(self.nonce_expiry_heap, (nonce_deadline, audit_nonce))
+            heapq.heappush(self.payload_expiry_heap, (payload_deadline, payload_fingerprint))
+            return True, None
+
+    def _opportunistic_replay_cleanup_locked(self, now: float):
+        for _ in range(8):
+            if self.nonce_expiry_heap and self.nonce_expiry_heap[0][0] <= now:
+                expiry, nonce = heapq.heappop(self.nonce_expiry_heap)
+                if self.recent_nonces.get(nonce) == expiry:
+                    self.recent_nonces.pop(nonce, None)
+                continue
+            if self.payload_expiry_heap and self.payload_expiry_heap[0][0] <= now:
+                expiry, key = heapq.heappop(self.payload_expiry_heap)
+                if self.recent_payloads.get(key) == expiry:
+                    self.recent_payloads.pop(key, None)
+                continue
+            break
+
+    def _replay_guard_cleaner(self):
+        while not self.cleaner_stop.wait(5.0):
+            now = time.monotonic()
+            while True:
+                deleted = 0
+                self.replay_lock.acquire()
+                try:
+                    for _ in range(REPLAY_GUARD_EVICT_BATCH):
+                        if self.nonce_expiry_heap and self.nonce_expiry_heap[0][0] <= now:
+                            expiry, nonce = heapq.heappop(self.nonce_expiry_heap)
+                            if self.recent_nonces.get(nonce) == expiry:
+                                self.recent_nonces.pop(nonce, None)
+                                deleted += 1
+                            continue
+                        if self.payload_expiry_heap and self.payload_expiry_heap[0][0] <= now:
+                            expiry, key = heapq.heappop(self.payload_expiry_heap)
+                            if self.recent_payloads.get(key) == expiry:
+                                self.recent_payloads.pop(key, None)
+                                deleted += 1
+                            continue
+                        break
+                finally:
+                    self.replay_lock.release()
+                if deleted == 0:
+                    break
+                time.sleep(0.01)
+
+    def _ip_guard_cleaner(self):
+        shard_cursor = 0
+        while not self.cleaner_stop.wait(5.0):
+            for _ in range(IP_SHARD_COUNT):
+                if self.cleaner_stop.is_set():
+                    return
+                shard = self.ip_shards[shard_cursor]
+                shard_cursor = (shard_cursor + 1) % IP_SHARD_COUNT
+                deleted = 0
+                now = time.monotonic()
+                shard['lock'].acquire()
+                try:
+                    states = shard['states']
+                    for _ in range(IP_GUARD_EVICT_BATCH):
+                        if not states:
+                            break
+                        ip, state = next(iter(states.items()))
+                        while state.window and state.window[0] <= now - IP_WINDOW_SEC:
+                            state.window.popleft()
+                        if state.inflight == 0 and not state.window and state.last_seen_monotonic <= now - IP_STALE_TTL_SEC:
+                            states.popitem(last=False)
+                            deleted += 1
+                            continue
+                        break
+                finally:
+                    shard['lock'].release()
+                if deleted:
+                    time.sleep(0.01)
 
     def ensure_bundle(self):
         if self.bundle is None:
@@ -817,6 +1345,166 @@ class DemoState:
             calibration_json=calibration_json,
             output_calibration_json=output_calibration_json,
         )
+
+    def validate_medical_control_plane_payload(
+        self,
+        share0_bytes: bytes,
+        share1_bytes: bytes,
+        client_quality_summary: Optional[dict],
+        client_audit_manifest: dict,
+        client_control_plane_metrics: Optional[dict],
+    ):
+        if len(share0_bytes) != E2E_SHARE_BYTE_COUNT or len(share1_bytes) != E2E_SHARE_BYTE_COUNT:
+            raise ValueError('share payload size is invalid')
+
+        if not isinstance(client_quality_summary, dict):
+            raise ValueError('client_quality_summary must be a JSON object')
+        if not isinstance(client_audit_manifest, dict):
+            raise ValueError('client_audit_manifest must be a JSON object')
+        if client_control_plane_metrics is not None and not isinstance(client_control_plane_metrics, dict):
+            raise ValueError('client_control_plane_metrics must be a JSON object')
+        validate_quality_summary_object(client_quality_summary)
+        validate_control_plane_metrics_object(client_control_plane_metrics)
+
+        share0_sha256 = server_sha256_hex(share0_bytes)
+        share1_sha256 = server_sha256_hex(share1_bytes)
+        client_share0_sha256 = ensure_sha256_hex('share0_sha256', client_audit_manifest.get('share0_sha256'))
+        client_share1_sha256 = ensure_sha256_hex('share1_sha256', client_audit_manifest.get('share1_sha256'))
+        client_source_image_sha256 = ensure_sha256_hex(
+            'source_image_sha256',
+            client_audit_manifest.get('source_image_sha256'),
+        )
+        client_normalized_tensor_sha256 = ensure_sha256_hex(
+            'normalized_tensor_sha256',
+            client_audit_manifest.get('normalized_tensor_sha256'),
+        )
+        client_audit_chain_sha256 = ensure_sha256_hex(
+            'audit_chain_sha256',
+            client_audit_manifest.get('audit_chain_sha256'),
+        )
+        audit_nonce = str(client_audit_manifest.get('audit_nonce') or '').strip()
+        if not audit_nonce or len(audit_nonce) > 128:
+            raise ValueError('audit_nonce is missing or too long')
+        if client_share0_sha256 != share0_sha256:
+            raise RuntimeError('share0 sha256 mismatch')
+        if client_share1_sha256 != share1_sha256:
+            raise RuntimeError('share1 sha256 mismatch')
+        expected_audit_chain_sha256 = hashlib.sha256(
+            (
+                f'v7|{audit_nonce}|{client_source_image_sha256}|'
+                f'{client_normalized_tensor_sha256}|{share0_sha256}|{share1_sha256}'
+            ).encode('utf-8')
+        ).hexdigest()
+        if client_audit_chain_sha256 != expected_audit_chain_sha256:
+            raise RuntimeError('audit chain sha256 mismatch')
+
+        share0_u32 = bytes_to_float32_aligned(share0_bytes)
+        share1_u32 = bytes_to_float32_aligned(share1_bytes)
+        if contains_subnormal_values(share0_u32) or contains_subnormal_values(share1_u32):
+            raise RuntimeError('subnormal share values detected')
+
+        share0_f32 = share0_u32.view('<f4')
+        share1_f32 = share1_u32.view('<f4')
+        flush_tiny_values_inplace(share0_f32)
+        flush_tiny_values_inplace(share1_f32)
+        if not np.isfinite(share0_f32).all() or not np.isfinite(share1_f32).all():
+            raise RuntimeError('share contains non-finite values')
+        if float(np.max(np.abs(share0_f32))) > 1e3 or float(np.max(np.abs(share1_f32))) > 1e3:
+            raise RuntimeError('share magnitude exceeds allowed bound')
+
+        reconstructed = np.add(share0_f32, share1_f32, dtype=np.float32).reshape(E2E_SHARE_SHAPE)
+        if not np.isfinite(reconstructed).all():
+            raise RuntimeError('reconstructed tensor contains non-finite values')
+
+        mean = np.asarray([0.485, 0.456, 0.406], dtype=np.float32).reshape(1, 3, 1, 1)
+        std = np.asarray([0.229, 0.224, 0.225], dtype=np.float32).reshape(1, 3, 1, 1)
+        rgb = reconstructed * std + mean
+        rgb_min = float(np.min(rgb))
+        rgb_max = float(np.max(rgb))
+        if rgb_min < -0.05 or rgb_max > 1.05:
+            raise RuntimeError('reconstructed rgb range is invalid')
+
+        server_quality_summary = compute_luma_metrics(rgb)
+        quality_assurance = build_quality_assurance(server_quality_summary, client_quality_summary)
+        if quality_assurance['status'] == 'block':
+            raise RuntimeError('quality assurance blocked request')
+
+        client_metrics = client_control_plane_metrics if isinstance(client_control_plane_metrics, dict) else {}
+        audit = {
+            'audit_nonce': audit_nonce,
+            'client_source_image_sha256': client_source_image_sha256,
+            'client_normalized_tensor_sha256': client_normalized_tensor_sha256,
+            'client_audit_chain_sha256': client_audit_chain_sha256,
+            'server_audit_chain_sha256': expected_audit_chain_sha256,
+            'audit_chain_consistent': True,
+            'server_share0_sha256': share0_sha256,
+            'server_share1_sha256': share1_sha256,
+            'server_payload_fingerprint': make_payload_fingerprint(share0_bytes, share1_bytes),
+        }
+        control_plane_metrics = {
+            'client': client_metrics,
+            'server_pre_spu_checks_ms': None,
+        }
+        return {
+            'share0_bytes': share0_bytes,
+            'share1_bytes': share1_bytes,
+            'audit': audit,
+            'quality_assurance': quality_assurance,
+            'control_plane_metrics': control_plane_metrics,
+        }
+
+    def build_mock_web_demo_result(
+        self,
+        class_names,
+        sleep_sec: float,
+        sample: Optional[dict] = None,
+        profile: Optional[dict] = None,
+    ):
+        active_profile = profile or self.e2e_profile
+        threshold_label = class_names[0] if class_names else 'class_0'
+        argmax_label = class_names[1] if len(class_names) > 1 else threshold_label
+        result = {
+            'runtime': 'e2e',
+            'prediction': {
+                'argmax_label': argmax_label,
+                'threshold_label': threshold_label,
+                'prob_class_0': 0.41,
+                'prob_class_1': 0.59,
+            },
+            'profile': {
+                'sample_count': 1,
+                'total_pipeline_duration_sec': float(sleep_sec),
+                'communication': {
+                    'total_bytes': 0,
+                    'status': 'mock',
+                    'supported': True,
+                },
+            },
+            'summary': {
+                'finite_logits': True,
+                'effective_static_depth': self.e2e_profile['static_depth_limit'],
+                'privacy_note': 'mock secure result for guard stress testing',
+                'spu': {
+                    'input_mode': 'party_local_debug_share_load',
+                    'host_plaintext_pixel_values_materialized': False,
+                    'host_private_share_tensors_loaded': False,
+                    'private_input_paths_redacted': True,
+                    'driver_private_share_manifest_paths_recorded': False,
+                    'share_semantics': 'debug_float_additive_share_not_production_mpc_share',
+                    'spu_layer_norm_policy': active_profile['spu_layer_norm_policy'],
+                    'static_forward_metadata': {
+                        'attention_policy': active_profile['spu_attention_policy'],
+                        'activation_kind': active_profile['spu_activation_override'],
+                    },
+                },
+            },
+            'candidate_json': 'mock_candidate.json',
+            'candidate_pt': 'mock_candidate.pt',
+            'calibration_json': None,
+        }
+        if sample is not None:
+            result['sample'] = sample
+        return result
 
     def resolve_e2e_calibration_path(self, e2e_run_dir: Path):
         raw_path = (
@@ -1644,10 +2332,15 @@ class DemoHandler(BaseHTTPRequestHandler):
         self.send_header('Cache-Control', 'no-store')
         self.send_header('Content-Length', str(len(body)))
         self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError):
+            return
 
-    def _send_error_json(self, error, status, details=None):
-        payload = {'error': error}
+    def _send_error_json(self, error, status, details=None, error_code=None, retryable=False):
+        payload = {'error': error, 'retryable': bool(retryable)}
+        if error_code is not None:
+            payload['error_code'] = error_code
         if details is not None:
             payload['details'] = details
         self._send_json(payload, status=status)
@@ -1666,22 +2359,74 @@ class DemoHandler(BaseHTTPRequestHandler):
             self.send_error(HTTPStatus.NOT_FOUND, 'File not found')
             return
         body = path.read_bytes()
-        content_type = 'image/png'
-        if path.suffix.lower() in ['.jpg', '.jpeg']:
+        content_type = 'application/octet-stream'
+        suffix = path.suffix.lower()
+        if suffix in ['.html', '.htm']:
+            content_type = 'text/html; charset=utf-8'
+        elif suffix == '.css':
+            content_type = 'text/css; charset=utf-8'
+        elif suffix == '.js':
+            content_type = 'application/javascript; charset=utf-8'
+        elif suffix == '.json':
+            content_type = 'application/json; charset=utf-8'
+        elif suffix == '.png':
+            content_type = 'image/png'
+        elif suffix in ['.jpg', '.jpeg']:
             content_type = 'image/jpeg'
-        elif path.suffix.lower() == '.webp':
+        elif suffix == '.webp':
             content_type = 'image/webp'
+        elif suffix == '.svg':
+            content_type = 'image/svg+xml'
         self.send_response(HTTPStatus.OK)
         self.send_header('Content-Type', content_type)
         self.send_header('Cache-Control', 'no-store')
         self.send_header('Content-Length', str(len(body)))
         self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError):
+            return
+
+    def _resolve_web_demo_path(self, request_path: str) -> Optional[Path]:
+        relative = request_path.lstrip('/') or 'index.html'
+        candidate = (WEB_DEMO_ROOT / relative).resolve()
+        try:
+            candidate.relative_to(WEB_DEMO_ROOT.resolve())
+        except ValueError:
+            return None
+        if not candidate.exists() or not candidate.is_file():
+            return None
+        if candidate.suffix.lower() not in WEB_DEMO_ALLOWED_EXTENSIONS:
+            return None
+        return candidate
 
     def do_GET(self):
         parsed = urlparse(self.path)
         if parsed.path == '/':
             self._send_html(HTML_PATH.read_text(encoding='utf-8'))
+            return
+        if parsed.path == '/artifacts/web_demo_assets/demo_content_summary.json':
+            self._send_file(DEMO_SUMMARY_PATH)
+            return
+        if parsed.path == '/control_plane_worker.js':
+            worker_path = REPO_ROOT / 'web_demo' / 'control_plane_worker.js'
+            if not worker_path.exists():
+                self.send_error(HTTPStatus.NOT_FOUND, 'Worker not found')
+                return
+            body = worker_path.read_bytes()
+            self.send_response(HTTPStatus.OK)
+            self.send_header('Content-Type', 'application/javascript; charset=utf-8')
+            self.send_header('Cache-Control', 'no-store')
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        if parsed.path == '/worker_selftest.html':
+            page_path = REPO_ROOT / 'web_demo' / 'worker_selftest.html'
+            if not page_path.exists():
+                self.send_error(HTTPStatus.NOT_FOUND, 'File not found')
+                return
+            self._send_html(page_path.read_text(encoding='utf-8'))
             return
         if parsed.path.startswith('/uploads/'):
             name = parsed.path.split('/uploads/', 1)[1]
@@ -1708,6 +2453,10 @@ class DemoHandler(BaseHTTPRequestHandler):
             return
         if parsed.path == '/api/health':
             self._send_json({'ok': True})
+            return
+        static_path = self._resolve_web_demo_path(parsed.path)
+        if static_path is not None:
+            self._send_file(static_path)
             return
         self.send_error(HTTPStatus.NOT_FOUND, 'Not found')
 
@@ -1749,87 +2498,225 @@ class DemoHandler(BaseHTTPRequestHandler):
         except ValueError:
             return 0
 
-    def _parse_upload_form(self):
-        content_type = self.headers.get('Content-Type', '')
-        if 'multipart/form-data' not in content_type:
-            self._send_error_json('上传请求格式不正确，请使用页面上的图片上传控件。', HTTPStatus.BAD_REQUEST)
-            return None
-        return cgi.FieldStorage(
-            fp=self.rfile,
-            headers=self.headers,
-            environ={
-                'REQUEST_METHOD': 'POST',
-                'CONTENT_TYPE': self.headers.get('Content-Type'),
-            },
-        )
+    def _send_best_effort_413(self, error: str, details: Optional[str] = None):
+        payload = {'error': error, 'error_code': 'payload_too_large', 'retryable': False}
+        if details is not None:
+            payload['details'] = details
+        body = json.dumps(payload, ensure_ascii=False).encode('utf-8')
+        try:
+            self.send_response(HTTPStatus.REQUEST_ENTITY_TOO_LARGE)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Cache-Control', 'no-store')
+            self.send_header('Connection', 'close')
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError):
+            pass
+        finally:
+            self.close_connection = True
+            try:
+                self.connection.shutdown(socket.SHUT_WR)
+            except OSError:
+                pass
+            try:
+                self.connection.close()
+            except OSError:
+                pass
 
-    def _resolve_image_field(self, form):
-        image_field = form['image'] if 'image' in form else None
-        if isinstance(image_field, list):
-            image_field = image_field[0] if image_field else None
-        return image_field
-
-    def _resolve_form_file_field(self, form, name: str):
-        field = form[name] if name in form else None
-        if isinstance(field, list):
-            field = field[0] if field else None
-        return field
-
-    def _read_share_field(self, form, name: str):
-        field = self._resolve_form_file_field(form, name)
-        if field is None or not getattr(field, 'file', None):
-            self._send_error_json(f'缺少 {name}，浏览器本地 share 生成可能失败。', HTTPStatus.BAD_REQUEST)
-            return None
-        data = field.file.read(E2E_SHARE_BYTE_COUNT + 1)
-        if len(data) != E2E_SHARE_BYTE_COUNT:
+    def _read_request_body(self, max_bytes: int):
+        transfer_encoding = self.headers.get('Transfer-Encoding')
+        if transfer_encoding:
             self._send_error_json(
-                f'{name} 大小不正确：收到 {len(data)} bytes，期望 {E2E_SHARE_BYTE_COUNT} bytes。',
+                '当前演示接口不接受 Transfer-Encoding 请求体。',
                 HTTPStatus.BAD_REQUEST,
+                error_code='transfer_encoding_not_supported',
             )
             return None
-        return data
-
-    def _read_text_field(self, form, name: str, default: Optional[str] = None):
-        if name not in form:
-            return default
-        field = form[name]
-        if isinstance(field, list):
-            field = field[0] if field else None
-        if field is None:
-            return default
-        value = getattr(field, 'value', default)
-        if value in (None, ''):
-            return default
-        return str(value).strip()
-
-    def _validate_image_field(self, image_field):
-        if image_field is None or not getattr(image_field, 'filename', ''):
-            self._send_error_json('没有收到图片文件，请重新选择一张图片。', HTTPStatus.BAD_REQUEST)
+        content_length = self._parse_content_length()
+        if content_length <= 0:
+            self._send_error_json('请求体为空或 Content-Length 非法。', HTTPStatus.BAD_REQUEST, error_code='invalid_content_length')
             return None
-        suffix = Path(image_field.filename).suffix.lower() or '.png'
+        if content_length > max_bytes:
+            self._send_best_effort_413(
+                '请求体超过当前演示接口允许的大小。',
+                details=f'current={human_bytes(content_length)} limit={human_bytes(max_bytes)}',
+            )
+            return None
+        remaining = content_length
+        chunks = []
+        total = 0
+        while remaining > 0:
+            chunk = self.rfile.read(min(65536, remaining))
+            if not chunk:
+                self._send_error_json('请求体在传输过程中提前结束。', HTTPStatus.BAD_REQUEST, error_code='truncated_body')
+                return None
+            chunks.append(chunk)
+            total += len(chunk)
+            remaining -= len(chunk)
+            if total > max_bytes:
+                self._send_best_effort_413('请求体超过当前演示接口允许的大小。')
+                return None
+        return b''.join(chunks)
+
+    def _precheck_raw_multipart(self, content_type: str, raw_body: bytes):
+        if 'multipart/form-data' not in content_type:
+            raise ValueError('content type is not multipart/form-data')
+        boundary = parse_content_type_boundary(content_type)
+        if not boundary:
+            raise ValueError('multipart boundary missing')
+        marker = b'--' + boundary
+        if not raw_body.startswith(marker + b'\r\n'):
+            raise ValueError('multipart body does not start with boundary')
+
+        parts = {}
+        boundary_count = 1
+        position = len(marker) + 2
+        while True:
+            header_end = raw_body.find(b'\r\n\r\n', position)
+            if header_end == -1:
+                raise ValueError('multipart part headers not terminated')
+            header_bytes = raw_body[position:header_end]
+            if len(header_bytes) > MEDICAL_MULTIPART_MAX_HEADER_BYTES:
+                raise ValueError('multipart part headers too large')
+            headers = parse_part_headers_bytes(header_bytes)
+            if len(parts) + 1 > MEDICAL_MULTIPART_MAX_CONTENT_DISPOSITION:
+                raise ValueError('too many multipart parts')
+            disposition = parse_content_disposition(headers.get('content-disposition', ''))
+            if disposition.get('_kind') != 'form-data':
+                raise ValueError('invalid content-disposition')
+            name = disposition.get('name')
+            if not name:
+                raise ValueError('multipart field name missing')
+            if name in parts:
+                raise ValueError(f'duplicate multipart field: {name}')
+            if headers.get('content-type', '').lower().startswith('multipart/'):
+                raise ValueError('nested multipart not allowed')
+
+            body_start = header_end + 4
+            next_boundary = raw_body.find(b'\r\n' + marker, body_start)
+            if next_boundary == -1:
+                raise ValueError('multipart closing boundary missing')
+            body_end = next_boundary
+            parts[name] = RawPart(
+                name=name,
+                headers=headers,
+                body_start=body_start,
+                body_end=body_end,
+                filename=disposition.get('filename'),
+                content_type=headers.get('content-type'),
+            )
+
+            boundary_line_start = next_boundary + 2
+            boundary_line_end = boundary_line_start + len(marker)
+            boundary_count += 1
+            if boundary_count > MEDICAL_MULTIPART_MAX_BOUNDARIES:
+                raise ValueError('too many multipart boundaries')
+            if raw_body.startswith(b'--', boundary_line_end):
+                if raw_body[boundary_line_end + 2:] not in (b'', b'\r\n'):
+                    raise ValueError('multipart epilogue is not allowed')
+                break
+            if raw_body[boundary_line_end:boundary_line_end + 2] != b'\r\n':
+                raise ValueError('invalid multipart boundary separator')
+            position = boundary_line_end + 2
+        return parts
+
+    def _validate_email_multipart_structure(self, content_type: str, raw_body: bytes, expected_fields: set):
+        try:
+            message = BytesParser(policy=email.policy.default).parsebytes(build_mime_message(content_type, raw_body))
+        except Exception as exc:
+            raise ValueError('email multipart parser rejected payload') from exc
+        if not message.is_multipart():
+            raise ValueError('mime root is not multipart')
+        payload = message.get_payload()
+        if not isinstance(payload, list):
+            raise ValueError('multipart payload is not a list')
+        if len(payload) != len(expected_fields):
+            raise ValueError('unexpected multipart part count')
+        for part in payload:
+            if part.is_multipart():
+                raise ValueError('nested multipart is not allowed')
+
+    def _parse_multipart_request(self, max_bytes: int):
+        raw_body = self._read_request_body(max_bytes)
+        if raw_body is None:
+            return None, None
+        content_type = self.headers.get('Content-Type', '')
+        try:
+            parts = self._precheck_raw_multipart(content_type, raw_body)
+            if 'domain' not in parts:
+                raise ValueError('domain field missing')
+            domain = self._read_small_text_part(raw_body, parts['domain'], 64)
+            expected_fields = MEDICAL_REQUEST_FIELDS if domain == 'medical' else FINANCE_REQUEST_FIELDS
+            if set(parts.keys()) != expected_fields:
+                raise ValueError('unexpected multipart field set')
+            self._validate_email_multipart_structure(content_type, raw_body, expected_fields)
+        except ValueError as exc:
+            self._send_error_json(
+                '请求体不是受支持的 multipart/form-data 结构。',
+                HTTPStatus.BAD_REQUEST,
+                details=str(exc),
+                error_code='malformed_multipart_precheck_failed',
+            )
+            return None, None
+        return raw_body, parts
+
+    def _read_small_text_part(self, raw_body: bytes, part: RawPart, max_bytes: int):
+        part_bytes = memoryview(raw_body)[part.body_start:part.body_end]
+        if len(part_bytes) > max_bytes:
+            raise ValueError(f'{part.name} is too large')
+        return bytes(part_bytes).decode('utf-8', 'strict').strip()
+
+    def _load_json_part(self, raw_body: bytes, part: RawPart):
+        part_view = memoryview(raw_body)[part.body_start:part.body_end]
+        body_len = len(part_view)
+        if body_len > JSON_PART_MAX_BYTES:
+            raise ValueError('json part exceeds global size limit')
+        field_limit = {
+            'client_quality_summary': QUALITY_SUMMARY_MAX_BYTES,
+            'client_control_plane_metrics': CONTROL_PLANE_METRICS_MAX_BYTES,
+            'client_audit_manifest': AUDIT_MANIFEST_MAX_BYTES,
+        }.get(part.name, JSON_PART_MAX_BYTES)
+        if body_len > field_limit:
+            raise ValueError(f'{part.name} exceeds field size limit')
+        decoded = bytes(part_view).decode('utf-8', 'strict')
+        return json.loads(
+            decoded,
+            parse_int=strict_json_int,
+            parse_float=strict_json_float,
+            parse_constant=strict_json_constant,
+        )
+
+    def _extract_part_bytes(self, raw_body: bytes, part: RawPart) -> bytes:
+        return raw_body[part.body_start:part.body_end]
+
+    def _extract_image_part(self, raw_body: bytes, parts: dict):
+        image_part = parts.get('image')
+        if image_part is None or not image_part.filename:
+            self._send_error_json('没有收到图片文件，请重新选择一张图片。', HTTPStatus.BAD_REQUEST, error_code='missing_image')
+            return None
+        suffix = Path(image_part.filename).suffix.lower() or '.png'
         if suffix not in ALLOWED_UPLOAD_SUFFIXES:
             allowed = ', '.join(sorted(ALLOWED_UPLOAD_SUFFIXES))
-            self._send_error_json(f'不支持的图片格式：{suffix}。当前支持：{allowed}。', HTTPStatus.BAD_REQUEST)
+            self._send_error_json(
+                f'不支持的图片格式：{suffix}。当前支持：{allowed}。',
+                HTTPStatus.BAD_REQUEST,
+                error_code='unsupported_image_suffix',
+            )
             return None
-        if getattr(image_field, 'type', '') and not image_field.type.startswith('image/'):
-            self._send_error_json('上传文件不是图片类型，请重新选择图片。', HTTPStatus.BAD_REQUEST)
+        if image_part.content_type and not image_part.content_type.startswith('image/'):
+            self._send_error_json('上传文件不是图片类型，请重新选择图片。', HTTPStatus.BAD_REQUEST, error_code='invalid_image_content_type')
             return None
-        return suffix
-
-    def _save_uploaded_image(self, image_field, suffix: str):
-        image_bytes = image_field.file.read(self.state.max_upload_bytes + 1)
-        if len(image_bytes) > self.state.max_upload_bytes:
+        payload = self._extract_part_bytes(raw_body, image_part)
+        if len(payload) > self.state.max_upload_bytes:
             self._send_error_json(
                 f'上传图片超过 {human_bytes(self.state.max_upload_bytes)} 限制，请压缩后再试。',
                 HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
+                error_code='image_too_large',
             )
-            return None, None
-        session_id = uuid.uuid4().hex
-        upload_name = f'{session_id}{suffix}'
-        upload_path = self.state.upload_dir / upload_name
-        with upload_path.open('wb') as handle:
-            handle.write(image_bytes)
-        return session_id, upload_name
+            return None
+        return image_part, payload, suffix
 
     def _build_upload_response(self, session_id: str, upload_name: str, analysis: dict, pruning_assets: dict):
         pruning_stages = pruning_stage_cards(analysis['pruning_trace'])
@@ -1888,26 +2775,32 @@ class DemoHandler(BaseHTTPRequestHandler):
         })
 
     def handle_upload(self):
-        content_length = self._parse_content_length()
-        if content_length > self.state.max_upload_bytes:
+        raw_body = self._read_request_body(self.state.max_upload_bytes)
+        if raw_body is None:
+            return
+        content_type = self.headers.get('Content-Type', '')
+        try:
+            parts = self._precheck_raw_multipart(content_type, raw_body)
+            if set(parts.keys()) != {'image'}:
+                raise ValueError('legacy upload expects exactly one image field')
+            self._validate_email_multipart_structure(content_type, raw_body, {'image'})
+        except ValueError as exc:
             self._send_error_json(
-                (
-                    f'上传文件过大：当前请求约 {human_bytes(content_length)}，'
-                    f'演示页限制 {human_bytes(self.state.max_upload_bytes)}。请换一张压缩后的图片。'
-                ),
-                HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
+                '上传请求格式不正确，请使用页面上的图片上传控件。',
+                HTTPStatus.BAD_REQUEST,
+                details=str(exc),
+                error_code='malformed_upload_multipart',
             )
             return
-        form = self._parse_upload_form()
-        if form is None:
+        extracted = self._extract_image_part(raw_body, parts)
+        if extracted is None:
             return
-        image_field = self._resolve_image_field(form)
-        suffix = self._validate_image_field(image_field)
-        if suffix is None:
-            return
-        session_id, upload_name = self._save_uploaded_image(image_field, suffix)
-        if session_id is None:
-            return
+        _, image_bytes, suffix = extracted
+        session_id = uuid.uuid4().hex
+        upload_name = f'{session_id}{suffix}'
+        upload_path = self.state.upload_dir / upload_name
+        with upload_path.open('wb') as handle:
+            handle.write(image_bytes)
         upload_path = self.state.upload_dir / upload_name
 
         analysis = self.state.analyze_image(upload_path)
@@ -1940,75 +2833,284 @@ class DemoHandler(BaseHTTPRequestHandler):
             )
 
     def handle_e2e_private_share_analysis(self):
-        form = self._parse_upload_form()
-        if form is None:
+        request_started_at = time.perf_counter()
+        client_ip = self.client_address[0] if self.client_address else 'unknown'
+        allowed, rate_error = self.state.check_ip_rate_limit(client_ip)
+        if not allowed:
+            self._send_error_json(
+                '当前来源请求过于频繁，请稍后再试。',
+                HTTPStatus.TOO_MANY_REQUESTS,
+                error_code=rate_error,
+                retryable=True,
+            )
             return
-        domain = self._read_text_field(form, 'domain', 'medical') or 'medical'
-        try:
-            if domain == 'finance':
-                sample_id = self._read_text_field(form, 'sample_id')
-                if not sample_id:
-                    self._send_error_json('金融现场验证缺少 sample_id。', HTTPStatus.BAD_REQUEST)
-                    return
-                result = self.state.run_finance_secure_sample(sample_id)
-                self._send_json(
-                    {
-                        'domain': 'finance',
-                        'mode': 'finance_builtin_sample_secure_run',
-                        'sample': result.get('sample'),
-                        'result': summarize_secure_result(result),
-                        'privacy': {
-                            'builtin_demo_sample': True,
-                            'host_plaintext_pixel_values_materialized': False,
-                            'host_model_params_materialized': False,
-                            'reveal_policy': 'final_logits_only',
-                            'production_note': (
-                                '当前按钮触发的是内置验证样本的完整隐私推理。真实部署时，数据使用方应先在本地完成分片，'
-                                '再把分片分别交给独立计算节点。'
-                            ),
-                        },
-                    }
-                )
-                return
 
-            content_length = self._parse_content_length()
-            max_share_request_bytes = E2E_SHARE_BYTE_COUNT * 2 + 1024 * 1024
-            if content_length > max_share_request_bytes:
+        raw_body, parts = self._parse_multipart_request(MEDICAL_MULTIPART_MAX_BYTES)
+        if raw_body is None or parts is None:
+            return
+
+        try:
+            domain = self._read_small_text_part(raw_body, parts['domain'], 64) or 'medical'
+        except ValueError as exc:
+            self._send_error_json('domain 字段不合法。', HTTPStatus.BAD_REQUEST, details=str(exc), error_code='invalid_domain')
+            return
+
+        if domain == 'finance':
+            try:
+                sample_id = self._read_small_text_part(raw_body, parts['sample_id'], 256)
+            except ValueError as exc:
+                self._send_error_json('金融压力验证缺少 sample_id。', HTTPStatus.BAD_REQUEST, details=str(exc), error_code='missing_sample_id')
+                return
+            if sample_id not in self.state.finance_samples_by_id:
                 self._send_error_json(
-                    f'密态 share 请求过大：当前约 {human_bytes(content_length)}，限制 {human_bytes(max_share_request_bytes)}。',
-                    HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
+                    '未知的金融压力样本标识。',
+                    HTTPStatus.BAD_REQUEST,
+                    error_code='unknown_finance_sample_id',
                 )
                 return
-            share0 = self._read_share_field(form, 'share0')
-            if share0 is None:
+            reservation, reserve_error = self.state.reserve_ip_inflight(client_ip)
+            if reservation is None:
+                status = HTTPStatus.SERVICE_UNAVAILABLE if reserve_error == 'ip_state_saturated' else HTTPStatus.TOO_MANY_REQUESTS
+                self._send_error_json(
+                    '当前演示环境繁忙，请稍后重试。',
+                    status,
+                    error_code=reserve_error,
+                    retryable=reserve_error != 'ip_state_saturated',
+                )
                 return
-            share1 = self._read_share_field(form, 'share1')
-            if share1 is None:
+            try:
+                mock_sleep = float_from_env('WEB_DEMO_TEST_ACCEPTED_SLEEP_SEC', 0.0)
+                if mock_sleep > 0:
+                    time.sleep(mock_sleep)
+                    result = self.state.build_mock_web_demo_result(
+                        self.state.finance_class_names,
+                        mock_sleep,
+                        sample=public_sample_metadata(self.state.finance_samples_by_id[sample_id]),
+                        profile=self.state.finance_profile,
+                    )
+                else:
+                    result = self.state.run_finance_secure_sample(sample_id)
+            except Exception as exc:
+                self._send_error_json(
+                    '金融边界压力验证失败',
+                    HTTPStatus.INTERNAL_SERVER_ERROR,
+                    details=str(exc),
+                    error_code='finance_live_demo_failed',
+                )
                 return
-            result = self.state.run_e2e_approx_for_browser_shares(share0, share1)
+            finally:
+                self.state.release_ip_inflight(client_ip)
             self._send_json(
                 {
-                    'domain': 'medical',
-                    'mode': 'e2e_browser_private_shares',
+                    'domain': 'finance',
+                    'mode': 'finance_builtin_sample_secure_run',
+                    'sample': result.get('sample'),
                     'result': summarize_secure_result(result),
                     'privacy': {
-                        'browser_generated_shares': True,
-                        'server_received_plain_image': False,
-                        'server_received_plain_pixel_values': False,
-                        'server_received_share0_and_share1_in_demo_process': True,
+                        'builtin_demo_sample': True,
+                        'host_plaintext_pixel_values_materialized': False,
+                        'host_model_params_materialized': False,
+                        'reveal_policy': 'final_logits_only',
                         'production_note': (
-                            '生产部署应将 share0/share1 分别上传到独立 P1/P2 服务；当前 web demo '
-                            '为单进程演示接口，但不上传原图或完整 pixel_values。'
+                            '当前按钮触发的是内置压力样本的完整隐私推理。正式落地时由银行侧服务器与 AI 公司侧服务器两方协同执行。'
                         ),
                     },
                 }
             )
-        except Exception as exc:
+            return
+
+        if domain != 'medical':
+            self._send_error_json('domain 字段只支持 medical 或 finance。', HTTPStatus.BAD_REQUEST, error_code='unsupported_domain')
+            return
+
+        try:
+            contract_version = self._read_small_text_part(raw_body, parts['client_contract_version'], 128)
+            if contract_version != MEDICAL_CONTROL_PLANE_CONTRACT_VERSION:
+                raise ValueError(f'expected {MEDICAL_CONTROL_PLANE_CONTRACT_VERSION}, got {contract_version}')
+            client_quality_summary = self._load_json_part(raw_body, parts['client_quality_summary'])
+            client_audit_manifest = self._load_json_part(raw_body, parts['client_audit_manifest'])
+            client_control_plane_metrics = self._load_json_part(raw_body, parts['client_control_plane_metrics'])
+        except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
             self._send_error_json(
-                'E2E 浏览器密态 share 推理失败',
+                '医疗控制面文本字段解析失败。',
+                HTTPStatus.BAD_REQUEST,
+                details=str(exc),
+                error_code='invalid_control_plane_payload',
+            )
+            return
+
+        share0 = self._extract_part_bytes(raw_body, parts['share0'])
+        share1 = self._extract_part_bytes(raw_body, parts['share1'])
+        audit_nonce = str(client_audit_manifest.get('audit_nonce') or '').strip()
+        if not audit_nonce or len(audit_nonce) > 128:
+            self._send_error_json(
+                'audit_nonce 缺失或长度非法。',
+                HTTPStatus.BAD_REQUEST,
+                error_code='invalid_audit_nonce',
+            )
+            return
+
+        validation_started_at = time.perf_counter()
+        try:
+            validated = self.state.validate_medical_control_plane_payload(
+                share0,
+                share1,
+                client_quality_summary,
+                client_audit_manifest,
+                client_control_plane_metrics,
+            )
+        except RuntimeError as exc:
+            details = str(exc)
+            error_code = {
+                'share0 sha256 mismatch': 'audit_share_hash_mismatch',
+                'share1 sha256 mismatch': 'audit_share_hash_mismatch',
+                'audit chain sha256 mismatch': 'audit_chain_mismatch',
+                'subnormal share values detected': 'invalid_subnormal_share',
+                'share contains non-finite values': 'non_finite_share',
+                'share magnitude exceeds allowed bound': 'share_magnitude_out_of_range',
+                'reconstructed tensor contains non-finite values': 'non_finite_tensor',
+                'reconstructed rgb range is invalid': 'invalid_tensor_rgb_range',
+                'quality assurance blocked request': 'quality_assurance_blocked',
+            }.get(details, 'invalid_medical_share_payload')
+            self.state.record_audit_event(
+                False,
+                {
+                    'ts': time.time(),
+                    'ip': client_ip,
+                    'audit_nonce': audit_nonce,
+                    'error_code': error_code,
+                    'details': details,
+                },
+            )
+            self._send_error_json(
+                '医疗控制面快检未通过。',
+                HTTPStatus.UNPROCESSABLE_ENTITY,
+                details=details,
+                error_code=error_code,
+            )
+            return
+        except ValueError as exc:
+            self._send_error_json(
+                'share 大小不正确。',
+                HTTPStatus.BAD_REQUEST,
+                details=str(exc),
+                error_code='invalid_share_length',
+            )
+            return
+
+        validated['control_plane_metrics']['server_pre_spu_checks_ms'] = round(
+            (time.perf_counter() - validation_started_at) * 1000.0,
+            3,
+        )
+        replay_ok, replay_error = self.state.check_and_remember_replay(
+            audit_nonce,
+            validated['audit']['server_payload_fingerprint'],
+        )
+        if not replay_ok:
+            status = HTTPStatus.SERVICE_UNAVAILABLE if replay_error == 'guard_cache_saturated' else HTTPStatus.CONFLICT
+            self.state.record_audit_event(
+                False,
+                {
+                    'ts': time.time(),
+                    'ip': client_ip,
+                    'audit_nonce': audit_nonce,
+                    'payload_fingerprint': validated['audit']['server_payload_fingerprint'],
+                    'error_code': replay_error,
+                },
+            )
+            self._send_error_json(
+                '检测到重复或饱和的控制面请求。',
+                status,
+                error_code=replay_error,
+                retryable=replay_error == 'guard_cache_saturated',
+            )
+            return
+
+        reservation, reserve_error = self.state.reserve_ip_inflight(client_ip)
+        if reservation is None:
+            status = HTTPStatus.SERVICE_UNAVAILABLE if reserve_error == 'ip_state_saturated' else HTTPStatus.TOO_MANY_REQUESTS
+            self.state.record_audit_event(
+                False,
+                {
+                    'ts': time.time(),
+                    'ip': client_ip,
+                    'audit_nonce': audit_nonce,
+                    'payload_fingerprint': validated['audit']['server_payload_fingerprint'],
+                    'error_code': reserve_error,
+                },
+            )
+            self._send_error_json(
+                '当前演示环境繁忙，请稍后重试。',
+                status,
+                error_code=reserve_error,
+                retryable=reserve_error != 'ip_state_saturated',
+            )
+            return
+
+        try:
+            mock_sleep = float_from_env('WEB_DEMO_TEST_ACCEPTED_SLEEP_SEC', 0.0)
+            if mock_sleep > 0:
+                time.sleep(mock_sleep)
+                result = self.state.build_mock_web_demo_result(
+                    self.state.class_names,
+                    mock_sleep,
+                    profile=self.state.e2e_profile,
+                )
+            else:
+                result = self.state.run_e2e_approx_for_browser_shares(validated['share0_bytes'], validated['share1_bytes'])
+        except Exception as exc:
+            self.state.record_audit_event(
+                False,
+                {
+                    'ts': time.time(),
+                    'ip': client_ip,
+                    'audit_nonce': audit_nonce,
+                    'payload_fingerprint': validated['audit']['server_payload_fingerprint'],
+                    'error_code': 'medical_secure_run_failed',
+                    'details': str(exc),
+                },
+            )
+            self._send_error_json(
+                '医疗正式主线推理失败',
                 HTTPStatus.INTERNAL_SERVER_ERROR,
                 details=str(exc),
+                error_code='medical_secure_run_failed',
+                retryable=True,
             )
+            return
+        finally:
+            self.state.release_ip_inflight(client_ip)
+
+        response_payload = {
+            'domain': 'medical',
+            'mode': 'e2e_browser_private_shares',
+            'result': summarize_secure_result(result),
+            'quality_assurance': validated['quality_assurance'],
+            'audit': validated['audit'],
+            'control_plane_metrics': validated['control_plane_metrics'],
+            'privacy': {
+                'browser_generated_shares': True,
+                'server_received_plain_image': False,
+                'server_received_plain_pixel_values': False,
+                'server_received_share0_and_share1_in_demo_process': True,
+                'production_note': (
+                    '正式部署应将 share0/share1 分别上传到独立 P1/P2 服务；当前 web demo 为单进程演示接口。'
+                    '另外，当前同步阻塞原型在长耗时 SPU 计算期间不能主动感知客户端断连并终止任务。'
+                ),
+            },
+        }
+        self.state.record_audit_event(
+            True,
+            {
+                'ts': time.time(),
+                'ip': client_ip,
+                'audit_nonce': audit_nonce,
+                'payload_fingerprint': validated['audit']['server_payload_fingerprint'],
+                'quality_status': validated['quality_assurance']['status'],
+                'request_total_ms': round((time.perf_counter() - request_started_at) * 1000.0, 3),
+            },
+        )
+        self._send_json(response_payload)
 
 
 def build_server(host: str, port: int, state: DemoState):

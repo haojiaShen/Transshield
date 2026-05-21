@@ -23,6 +23,7 @@ bash scripts/build_clean_server_repo.sh /home/yclcg/Transshield_final_server_cle
 
 - 完整对比链：`artifacts/server_inference_friendly_pack/run_full_final_comparison_suite.sh`
 - 快速 smoke：`artifacts/server_inference_friendly_pack/run_full_final_comparison_smoke.sh`
+- CNN 明文对照基线：`artifacts/server_inference_friendly_pack/run_cnn_plaintext_baseline.sh`
 - 环境模板：`artifacts/server_inference_friendly_pack/final_compare_env.template.sh`
 
 保留本目录的原因：

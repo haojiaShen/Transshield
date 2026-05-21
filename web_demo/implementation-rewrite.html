@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>密捷 TransShield｜DynamicViT 密态改写</title>
+    <link rel="stylesheet" href="/site.css" />
+    <script defer src="/site.js"></script>
+  </head>
+  <body data-page="implementation">
+    <header class="shell-header" id="siteHeader"></header>
+    <main class="page-main">
+      <section class="page-section hero">
+        <div class="page-inner">
+          <div class="hero-copy">
+            <span class="eyebrow">Implementation 1 / DynamicViT 密态改写</span>
+            <h1>不直接删 token，而是先求保留边界，再生成固定形状的 keep-mask</h1>
+            <p class="lead">正式主线把原始 DynamicViT 中“变长 token 删除”改写为“固定图中的掩码化选择”。这一步决定了动态剪枝能否真正进入 MPC 图执行，而不是退化为静态安全推理。</p>
+            <div class="breadcrumb"><a href="/index.html">首页</a><a href="/implementation.html">系统实现</a><span>密态改写</span></div>
+          </div>
+        </div>
+      </section>
+      <section class="page-section">
+        <div class="page-inner">
+          <div class="equation-stack">
+            <div class="equation-card">
+              <div class="equation-line"><div class="equation-label">式（3-1）</div><div class="equation-math">\(\tau^{(l)} = \operatorname{TopKBoundary}(s^{(l)}, K^{(l)})\)</div></div>
+              <div class="equation-line"><div class="equation-label">式（3-2）</div><div class="equation-math">\(m_i^{(l)} = \mathbf{1}\left[(s_i^{(l)}, i) \ge \tau^{(l)}\right],\; \tilde{h}_i^{(l)} = m_i^{(l)} \cdot h_i^{(l)}\)</div></div>
+              <div class="equation-line"><div class="equation-label">式（3-2a）与式（3-2b）</div><div class="equation-math">\(e_i^{(l)} = s_i^{(l)} - \varepsilon i,\; \pi^{(l)} = \operatorname{BitonicSortDesc}(e^{(l)}),\; m_i^{(l)} = \mathbf{1}[i \in \pi^{(l)}_{1:K^{(l)}}]\)</div></div>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>原始 DynamicViT 操作</th><th>安全计算困难</th><th>本作品改写方式</th><th>验证方式</th></tr></thead>
+                <tbody>
+                  <tr><td>删除 token</td><td>变长结构不适合固定图密态执行。</td><td>改写为 keep-mask 掩码化保留。</td><td>same-shape reference 与 secure replay 对齐。</td></tr>
+                  <tr><td>阈值比较</td><td>数据相关分支会泄露剪枝边界。</td><td>改写为安全比较语义 F<sub>less</sub>。</td><td>边界检查与 stage 级一致性验证。</td></tr>
+                  <tr><td>Top-K 选择</td><td>索引与 tie-breaking 在密态下不稳定。</td><td>使用编码键双调排序构造 keep-mask。</td><td>最终 argmax / threshold 与参考路径逐项核对。</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="page-card-grid three" id="implementationOperatorCards">
+            <div class="empty-box">正在读取安全友好算子摘要。</div>
+          </div>
+          <div class="link-row">
+            <a class="route-link" href="/implementation-control.html">下一页：控制面与快检链路</a>
+            <a class="route-link" href="/implementation-delivery.html">下一页：交付物落点</a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="shell-footer" id="siteFooter"></footer>
+  </body>
+</html>

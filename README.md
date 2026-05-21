@@ -41,10 +41,10 @@
 
 ## 当前仓库只认这几类数据
 
-- **当前浏览器选择图片的即时结果**：来自 Web demo 的浏览器本地分片 + E2E approximate SPU 运行，只能用于展示这张图的安全结果和本次 live run 开销；它是隐私输入演示口径，不等同于最终双向隐私生产部署。
-- **离线验证集最佳成绩**：来自 `artifacts/web_demo_assets/best_demo_content.json`，只能用于统一对比区，不是当前图片结果。
+- **当前浏览器选择图片的即时结果**：来自 Web demo 的浏览器本地分片 + E2E approximate SPU 运行，只能用于展示这张图的安全结果和本次在线运行开销；它是隐私输入演示口径，不等同于最终双向隐私生产部署。
+- **离线验证集最佳成绩**：来自 `artifacts/web_demo_assets/demo_content_summary.json`，只能用于统一对比区，不是当前图片结果。
 - **外部基线对比**：当前主对比对象是同数据集明文基线 `MPCViT`。
-- **禁止复用的旧口径**：历史 fastpath 8 样本通信、旧 archived SPU profile、旧正式展示模型收益、dated handoff / request 文档中的数字。
+- **禁止复用的旧口径**：历史 fastpath 小样本通信、旧归档 SPU profile、旧正式展示模型收益、带日期的 handoff / request 文档中的数字。
 
 详细规则见 `docs/data_source_policy.md`。
 
@@ -129,7 +129,7 @@ bash artifacts/server_inference_friendly_pack/run_full_final_comparison_suite.sh
 
 ## 当前建议阅读顺序
 
-1. `docs/transshield_竞赛作品报告_最终版.docx` ← **最新作品报告**
+1. `docs/transshield_竞赛作品报告_第二次修订版.docx` ← **当前主口径报告**
 2. `docs/transshield_master_plan_20260505.md`
 3. `docs/delivery_experiment_summary_20260510.md` ← **实验数据汇总**
 4. `docs/transshield_innovation.md` ← **创新点说明**
@@ -141,8 +141,8 @@ bash artifacts/server_inference_friendly_pack/run_full_final_comparison_suite.sh
 
 - 页面顶部和交互区只显示**当前浏览器选择图片**触发的 E2E 隐私推理即时结果。
 - 准确率、AUC、最佳轮次、外部基线差值只放在统一对比区。
-- 通信量默认只显示**本次 E2E SPU live run**，不再使用固定历史字节数。
-- 附录只保留必要工程细节，不再保留旧 fastpath / archived profile 数字。
+- 通信量默认只显示**本次 E2E SPU 在线运行**，不再使用固定历史字节数。
+- 附录只保留必要工程细节，不再保留旧 fastpath / 归档 profile 数字。
 - 双向隐私 secret 交付线优先使用 `run_e2e_secure_secret_isolated_eval.sh` 的 `secret_blockwise_stage + depth6 + clip0` guarded path；不要再把 `depth8+` 或 `clip3` 当作默认 secret 主线。
 - 历史展示资产已经从当前仓库移除，避免旧口径再次回流。
 

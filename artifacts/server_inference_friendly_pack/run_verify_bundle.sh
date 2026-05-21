@@ -17,4 +17,4 @@ CONFIG_PATH="${CONFIG_PATH:-configs/openbumblebee/2pc.json}"
 echo "[archive] 校验冻结后的 modified bundle。"
 echo "[archive] 该脚本属于资产重建校验流程，不是默认比赛展示入口。"
 
-"$PYTHON_BIN" tools/verify_frozen_candidate.py --bundle-dir "$BUNDLE_DIR" --device cpu
+"$PYTHON_BIN" tools/verify_frozen_bundle.py --bundle-dir "$BUNDLE_DIR" --device cpu

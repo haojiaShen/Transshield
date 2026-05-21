@@ -1,194 +1,131 @@
 # Transshield 创新点文档
 
-最后更新：`2026-05-16`
+最后更新：`2026-05-20`
 
-本文档系统论证 Transshield 项目的 5 个核心创新点。所有创新点均有实际代码实现和真实运行数据支撑。
+本文档只总结 **当前正式主线中已采纳并实际落地的创新点**，用于支撑最终作品报告、答辩展示和代码附录。默认前提如下：
 
-先说清楚一件最容易混淆的事：
+- 医疗正式主线：`dynamic secure pruning + full privacy`
+- 金融：`boundary stress validation only`
+- 本文不把过程性对照、fallback 或失败实验写成正式创新点
 
-- **当前网页默认展示的主结果，不等于“默认一直开着运行时动态剪枝”**
-- 医疗当前主展示线是 `depth10 + batch12` 的固定结构优化版本，真实完整隐私推理为 `69.57s/sample`
-- 金融当前主展示线是 `depth12 + LRD rank192` 的固定结构优化版本，真实完整隐私推理为 `117.80s/sample`
-- 这样选不是因为动态剪枝无效，而是因为这两条线是**目前实测最适合公开展示的稳定配置**
+## 1. 创新点总览
 
-与此同时，Transshield 的**动态裁剪能力并没有被删掉**，而是以两条已经验过的数据链单独保留：
+| 创新点 | 具体做法 | 解决的问题 | 实际收益 |
+|---|---|---|---|
+| 1 | 把删 token、阈值比较改写成可密态执行的 mask 选择 | 动态剪枝原本很难直接进入 MPC 图 | 医疗正式主线保留 dynamic secure pruning |
+| 2 | 用带索引跟踪的安全排序完成 top-k 与 tie 处理 | 普通 top-k 在密态下不稳定，也容易引入复杂分支 | 动态裁剪决策链稳定，正式 gate 与参考路径保持一致 |
+| 3 | 把 Predictor、阈值判断和 tie 处理全部放进安全环境内部执行 | 否则动态剪枝只能先在外部明文跑一遍，正式系统会退化成半隐私 | 输入、参数和动态决策同时受保护 |
+| 4 | 统一采用更适合 MPC 的注意力、归一化和激活算子 | 标准算子在安全计算里代价高、稳定性差 | 医疗正式链路稳定运行，失败变体被明确排除 |
+| 5 | 对医疗动态路径单独做公开阈值校准 | 动态路径不能直接沿用静态路径旧阈值 | 524 张验证集恢复到 `92.7481%` |
+| 6 | 在前端与后端补上轻量控制面 | 纯 secure pipeline 默认把输入视为天然安全 | 医疗现场演示新增 DQA、审计哈希链、服务端权威快检闭环 |
 
-1. **keep-mask replay**：先在参考路径生成按样本变化的 keep-mask，再在 SPU whole-forward 中 exact replay  
-   - `524` 样本 `argmax / threshold = 1.0 / 1.0`
-2. **secure pruning**：PredictorLG + `kth_threshold` + tie-breaking 已在 SPU 内部完整跑通  
-   - 说明“按输入决定保留哪些 token”的动态决策本身，已经可以进入密态执行
+## 2. 创新点一：pruning boundary 的协议友好重写
 
-## 动态剪枝和静态剪枝，到底差在哪？
+### 用到的技术
 
-| 维度 | 静态剪枝 / 固定结构 | 动态剪枝 |
-|---|---|---|
-| 结构是否固定 | 固定。所有输入走同一结构 | 不固定。不同输入保留的 token 集合不同 |
-| 决策时机 | 部署前就决定好 | 推理时按当前输入决定 |
-| 是否按样本自适应 | 否 | 是 |
-| 在 MPC 里难点 | 相对简单 | 容易引入动态 shape、条件分支和边界泄漏 |
-| Transshield 的价值 | 作为稳定展示线使用 | 把这条原本很难进密态的动态决策链改写成可安全执行 |
+- `masking -> F_mux`
+- `threshold compare -> F_less`
+- dynamic pruning 决策边界的 secure-friendly 表达
 
-因此，**Transshield 的方法主线确实来自动态剪枝**。  
-但**当前默认展示数据**为了稳定性和速度，采用的是固定结构优化线。两者不能混为一谈。
+### 产生的收益
 
----
+- DynamicViT 的核心价值来自按样本变化的 token 保留决策，而不是一个固定结构分类 head。
+- 这项重写把原本不适合 MPC 的删除式表达，变成可以进入 SPU 图执行的安全表达。
+- 没有这一步，项目最多只能落到静态安全推理；有了这一步，医疗正式主线才能保留 dynamic secure pruning。
 
-## 创新点 1：DynamicViT Pruning Boundary 的协议友好重写
+## 3. 创新点二：Encoded-Key Bitonic Sort 安全 Top-K
 
-### 问题
-原始 DynamicViT 的 token pruning 依赖"删除式表达"，在 MPC 环境中带来动态 shape、条件分支泄漏等问题。
+### 用到的技术
 
-### 方法
-将 pruning 决策边界重写为 MPC 友好表达：
-1. **`masking → F_mux`**：token keep/drop 改写为 MPC 友好的多路选择函数
-2. **`threshold compare → F_less`**：pruning threshold 比较改写为 MPC 友好的安全比较函数
-3. **secure sidecar/replay**：pruning 决策以 sidecar 方式安全执行，结果 replay 回主模型
+- encoded-key tie-breaking
+- index-tracking bitonic sort
+- 直接由排序索引构造 keep-mask
 
-### 验证
-- boundary check：`boundary_kth_check_passed = true`（max abs error 1.28e-05）
-- E2E consistency：argmax/threshold match = 1.0/1.0
-- 代码位置：`spu_static_vit.py`（86处相关引用）
+### 产生的收益
 
-### 创新性
-和常见“把静态模型直接搬进隐私计算”的作品不同，Transshield 处理的是更难的一类问题：**如何把按样本变化的动态裁剪边界改写成 MPC 可执行形式**。  
-这使项目不只是“做一个加密版 ViT”，而是把 DynamicViT 的核心决策链真正翻译进隐私计算语义。
+- 避免普通 top-k 对数据相关分支和不稳定 tie-breaking 的依赖。
+- 让 secure pruning 决策链在固定图结构中保持稳定。
+- 支撑 `stage_decision_match_ratio` 和最终 `argmax / threshold match` 的稳定对齐。
 
----
+## 4. 创新点三：PredictorLG in-SPU + 双向隐私 runtime
 
-## 创新点 2：端到端隐私保护的 SPU Forward 实现
+### 用到的技术
 
-### 问题
-MPC 隐私推理中，如何在不暴露任何一方数据的前提下完成完整推理。
+- `secure_internal_pruning`
+- `party_local_debug_share_load`
+- `secret` 参数模式
+- `reveal_policy = final_logits_only`
 
-### 方法
-实现完整的 SPU forward 路径，满足双向隐私约束：
-1. 输入以 `party-local share load` 方式加载（`host_plaintext_pixel_values_materialized = false`）
-2. 模型参数以 `secret` 模式加载（`host_model_params_materialized = false`）
-3. PredictorLG 在 SPU 内部完整执行
-4. 只暴露最终 logits（`reveal_policy = final_logits_only`）
+### 产生的收益
 
-### 验证
-- smoke1/8/16/32：argmax/threshold match = 1.0/1.0
-- heldout238 子集：threshold accuracy = 92.44%
-- 隐私字段全部通过
+- 医院这一侧不需要交出原始输入，AI 公司这一侧不需要交出模型参数，双向隐私真正同时成立。
+- 动态裁剪决策链不再依赖外部 keep-mask 回放，正式系统本身就具备完整动态能力。
+- 正式落地可以明确写成“两方服务器在 2PC 环境里联合完成推理”。
 
-### 创新性
-很多作品只做到“输入不出明文”，但模型参数仍由使用方持有，或者只跑静态主干。Transshield 进一步做到：
+## 5. 创新点四：MPC-Friendly 算子族
 
-- 输入不出明文
-- 模型参数不出明文
-- PredictorLG 这条动态裁剪决策链也能进入 SPU
+### 用到的技术
 
-也就是说，这里保护的不是单边隐私，而是**输入侧和模型侧同时成立**。
+- `exact LN`
+- `uniform attention`
+- `fixed_square`
 
----
+### 产生的收益
 
-## 创新点 3：Encoded-Key Bitonic Sort 安全 Top-K 选择
+- 支撑 dynamic full-privacy 路径在真实运行时保持稳定。
+- 让医疗主线围绕同一套 operator family 保持工程一致性。
+- 已验证无收益或不稳定的变体被明确排除出正式主线：
+  - `public-calibrated LN + clip0`
+  - `clip3`
 
-### 问题
-DynamicViT 的 pruning 需要 Top-K 选择，传统 Top-K 依赖条件分支，在 MPC 环境中不安全。
+## 6. 创新点五：dynamic-path public threshold calibration
 
-### 方法
-使用双调排序实现 MPC 友好的 Top-K：
-- encoded_key 编码保证 tie-breaking 语义
-- O(n log²n) 复杂度，无条件分支
-- 全 jnp.where 实现，JAX tracer 兼容
+### 用到的技术
 
-### 验证
-- `stage_decision_match_ratio = 1.0`
-- 代码位置：`spu_static_vit.py`（4处核心实现）
+- dynamic path 概率输出的公开阈值搜索
+- full-val reference threshold sweep
+- 阈值回代到部署 gate
 
-### 创新性
-和普通 Top-K 实现相比，这里不是为了单纯排序，而是为了在**不泄漏分支信息**的前提下完成动态裁剪阈值选择。  
-它解决的是“动态裁剪为什么能进 MPC”这个关键卡点。
+### 产生的收益
 
----
+- 如果沿用静态路径旧阈值，医疗动态路径会在 32 张正式 gate 上退化到 `50%`。
+- 单独对动态路径做阈值校准后：
+  - 524 张验证集上的正式阈值精度达到 `92.7481%`
+  - 把同一阈值回代到 32 张正式 gate 时，threshold accuracy 达到 `93.75%`
+- 这项创新把“dynamic secure pruning 能跑”提升成“dynamic secure pruning 能被正确部署”。
 
-## 创新点 4：MPC-Friendly 算子族设计
+## 7. 创新点六：前端 + 服务端轻量控制面
 
-### 问题
-标准 ViT 中的 softmax、LayerNorm、GELU 等在 MPC 环境中计算开销极高。
+### 用到的技术
 
-### 方法
-设计统一的 MPC-friendly 算子族：
-- **uniform attention**：替换昂贵的安全 softmax
-- **fixed_square 激活**：用 `x * x * sign(x)` 近似 GELU
-- **exact LayerNorm**：保证计算正确性
-- **训练-部署一致性**：消除 train-test mismatch
+- 前端 worker 中的本地 DQA 与审计哈希链
+- 服务端 share / tensor 权威快检
+- 反重放与限频保护
+- 审计落盘
 
-### 验证
-- 医疗模型：threshold_accuracy = 91.98%（校准后），auc = 0.9679
-- secure/plaintext 一致性：argmax/threshold match = 1.0/1.0
+### 产生的收益
 
-### 创新性
-不少作品只展示“能跑”，但训练和部署使用的是两套不同语义，最后很难解释精度为什么漂。Transshield 的做法是把注意力、激活和裁剪表达统一到一套 secure-friendly 口径里，让训练、验证、部署更一致。
+- 医疗现场演示不再是“默认输入绝对安全”的脆弱管道。
+- 前端先做质量预检、审计摘要和分片；服务端进入 SPU 前再做合法性检查与最终质量裁决。
+- 页面能够显式展示 `quality_assurance`、`audit`、`control_plane_metrics` 三组闭环证据。
 
----
+## 8. 不计入正式创新点的方向
 
-## 创新点 5：SVD 低秩分解 MPC 推理加速
+以下方向可以保留为详细验证中的过程说明，但不再计入正式创新点：
 
-### 问题
-MPC 安全推理中，模型参数量直接影响通信开销和计算时间。如何在保持精度的同时压缩参数？
+- `true static no-pruning` 作为第二条正式主线
+- distillation
+- token recycle
+- token_ratio speedup
+- clip3
+- public-calibrated LN + clip0
+- decomposed LRD
+- 历史 keep-mask finance 链
+- 把金融包装成第二条正式落地主线
 
-### 方法
-通过 SVD 分解将线性层分解为 down_weight × up_weight：
-- rank=192 时参数量压缩至 68.39%
-- **merged 模式**：将分解后的权重合并回原尺寸，保持单次 matmul 通信
-- 发现分解式在 SPU 中反而更慢（两次小 matmul 的通信开销 > 一次大 matmul）
+## 9. 答辩与报告中的推荐写法
 
-### 验证
-- **金融模型**：完整隐私实测 `117.80s/sample`，`argmax_match = 100%`，参数量 `22,390,184 → 15,312,296`（68.39%）
-- **医疗模型**：LRD merged 测试 `threshold accuracy = 91.98%`（与 depth10 截断方案精度相同）
-- 隐私保护：host_model_params_materialized=false
-
-### 核心发现
-**SPU 的 2PC/MPC 协议中，通信轮次比计算量更关键。** 分解式 LRD（96.55s）比 baseline（69.57s）慢 38.8%，因此必须使用 merged 模式。
-
-### 创新性
-这部分的价值不只是“做了压缩”，而是给出了一条**适合 MPC 约束的压缩方式选择原则**：
-
-- 分解式看起来更轻，但在 SPU 中会增加 matmul 次数，反而更慢
-- merged 模式虽然保持单次 matmul 形状，但能保住参数压缩收益，同时不额外增加通信轮次
-
-也就是说，Transshield 不是机械套用压缩论文，而是把压缩方法重新按密态执行代价做了筛选。
-
----
-
-## 两种优化策略对比
-
-| 项目 | 医疗模型 | 金融模型 |
-|------|---------|---------|
-| **优化策略** | 深度截断（depth12→depth10） | SVD 低秩分解（rank=192） |
-| **配置** | depth10 + batch12 + fixed_square | depth12 + LRD rank192 merged |
-| **推理时间** | 69.57s（3.07倍加速） | 117.80s（完整隐私实测） |
-| **精度** | 91.98%（threshold） | 100% |
-| **参数量** | 18.84M（压缩至84.15%） | 15.31M（压缩至68.39%） |
-| **Baseline** | 22.39M, 213.9s, 76.72% | 22.39M, 作为未压缩对照保留 |
-
-### 为什么医疗模型不用LRD？
-
-医疗模型已有 **depth10 深度截断** 方案：
-- depth12 → depth10，参数减少 15.85%（22.39M → 18.84M）
-- 计算量减少 16.7%，实现 3.07 倍加速（213.9s → 69.57s）
-- 精度反而提升（76.72% → 91.98%）
-
-LRD merged 模式测试结果：
-- 精度：91.98%（与 depth10 相同）
-- 但**没有额外加速效果**（merged 模式保持原尺寸 matmul）
-
-### 为什么金融模型用LRD？
-
-金融模型没有使用深度截断（保持 depth12），LRD 带来：
-- 参数压缩：22.39M → 15.31M（压缩至 68.39%）
-- 完整隐私验证：`117.80s/sample`
-- 精度保持：`argmax_match = 100%`（8/8）
-
----
-
-## 最终部署数据
-
-| 模型 | 配置 | 推理时间 | 精度 | 参数量 | 参数压缩 |
-|------|------|---------|------|--------|---------|
-| 医疗 | depth10 + batch12 + fixed_square | 69.57s | 91.98% | 18.84M | 84.15% |
-| 金融 | depth12 + LRD rank192 merged | 117.80s | 100%（8/8 一致性） | 15.31M | 68.39% |
-| Baseline | depth12 | 213.9s | 76.72% | 22.39M | 100% |
+- 前半部分先写医疗正式落地模型，再写创新点。
+- 创新点只写“用到了什么技术、落在什么位置、带来了什么收益”。
+- 金融只作为边界压力验证区出现，不写成“正式双域落地”。
+- 失败项、fallback、历史链和 rejected 方向，统一放到后面的“详细验证与采用原因”章节再解释。

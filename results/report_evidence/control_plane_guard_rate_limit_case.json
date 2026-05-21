@@ -1,0 +1,122 @@
+{
+  "base_url": "http://127.0.0.1:7862",
+  "server_pid": 258190,
+  "passed": true,
+  "checks": [
+    {
+      "name": "ip_window_rate_limit",
+      "passed": true,
+      "interception_layer": "ip_sliding_window_guard",
+      "fallback_layer": "not_applicable",
+      "summary": "After a short burst from the same IP, the endpoint should return rate_limited_ip before body parsing.",
+      "details": {
+        "results": [
+          {
+            "status": 400,
+            "json": {
+              "error": "请求体为空或 Content-Length 非法。",
+              "retryable": false,
+              "error_code": "invalid_content_length"
+            },
+            "error_code": "invalid_content_length"
+          },
+          {
+            "status": 400,
+            "json": {
+              "error": "请求体为空或 Content-Length 非法。",
+              "retryable": false,
+              "error_code": "invalid_content_length"
+            },
+            "error_code": "invalid_content_length"
+          },
+          {
+            "status": 400,
+            "json": {
+              "error": "请求体为空或 Content-Length 非法。",
+              "retryable": false,
+              "error_code": "invalid_content_length"
+            },
+            "error_code": "invalid_content_length"
+          },
+          {
+            "status": 400,
+            "json": {
+              "error": "请求体为空或 Content-Length 非法。",
+              "retryable": false,
+              "error_code": "invalid_content_length"
+            },
+            "error_code": "invalid_content_length"
+          },
+          {
+            "status": 400,
+            "json": {
+              "error": "请求体为空或 Content-Length 非法。",
+              "retryable": false,
+              "error_code": "invalid_content_length"
+            },
+            "error_code": "invalid_content_length"
+          },
+          {
+            "status": 400,
+            "json": {
+              "error": "请求体为空或 Content-Length 非法。",
+              "retryable": false,
+              "error_code": "invalid_content_length"
+            },
+            "error_code": "invalid_content_length"
+          },
+          {
+            "status": 429,
+            "json": {
+              "error": "当前来源请求过于频繁，请稍后再试。",
+              "retryable": true,
+              "error_code": "rate_limited_ip"
+            },
+            "error_code": "rate_limited_ip"
+          },
+          {
+            "status": 429,
+            "json": {
+              "error": "当前来源请求过于频繁，请稍后再试。",
+              "retryable": true,
+              "error_code": "rate_limited_ip"
+            },
+            "error_code": "rate_limited_ip"
+          }
+        ],
+        "rate_limited_ip": 2
+      },
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+128 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 258190,
+          "timestamp": 1779272032.04035,
+          "fd_count": 4,
+          "socket_fd_count": 1,
+          "rss_kib": 43288,
+          "vmhwm_kib": 43288,
+          "thread_count": 18
+        },
+        "after": {
+          "available": true,
+          "pid": 258190,
+          "timestamp": 1779272032.418555,
+          "fd_count": 4,
+          "socket_fd_count": 1,
+          "rss_kib": 43416,
+          "vmhwm_kib": 43416,
+          "thread_count": 18
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 128,
+          "thread_count": 0
+        }
+      }
+    }
+  ]
+}

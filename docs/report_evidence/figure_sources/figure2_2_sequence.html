@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>图2-2 端到端软件流转时序图</title>
+  <style>
+    @font-face{
+      font-family:"TSYaHei";
+      src:url("./fonts/msyh.ttc");
+      font-weight:400;
+    }
+    @font-face{
+      font-family:"TSYaHei";
+      src:url("./fonts/msyhbd.ttc");
+      font-weight:700;
+    }
+    :root{
+      --bg:#f4f7fb;
+      --card:#fff;
+      --line:#d7e0ea;
+      --text:#172133;
+      --muted:#637186;
+      --green:#1d7f46;
+      --green-soft:#edf8f1;
+      --green-line:#8dd0a8;
+      --orange:#b67407;
+      --orange-soft:#fff7e7;
+      --orange-line:#f0c96d;
+      --red:#b83333;
+      --red-soft:#fff2f3;
+      --red-line:#f0aab4;
+      --violet:#7440b6;
+      --violet-soft:#f5f1ff;
+      --violet-line:#cab4ec;
+      --blue:#2f6fda;
+      --blue-soft:#f1f6ff;
+      --blue-line:#b9cdf7;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      font-family:"TSYaHei","Microsoft YaHei","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","WenQuanYi Micro Hei",sans-serif;
+      color:var(--text);
+    }
+    .canvas{
+      width:1820px; height:1240px; margin:0 auto; position:relative; overflow:hidden;
+      background:
+        radial-gradient(circle at 22% 0%, rgba(255,255,255,.74), rgba(255,255,255,0) 42%),
+        linear-gradient(180deg,#f7f9fc 0%,#f4f7fb 100%);
+    }
+    .title{position:absolute; left:88px; top:42px; font-size:36px; font-weight:800}
+    .subtitle{position:absolute; left:88px; top:94px; color:var(--muted); font-size:16px}
+    .steps{
+      position:absolute; left:34px; top:224px; width:48px;
+      display:grid; gap:54px;
+    }
+    .step{
+      width:48px; height:48px; border-radius:50%;
+      border:2px solid var(--blue-line); color:var(--blue);
+      display:flex; align-items:center; justify-content:center;
+      font-size:20px; font-weight:700; background:#f8fbff;
+    }
+    .lanes{
+      position:absolute; left:80px; top:150px; right:56px; bottom:170px;
+      display:grid; grid-template-columns:repeat(6,240px); gap:50px;
+    }
+    .lane{
+      position:relative;
+      border:1.8px solid var(--line);
+      border-radius:28px;
+      background:rgba(255,255,255,.8);
+      padding:16px 14px 18px;
+    }
+    .lane::after{
+      content:"";
+      position:absolute; left:50%; top:86px; bottom:30px; width:2px;
+      background:#e1e7ef; transform:translateX(-50%);
+    }
+    .head{
+      height:48px; border-radius:18px;
+      display:flex; align-items:center;
+      padding:0 14px; font-size:21px; font-weight:800;
+      border:1.8px solid;
+      background:#fff;
+    }
+    .u .head{background:var(--blue-soft); border-color:var(--blue-line)}
+    .w .head{background:var(--green-soft); border-color:var(--green-line)}
+    .h .head{background:var(--orange-soft); border-color:var(--orange-line)}
+    .g .head{background:var(--red-soft); border-color:var(--red-line)}
+    .s .head{background:var(--violet-soft); border-color:var(--violet-line)}
+    .r .head{background:var(--blue-soft); border-color:var(--blue-line)}
+    .card{
+      position:absolute; left:18px; width:202px;
+      border-radius:20px; border:1.8px solid #cfdae6;
+      background:#fff; padding:14px 14px 12px;
+      line-height:1.45;
+    }
+    .card h3{margin:0 0 6px; font-size:17px; line-height:1.2}
+    .card p{margin:0; font-size:14px; color:#58677e}
+    .green{background:var(--green-soft); border-color:var(--green-line)}
+    .green p{color:#2d6148}
+    .orange{background:var(--orange-soft); border-color:var(--orange-line)}
+    .orange p{color:#8b640b}
+    .red{background:var(--red-soft); border-color:var(--red-line)}
+    .red p{color:#8a3740}
+    .violet{background:var(--violet-soft); border-color:var(--violet-line)}
+    .violet p{color:#5d3f92}
+    .blue{background:var(--blue-soft); border-color:var(--blue-line)}
+    .blue p{color:#2f6fda}
+
+    .tags{
+      position:absolute; left:350px; right:110px; bottom:110px;
+      display:grid; grid-template-columns:320px 345px 355px 315px; gap:20px;
+    }
+    .tag{
+      min-height:52px; border-radius:18px; border:1.8px solid;
+      display:flex; align-items:center; padding:0 18px; font-size:14px;
+      background:#fff;
+    }
+    .tag.green{color:var(--green); background:var(--green-soft); border-color:var(--green-line)}
+    .tag.red{color:#d23845; background:#fff4f5; border-color:var(--red-line)}
+    .tag.orange{color:var(--orange); background:var(--orange-soft); border-color:var(--orange-line)}
+    .tag.blue{color:var(--blue); background:var(--blue-soft); border-color:var(--blue-line)}
+
+    .legend{
+      position:absolute; left:118px; bottom:36px;
+      display:flex; flex-direction:column; gap:16px; font-size:14px;
+    }
+    .legend-item{display:flex; align-items:center; gap:12px}
+    .line-green{width:56px; border-top:5px solid var(--green)}
+    .line-red{width:56px; border-top:5px dashed #d23845}
+    svg.arrows{position:absolute; inset:0; pointer-events:none}
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="title">图2-2 端到端软件流转时序图</div>
+    <div class="subtitle">流程与第三章 3.2 小节保持一致：八步闭环、两类边界、一个预 SPU 权威门。</div>
+
+    <div class="steps">
+      <div class="step">1</div><div class="step">2</div><div class="step">3</div><div class="step">4</div>
+      <div class="step">5</div><div class="step">6</div><div class="step">7</div><div class="step">8</div>
+    </div>
+
+    <div class="lanes">
+      <section class="lane u">
+        <div class="head">用户 / 主线程</div>
+        <div class="card" style="top:60px">
+          <h3>加载本地影像</h3>
+          <p>主线程保留文件句柄与页面状态。</p>
+        </div>
+        <div class="card" style="top:832px">
+          <h3>页面展示</h3>
+          <p>主线程仅展示分类、质量与审计结果。</p>
+        </div>
+      </section>
+
+      <section class="lane w">
+        <div class="head">浏览器 Worker</div>
+        <div class="card green" style="top:60px">
+          <h3>接收句柄</h3>
+          <p>确认单活 Worker，准备本地计算。</p>
+        </div>
+        <div class="card green" style="top:196px">
+          <h3>头部尺寸嗅探</h3>
+          <p>解析 PNG/JPEG/WebP 头部，先拦截像素炸弹。</p>
+        </div>
+        <div class="card green" style="top:300px">
+          <h3>解码与预检</h3>
+          <p>中心裁剪、归一化与 DQA 指标提取。</p>
+        </div>
+        <div class="card green" style="top:410px">
+          <h3>share 与哈希</h3>
+          <p>生成两份 share、一次性标识与审计链。</p>
+        </div>
+      </section>
+
+      <section class="lane h">
+        <div class="head">HTTP / multipart</div>
+        <div class="card orange" style="top:410px">
+          <h3>multipart 提交</h3>
+          <p>跨域仅发送 share 与结构化摘要。</p>
+        </div>
+      </section>
+
+      <section class="lane g">
+        <div class="head">服务端快检</div>
+        <div class="card red" style="top:520px">
+          <h3>协议预检</h3>
+          <p>长度门、boundary、字段集与 JSON 字节门。</p>
+        </div>
+        <div class="card red" style="top:630px">
+          <h3>张量快检</h3>
+          <p>share 哈希、NaN/Inf、次正规数与 DQA 复核。</p>
+        </div>
+      </section>
+
+      <section class="lane s">
+        <div class="head">SPU / 安全执行</div>
+        <div class="card violet" style="top:630px">
+          <h3>进入 SPU</h3>
+          <p>只有通过权威快检后才触发 2PC 前向。</p>
+        </div>
+        <div class="card violet" style="top:740px">
+          <h3>密态前向</h3>
+          <p>动态安全剪枝与分类决策在安全图内部完成。</p>
+        </div>
+      </section>
+
+      <section class="lane r">
+        <div class="head">审计与回显</div>
+        <div class="card blue" style="top:740px">
+          <h3>审计落盘</h3>
+          <p>记录载荷指纹、质量裁决与控制面指标。</p>
+        </div>
+        <div class="card blue" style="top:832px">
+          <h3>结果回显</h3>
+          <p>仅回传分类结论、质量裁决与审计摘要。</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="tags">
+      <div class="tag green">明文止于 Worker 域内</div>
+      <div class="tag red">跨域仅传 share + 审计摘要</div>
+      <div class="tag orange">SPU 前仍有权威快检</div>
+      <div class="tag blue">最终只回传分类/质量/审计</div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="line-green"></span><span>受信任域内明文处理</span></div>
+      <div class="legend-item"><span class="line-red"></span><span>跨边界密态 share / 张量通信</span></div>
+    </div>
+
+    <svg class="arrows" viewBox="0 0 1820 1240" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <marker id="ag" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#1d7f46"></path>
+        </marker>
+        <marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#d23845"></path>
+        </marker>
+        <marker id="ab" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#2f6fda"></path>
+        </marker>
+      </defs>
+      <path d="M281 246 L364 246" stroke="#1d7f46" stroke-width="4" fill="none" marker-end="url(#ag)"/>
+      <path d="M490 286 L490 336" stroke="#1d7f46" stroke-width="4" fill="none" marker-end="url(#ag)"/>
+      <path d="M490 422 L490 446" stroke="#1d7f46" stroke-width="4" fill="none" marker-end="url(#ag)"/>
+      <path d="M490 526 L490 556" stroke="#1d7f46" stroke-width="4" fill="none" marker-end="url(#ag)"/>
+      <path d="M590 555 L652 555" stroke="#d23845" stroke-width="5" fill="none" stroke-dasharray="12 8" marker-end="url(#ar)"/>
+      <path d="M860 555 L944 658" stroke="#d23845" stroke-width="5" fill="none" stroke-dasharray="12 8" marker-end="url(#ar)"/>
+      <path d="M1070 708 L1232 708" stroke="#1d7f46" stroke-width="4" fill="none" marker-end="url(#ag)"/>
+      <path d="M1360 768 L1360 812" stroke="#1d7f46" stroke-width="4" fill="none" marker-end="url(#ag)"/>
+      <path d="M1460 887 L1524 887" stroke="#1d7f46" stroke-width="4" fill="none" marker-end="url(#ag)"/>
+      <path d="M1530 979 L290 979" stroke="#2f6fda" stroke-width="4" fill="none" marker-end="url(#ab)"/>
+      <path d="M1650 928 L1650 962" stroke="#1d7f46" stroke-width="4" fill="none" marker-end="url(#ag)"/>
+    </svg>
+  </div>
+</body>
+</html>

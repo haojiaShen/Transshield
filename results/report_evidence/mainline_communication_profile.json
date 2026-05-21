@@ -1,0 +1,46 @@
+{
+  "manifest_type": "transshield_mainline_communication_profile_v1",
+  "date": "2026-05-20",
+  "environment": {
+    "server": "10.204.248.175:9001",
+    "repo_root": "/data/wyb/Transshield_final",
+    "runtime_mode": "colocated_localhost_2pc_prototype",
+    "communication_source": "SPU node LinkDetails counters parsed from fresh same-config rerun logs"
+  },
+  "medical": {
+    "reference_mainline_run": "med_secure_pruning_smoke32_batch8_depth10_20260519_1",
+    "communication_rerun": "med_secure_pruning_smoke32_batch8_depth10_commprofile_20260519_1",
+    "sample_count": 32,
+    "elapsed_sec": 2849.9446952342987,
+    "sec_per_sample": 89.06077172607183,
+    "link_send_total_bytes": 45872563138,
+    "link_recv_total_bytes": 44822095120,
+    "dual_total_bytes": 90694658258,
+    "dual_total_gib": 84.46598263271153,
+    "per_sample_gib": 2.6395619572722353,
+    "host_plaintext_pixel_values_materialized": false,
+    "host_model_params_materialized": false,
+    "reveal_policy": "final_logits_only",
+    "parsed_files": [
+      "logs/spu_nodes/node_0.log"
+    ]
+  },
+  "finance": {
+    "reference_mainline_run": "finance_lrd_rank192_dynamic_partylocal_secret_smoke8_20260519_1",
+    "communication_rerun": "finance_lrd_rank192_dynamic_partylocal_secret_smoke8_commprofile_20260519_1",
+    "sample_count": 8,
+    "elapsed_sec": 849.2608470916748,
+    "sec_per_sample": 106.15760588645935,
+    "link_send_total_bytes": 13743807050,
+    "link_recv_total_bytes": 13424458516,
+    "dual_total_bytes": 27168265566,
+    "dual_total_gib": 25.30241903476417,
+    "per_sample_gib": 3.1628023793455213,
+    "host_plaintext_pixel_values_materialized": false,
+    "host_model_params_materialized": false,
+    "reveal_policy": "final_logits_only",
+    "parsed_files": [
+      "logs/spu_nodes/node_0.log"
+    ]
+  }
+}

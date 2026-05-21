@@ -73,6 +73,7 @@
 ## 服务器命令原则
 
 - 不要在本地直接执行 `/data/wyb/...` 服务器路径命令；需要服务器运行时，只给用户可复制命令和判定标准。
+- **例外**：如果用户在当前对话中明确授权“直接同步到服务器并直接执行”，则允许 agent 直接通过 SSH / rsync / tmux 等方式操作 `10.204.248.175:9001` 上的 `/data/wyb/Transshield_final`，并在最终回复中如实说明执行内容与结果。
 - 如果服务器命令后续还要复用路径或 run 名，必须使用同一个 shell / tmux 会话内可持续存在的变量：
   - `export REPO_ROOT=/data/wyb/Transshield_final`
   - `export TRAIN_RUN_ROOT="$REPO_ROOT/artifacts/train_runs"`
@@ -88,7 +89,7 @@
 - 如果 issue 需要服务器结果但用户还没回贴日志，只能交付服务器命令、精确 grep 字段和判定标准，不能伪造结论。
 - TrackA issue 只有在结论已回写到 `docs/history_best_repro_drift_audit_2026-04-21.md`、`docs/current_work_status.md`、`docs/handoff-next.md` 后，才算完成。
 - 默认不要跑 `full20`，不要扫大范围超参，不要在 attribution 证据出来前直接改变训练语义。
-- 不要修改 `artifacts/web_demo_assets/best_demo_content.json` 或前端正式展示口径，除非用户明确要求更新正式展示数据。
+- 不要修改 `artifacts/web_demo_assets/demo_content_summary.json` 或前端正式展示口径，除非用户明确要求更新正式展示数据。
 
 ## 不要默认做的事
 

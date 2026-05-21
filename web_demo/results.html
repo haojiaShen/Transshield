@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>密捷 TransShield｜测试结果</title>
+    <link rel="stylesheet" href="/site.css" />
+    <script defer src="/site.js"></script>
+  </head>
+  <body data-page="results">
+    <header class="shell-header" id="siteHeader"></header>
+    <main class="page-main">
+      <section class="page-section hero">
+        <div class="page-inner">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <span class="eyebrow">Results Hub / 测试结果目录</span>
+              <h1>测试结果拆成四页：环境与基线、医疗主线、性能代价、鲁棒性矩阵</h1>
+              <p class="lead">结果页不再用一页同时塞进环境表、对比表、医疗图、性能说明和鲁棒性矩阵。你可以直接点到自己关心的一页。</p>
+              <div class="breadcrumb"><a href="/index.html">首页</a><span>测试结果</span></div>
+            </div>
+            <aside class="hero-panel">
+              <div class="hero-panel-head"><div><div class="mini-kicker">当前正式口径</div><h3>首页之外的详细结果入口</h3></div></div>
+              <div class="list-card"><strong>92.7481%</strong><p class="data-note">医疗正式主线阈值精度。</p></div>
+              <div class="list-card"><strong>86.91s/sample</strong><p class="data-note">医疗 32 张部署验证批次平均时延。</p></div>
+              <div class="list-card"><strong>17 / 17</strong><p class="data-note">协议与控制面黑盒用例按预期返回。</p></div>
+            </aside>
+          </div>
+        </div>
+      </section>
+      <section class="page-section">
+        <div class="page-inner">
+          <div class="page-card-grid three">
+            <article class="card route-card"><div class="mini-kicker">Results 1</div><h3>测试环境与基线对比</h3><p class="lead route-summary">查看正式评测对象、硬件/软件环境和与静态对照、外部明文基线的对比关系。</p><div class="route-tags"><span class="route-tag">524 张</span><span class="route-tag">MPCViT</span><span class="route-tag">DeiT-S</span></div><a class="route-link" href="/results-baseline.html">进入本页</a></article>
+            <article class="card route-card"><div class="mini-kicker">Results 2</div><h3>医疗正式主线</h3><p class="lead route-summary">查看医疗正式阈值精度、部署阈值、通信量与图 4-1 阈值偏移图。</p><div class="route-tags"><span class="route-tag">92.7481%</span><span class="route-tag">0.6619606018</span><span class="route-tag">图 4-1</span></div><a class="route-link" href="/results-medical.html">进入本页</a></article>
+            <article class="card route-card"><div class="mini-kicker">Results 3</div><h3>性能与金融压力验证</h3><p class="lead route-summary">查看当前时延偏高的原因、代理 benchmark 和金融边界压力样本结果。</p><div class="route-tags"><span class="route-tag">86.91s/sample</span><span class="route-tag">25.30 GiB</span><span class="route-tag">68.39%</span></div><a class="route-link" href="/results-performance.html">进入本页</a></article>
+            <article class="card route-card"><div class="mini-kicker">Results 4</div><h3>鲁棒性矩阵</h3><p class="lead route-summary">查看 17 类协议层与控制面黑盒用例、图 4-2 以及资源状态回落说明。</p><div class="route-tags"><span class="route-tag">17 类</span><span class="route-tag">FD / Socket</span><span class="route-tag">RSS</span></div><a class="route-link" href="/results-robustness.html">进入本页</a></article>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="shell-footer" id="siteFooter"></footer>
+  </body>
+</html>

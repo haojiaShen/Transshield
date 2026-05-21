@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>密捷 TransShield｜医疗正式主线</title>
+    <link rel="stylesheet" href="/site.css" />
+    <script defer src="/site.js"></script>
+  </head>
+  <body data-page="results">
+    <header class="shell-header" id="siteHeader"></header>
+    <main class="page-main">
+      <section class="page-section hero"><div class="page-inner"><div class="hero-copy"><span class="eyebrow">Results 2 / 医疗正式主线</span><h1>阈值校准解决的是部署边界偏移，而不是样本排序能力完全丧失</h1><p class="lead">医疗任务是唯一正式主线，因此这一页只保留医疗域的正式主指标、部署阈值和图 4-1。</p><div class="breadcrumb"><a href="/index.html">首页</a><a href="/results.html">测试结果</a><span>医疗正式主线</span></div></div></div></section>
+      <section class="page-section"><div class="page-inner">
+        <div class="metric-grid cols-4">
+          <div class="data-card"><strong>全量验证集阈值精度</strong><span class="data-value">92.7481%</span><p class="data-note">正式主线主指标。</p></div>
+          <div class="data-card"><strong>部署阈值</strong><span class="data-value">0.6619606018</span><p class="data-note">动态路径单独阈值校准。</p></div>
+          <div class="data-card"><strong>32 条样本平均时延</strong><span class="data-value">86.91s/sample</span><p class="data-note">批次规模为 8，模型深度为 10。</p></div>
+          <div class="data-card"><strong>32 条样本双向通信量</strong><span class="data-value">84.47 GiB</span><p class="data-note">同配置重测记录。</p></div>
+        </div>
+        <div class="figure-card"><figure><img src="/assets/medical_threshold_calibration_shift.png" alt="医疗动态安全剪枝路径与明文基线的阈值偏移对比" /><figcaption>图 4-1 医疗动态安全剪枝路径与明文基线的概率分布与阈值偏移对比：动态路径保留了排序能力，但部署边界相对固定结构参考发生系统性偏移，因此动态路径单独阈值校准是正式部署中的必要步骤。</figcaption></figure></div>
+        <div class="link-row"><a class="route-link" href="/results-baseline.html">上一页：环境与基线</a><a class="route-link" href="/results-performance.html">下一页：性能与金融压力验证</a></div>
+      </div></section>
+    </main>
+    <footer class="shell-footer" id="siteFooter"></footer>
+  </body>
+</html>

@@ -61,7 +61,7 @@ Before using this toolchain, keep the current project boundary fixed:
   - early e2e secure-inference scaffolding for the new parallel track
   - currently provides privacy-boundary contract export, client-side pixel preprocessing, plaintext reference inference, static whole-forward plaintext reference, future-candidate comparison, and SPU implementation-plan output
 - `update_web_demo_summary.py`
-  - regenerate `artifacts/web_demo_assets/best_demo_content.json` for the current verified bundle / report set
+  - regenerate `artifacts/web_demo_assets/demo_content_summary.json` for the current verified bundle / report set
 - `transshield_plaintext_secure_score_compare.py`
   - compare plaintext bundle inference against secure replay scores sample-by-sample
 - `transshield_plaintext_checkpoint_eval.py`
@@ -195,9 +195,9 @@ Bundled evaluation assets kept in-repo:
 ## ViT training and bundle export
 
 - `transshield_binary_threshold_search.py`
-- `freeze_export_candidate.py`
+- `freeze_export_bundle.py`
 - `transshield_prepare_verified_bundle.py`
-- `verify_frozen_candidate.py`
+- `verify_frozen_bundle.py`
 
 ## Secure sidecar export and checking
 

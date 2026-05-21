@@ -778,6 +778,7 @@ def command_run(args):
             "config": str(Path(args.config).expanduser().resolve()),
             "spu_batch_size": int(args.spu_batch_size),
             "spu_params_mode": args.spu_params_mode,
+            "host_model_params_materialized": bool(args.spu_params_mode not in {"secret"}),
             "spu_block_chunk_size": int(args.spu_block_chunk_size),
             "spu_layer_norm_chunk_size": int(args.spu_layer_norm_chunk_size),
             "spu_layer_norm_policy": args.spu_layer_norm_policy,
@@ -813,6 +814,7 @@ def command_run(args):
             ),
             "static_forward_metadata": spu_metadata,
         }
+        summary["host_model_params_materialized"] = summary["spu"]["host_model_params_materialized"]
         if share_manifest is not None:
             summary["spu"]["share_manifest_type"] = share_manifest.get("manifest_type")
             summary["spu"]["share_semantics"] = share_manifest.get("share_semantics")
@@ -822,14 +824,14 @@ def command_run(args):
             ]
         if party_local_share_manifest_paths is not None:
             summary["privacy_note"] = (
-                "This candidate runs the static whole-forward function on SPU/JAX and reveals final logits only. "
+                "This candidate runs the configured whole-forward SPU/JAX function and reveals final logits only. "
                 "In party-local share-load mode, the driver does not materialize plaintext pixel_values or private "
                 "share tensors; P1/P2 device functions load their own share files before SPU recomposition. "
                 "It is still a debug bridge until P1/P2 are launched as independent party processes."
             )
         else:
             summary["privacy_note"] = (
-                "This candidate runs the static whole-forward function on SPU/JAX and reveals final logits only. "
+                "This candidate runs the configured whole-forward SPU/JAX function and reveals final logits only. "
                 "When share manifests are used without party-local share loading, the runner no longer feeds "
                 "plaintext pixel_values as its input, but the driver may still materialize private share tensors."
             )

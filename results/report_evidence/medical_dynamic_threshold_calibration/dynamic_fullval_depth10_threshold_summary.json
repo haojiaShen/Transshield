@@ -1,0 +1,11 @@
+{
+  "sample_count": 524,
+  "default_threshold_in_bundle": 0.3577311038970947,
+  "argmax_accuracy": 0.7423664331436157,
+  "best_threshold": 0.6619606018066406,
+  "best_threshold_accuracy": 0.927480936050415,
+  "class1_prob_mean": 0.7179273962974548,
+  "class1_prob_min": 0.5117672085762024,
+  "class1_prob_max": 0.830413818359375,
+  "static_depth_limit": 10
+}

@@ -1,0 +1,189 @@
+{
+  "base_url": "http://127.0.0.1:7862",
+  "server_pid": 257970,
+  "passed": true,
+  "checks": [
+    {
+      "name": "duplicate_payload_different_nonce",
+      "passed": true,
+      "interception_layer": "replay_guard_payload_cache",
+      "fallback_layer": "ip_inflight_limit",
+      "summary": "Same share payload with a fresh nonce should still be rejected as duplicate_payload.",
+      "details": {
+        "first": {
+          "status": 200,
+          "json": {
+            "domain": "medical",
+            "mode": "e2e_browser_private_shares",
+            "result": {
+              "runtime": "e2e",
+              "prediction": {
+                "argmax_label": "肺炎",
+                "threshold_label": "正常",
+                "prob_class_0": 0.41,
+                "prob_class_1": 0.59
+              },
+              "profile": {
+                "sample_count": 1,
+                "total_pipeline_duration_sec": 1.5,
+                "communication": {
+                  "total_bytes": 0,
+                  "status": "mock",
+                  "supported": true
+                }
+              },
+              "e2e": {
+                "candidate_json": "mock_candidate.json",
+                "candidate_pt": "mock_candidate.pt",
+                "calibration_json": null,
+                "input_mode": "party_local_debug_share_load",
+                "host_plaintext_pixel_values_materialized": false,
+                "host_private_share_tensors_loaded": false,
+                "private_input_paths_redacted": true,
+                "driver_private_share_manifest_paths_recorded": false,
+                "share_semantics": "debug_float_additive_share_not_production_mpc_share",
+                "layer_norm_policy": "public_calibrated",
+                "attention_policy": "uniform",
+                "activation_kind": "fixed_square",
+                "effective_static_depth": 6,
+                "finite_logits": true,
+                "privacy_note": "mock secure result for guard stress testing",
+                "web_boundary_note": "The default web path generates shares in the browser and does not upload the raw image or plaintext pixel_values. The current demo server still receives both debug shares in one process; production deployment should route share0/share1 to independent P1/P2 services."
+              }
+            },
+            "quality_assurance": {
+              "status": "pass",
+              "integrity_status": "consistent",
+              "integrity_reasons": [],
+              "server_quality_summary": {
+                "mean_luma": 0.500481128692627,
+                "std_luma": 0.09542593359947205,
+                "overexposed_ratio": 0.0,
+                "underexposed_ratio": 0.0,
+                "effective_luma_ratio": 1.0,
+                "dynamic_range_p95_p05": 0.3227177560329437,
+                "laplacian_variance": 0.000632752722594887
+              },
+              "client_vs_server_drift": {
+                "mean_luma": {
+                  "client": 0.50048113,
+                  "server": 0.500481128692627,
+                  "abs_diff": 1.307373098669018e-09,
+                  "within_tolerance_1e-4": true
+                },
+                "std_luma": {
+                  "client": 0.09542593,
+                  "server": 0.09542593359947205,
+                  "abs_diff": 3.599472039872431e-09,
+                  "within_tolerance_1e-4": true
+                },
+                "overexposed_ratio": {
+                  "client": 0.0,
+                  "server": 0.0,
+                  "abs_diff": 0.0,
+                  "within_tolerance_1e-4": true
+                },
+                "underexposed_ratio": {
+                  "client": 0.0,
+                  "server": 0.0,
+                  "abs_diff": 0.0,
+                  "within_tolerance_1e-4": true
+                },
+                "effective_luma_ratio": {
+                  "client": 1.0,
+                  "server": 1.0,
+                  "abs_diff": 0.0,
+                  "within_tolerance_1e-4": true
+                },
+                "dynamic_range_p95_p05": {
+                  "client": 0.32271776,
+                  "server": 0.3227177560329437,
+                  "abs_diff": 3.967056294573723e-09,
+                  "within_tolerance_1e-4": true
+                },
+                "laplacian_variance": {
+                  "client": 0.00063275,
+                  "server": 0.000632752722594887,
+                  "abs_diff": 2.72259488706076e-09,
+                  "within_tolerance_1e-4": true
+                }
+              },
+              "blocking_reasons": [],
+              "warning_reasons": []
+            },
+            "audit": {
+              "audit_nonce": "9ea68dd8-1bf3-41cb-bbf2-7e8c801e3786",
+              "client_source_image_sha256": "6516f3f5e21242225938231059245174741ff2e4f2abcd171272b2e13eb06f30",
+              "client_normalized_tensor_sha256": "8698e2b1107ba3e27de79d8cdb9b47baa46d8049f796a0e5cbb7c52324b856d4",
+              "client_audit_chain_sha256": "e4e9147c8c889da65d6256ec896841aad8742926fc8de663b8059be8349b0be0",
+              "server_audit_chain_sha256": "e4e9147c8c889da65d6256ec896841aad8742926fc8de663b8059be8349b0be0",
+              "audit_chain_consistent": true,
+              "server_share0_sha256": "2f5e3554aa8ed283753a2ea2b559227ec8f911034c1165453f0d32d0fb04fb89",
+              "server_share1_sha256": "0673852e75aca9a834f8bb4d73e4efcfdb36b6e51609bf3cc11e5750c36a86fa",
+              "server_payload_fingerprint": "b9d5457e05ab512b78b1cbaeeb8add87fa2fc72a22e53bcea91febcd1cba7f2e"
+            },
+            "control_plane_metrics": {
+              "client": {
+                "decode_ms": 1.25,
+                "preprocess_ms": 4.75,
+                "dqa_ms": 1.1,
+                "hash_ms": 2.85,
+                "share_build_ms": 3.65,
+                "total_ms": 13.6
+              },
+              "server_pre_spu_checks_ms": 9.944
+            },
+            "privacy": {
+              "browser_generated_shares": true,
+              "server_received_plain_image": false,
+              "server_received_plain_pixel_values": false,
+              "server_received_share0_and_share1_in_demo_process": true,
+              "production_note": "正式部署应将 share0/share1 分别上传到独立 P1/P2 服务；当前 web demo 为单进程演示接口。另外，当前同步阻塞原型在长耗时 SPU 计算期间不能主动感知客户端断连并终止任务。"
+            }
+          },
+          "error_code": null
+        },
+        "second": {
+          "status": 409,
+          "json": {
+            "error": "检测到重复或饱和的控制面请求。",
+            "retryable": false,
+            "error_code": "duplicate_payload"
+          },
+          "error_code": "duplicate_payload"
+        }
+      },
+      "system_state": {
+        "available": true,
+        "stable": false,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+16032 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 257970,
+          "timestamp": 1779272021.544578,
+          "fd_count": 4,
+          "socket_fd_count": 1,
+          "rss_kib": 43400,
+          "vmhwm_kib": 43400,
+          "thread_count": 18
+        },
+        "after": {
+          "available": true,
+          "pid": 257970,
+          "timestamp": 1779272023.491288,
+          "fd_count": 4,
+          "socket_fd_count": 1,
+          "rss_kib": 59432,
+          "vmhwm_kib": 59432,
+          "thread_count": 18
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 16032,
+          "thread_count": 0
+        }
+      }
+    }
+  ]
+}

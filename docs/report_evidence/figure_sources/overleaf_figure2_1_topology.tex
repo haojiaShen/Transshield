@@ -1,0 +1,184 @@
+\documentclass[tikz,border=6pt]{standalone}
+\usepackage[UTF8]{ctex}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{tsgreen}{HTML}{208443}
+\definecolor{tsgreenbg}{HTML}{EEF8F2}
+\definecolor{tsgray}{HTML}{66728B}
+\definecolor{tsgraybg}{HTML}{F4F7FB}
+\definecolor{tsred}{HTML}{BE3431}
+\definecolor{tsredbg}{HTML}{FFF1F2}
+\definecolor{tsblue}{HTML}{2F6FDA}
+\definecolor{tsbluebg}{HTML}{F2F6FF}
+\definecolor{tsyellow}{HTML}{E7A82A}
+\definecolor{tsyellowbg}{HTML}{FFF7E8}
+\definecolor{tsborder}{HTML}{D9E2EE}
+\definecolor{tstext}{HTML}{1D2738}
+\definecolor{tsmuted}{HTML}{6C7A90}
+
+\tikzset{
+  >={Latex[length=2.8mm,width=2.3mm]},
+  panel/.style={draw=tsborder, rounded corners=9pt, line width=0.85pt, fill=white},
+  band/.style={rounded corners=7pt, draw=none},
+  subtag/.style={
+    draw=black!65, line width=0.75pt, rounded corners=6pt,
+    fill=white, align=left, inner sep=5pt,
+    font=\fontsize{9.4}{12.5}\selectfont, text=tsmuted
+  },
+  ccard/.style={
+    draw=tsborder, line width=0.8pt, rounded corners=7pt,
+    fill=white, align=left, inner sep=6pt
+  },
+  ccardgreen/.style={ccard, draw=tsgreen!35!black, fill=tsgreenbg},
+  ccardpink/.style={ccard, draw=tsred!30, fill=tsredbg},
+  ccardgray/.style={ccard, draw=tsborder, fill=tsgraybg},
+  noteG/.style={
+    draw=tsgreen!45!black, fill=tsgreenbg, line width=0.75pt,
+    rounded corners=6pt, inner sep=5pt, align=left,
+    font=\fontsize{9.2}{12}\selectfont, text=tsgreen!75!black
+  },
+  noteR/.style={
+    draw=tsred!35, fill=tsredbg, line width=0.75pt,
+    rounded corners=6pt, inner sep=5pt, align=left,
+    font=\fontsize{9.2}{12}\selectfont, text=tsred!85!black
+  },
+  noteY/.style={
+    draw=tsyellow!75!black, fill=tsyellowbg, line width=0.75pt,
+    rounded corners=6pt, inner sep=5pt, align=left,
+    font=\fontsize{9.2}{12}\selectfont, text=tsyellow!85!black
+  },
+  noteB/.style={
+    draw=tsblue!35, fill=tsbluebg, line width=0.75pt,
+    rounded corners=6pt, inner sep=5pt, align=left,
+    font=\fontsize{9.2}{12}\selectfont, text=tsblue
+  },
+  gflow/.style={draw=tsgreen, line width=1.1pt, -{Latex[length=3mm,width=2.8mm]}},
+  rflow/.style={draw=tsred, line width=1.1pt, dashed, -{Latex[length=3mm,width=2.8mm]}},
+  boundary/.style={draw=tsmuted!70, dashed, line width=0.8pt},
+}
+
+\newcommand{\cardtitle}[1]{{\bfseries\fontsize{11.8}{13.5}\selectfont #1}}
+\newcommand{\cardbody}[1]{{\fontsize{9.8}{14}\selectfont #1}}
+
+\newcommand{\lockmark}[2]{%
+  \draw[tsmuted!80, line width=0.8pt] (#1,#2+0.11) arc[start angle=180,end angle=0,radius=0.11];
+  \draw[fill=tsmuted!80, draw=tsmuted!80, rounded corners=1pt] (#1-0.14,#2-0.14) rectangle (#1+0.14,#2+0.08);
+}
+
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm]
+
+% title
+\node[anchor=west, font=\bfseries\fontsize{18}{20}\selectfont, text=tstext] at (0,10.45)
+  {图2-1\quad 系统物理与逻辑部署图};
+\node[anchor=west, font=\fontsize{10.6}{13}\selectfont, text=tsmuted] at (0,9.92)
+  {围绕“明文止于本地、跨域只传 share、SPU 前仍有权威快检”三条主线重绘。};
+
+% panels
+\draw[panel] (0.00,0.65) rectangle (6.20,9.55);
+\draw[panel] (6.75,0.65) rectangle (11.75,9.55);
+\draw[panel] (12.30,0.65) rectangle (18.50,9.55);
+
+% header bands
+\path[band, fill=tsgreen] (0.25,8.85) rectangle (5.95,9.43);
+\path[band, fill=tsgray]  (7.00,8.85) rectangle (11.50,9.43);
+\path[band, fill=tsred]   (12.55,8.85) rectangle (18.25,9.43);
+\node[anchor=west, text=white, font=\bfseries\fontsize{16}{17}\selectfont] at (0.50,9.12) {本地明文处理域};
+\node[anchor=west, text=white, font=\bfseries\fontsize{16}{17}\selectfont] at (7.20,9.12) {WAN / DMZ 传输边界};
+\node[anchor=west, text=white, font=\bfseries\fontsize{16}{17}\selectfont] at (12.82,9.12) {两方安全执行域};
+
+% sub tags
+\node[subtag, anchor=west, text width=4.95cm, minimum height=0.58cm] at (0.45,8.18)
+  {医院终端 + 浏览器主线程 + 单实例 Worker};
+\node[subtag, anchor=west, text width=3.95cm, minimum height=0.58cm] at (7.12,8.18)
+  {跨域只承载 multipart、share 与审计摘要};
+\node[subtag, anchor=west, text width=5.00cm, minimum height=0.58cm] at (12.70,8.18)
+  {网关、权威快检、SPU 与审计回显};
+
+% boundaries
+\draw[boundary] (6.47,0.62) -- (6.47,9.58);
+\draw[boundary] (12.02,0.62) -- (12.02,9.58);
+\lockmark{6.47}{9.12}
+\lockmark{12.02}{9.12}
+\node[font=\fontsize{9.5}{11}\selectfont, text=tsmuted] at (6.47,8.62) {信任边界};
+\node[font=\fontsize{9.5}{11}\selectfont, text=tsmuted] at (12.02,8.62) {信任边界};
+
+% left domain
+\node[ccard, text width=1.82cm, minimum height=2.55cm, anchor=north west] (hospital) at (0.42,7.45) {%
+  \cardtitle{医院终端}\\[0.10cm]
+  \cardbody{评委或医护人员在本机浏览器中加载本地影像样本；正式演示链路仅向服务端提交分片数据与审计元信息。}
+};
+
+\node[ccard, text width=2.55cm, minimum height=1.80cm, anchor=north west] (mainthread) at (2.48,7.45) {%
+  \cardtitle{浏览器主线程}\\[0.10cm]
+  \cardbody{负责文件句柄、页面状态、按钮编排与单活 Worker 生命周期管理。}
+};
+
+\node[ccardgreen, text width=2.55cm, minimum height=2.35cm, anchor=north west] (worker) at (2.48,5.38) {%
+  \cardtitle{浏览器 Worker}\\[0.10cm]
+  \cardbody{完成头部嗅探、解码与中心裁剪、DQA 摘要、哈希链构建，以及小端 Float32 share 序列化。}
+};
+
+\node[noteG, text width=5.18cm, minimum height=0.66cm, anchor=west] at (0.45,1.33)
+  {明文终止点：原图、像素张量与质量预检都停留在本地 Worker 域内};
+
+% middle domain
+\node[ccard, text width=3.55cm, minimum height=1.82cm, anchor=north west] (crossmsg) at (7.22,7.45) {%
+  \cardtitle{跨域报文}\\[0.10cm]
+  \cardbody{仅提交 multipart/form-data：share0、share1、质量摘要、审计摘要与控制面指标。}
+};
+
+\node[noteR, text width=3.25cm, minimum height=0.52cm, anchor=west] at (7.32,5.78)
+  {share 生成起点};
+
+\node[ccardgray, text width=3.55cm, minimum height=1.62cm, anchor=north west] (semantics) at (7.22,5.28) {%
+  \cardtitle{边界语义}\\[0.10cm]
+  \cardbody{TLS / HTTP 只承载密态分片与审计摘要；不承载原图，也不承载完整模型参数。}
+};
+
+% right domain
+\node[ccard, text width=5.10cm, minimum height=1.30cm, anchor=north west] (gateway) at (12.62,7.45) {%
+  \cardtitle{业务侧前置网关}\\[0.10cm]
+  \cardbody{完成 body 限长、boundary 解析、header 预检、multipart 结构校验与路由转发。}
+};
+
+\node[ccardpink, text width=5.10cm, minimum height=1.72cm, anchor=north west] (guard) at (12.62,5.98) {%
+  \cardtitle{服务端权威快检}\\[0.10cm]
+  \cardbody{完成 JSON 字节门、share 哈希与审计链校验、内存对齐复制、NaN/Inf/次正规数阻断，以及服务端 DQA 复核。}
+};
+
+\node[noteY, text width=2.48cm, minimum height=0.52cm, anchor=west] at (12.90,4.96)
+  {最后一道预 SPU 权威门};
+
+\node[ccard, text width=2.35cm, minimum height=1.42cm, anchor=north west] (spu) at (12.62,4.58) {%
+  \cardtitle{P1 / P2 / SPU}\\[0.10cm]
+  \cardbody{两方安全执行路径内部完成动态安全剪枝、前向推理与最终分类。}
+};
+
+\node[ccard, text width=2.35cm, minimum height=1.42cm, anchor=north west] (audit) at (15.38,4.58) {%
+  \cardtitle{审计与回显}\\[0.10cm]
+  \cardbody{记录载荷指纹、质量裁决与控制面指标，并仅回传分类、审计与质量摘要。}
+};
+
+% arrows
+\draw[gflow] ($(hospital.east)+(0.00,-0.60)$) -- ($(mainthread.west)+(0.00,-0.48)$);
+\draw[gflow] ($(mainthread.south)+(0.00,0.01)$) -- ($(worker.north)+(0.00,-0.02)$);
+\draw[rflow] ($(worker.east)+(0.00,-0.95)$) -- ($(crossmsg.west)+(0.00,-0.82)$);
+\draw[rflow] ($(crossmsg.east)+(0.00,-0.65)$) -- ($(gateway.west)+(0.00,-0.28)$);
+\draw[gflow] ($(gateway.south)+(0.00,0.00)$) -- ($(guard.north)+(0.00,-0.02)$);
+\draw[gflow] ($(guard.south)+(0.15,0.00)$) -- ($(spu.north)+(0.35,0.00)$);
+\draw[gflow] ($(spu.east)+(0.02,-0.58)$) -- ($(audit.west)+(-0.02,-0.58)$);
+
+% footer
+\draw[panel] (0.18,0.05) rectangle (18.35,0.95);
+\draw[tsgreen, line width=1.2pt] (0.48,0.54) -- (1.18,0.54);
+\node[anchor=west, font=\fontsize{9.6}{11.5}\selectfont] at (1.32,0.54) {受信任域内明文处理};
+\draw[tsred, dashed, line width=1.2pt] (0.48,0.22) -- (1.18,0.22);
+\draw[tsred, line width=0.8pt] (0.75,0.32) arc[start angle=180,end angle=0,radius=0.06];
+\draw[fill=tsred, draw=tsred, rounded corners=1pt] (0.67,0.12) rectangle (0.83,0.27);
+\node[anchor=west, font=\fontsize{9.6}{11.5}\selectfont] at (1.32,0.22) {跨边界密态 share / 张量通信};
+\node[noteB, text width=6.45cm, minimum height=0.54cm, anchor=west] at (11.20,0.22)
+  {对外暴露的唯一业务结果：最终分类标签、质量裁决、审计摘要与控制面开销};
+
+\end{tikzpicture}
+\end{document}

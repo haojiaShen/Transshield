@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>密捷 TransShield｜控制面与快检链路</title>
+    <link rel="stylesheet" href="/site.css" />
+    <script defer src="/site.js"></script>
+  </head>
+  <body data-page="implementation">
+    <header class="shell-header" id="siteHeader"></header>
+    <main class="page-main">
+      <section class="page-section hero">
+        <div class="page-inner">
+          <div class="hero-copy">
+            <span class="eyebrow">Implementation 2 / 控制面与快检链路</span>
+            <h1>浏览器工作线程、本地 DQA、服务端权威快检和审计链共同构成前置闭环</h1>
+            <p class="lead">这一页只讲工程闭环，不重复算法公式。重点是：前端如何在本地先做控制面，服务端如何在进入 SPU 前完成权威阻断，以及 replay 与审计如何落盘。</p>
+            <div class="breadcrumb"><a href="/index.html">首页</a><a href="/implementation.html">系统实现</a><span>控制面与快检</span></div>
+          </div>
+        </div>
+      </section>
+      <section class="page-section">
+        <div class="page-inner">
+          <div class="page-card-grid three">
+            <div class="card"><h3>浏览器工作线程</h3><p class="lead">主线程只做文件选择与运行编排；worker 内部完成图像解码、裁剪、质量指标提取、哈希计算和 share 序列化，避免主线程卡顿与无控制上传。</p></div>
+            <div class="card"><h3>服务端权威快检</h3><p class="lead">服务端在进入 SPU 前依次执行：请求体硬长度门、boundary 预检、JSON 字节门、share 哈希校验、张量维度与数值合法性检查。</p></div>
+            <div class="card"><h3>审计与 replay 守卫</h3><p class="lead">nonce、payload 摘要、质量摘要和返回状态全部落盘；重复 nonce、重复载荷与短窗限频由服务端在前置阶段直接拒绝。</p></div>
+          </div>
+          <div class="table-card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>环节</th><th>当前实现</th><th>对应代码</th></tr></thead>
+                <tbody>
+                  <tr><td>浏览器本地控制面</td><td>单活 worker、分片生成、前端 DQA、审计摘要。</td><td><code>web_demo/control_plane_worker.js</code></td></tr>
+                  <tr><td>服务端快检与演示后端</td><td>multipart 预检、JSON 字节门、share 校验、反重放与限频。</td><td><code>tools/transshield_chat_demo.py</code></td></tr>
+                  <tr><td>自动化协议 fuzz</td><td>畸形 boundary、超长 JSON、chunked 编码、空字节注入。</td><td><code>tools/web_demo_protocol_fuzz.py</code></td></tr>
+                  <tr><td>控制面守卫验证</td><td>duplicate nonce、same payload new nonce、busy pool、rate limit。</td><td><code>tools/web_demo_guard_stress.py</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="link-row">
+            <a class="route-link" href="/implementation-rewrite.html">上一页：密态改写</a>
+            <a class="route-link" href="/implementation-delivery.html">下一页：交付物落点</a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="shell-footer" id="siteFooter"></footer>
+  </body>
+</html>

@@ -102,7 +102,7 @@ def import_repo_modules(repo_root: Path):
     _ensure_torch_six()
     sys.path.insert(0, str(repo_root))
     try:
-        datasets_mod = importlib.import_module("datasets")
+        datasets_mod = importlib.import_module("training_core.datasets")
         dyvit_mod = importlib.import_module("models.dyvit")
     finally:
         if sys.path and sys.path[0] == str(repo_root):

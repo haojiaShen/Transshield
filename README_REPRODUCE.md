@@ -1,156 +1,123 @@
-# TransShield 复现说明
+# 密捷 TransShield 结果核对说明
 
-本文档用于复现当前正式交付口径中的计算与验证链路：医疗主线双向隐私演示、协议层异常输入验证，以及并发与重放守卫验证。
+本文档面向评委与仓库维护者。当前最终仓除了正式结果、正式报告和冻结模型资产外，还包含一套可运行的**评委展示站 + 单通道 SPU Live Demo**。旧 live demo / runtime rerun wrapper 已归档，不再作为当前主入口。
 
-## 0. 最低可复现路径（10–20 分钟）
+## 1. 环境依赖
 
-前提：模型目录和 Python 环境已经就位。
+- Python：`3.9`
+- 基础依赖：`python3 -m pip install -r requirements.txt`
+- 建议系统：Linux / WSL，支持 `fc-match` 时中文图件字体效果更稳定
 
-建议按以下最短路径验证核心能力：
+## 2. 最小核对路径
 
-1. 启动 Web 演示并访问页面，在浏览器端加载一张本地医疗样本图片。
-2. 确认页面返回：
-   - 分类结果
-   - 质量保障结论
-   - 审计摘要
-   - 控制面耗时
-3. 运行协议层异常输入验证脚本，确认生成 JSON 结果。
-4. 运行一项控制面守卫检查，建议先跑 `duplicate_nonce`。
+如果只核对最终交付物，按以下顺序即可：
 
-建议命令：
+1. 查看正式报告 `docs/密捷竞赛作品报告.docx`
+2. 查看正式指标 JSON
+3. 查看证据链索引
 
-```bash
-cd /path/to/Transshield_final
-export PYTHON_BIN=python3
-export WEB_DEMO_HOST=127.0.0.1
-export WEB_DEMO_PORT=7860
-bash artifacts/server_inference_friendly_pack/run_web_demo.sh
-```
+如果要启动展示站并验证可运行演示，按第 4 节执行。
 
-另开终端执行：
+## 3. 当前可直接核对的结果文件
 
-```bash
-cd /path/to/Transshield_final
-python3 tools/web_demo_protocol_fuzz.py \
-  --base-url http://127.0.0.1:7860
-```
+| 类型 | 位置 |
+|---|---|
+| 正式报告 | `docs/密捷竞赛作品报告.docx` |
+| 证据链索引 | `docs/evidence/README.md` |
+| 医疗阈值 | `results/final/medical_dynamic_threshold_calibration_final.json` |
+| 医疗 AUC | `results/final/medical_dynamic_auc_reference_final.json` |
+| 通信量 | `results/communication/mainline_communication_profile_final.json` |
+| 协议 fuzz 终版结果 | `results/fuzzing/protocol_fuzz_final.json` |
+| guard 终版结果 | `results/guard_stress/guard_stress_final.json` |
 
-```bash
-cd /path/to/Transshield_final
-export WEB_DEMO_TEST_ACCEPTED_SLEEP_SEC=1.5
-python3 tools/web_demo_guard_stress.py \
-  --base-url http://127.0.0.1:7860 \
-  --checks duplicate_nonce \
-  --window-reset-sec 0
-```
+## 4. 展示站 / Live Demo 最小启动步骤
 
-## 1. 环境前提
+### 4.1 Python 环境
 
-- 仓库路径：`/path/to/Transshield_final`
-- Python：建议 `Python 3.9+`
-- 模型与数据：
-  - 仓库默认不随 Git 分发全部模型权重与数据集
-  - 需要按 `README.md` 中的说明补齐对应模型目录
-## 2. 启动 Web 演示
-
-本地启动：
+建议使用独立虚拟环境：
 
 ```bash
-cd /path/to/Transshield_final
-export PYTHON_BIN=python3
-export WEB_DEMO_HOST=127.0.0.1
-export WEB_DEMO_PORT=7860
-bash artifacts/server_inference_friendly_pack/run_web_demo.sh
+cd /path/to/Transshield
+python3 -m venv .venv
+. .venv/bin/activate
+python3 -m pip install -r requirements.txt
 ```
 
-服务器启动：
+### 4.2 构建前端展示站
 
 ```bash
-cd /path/to/Transshield_final
-export PYTHON_BIN=python3
-export WEB_DEMO_HOST=0.0.0.0
-export WEB_DEMO_PORT=7860
-bash artifacts/server_inference_friendly_pack/run_web_demo.sh
+cd /path/to/Transshield/showcase
+npm install
+npm run build
 ```
 
-预期结果：
+### 4.3 启动后端控制面
 
-- 控制台打印当前监听地址
-- 浏览器可访问 `http://127.0.0.1:7860/` 或 `http://<server-ip>:7860/`
-
-## 3. 运行医疗主线演示
-
-- 打开页面后在浏览器端加载医疗样本图片
-- 页面会触发浏览器工作线程预处理、本地质量评估、share 构造与后端安全推理
-- 预期看到：
-  - 分类结果
-  - 质量保障结论
-  - 审计摘要
-  - 控制面耗时
-
-## 4. 协议层异常输入验证
-
-若要记录资源状态，先记下演示服务进程号，例如：
+#### 先做本地闭环验证（mock）
 
 ```bash
-ps -ef | grep 'tools/transshield_chat_demo.py' | grep -v grep
+cd /path/to/Transshield
+TRANSSHIELD_SHOWCASE_RUNTIME_MODE=mock uvicorn showcase_api.app:app --host 0.0.0.0 --port 7860
 ```
 
-运行模糊测试：
+#### 切到单通道 SPU 实跑
 
 ```bash
-cd /path/to/Transshield_final
-python3 tools/web_demo_protocol_fuzz.py \
-  --base-url http://127.0.0.1:7860 \
-  --server-pid <PID> \
-  --out results/report_evidence/protocol_fuzz_evidence_custom.json
+cd /path/to/Transshield
+uvicorn showcase_api.app:app --host 0.0.0.0 --port 7860
 ```
 
-预期结果：
+说明：
 
-- 生成 `protocol_fuzz_evidence.json`、`protocol_fuzz_batch_*.json` 或指定输出文件
-- 输出包含：
-  - `interception_layer`
-  - `fallback_layer`
-  - `system_state`
+- `showcase_api` 会托管 `showcase/dist` 静态站点
+- `GET /api/medical/config` 返回 bundle、阈值、均值/方差、输入尺寸和等待时间提示
+- `POST /api/medical/live-run` 是唯一 medical live upload 入口
+- live upload 只针对医疗；金融只在 `/results` 页面做结果与压力验证展示
 
-## 5. 重放与并发守卫验证
-
-建议先设置：
+### 4.4 可选黑盒验证脚本
 
 ```bash
-export WEB_DEMO_TEST_ACCEPTED_SLEEP_SEC=1.5
+python3 tools/showcase_protocol_fuzz.py --base-url http://127.0.0.1:7860
+python3 tools/showcase_guard_stress.py --base-url http://127.0.0.1:7860
 ```
 
-然后运行：
+如果只想先验证一次 accepted path：
 
 ```bash
-cd /path/to/Transshield_final
-python3 tools/web_demo_guard_stress.py \
-  --base-url http://127.0.0.1:7860 \
-  --server-pid <PID> \
-  --out results/report_evidence/control_plane_guard_evidence_custom.json
+python3 tools/showcase_protocol_fuzz.py --base-url http://127.0.0.1:7860 --cases baseline
 ```
 
-预期结果：
+### 4.5 当前远端演示部署备注
 
-- 生成 `control_plane_guard_evidence.json` 或指定输出文件
-- 检查项包括：
-  - 重复 nonce 并发重放
-  - 相同载荷更换 nonce
-  - 同 IP 并发占满
-  - 短窗限频
+如需复用当前评委演示服务器，可按最近一次有效部署口径执行：
+
+- 服务器：`10.204.248.175:9001`
+- 远端仓库：`/data/wyb/Transshield_final`
+- 远端 Python：`/data/wyb/conda_envs/transshield/bin/python`
+- 当前常用服务端口：`7862`
+- 前端构建完成后，由 `showcase_api` 直接托管 `showcase/dist`
+
+若 `7862` 未对外放行，默认通过 SSH 隧道访问：
+
+```bash
+ssh -p 9001 -L 7862:127.0.0.1:7862 wyb@10.204.248.175
+```
+
+远端启动示例：
+
+```bash
+cd /data/wyb/Transshield_final
+/data/wyb/conda_envs/transshield/bin/python -m uvicorn showcase_api.app:app --host 127.0.0.1 --port 7862
+```
+
+## 5. 已归档内容
+
+- 旧 runtime / live demo 运行包：`archive/deprecated/artifacts/server_inference_friendly_pack/`
+- 中间准备目录与静态参考目录：`archive/old_runs/artifacts/server_pipeline_run/`
 
 ## 6. 常见问题
 
-- 如果 `run_web_demo.sh` 提示找不到模型目录，先补齐 `README.md` 中列出的模型文件。
-- 如果需要核对后端参数，可运行：
-
-```bash
-python3 tools/transshield_chat_demo.py --help
-```
-
-- 如果需要重新核对第三方许可映射，检查：
-  - `spu_vendored/LICENSE`
-  - `spu_vendored/MODIFICATIONS.md`
-  - `THIRD_PARTY.md`
+- 为什么 README 里同时提到“旧 demo 已归档”和“当前有 Live Demo”：旧 `web_demo/` 与历史 wrapper 已归档；当前 `showcase/ + showcase_api/` 是按正式报告口径重建的新展示链
+- 为什么不建议重建报告：当前仓库已保留正式 `.docx` 成品，报告源码重建链与相关额外依赖已从当前主口径移除
+- 为什么没有单独图件目录：展示站图件由 `tools/showcase_extract_report_assets.py` 从正式 `docx` 提取到 `showcase/public/report-assets/`
+- 为什么 mock 模式也有价值：它用于验证“浏览器分片 → 后端快检 → 结果返回”的控制面闭环；正式 SPU 长等待路径仍保留在默认运行模式里

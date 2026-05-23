@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color: #111827;
+    background: #f8fafc;
+  }
+
+  * {
+    @apply border-line;
+  }
+
+  body {
+    @apply bg-slate-50 font-sans text-slate-900 antialiased;
+  }
+
+  a {
+    @apply text-inherit no-underline;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply rounded-[2rem] border border-white/40 bg-white/90 shadow-diffusion shadow-slate-900/[0.08] backdrop-blur-sm;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 22px 50px -28px rgba(15, 23, 42, 0.18);
+  }
+
+  .section-title {
+    @apply text-[1.9rem] font-semibold tracking-tight text-slate-950 md:text-[2.85rem] md:leading-[1.02];
+  }
+
+  .section-copy {
+    @apply max-w-[72ch] text-base leading-relaxed text-slate-600;
+  }
+}

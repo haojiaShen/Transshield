@@ -17,12 +17,14 @@ torchvision==0.14.1+cu117
 fvcore==0.1.5.post20221221
 iopath==0.1.10
 yacs==0.1.8
+fastapi>=0.110,<1
+uvicorn>=0.29,<1
 
-# OpenBumbleBee / SPU runtime stack required by the secure pipeline.
+# OpenBumbleBee / SPU runtime stack required by the current secure runtime path.
 # This is required for:
-# - `tools/transshield_openbumblebee_pipeline.py run --runtime spu`
-# - `artifacts/server_inference_friendly_pack/run_secure_pipeline.sh spu`
-# - `artifacts/server_inference_friendly_pack/run_full_transshield_pipeline.sh spu`
+# - `tools/transshield_e2e_secure_infer.py`
+# - `integrations/transshield_runtime/e2e_secure_vit/transshield_e2e_secure_vit.py`
+# Historical shell wrappers live only under `archive/deprecated/artifacts/server_inference_friendly_pack/`.
 grpcio==1.80.0
 protobuf==4.25.9
 cloudpickle>=2.0.0

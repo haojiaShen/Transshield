@@ -21,17 +21,17 @@ from timm.data.mixup import Mixup
 from timm.models import create_model
 from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
 from timm.utils import ModelEma
-from optim_factory import create_optimizer, LayerDecayValueAssigner
+from training_core.optim_factory import create_optimizer, LayerDecayValueAssigner
 
-from datasets import build_dataset, build_transform
-from engine import train_one_epoch, evaluate
+from training_core.datasets import build_dataset, build_transform
+from training_core.engine import train_one_epoch, evaluate
 
-from utils import NativeScalerWithGradNormCount as NativeScaler
-import utils
-from losses import DistillDiffPruningLoss_dynamic
-from samplers import RASampler
+from training_core.utils import NativeScalerWithGradNormCount as NativeScaler
+from training_core import utils
+from training_core.losses import DistillDiffPruningLoss_dynamic
+from training_core.samplers import RASampler
 from models.dyvit import VisionTransformerDiffPruning, VisionTransformerTeacher
-from calc_flops import calc_flops, throughput
+from training_core.calc_flops import calc_flops, throughput
 
 import warnings
 warnings.filterwarnings('ignore')

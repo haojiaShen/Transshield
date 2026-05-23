@@ -1,0 +1,9 @@
+{
+  "sample_count": 524,
+  "argmax_accuracy": 0.7423664331436157,
+  "best_threshold": 0.6619606018066406,
+  "best_threshold_accuracy": 0.927480936050415,
+  "auc": 0.9639150500297546,
+  "source_pt": "/data/wyb/Transshield_final/results/final/medical_auc_reference_raw/fullval_524_runtime_pruning_depth10_reference.pt",
+  "source_json": "/data/wyb/Transshield_final/results/final/medical_auc_reference_raw/fullval_524_runtime_pruning_depth10_reference.json"
+}

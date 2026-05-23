@@ -28,7 +28,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from utils import batch_index_select
+from training_core.utils import batch_index_select
 
 from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
@@ -1172,5 +1172,4 @@ def checkpoint_filter_fn(state_dict, model):
             v = resize_pos_embed(v, model.pos_embed)
         out_dict[k] = v
     return out_dict
-
 

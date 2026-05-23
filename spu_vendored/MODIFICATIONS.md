@@ -12,7 +12,7 @@ This directory redistributes a vendored SPU subtree under the upstream Apache Li
 
 ## Maintained provenance references
 
-- `docs/transshield_bumblebee_spu_modifications.md`
+- `docs/evidence/spu_bumblebee_local_modifications.md`
 - `docs/transshield_modifications_improvements_log.md`
 
 ## Files explicitly called out by the current deliverable notes

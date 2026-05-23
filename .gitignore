@@ -16,6 +16,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.code-workspace
+/.venv_preview/
 
 # ==================== Jupyter ====================
 .ipynb_checkpoints/
@@ -52,10 +53,25 @@ artifacts/train_runs/
 artifacts/web_demo_runs/
 artifacts/web_demo_uploads/
 artifacts/web_demo_audit/
+artifacts/showcase_audit/
+artifacts/showcase_runs/
 artifacts/bazel_distdir_cache/
 
 # ==================== 旧的结果数据 ====================
 results/
+!results/
+!results/final/
+!results/final/**
+!results/fuzzing/
+!results/fuzzing/**
+!results/guard_stress/
+!results/guard_stress/**
+!results/communication/
+!results/communication/**
+!results/performance/
+!results/performance/**
+!results/old_runs/
+!results/old_runs/**
 
 # ==================== 旧的文档快照 ====================
 docs/report_snapshots/
@@ -76,6 +92,8 @@ secrets.yaml
 # ==================== 构建产物 ====================
 dist/
 build/
+node_modules/
+*.tsbuildinfo
 *.egg-info/
 
 # ==================== 临时测试文件 ====================
@@ -99,3 +117,6 @@ build/
 !web_demo/assets/*.png
 !web_demo/assets/*.jpg
 !web_demo/assets/*.svg
+
+# ==================== 本地归档（不推送） ====================
+archive/

@@ -10,7 +10,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from integrations.openbumblebee.e2e_secure_vit.cpu_static_vit import (
+from integrations.transshield_runtime.e2e_secure_vit.cpu_static_vit import (
     run_static_student_whole_forward_limited,
 )
 from tools.transshield_stage2_bundle import (

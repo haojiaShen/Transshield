@@ -68,7 +68,7 @@ python3 -m pip install -r requirements.txt
   - 浏览器只上传 `share0/share1 + 结构化摘要`，不上传原图与明文像素包
   - 正式参考时延约 `89.06 秒/样本`，进入 SPU 后当前 demo 原型不能保证断连即终止
 
-最小启动：
+完整 SPU Live Demo 启动：
 
 ```bash
 cd /path/to/Transshield
@@ -76,13 +76,20 @@ python3 -m venv .venv
 . .venv/bin/activate
 python3 -m pip install -r requirements.txt
 cd showcase && npm install && npm run build && cd ..
-uvicorn showcase_api.app:app --host 0.0.0.0 --port 7860
+python3 tools/start_showcase_spu_demo.py --host 0.0.0.0 --port 7860
 ```
 
-若本机暂时没有完整 SPU/JAX 运行栈，可先用 mock 验证闭环：
+`tools/start_showcase_spu_demo.py` 会先启动并 warmup colocated 2PC / SPU 节点，再启动 `showcase_api` 托管 `showcase/dist`。若本机暂时没有完整 SPU/JAX 运行栈，可先用 mock 验证闭环：
 
 ```bash
-TRANSSHIELD_SHOWCASE_RUNTIME_MODE=mock uvicorn showcase_api.app:app --host 0.0.0.0 --port 7860
+python3 tools/start_showcase_spu_demo.py --runtime-mode mock --host 0.0.0.0 --port 7860
+```
+
+服务器后台启动示例：
+
+```bash
+cd /data/wyb/Transshield_final
+/data/wyb/conda_envs/transshield/bin/python tools/start_showcase_spu_demo.py --host 127.0.0.1 --port 7862 --daemon
 ```
 
 ## 当前保留入口
@@ -91,6 +98,8 @@ TRANSSHIELD_SHOWCASE_RUNTIME_MODE=mock uvicorn showcase_api.app:app --host 0.0.0
 |---|---|
 | `showcase/` | 评委展示站前端工程，承载章节展示与医疗 Live Demo 页面 |
 | `showcase_api.app:app` | FastAPI 控制面、静态托管和 `/api/medical/live-run` 入口 |
+| `tools/start_showcase_spu_demo.py` | 一键启动 SPU 节点、展示站 API 与健康检查 |
+| `tools/transshield_spu_runtime_setup.py` | 重写 2PC 端口、启动 SPU 节点并执行 warmup |
 | `tools/transshield_stage2_bundle.py` | 读取冻结 bundle 与阈值 |
 | `tools/transshield_e2e_secure_infer.py` | E2E share / pixel package 工具 |
 | `tools/fuzzing/protocol_fuzz.py` | 导出最终协议 fuzz 证据 |

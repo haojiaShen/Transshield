@@ -9,7 +9,23 @@
 - `2pc_e2e.template.json`：whole-forward E2E 路径使用的模板
 - `2pc_fm32.template.json`：FM32 变体模板
 
-## 默认入口
+## 推荐入口
+
+展示站与 SPU 节点使用同一条启动命令：
+
+```bash
+python tools/start_showcase_spu_demo.py --host 0.0.0.0 --port 7860
+```
+
+服务器后台启动示例：
+
+```bash
+/data/wyb/conda_envs/transshield/bin/python tools/start_showcase_spu_demo.py --host 127.0.0.1 --port 7862 --daemon
+```
+
+## 底层 SPU 节点入口
+
+如需只重启 colocated 2PC / SPU 节点，可单独运行：
 
 ```bash
 python tools/transshield_spu_runtime_setup.py start \

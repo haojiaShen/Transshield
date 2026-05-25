@@ -51,20 +51,28 @@ npm install
 npm run build
 ```
 
-### 4.3 启动后端控制面
+### 4.3 一键启动完整 SPU 演示链路
 
-#### 先做本地闭环验证（mock）
+完整启动命令如下：
 
 ```bash
 cd /path/to/Transshield
-TRANSSHIELD_SHOWCASE_RUNTIME_MODE=mock uvicorn showcase_api.app:app --host 0.0.0.0 --port 7860
+python3 tools/start_showcase_spu_demo.py --host 0.0.0.0 --port 7860
 ```
 
-#### 切到单通道 SPU 实跑
+该命令会完成以下动作：
+
+- 检查 `showcase/dist` 是否存在
+- 使用 `configs/transshield_runtime/2pc.template.json` 重写当前空闲端口到 `configs/transshield_runtime/2pc.json`
+- 启动 colocated 2PC / SPU 节点并执行 warmup
+- 启动 `showcase_api.app:app` 并托管 `showcase/dist`
+- 轮询 `GET /api/health`，确认运行模式为 `spu`
+
+若本机暂时没有完整 SPU/JAX 运行栈，可先用 mock 验证前后端闭环：
 
 ```bash
 cd /path/to/Transshield
-uvicorn showcase_api.app:app --host 0.0.0.0 --port 7860
+python3 tools/start_showcase_spu_demo.py --runtime-mode mock --host 0.0.0.0 --port 7860
 ```
 
 说明：
@@ -78,13 +86,13 @@ uvicorn showcase_api.app:app --host 0.0.0.0 --port 7860
 
 ```bash
 python3 tools/showcase_protocol_fuzz.py --base-url http://127.0.0.1:7860
-python3 tools/showcase_guard_stress.py --base-url http://127.0.0.1:7860
+python3 tools/showcase_guard_stress.py --base-url http://127.0.0.1:7860 --timeout 140
 ```
 
 如果只想先验证一次 accepted path：
 
 ```bash
-python3 tools/showcase_protocol_fuzz.py --base-url http://127.0.0.1:7860 --cases baseline
+python3 tools/showcase_protocol_fuzz.py --base-url http://127.0.0.1:7860 --cases baseline --timeout 140
 ```
 
 ### 4.5 当前远端演示部署备注
@@ -107,8 +115,10 @@ ssh -p 9001 -L 7862:127.0.0.1:7862 wyb@10.204.248.175
 
 ```bash
 cd /data/wyb/Transshield_final
-/data/wyb/conda_envs/transshield/bin/python -m uvicorn showcase_api.app:app --host 127.0.0.1 --port 7862
+/data/wyb/conda_envs/transshield/bin/python tools/start_showcase_spu_demo.py --host 127.0.0.1 --port 7862 --daemon
 ```
+
+后台启动后可通过 `artifacts/showcase_server_logs/uvicorn_7862.log` 查看展示站日志，通过 `logs/spu_runtime_ports.json` 查看当前 SPU 节点端口与 warmup 状态。
 
 ## 5. 已归档内容
 

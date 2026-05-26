@@ -16,6 +16,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.code-workspace
+/.venv/
 /.venv_preview/
 
 # ==================== Jupyter ====================

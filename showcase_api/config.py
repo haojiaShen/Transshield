@@ -175,9 +175,9 @@ def load_showcase_config() -> ShowcaseConfig:
             spu_batch_size=getenv_int("TRANSSHIELD_SHOWCASE_SPU_BATCH_SIZE", 1),
             spu_params_mode=os.environ.get(
                 "TRANSSHIELD_SHOWCASE_SPU_PARAMS_MODE",
-                "secret_blockwise_stage",
+                "secret",
             ).strip()
-            or "secret_blockwise_stage",
+            or "secret",
             spu_layer_norm_policy=os.environ.get(
                 "TRANSSHIELD_SHOWCASE_SPU_LAYER_NORM_POLICY",
                 "exact",

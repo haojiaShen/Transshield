@@ -15,6 +15,10 @@
 - `tools/transshield_e2e_secure_infer.py`
 - `integrations/transshield_runtime/e2e_secure_vit/transshield_e2e_secure_vit.py`
 
+## 当前部署边界
+
+`e2e_secure_vit/` 已支持 split public/P1/P2 manifest 和 `--party-local-share-load` 调试桥，但当前展示站仍通过单机 colocated SPU 节点运行。若要落到医院侧 P1 与 AI 公司侧 P2，可先用 `tools/transshield_spu_runtime_setup.py render-deployment` 生成部署包，并用 `start-party` 在双方机器分别启动 SPU 节点；`showcase_api.split_gateway` 提供了最小医院/AI/协调网关框架。完整生产部署仍需要把该最小网关接入现场认证、TLS/VPN、审计、任务队列和模型参数私有加载流程。迁移说明见 `docs/party_split_2pc.md`。
+
 旧 runtime wrapper 已移入：
 
 - `archive/deprecated/artifacts/server_inference_friendly_pack/`

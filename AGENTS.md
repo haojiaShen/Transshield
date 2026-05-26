@@ -22,31 +22,46 @@
 
 本仓负责“最后作品”的组织与表达；其他仓只提供来源证据、参考实现或外部对比。
 
+## 当前最终主线事实
+
+- 当前可运行展示主链路位于 `showcase/` 与 `showcase_api/`。
+- 医疗域是唯一 live upload / live run 场景；金融域只保留结果与压力验证展示。
+- 当前正式 bundle 默认口径：
+  - `artifacts/frozen_bundle_medical_dynamic_mainline`
+  - `artifacts/frozen_bundle_finance_boundary_stress`
+- 当前正式数字与证据默认以以下目录为准：
+  - `results/final/`
+  - `results/communication/`
+  - `results/fuzzing/`
+  - `results/guard_stress/`
+- 旧 `web_demo/`、旧 `server_inference_friendly_pack/` 与早期过程型状态文档不再属于当前默认主入口；只在 provenance / 归档追踪时回看。
+
 ## 默认事实来源
 
 涉及最终结果、最终说明、最终对比时，优先读取：
 
-1. `/home/yclcg/.codex/memories/transshield_final_handoff_2026-04-12.md`
-2. `Transshield_final/docs/transshield_master_plan_20260505.md`
-3. `Transshield_final/docs/data_source_policy.md`
-4. `Transshield_final/docs/current_work_status.md`
-5. `Transshield_final/docs/handoff-next.md`
-6. `Transshield_final/docs/transshield_innovation.md`
-7. `Transshield_final/docs/delivery_experiment_summary_20260510.md`
+1. `/home/yclcg/.codex/memories/transshield_final_handoff_2026-05-23.md`
+2. `Transshield_final/docs/README.md`
+3. `Transshield_final/docs/evidence/README.md`
+4. `Transshield_final/docs/report/README.md`
+5. `Transshield_final/README.md`
+6. `Transshield_final/README_REPRODUCE.md`
+7. `Transshield_final/results/`
 8. `Transshield_final/artifacts/`
 
 若这些文件与实验仓中的旧记录有差异，默认以本仓为准；只有在做 provenance 追踪时才回看实验仓。
+历史过程型状态文档若已从最终仓清理，不要假定其仍存在；改以 `docs/` 索引、`results/*.meta.md` 和正式报告为准。
 
 ## 开工前记忆读取
 
 开始任何 `Transshield_final` 相关的非简单任务前，先读取：
 
-1. `/home/yclcg/.codex/memories/transshield_final_handoff_2026-04-12.md`
-2. `docs/transshield_master_plan_20260505.md`
-3. `docs/data_source_policy.md`
-4. `docs/current_work_status.md`
-5. `docs/handoff-next.md`
-6. `docs/transshield_innovation.md`
+1. `/home/yclcg/.codex/memories/transshield_final_handoff_2026-05-23.md`
+2. `docs/README.md`
+3. `docs/evidence/README.md`
+4. `docs/report/README.md`
+5. `README.md`
+6. `README_REPRODUCE.md`
 
 读取后再判断当前应从哪个阶段继续，不要重复已经完成的排障或验证。
 
@@ -83,13 +98,13 @@
 - 不要用一次性的 `env VAR=... bash ...`、`bash -c` 或子 shell setup 承载后续还要复用的变量。
 - 给日志提取命令时优先按明确 `epoch/step/run` 窗口精确 grep，不要默认给大范围 `tail -n 220` 这类粗抓取。
 
-## TrackA 排障原则
+## 历史排障与 Provenance 原则
 
-- TrackA 相关任务优先读取 `docs/current_work_status.md`、`docs/handoff-next.md` 和 `docs/delivery_experiment_summary_20260510.md`。
+- 当前最终仓已不再保留早期 `TrackA` 过程文档；若用户明确追问历史漂移归因或服务器侧过程记录，再回看 memory、归档目录或请求用户指定旧证据来源。
 - 如果 issue 需要服务器结果但用户还没回贴日志，只能交付服务器命令、精确 grep 字段和判定标准，不能伪造结论。
-- TrackA issue 只有在结论已回写到 `docs/history_best_repro_drift_audit_2026-04-21.md`、`docs/current_work_status.md`、`docs/handoff-next.md` 后，才算完成。
+- 若用户要求在当前最终仓新增历史结论说明，应优先回写到 `docs/evidence/` 或对应 `results/*.meta.md`，而不是恢复大批过程型日志文档。
 - 默认不要跑 `full20`，不要扫大范围超参，不要在 attribution 证据出来前直接改变训练语义。
-- 不要修改 `artifacts/web_demo_assets/demo_content_summary.json` 或前端正式展示口径，除非用户明确要求更新正式展示数据。
+- 不要修改 `results/final/demo_content_summary_final.json` 或正式展示口径，除非用户明确要求更新正式展示数据。
 
 ## 不要默认做的事
 

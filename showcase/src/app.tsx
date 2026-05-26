@@ -43,6 +43,12 @@ type RouteKey =
   | "/reproduce"
   | "/live-demo";
 
+const API_BASE_URL = String(import.meta.env.VITE_TRANSSHIELD_API_BASE_URL ?? "").replace(/\/+$/, "");
+
+function apiUrl(path: string) {
+  return `${API_BASE_URL}${path}`;
+}
+
 type DemoStatus =
   | "idle"
   | "worker_preprocessing"
@@ -362,8 +368,8 @@ function useMedicalConfig() {
     const load = async () => {
       try {
         const [configResponse, healthResponse] = await Promise.all([
-          fetch("/api/medical/config"),
-          fetch("/api/health")
+          fetch(apiUrl("/api/medical/config")),
+          fetch(apiUrl("/api/health"))
         ]);
         if (!configResponse.ok) {
           throw new Error("无法加载医疗配置");
@@ -971,7 +977,7 @@ function LiveDemoPage() {
       );
 
       try {
-        const response = await fetch("/api/medical/live-run", { method: "POST", body: form });
+        const response = await fetch(apiUrl("/api/medical/live-run"), { method: "POST", body: form });
         const payload = (await response.json()) as MedicalRunResponse;
         if (!response.ok || payload.status === "rejected") {
           dispatch({ type: "reject", payload });

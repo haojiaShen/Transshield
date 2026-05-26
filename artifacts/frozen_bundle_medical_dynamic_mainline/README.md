@@ -11,5 +11,6 @@
 ## 说明
 
 - 当前精简交付仓只保留正式推理资产，不再保留原训练 wrapper。
-- 本 bundle 的正式阈值信息由 `manifest.json` 中的 `primary.threshold_metrics` 提供。
+- `manifest.json` 中的 `primary.threshold_metrics` 保留的是 bundle 导出时的历史/静态阈值摘要。
+- 当前报告和展示站使用的正式医疗动态阈值以 `results/final/medical_dynamic_threshold_calibration_final.json` 为准；该文件记录 `best_threshold=0.6619606018066406`、`best_threshold_accuracy=0.927480936050415` 和 `static_depth_limit=10`。
 - 历史阈值搜索命令说明已移入 `archive/deprecated/artifacts/frozen_bundle_medical_dynamic_mainline/commands.sh`。

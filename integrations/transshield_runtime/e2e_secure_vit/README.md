@@ -5,6 +5,12 @@ This directory hosts the retained **whole-forward e2e secure inference** path.
 It is the only integration subtree in `integrations/transshield_runtime/` that still
 belongs to the current final-delivery runtime chain.
 
+## Deployment boundary
+
+The current runnable showcase is still a **single-machine colocated 2PC/SPU prototype**. This subtree already contains the privacy-forward bridge needed for migration, especially split public/P1/P2 manifests, `--party-local-share-load`, and `--redact-private-input-paths`. The repo also provides a deployment-bundle generator, basic SPU party-node launcher, and minimal hospital/AI/coordinator split gateway through `tools/transshield_spu_runtime_setup.py render-deployment`, `start-party`, and `showcase_api.split_gateway`; however, it does not yet provide production-grade hospital/AI authentication, scheduling, auditing, or private model-parameter loading.
+
+For the Chinese migration checklist, see `docs/party_split_2pc.md`.
+
 ## Current status
 
 The repository now contains the first e2e scaffolding in:
@@ -60,7 +66,8 @@ The preferred debug bridge is now the split-manifest form:
 `--input-p2-share-manifest-json`. The public manifest contains no private share
 paths, while each party manifest contains only its own share path. This is one
 step closer to the production party boundary, but still not final MPC serving
-until the launcher is split into separate party processes.
+until the web/API gateway and runner no longer see both private party
+manifests.
 
 For split-share failures, use `audit-input-shares` through
 `run_e2e_secure_whole_forward.sh audit-shares` before running deeper blocks. It
@@ -70,7 +77,8 @@ localization, so it must not be treated as the production reveal policy.
 For the next privacy-boundary step, `run --runtime spu --party-local-share-load`
 lets P1/P2 load their own share files inside party devices from the split party
 manifests. The driver no longer materializes private share tensors in memory,
-although the current colocated launcher still knows both party manifest paths.
+although the current demo runner can still be configured with both party
+manifest paths.
 The server wrapper now also defaults `E2E_REDACT_PRIVATE_INPUT_PATHS=1`, which
 passes `--redact-private-input-paths` so candidate `.pt` files and summary JSON
 do not persist legacy/P1/P2 private share manifest paths. Keep it enabled for

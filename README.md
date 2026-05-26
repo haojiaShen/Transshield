@@ -43,6 +43,7 @@ Transshield/
 
 ```bash
 cd /path/to/Transshield
+python3 --version  # 推荐 Python 3.9；requirements.txt 按该环境测试
 python3 -m pip install -r requirements.txt
 ```
 
@@ -66,7 +67,10 @@ python3 -m pip install -r requirements.txt
   - **医疗**：唯一 live upload + live run 场景
   - **金融**：仅保留结果与压力验证展示，不提供现场上传运行
   - 浏览器只上传 `share0/share1 + 结构化摘要`，不上传原图与明文像素包
+  - 当前展示站是**单机 colocated 2PC / SPU 原型**：`showcase_api` 会在单进程内短暂接收两份 share；真正“一方医院、一方 AI 公司”的部署需要拆分为独立 P1/P2 服务
   - 正式参考时延约 `89.06 秒/样本`，进入 SPU 后当前 demo 原型不能保证断连即终止
+
+真两方迁移说明见：`docs/party_split_2pc.md`。当前仓库已有 split manifest、`--party-local-share-load` 调试桥、跨机器 P1/P2 节点启动命令、`render-deployment` 部署包生成器，以及 `showcase_api.split_gateway` 最小三方网关框架；但还没有完成生产级认证/审计、官方 HIS/PACS 影像入口和模型私有加载实现。
 
 完整 SPU Live Demo 启动：
 
@@ -99,7 +103,9 @@ cd /data/wyb/Transshield_final
 | `showcase/` | 评委展示站前端工程，承载章节展示与医疗 Live Demo 页面 |
 | `showcase_api.app:app` | FastAPI 控制面、静态托管和 `/api/medical/live-run` 入口 |
 | `tools/start_showcase_spu_demo.py` | 一键启动 SPU 节点、展示站 API 与健康检查 |
-| `tools/transshield_spu_runtime_setup.py` | 重写 2PC 端口、启动 SPU 节点并执行 warmup |
+| `tools/transshield_spu_runtime_setup.py` | 单机重写 2PC 端口、启动 SPU 节点并执行 warmup；`render-deployment` 生成医院/算力方/协调方部署包 |
+| `showcase_api.split_gateway` | 医院/AI/协调三方最小网关框架，支持医院侧 raw PNG/JPEG 图片入口、单方 share 接收、AI model manifest、协调侧异步任务状态与取消入口 |
+| `tools/split_gateway_smoke.py` | 本地跑通 split gateway 三角色流程，验证医院图片分片、AI 接收 P2 share、协调方 mock run 和常见拒绝路径 |
 | `tools/transshield_stage2_bundle.py` | 读取冻结 bundle 与阈值 |
 | `tools/transshield_e2e_secure_infer.py` | E2E share / pixel package 工具 |
 | `tools/fuzzing/protocol_fuzz.py` | 导出最终协议 fuzz 证据 |
@@ -114,6 +120,8 @@ cd /data/wyb/Transshield_final
 | 正式报告 | `docs/密捷竞赛作品报告.docx` |
 | 证据索引 | `docs/evidence/README.md` |
 | 复现说明 | `README_REPRODUCE.md` |
+| 真两方 2PC 迁移说明 | `docs/party_split_2pc.md` |
+| 主机 + 服务器 2PC 验证说明 | `docs/host_server_2pc_validation.md` |
 | 工具说明 | `tools/README.md` |
 | 归档说明 | `archive/README.md` |
 

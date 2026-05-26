@@ -20,3 +20,7 @@
 - `communication/`：最终通信量与配套说明
 - `fuzzing/`：协议层异常输入最终结果
 - `guard_stress/`：控制面守卫最终结果
+
+## 口径说明
+
+正式报告、根 README 和展示站指标以本目录下的最终 JSON 为准。部分 `artifacts/frozen_bundle_*/manifest.json` 会保留导出时的历史阈值或训练摘要，不能直接替代 `results/final/` 中的正式结果口径。

@@ -13,8 +13,9 @@ from urllib.request import urlopen
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SPU_CONFIG = REPO_ROOT / "configs" / "transshield_runtime" / "2pc.json"
 SPU_TEMPLATE = REPO_ROOT / "configs" / "transshield_runtime" / "2pc.template.json"
+SPU_RUNTIME_DIR = REPO_ROOT / "logs" / "showcase_runtime"
+SPU_CONFIG = SPU_RUNTIME_DIR / "2pc.runtime.json"
 SPU_STATE = REPO_ROOT / "logs" / "spu_runtime_ports.json"
 SPU_LOG_DIR = REPO_ROOT / "logs" / "spu_nodes"
 SHOWCASE_DIST = REPO_ROOT / "showcase" / "dist"
@@ -45,6 +46,8 @@ def require_dist():
 
 
 def start_spu(python: str, timeout_sec: float):
+    SPU_RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(SPU_TEMPLATE, SPU_CONFIG)
     run(
         [
             python,
@@ -53,8 +56,7 @@ def start_spu(python: str, timeout_sec: float):
             "--config",
             str(SPU_CONFIG),
             "--template",
-            str(SPU_TEMPLATE),
-            "--backup",
+            "",
             "--restart",
             "--remove-unsupported-cheetah-fields",
             "--log-dir",

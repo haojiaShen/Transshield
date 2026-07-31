@@ -101,6 +101,12 @@ node_modules/
 *.test
 *.tmp
 *.temp
+*:Zone.Identifier
+showcase/src/app.tsx.agent_backup
+showcase/src/app.tsx.gb2312
+showcase/src/app.tsx.gbk
+showcase/src/app.tsx.recovered
+showcase/src/app.tsx.recovered_fuzzy
 
 # ==================== 保留的资产（白名单） ====================
 !artifacts/frozen_bundle_full/

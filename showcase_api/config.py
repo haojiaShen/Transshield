@@ -6,6 +6,8 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+from showcase_api.preprocessing import DEFAULT_EVAL_CROP_PCT, eval_resize_shorter_side
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -76,6 +78,7 @@ class ShowcaseConfig:
     norm_mean: tuple[float, float, float]
     norm_std: tuple[float, float, float]
     norm_clip_abs: float
+    eval_crop_pct: float
     share_abs_guard: float
     quality_drift_tolerance: float
     per_ip_window_limit: int
@@ -105,6 +108,10 @@ class ShowcaseConfig:
     def share_byte_count(self) -> int:
         return self.float_count * 4
 
+    @property
+    def eval_resize_shorter_side(self) -> int:
+        return eval_resize_shorter_side(self.input_size, self.eval_crop_pct)
+
 
 def load_showcase_config() -> ShowcaseConfig:
     bundle_dir = getenv_path(
@@ -133,6 +140,9 @@ def load_showcase_config() -> ShowcaseConfig:
     runtime_mode = os.environ.get("TRANSSHIELD_SHOWCASE_RUNTIME_MODE", "spu").strip().lower() or "spu"
     if runtime_mode not in {"spu", "mock"}:
         runtime_mode = "spu"
+    eval_crop_pct = getenv_float("TRANSSHIELD_SHOWCASE_EVAL_CROP_PCT", DEFAULT_EVAL_CROP_PCT)
+    if eval_crop_pct <= 0:
+        eval_crop_pct = DEFAULT_EVAL_CROP_PCT
 
     threshold_payload = load_json(threshold_source_json)
     communication_payload = load_json(communication_json)
@@ -159,7 +169,8 @@ def load_showcase_config() -> ShowcaseConfig:
         class_names=("正常", "肺炎"),
         norm_mean=(0.485, 0.456, 0.406),
         norm_std=(0.229, 0.224, 0.225),
-        norm_clip_abs=getenv_float("TRANSSHIELD_SHOWCASE_NORM_CLIP_ABS", 2.0),
+        norm_clip_abs=getenv_float("TRANSSHIELD_SHOWCASE_NORM_CLIP_ABS", 0.0),
+        eval_crop_pct=eval_crop_pct,
         share_abs_guard=getenv_float("TRANSSHIELD_SHOWCASE_SHARE_ABS_GUARD", 1e3),
         quality_drift_tolerance=getenv_float("TRANSSHIELD_SHOWCASE_QUALITY_DRIFT_TOLERANCE", 1e-4),
         per_ip_window_limit=getenv_int("TRANSSHIELD_SHOWCASE_PER_IP_WINDOW_LIMIT", 6),

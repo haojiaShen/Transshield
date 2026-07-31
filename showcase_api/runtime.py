@@ -40,8 +40,8 @@ def build_share_manifests(run_dir: Path, config: ShowcaseConfig, share0_bytes: b
         "source_paths_included": False,
         "private_share_paths_included": False,
         "privacy_status": (
-            "browser_generated_split_shares; original image and plaintext pixel_values "
-            "are not uploaded to the showcase backend"
+            "browser-generated split shares; the original image is not uploaded, but the centralized "
+            "showcase coordinator receives both shares and reconstructs the normalized tensor for DQA"
         ),
     }
     public_manifest_path = e2e_dir / "share_public_manifest.json"
@@ -234,11 +234,7 @@ def run_spu_live_demo(config: ShowcaseConfig, share0_bytes: bytes, share1_bytes:
                 check=False,
             )
         if process.returncode != 0:
-            log_tail = artifacts["runner_log_path"].read_text(encoding="utf-8", errors="replace").splitlines()[-60:]
-            raise RuntimeError(
-                "SPU live demo runner failed with non-zero exit code.\n"
-                + "\n".join(log_tail)
-            )
+            raise RuntimeError("SPU live demo runner failed; inspect the server-side runner log.")
         elapsed = time.perf_counter() - started
         result = parse_candidate_result(config, artifacts, elapsed)
         redacted_summary_path = run_dir / "live_run_response.json"

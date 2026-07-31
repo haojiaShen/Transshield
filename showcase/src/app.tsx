@@ -79,6 +79,8 @@ type MedicalConfigResponse = {
   mean: number[];
   std: number[];
   clip_abs: number;
+  crop_pct: number;
+  resize_shorter_side: number;
   allowed_mime_types: string[];
   max_file_size_bytes: number;
   max_image_dimension: number;

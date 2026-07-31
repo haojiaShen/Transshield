@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from showcase_api.bundle_preflight import inspect_bundle
 from showcase_api.config import REPO_ROOT, ShowcaseConfig, load_json, load_showcase_config
 from showcase_api.control_plane import (
     ControlPlaneError,
@@ -118,6 +119,8 @@ async def get_medical_config():
         "mean": list(CONFIG.norm_mean),
         "std": list(CONFIG.norm_std),
         "clip_abs": CONFIG.norm_clip_abs,
+        "crop_pct": CONFIG.eval_crop_pct,
+        "resize_shorter_side": CONFIG.eval_resize_shorter_side,
         "allowed_mime_types": list(CONFIG.allowed_mime_types),
         "max_file_size_bytes": CONFIG.max_file_size_bytes,
         "max_image_dimension": CONFIG.max_image_dimension,
@@ -139,10 +142,13 @@ async def get_medical_config():
 
 @app.get("/api/health")
 async def get_health():
+    bundle_status = inspect_bundle(CONFIG.bundle_dir)
     return {
-        "status": "ok",
+        "status": "ok" if CONFIG.runtime_mode != "spu" or bundle_status["ready"] else "degraded",
         "runtime_mode": CONFIG.runtime_mode,
-        "bundle_present": CONFIG.bundle_dir.exists(),
+        "bundle_present": bundle_status["bundle_dir_present"],
+        "model_state_present": bundle_status["model_state_present"],
+        "model_state_file": bundle_status["model_state_file"],
         "spu_config_present": CONFIG.spu_config_path.exists(),
         "runner_present": (REPO_ROOT / "integrations" / "transshield_runtime" / "e2e_secure_vit" / "transshield_e2e_secure_vit.py").exists(),
         "dist_present": CONFIG.health_bind_dist.exists(),
@@ -363,7 +369,7 @@ async def medical_live_run(request: Request):
             control_plane_metrics=validated.control_plane_metrics_response,
             error_code="medical_secure_run_failed",
             interception_layer="spu_runtime",
-            detail=str(exc),
+            detail="安全推理运行失败，请查看服务端审计日志。",
         )
         record_event(
             AUDIT_REJECTIONS_PATH,

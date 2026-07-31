@@ -3,7 +3,6 @@ from __future__ import annotations
 import base64
 import binascii
 import hashlib
-import io
 import json
 import os
 import re
@@ -21,9 +20,13 @@ from typing import Any, Optional
 import numpy as np
 from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
-from PIL import Image, ImageOps
-
 from showcase_api.config import REPO_ROOT
+from showcase_api.preprocessing import (
+    DEFAULT_EVAL_CROP_PCT,
+    decode_rgb_for_formal_evaluation,
+    eval_resize_shorter_side,
+    normalize_rgb_hwc,
+)
 
 
 TASK_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
@@ -41,6 +44,7 @@ class SplitGatewayConfig:
     role: str
     storage_dir: Path
     auth_token: str
+    allow_unauthenticated: bool
     python_bin: str
     runner_script: Path
     default_bundle_dir: Path
@@ -54,6 +58,7 @@ class SplitGatewayConfig:
     norm_mean: tuple[float, float, float]
     norm_std: tuple[float, float, float]
     norm_clip_abs: float
+    eval_crop_pct: float
     ai_gateway_url: str
     ai_gateway_auth_token: str
     gateway_forward_timeout_sec: float
@@ -88,6 +93,13 @@ def getenv_int(name: str, default: int) -> int:
         return default
 
 
+def getenv_bool(name: str, default: bool = False) -> bool:
+    raw = os.environ.get(name, "").strip().lower()
+    if not raw:
+        return default
+    return raw in {"1", "true", "yes", "on"}
+
+
 def getenv_float_tuple(name: str, default: tuple[float, float, float]) -> tuple[float, float, float]:
     raw = os.environ.get(name, "").strip()
     if not raw:
@@ -108,10 +120,14 @@ def load_split_gateway_config() -> SplitGatewayConfig:
     runtime_mode = os.environ.get("TRANSSHIELD_SPLIT_RUNTIME_MODE", "mock").strip().lower() or "mock"
     if runtime_mode not in {"mock", "spu"}:
         runtime_mode = "mock"
+    eval_crop_pct = getenv_float("TRANSSHIELD_SPLIT_EVAL_CROP_PCT", DEFAULT_EVAL_CROP_PCT)
+    if eval_crop_pct <= 0:
+        eval_crop_pct = DEFAULT_EVAL_CROP_PCT
     return SplitGatewayConfig(
         role=role,
         storage_dir=getenv_path("TRANSSHIELD_SPLIT_STORAGE_DIR", REPO_ROOT / "artifacts" / "split_gateway" / role),
         auth_token=os.environ.get("TRANSSHIELD_SPLIT_AUTH_TOKEN", "").strip(),
+        allow_unauthenticated=getenv_bool("TRANSSHIELD_SPLIT_ALLOW_UNAUTHENTICATED", False),
         python_bin=os.environ.get("TRANSSHIELD_SPLIT_PYTHON_BIN", os.environ.get("TRANSSHIELD_SHOWCASE_PYTHON_BIN", "python")).strip()
         or "python",
         runner_script=getenv_path(
@@ -134,7 +150,8 @@ def load_split_gateway_config() -> SplitGatewayConfig:
         input_size=getenv_int("TRANSSHIELD_SPLIT_INPUT_SIZE", 224),
         norm_mean=getenv_float_tuple("TRANSSHIELD_SPLIT_NORM_MEAN", (0.485, 0.456, 0.406)),
         norm_std=getenv_float_tuple("TRANSSHIELD_SPLIT_NORM_STD", (0.229, 0.224, 0.225)),
-        norm_clip_abs=getenv_float("TRANSSHIELD_SPLIT_NORM_CLIP_ABS", 2.0),
+        norm_clip_abs=getenv_float("TRANSSHIELD_SPLIT_NORM_CLIP_ABS", 0.0),
+        eval_crop_pct=eval_crop_pct,
         ai_gateway_url=os.environ.get("TRANSSHIELD_SPLIT_AI_GATEWAY_URL", "").strip().rstrip("/"),
         ai_gateway_auth_token=os.environ.get("TRANSSHIELD_SPLIT_AI_GATEWAY_AUTH_TOKEN", "").strip(),
         gateway_forward_timeout_sec=getenv_float("TRANSSHIELD_SPLIT_GATEWAY_FORWARD_TIMEOUT_SEC", 5.0),
@@ -155,7 +172,9 @@ def response(status_code: int, payload: dict) -> JSONResponse:
 
 def require_auth(authorization: Optional[str]):
     if not CONFIG.auth_enabled:
-        return
+        if CONFIG.allow_unauthenticated:
+            return
+        raise HTTPException(status_code=503, detail="gateway authentication is not configured")
     expected = f"Bearer {CONFIG.auth_token}"
     if authorization != expected:
         raise HTTPException(status_code=401, detail="missing or invalid bearer token")
@@ -302,30 +321,26 @@ def decode_and_normalize_image(image_bytes: bytes, content_type: str) -> tuple[n
     if mime not in {"image/png", "image/jpeg"}:
         raise HTTPException(status_code=415, detail="only image/png and image/jpeg are supported")
     try:
-        with Image.open(io.BytesIO(image_bytes)) as image:
-            image = ImageOps.exif_transpose(image)
-            width, height = image.size
-            if width <= 0 or height <= 0 or width > CONFIG.max_image_dimension or height > CONFIG.max_image_dimension:
-                raise HTTPException(status_code=422, detail="image dimensions are invalid or too large")
-            image = image.convert("RGB")
-            crop_size = min(width, height)
-            left = max(0, (width - crop_size) // 2)
-            top = max(0, (height - crop_size) // 2)
-            resample = getattr(Image, "Resampling", Image).BILINEAR
-            image = image.crop((left, top, left + crop_size, top + crop_size)).resize(
-                (CONFIG.input_size, CONFIG.input_size),
-                resample,
-            )
-            rgb_hwc = np.asarray(image, dtype=np.float32) / 255.0
-    except HTTPException:
-        raise
+        rgb_hwc, (width, height) = decode_rgb_for_formal_evaluation(
+            image_bytes,
+            input_size=CONFIG.input_size,
+            crop_pct=CONFIG.eval_crop_pct,
+            max_image_dimension=CONFIG.max_image_dimension,
+        )
+    except ValueError as error:
+        if "dimensions" in str(error):
+            raise HTTPException(status_code=422, detail=str(error)) from error
+        raise HTTPException(status_code=400, detail=f"failed to decode image: {error}") from error
     except Exception as error:
         raise HTTPException(status_code=400, detail=f"failed to decode image: {error}") from error
 
     rgb = np.transpose(rgb_hwc, (2, 0, 1))[None, ...].astype(np.float32)
-    mean = np.asarray(CONFIG.norm_mean, dtype=np.float32).reshape(1, 3, 1, 1)
-    std = np.asarray(CONFIG.norm_std, dtype=np.float32).reshape(1, 3, 1, 1)
-    normalized = np.clip((rgb - mean) / std, -CONFIG.norm_clip_abs, CONFIG.norm_clip_abs).astype(np.float32)
+    normalized = normalize_rgb_hwc(
+        rgb_hwc,
+        mean=CONFIG.norm_mean,
+        std=CONFIG.norm_std,
+        clip_abs=CONFIG.norm_clip_abs,
+    )
     return normalized, {
         "source_dimensions": {"width": int(width), "height": int(height)},
         "source_mime": mime,
@@ -365,6 +380,8 @@ def split_normalized_tensor(task_id: str, normalized: np.ndarray, image_bytes: b
         "norm_mean": list(CONFIG.norm_mean),
         "norm_std": list(CONFIG.norm_std),
         "norm_clip_abs": CONFIG.norm_clip_abs,
+        "eval_crop_pct": CONFIG.eval_crop_pct,
+        "eval_resize_shorter_side": eval_resize_shorter_side(CONFIG.input_size, CONFIG.eval_crop_pct),
         "audit_nonce": audit_nonce,
         "source_image_sha256": sha256_hex(image_bytes),
         "normalized_tensor_sha256": sha256_hex(normalized_bytes),
@@ -472,10 +489,10 @@ async def get_health():
     if task_root.exists():
         task_count = sum(1 for item in task_root.iterdir() if item.is_dir())
     return {
-        "status": "ok",
+        "status": "ok" if CONFIG.auth_enabled or CONFIG.allow_unauthenticated else "degraded",
         "role": CONFIG.role,
-        "storage_dir": str(CONFIG.storage_dir),
         "auth_enabled": CONFIG.auth_enabled,
+        "unauthenticated_mode": CONFIG.allow_unauthenticated,
         "default_runtime_mode": CONFIG.default_runtime_mode,
         "runner_present": CONFIG.runner_script.exists(),
         "input_size": CONFIG.input_size,
@@ -740,16 +757,10 @@ def terminate_process(process: subprocess.Popen):
             pass
 
 
-def log_tail(path: Path, line_count: int = 60) -> list[str]:
-    if not path.exists():
-        return []
-    return path.read_text(encoding="utf-8", errors="replace").splitlines()[-line_count:]
-
-
 def run_task_worker(task_id: str, runtime_mode: str, command: list[str], output_dir: Path, timeout_sec: float):
     log_path = output_dir / "runner.log"
     try:
-        write_state(task_id, {"status": "running", "started_at": now_ts(), "runner_log": str(log_path)})
+        write_state(task_id, {"status": "running", "started_at": now_ts(), "runner_log": log_path.name})
         if runtime_mode == "mock":
             result = {
                 "status": "completed",
@@ -776,7 +787,10 @@ def run_task_worker(task_id: str, runtime_mode: str, command: list[str], output_
             returncode = process.wait(timeout=timeout_sec)
         except subprocess.TimeoutExpired:
             terminate_process(process)
-            write_state(task_id, {"status": "failed", "error_code": "runner_timeout", "log_tail": log_tail(log_path)})
+            write_state(
+                task_id,
+                {"status": "failed", "error_code": "runner_timeout", "detail": "inspect the coordinator runner log"},
+            )
             return
         if returncode == 0:
             result_path = output_dir / "candidate.json"
@@ -791,7 +805,7 @@ def run_task_worker(task_id: str, runtime_mode: str, command: list[str], output_
                     "status": "failed",
                     "error_code": "runner_nonzero_exit",
                     "returncode": returncode,
-                    "log_tail": log_tail(log_path),
+                    "detail": "inspect the coordinator runner log",
                 },
             )
     finally:
@@ -817,8 +831,11 @@ async def start_coordinator_run(task_id: str, request: Request, authorization: O
             "status": "queued",
             "queued_at": now_ts(),
             "runtime_mode": runtime_mode,
-            "command": command,
-            "artifacts": artifacts,
+            "artifacts": {
+                "candidate_json": Path(artifacts["candidate_json"]).name,
+                "candidate_pt": Path(artifacts["candidate_pt"]).name,
+                "spu_params_mode": artifacts["spu_params_mode"],
+            },
         },
     )
     thread = threading.Thread(

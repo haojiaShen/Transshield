@@ -778,7 +778,12 @@ def command_run(args):
             "config": str(Path(args.config).expanduser().resolve()),
             "spu_batch_size": int(args.spu_batch_size),
             "spu_params_mode": args.spu_params_mode,
-            "host_model_params_materialized": bool(args.spu_params_mode not in {"secret"}),
+            # The current runner loads the plaintext state_dict on its host before
+            # optionally injecting it as an SPU secret. Secret SPU placement does
+            # not undo that earlier host-side materialization.
+            "host_model_params_materialized": True,
+            "model_params_loaded_from_bundle_on_runner_host": True,
+            "model_params_secret_inside_spu": bool(args.spu_params_mode == "secret"),
             "spu_block_chunk_size": int(args.spu_block_chunk_size),
             "spu_layer_norm_chunk_size": int(args.spu_layer_norm_chunk_size),
             "spu_layer_norm_policy": args.spu_layer_norm_policy,

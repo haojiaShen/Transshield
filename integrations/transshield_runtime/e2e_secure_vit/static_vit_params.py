@@ -221,7 +221,11 @@ def load_static_vit_spu_params(
             "intermediate feature reveal",
             "dynamic masking-pruning inside secure forward",
         ],
-        "secure_pruning_note": "PredictorLG + kth_threshold + tie_resolution now execute inside SPU (jax_spu_secure_pruning_forward_backend_v0). host_model_params_materialized = false.",
+        "secure_pruning_note": (
+            "PredictorLG + kth_threshold + tie_resolution execute inside SPU "
+            "(jax_spu_secure_pruning_forward_backend_v0), but the current runner host first loads "
+            "the plaintext model bundle before secret SPU injection."
+        ),
         "base_rate": float(base_rate),
         "bundle_base_rate": float(bundle_base_rate),
     }

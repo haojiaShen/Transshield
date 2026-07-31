@@ -127,7 +127,8 @@ def make_synthetic_tensor(config: dict, tensor_seed: int = 0) -> tuple[np.ndarra
     std = np.asarray(config["std"], dtype=np.float32).reshape(1, 3, 1, 1)
     clip_abs = float(config["clip_abs"])
     tensor = ((rgb - mean) / std).astype(np.float32)
-    tensor = np.clip(tensor, -clip_abs, clip_abs).astype(np.float32)
+    if clip_abs > 0:
+        tensor = np.clip(tensor, -clip_abs, clip_abs).astype(np.float32)
     return tensor, rgb
 
 
@@ -216,6 +217,8 @@ def build_medical_parts(
         "browser_generated_shares": True,
         "server_should_receive_plain_image": False,
         "server_should_receive_plain_pixel_values": False,
+        "centralized_demo_reconstructs_normalized_tensor_for_dqa": True,
+        "production_target_should_not_co_locate_both_shares": True,
     }
     if audit_override:
         audit_payload.update(audit_override)

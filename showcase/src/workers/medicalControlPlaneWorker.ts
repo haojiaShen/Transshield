@@ -7,6 +7,8 @@ type WorkerConfig = {
   mean: number[];
   std: number[];
   clip_abs: number;
+  crop_pct: number;
+  resize_shorter_side: number;
   allowed_mime_types: string[];
   max_file_size_bytes: number;
   max_image_dimension: number;
@@ -164,6 +166,14 @@ function randomShareValue() {
   return (buffer[0] / 0xffffffff - 0.5) * 1.0;
 }
 
+function roundHalfToEven(value: number) {
+  const lower = Math.floor(value);
+  const fraction = value - lower;
+  if (fraction < 0.5) return lower;
+  if (fraction > 0.5) return lower + 1;
+  return lower % 2 === 0 ? lower : lower + 1;
+}
+
 async function runWorker(input: WorkerInput) {
   postProgress("worker_preprocessing");
   const decodeStarted = performance.now();
@@ -190,20 +200,33 @@ async function runWorker(input: WorkerInput) {
 
   const bitmap = await createImageBitmap(input.file);
   const decodeMs = performance.now() - decodeStarted;
+  const preprocessStarted = performance.now();
+  const shorterSide = input.config.resize_shorter_side;
+  const resizedWidth = bitmap.width <= bitmap.height
+    ? shorterSide
+    : Math.floor((shorterSide * bitmap.width) / bitmap.height);
+  const resizedHeight = bitmap.width <= bitmap.height
+    ? Math.floor((shorterSide * bitmap.height) / bitmap.width)
+    : shorterSide;
+  const resizedCanvas = new OffscreenCanvas(resizedWidth, resizedHeight);
+  const resizedContext = resizedCanvas.getContext("2d");
+  if (!resizedContext) throw new Error("无法创建缩放画布");
+  resizedContext.imageSmoothingEnabled = true;
+  resizedContext.imageSmoothingQuality = "high";
+  resizedContext.drawImage(bitmap, 0, 0, resizedWidth, resizedHeight);
+
   const canvas = new OffscreenCanvas(input.config.input_size, input.config.input_size);
   const context = canvas.getContext("2d", { willReadFrequently: true });
   if (!context) throw new Error("无法创建离屏画布");
-
-  const preprocessStarted = performance.now();
-  const cropSize = Math.min(bitmap.width, bitmap.height);
-  const sourceX = Math.max(0, Math.floor((bitmap.width - cropSize) / 2));
-  const sourceY = Math.max(0, Math.floor((bitmap.height - cropSize) / 2));
+  // torchvision CenterCrop uses Python round(), including ties-to-even.
+  const sourceX = roundHalfToEven((resizedWidth - input.config.input_size) / 2);
+  const sourceY = roundHalfToEven((resizedHeight - input.config.input_size) / 2);
   context.drawImage(
-    bitmap,
+    resizedCanvas,
     sourceX,
     sourceY,
-    cropSize,
-    cropSize,
+    input.config.input_size,
+    input.config.input_size,
     0,
     0,
     input.config.input_size,
@@ -231,7 +254,9 @@ async function runWorker(input: WorkerInput) {
     const channelOffset = channel * pixelCount;
     for (let index = 0; index < pixelCount; index += 1) {
       const normalizedValue = (rgb[channelOffset + index] - mean) / std;
-      normalized[channelOffset + index] = Math.max(-input.config.clip_abs, Math.min(input.config.clip_abs, normalizedValue));
+      normalized[channelOffset + index] = input.config.clip_abs > 0
+        ? Math.max(-input.config.clip_abs, Math.min(input.config.clip_abs, normalizedValue))
+        : normalizedValue;
     }
   }
 
@@ -266,6 +291,8 @@ async function runWorker(input: WorkerInput) {
   const previewUrl = canvas.convertToBlob({ type: sniffed.mime }).then((blob) => URL.createObjectURL(blob));
 
   bitmap.close();
+  resizedCanvas.width = 1;
+  resizedCanvas.height = 1;
   canvas.width = 1;
   canvas.height = 1;
 
@@ -277,6 +304,13 @@ async function runWorker(input: WorkerInput) {
       input_size: input.config.input_size,
       shape: input.config.shape,
       dtype: "float32_le",
+      preprocessing: {
+        resize_shorter_side: input.config.resize_shorter_side,
+        center_crop_size: input.config.input_size,
+        crop_pct: input.config.crop_pct,
+        interpolation: "browser_canvas_high_quality",
+        normalization_clip_abs: input.config.clip_abs
+      },
       source_file_name: input.file.name,
       source_mime: sniffed.mime,
       source_size_bytes: input.file.size,
@@ -296,7 +330,9 @@ async function runWorker(input: WorkerInput) {
       hash_chain_version: "medical_live_demo_v1",
       browser_generated_shares: true,
       server_should_receive_plain_image: false,
-      server_should_receive_plain_pixel_values: false
+      server_should_receive_plain_pixel_values: false,
+      centralized_demo_reconstructs_normalized_tensor_for_dqa: true,
+      production_target_should_not_co_locate_both_shares: true
     },
     controlPlaneMetrics: {
       decode_ms: Number(decodeMs.toFixed(3)),

@@ -11,8 +11,13 @@ import time
 from pathlib import Path
 from urllib.request import urlopen
 
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from showcase_api.bundle_preflight import require_bundle_ready
+
+
 SPU_TEMPLATE = REPO_ROOT / "configs" / "transshield_runtime" / "2pc.template.json"
 SPU_RUNTIME_DIR = REPO_ROOT / "logs" / "showcase_runtime"
 SPU_CONFIG = SPU_RUNTIME_DIR / "2pc.runtime.json"
@@ -20,6 +25,7 @@ SPU_STATE = REPO_ROOT / "logs" / "spu_runtime_ports.json"
 SPU_LOG_DIR = REPO_ROOT / "logs" / "spu_nodes"
 SHOWCASE_DIST = REPO_ROOT / "showcase" / "dist"
 DEFAULT_LOG = REPO_ROOT / "artifacts" / "showcase_server_logs" / "uvicorn_7862.log"
+DEFAULT_BUNDLE = REPO_ROOT / "artifacts" / "frozen_bundle_medical_dynamic_mainline"
 
 
 def python_bin(raw: str) -> str:
@@ -43,6 +49,23 @@ def require_dist():
     if (SHOWCASE_DIST / "index.html").exists():
         return
     raise RuntimeError("showcase/dist is missing; run `cd showcase && npm install && npm run build` first.")
+
+
+def require_spu_bundle():
+    raw = os.environ.get("TRANSSHIELD_SHOWCASE_BUNDLE_DIR", "").strip()
+    bundle_dir = Path(raw).expanduser().resolve() if raw else DEFAULT_BUNDLE
+    status = require_bundle_ready(bundle_dir, verify_hash=True)
+    print(
+        json.dumps(
+            {
+                "bundle_preflight": "passed",
+                "bundle_dir": status["bundle_dir"],
+                "model_state_file": status["model_state_file"],
+                "model_sha256_matches": status["model_sha256_matches"],
+            },
+            ensure_ascii=False,
+        )
+    )
 
 
 def start_spu(python: str, timeout_sec: float):
@@ -175,8 +198,12 @@ def main():
     if not args.api_log.is_absolute():
         args.api_log = REPO_ROOT / args.api_log
     require_dist()
-    if args.runtime_mode == "spu" and not args.skip_spu_start:
-        start_spu(python, args.spu_startup_timeout_sec)
+    if args.runtime_mode == "spu":
+        require_spu_bundle()
+        if not args.skip_spu_start:
+            start_spu(python, args.spu_startup_timeout_sec)
+        else:
+            print("Skipping SPU runtime startup because --skip-spu-start was provided.")
     elif args.runtime_mode == "mock":
         print("Skipping SPU runtime startup because runtime mode is mock.")
 

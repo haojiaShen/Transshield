@@ -1,0 +1,7 @@
+# Lightweight control-plane, preprocessing, and smoke-test dependencies.
+# This intentionally excludes torch/JAX/SPU so ordinary CI never starts model computation.
+numpy==1.26.4
+Pillow==11.3.0
+fastapi>=0.110,<1
+uvicorn>=0.29,<1
+httpx>=0.27,<1

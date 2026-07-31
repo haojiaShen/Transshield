@@ -330,6 +330,7 @@ async def medical_live_run(request: Request):
 
     reserved, reserve_error = GUARD_STATE.reserve_inflight(client_ip)
     if not reserved:
+        GUARD_STATE.forget_replay(audit_nonce, validated.payload_fingerprint)
         payload = build_response_payload(
             status="rejected",
             result=None,

@@ -87,6 +87,8 @@ class ShowcaseConfig:
     global_inflight_limit: int
     replay_nonce_ttl_seconds: int
     replay_payload_ttl_seconds: int
+    replay_nonce_capacity: int
+    replay_payload_capacity: int
     request_manifest_type: str
     request_contract_version: str
     runner_profile: RunnerProfile
@@ -179,6 +181,8 @@ def load_showcase_config() -> ShowcaseConfig:
         global_inflight_limit=getenv_int("TRANSSHIELD_SHOWCASE_GLOBAL_INFLIGHT_LIMIT", 1),
         replay_nonce_ttl_seconds=getenv_int("TRANSSHIELD_SHOWCASE_REPLAY_NONCE_TTL_SECONDS", 600),
         replay_payload_ttl_seconds=getenv_int("TRANSSHIELD_SHOWCASE_REPLAY_PAYLOAD_TTL_SECONDS", 120),
+        replay_nonce_capacity=max(1, getenv_int("TRANSSHIELD_SHOWCASE_REPLAY_NONCE_CAPACITY", 4096)),
+        replay_payload_capacity=max(1, getenv_int("TRANSSHIELD_SHOWCASE_REPLAY_PAYLOAD_CAPACITY", 4096)),
         request_manifest_type="transshield_showcase_medical_live_request_v1",
         request_contract_version="medical_live_demo_v1",
         runner_profile=RunnerProfile(

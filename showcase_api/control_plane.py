@@ -119,9 +119,20 @@ class GuardState:
                 return False, "duplicate_nonce"
             if payload_fingerprint in self._payload_expiry:
                 return False, "duplicate_payload"
+            if (
+                len(self._nonce_expiry) >= self.config.replay_nonce_capacity
+                or len(self._payload_expiry) >= self.config.replay_payload_capacity
+            ):
+                return False, "replay_cache_saturated"
             self._nonce_expiry[nonce] = now + self.config.replay_nonce_ttl_seconds
             self._payload_expiry[payload_fingerprint] = now + self.config.replay_payload_ttl_seconds
             return True, None
+
+    def forget_replay(self, nonce: str, payload_fingerprint: str):
+        """Roll back a replay reservation when the request never enters the run queue."""
+        with self._lock:
+            self._nonce_expiry.pop(nonce, None)
+            self._payload_expiry.pop(payload_fingerprint, None)
 
     def reserve_inflight(self, ip: str) -> tuple[bool, Optional[str]]:
         now = time.monotonic()
@@ -156,6 +167,8 @@ class GuardState:
                 "per_ip_inflight_limit": self.config.per_ip_inflight_limit,
                 "replay_nonce_cache_size": len(self._nonce_expiry),
                 "replay_payload_cache_size": len(self._payload_expiry),
+                "replay_nonce_capacity": self.config.replay_nonce_capacity,
+                "replay_payload_capacity": self.config.replay_payload_capacity,
                 "tracked_ip_count": len(self._ip_states),
             }
 
@@ -667,6 +680,7 @@ def validate_medical_payload(
             "browser_generated_shares": True,
             "server_received_plain_image": False,
             "server_received_plain_pixel_values": False,
+            "server_reconstructed_normalized_tensor_for_dqa": True,
             "server_received_share0_and_share1_in_single_process": True,
         },
     }

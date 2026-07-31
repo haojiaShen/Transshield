@@ -132,6 +132,7 @@ def check_duplicate_payload(base_url: str, timeout: float, config: dict, server_
 def check_inflight_limit(base_url: str, timeout: float, config: dict, concurrency: int, server_pid: int | None) -> GuardCheck:
     def action():
         base_seed = uuid.uuid4().int % 1_000_000_000
+        retry_nonce = str(uuid.uuid4())
         with ThreadPoolExecutor(max_workers=max(concurrency, 2)) as executor:
             primary = executor.submit(
                 run_medical_request,
@@ -151,21 +152,37 @@ def check_inflight_limit(base_url: str, timeout: float, config: dict, concurrenc
                     config,
                     tensor_seed=base_seed + 1 + index,
                     share_seed=base_seed + 101 + index,
-                    nonce=str(uuid.uuid4()),
+                    nonce=retry_nonce if index == 0 else str(uuid.uuid4()),
                 )
                 for index in range(max(1, concurrency - 1))
             ]
             results = [primary.result(), *[future.result() for future in challengers]]
         busy = sum(item["error_code"] == "busy_retry_later" for item in results)
         success = sum(item["status"] == 200 for item in results)
-        passed = success >= 1 and busy >= 1
-        return passed, {"results": results, "success": success, "busy_retry_later": busy}
+        retry = run_medical_request(
+            base_url,
+            timeout,
+            config,
+            tensor_seed=base_seed + 1,
+            share_seed=base_seed + 101,
+            nonce=retry_nonce,
+        )
+        passed = success >= 1 and busy >= 1 and retry["status"] == 200
+        return passed, {
+            "results": results,
+            "success": success,
+            "busy_retry_later": busy,
+            "retry_after_busy": retry,
+        }
 
     return capture_guard_check(
         server_pid=server_pid,
         name="inflight_limit",
         interception_layer="inflight_guard",
-        summary="With single-channel demo limits, only one request should enter the accepted path at a time.",
+        summary=(
+            "With single-channel limits, only one request should enter at a time and a busy request "
+            "must remain retryable after the active request finishes."
+        ),
         action=action,
         settle_sec=0.6,
     )

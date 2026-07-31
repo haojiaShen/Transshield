@@ -1,0 +1,101 @@
+本附录不再罗列完整源文件，而是按“公式—机制—证据”对应关系摘录最能代表系统实现要点的局部代码，用于说明浏览器端 little-endian share 序列化、SPU 内部安全排序与 keep-mask 构造、结构化元数据长度门以及黑盒 fuzz 用例构造等核心实现。
+
+\section{浏览器 Worker 中的 little-endian share 序列化}
+
+代码位置：showcase/src/workers/medicalControlPlaneWorker.ts:148
+
+该段代码展示了浏览器 Worker 如何显式使用 little-endian 方式写入 Float32 share，避免异构环境的字节序歧义。
+
+以下仅保留与正文论证直接相关的关键代码节选，已省略无关分支、重复检查与通用异常处理。
+
+\begin{lstlisting}
+function packFloat32LE(values) {
+  const bytes = new Uint8Array(values.length * 4);
+  const view = new DataView(bytes.buffer);
+  for (let index = 0; index < values.length; index += 1) {
+    const value = values[index];
+    if (!Number.isFinite(value)) throw new Error(`Non-finite float at ${index}`);
+    view.setFloat32(index * 4, Math.fround(value), true);
+  }
+  return bytes;
+}
+\end{lstlisting}
+
+\section{安全选择与双调排序的核心 SPU 实现}
+
+代码位置：integrations/transshield\_runtime/e2e\_secure\_vit/spu\_static\_vit.py:639
+
+该段代码展示了 JAX/SPU 路径如何通过编码键、按索引跟踪的双调排序和向量化 keep-mask 构造，稳定处理安全 Top-与并列分数决断问题。
+
+以下仅保留与正文论证直接相关的关键代码节选，已省略无关分支、重复检查与通用异常处理。
+
+\begin{lstlisting}
+def _bitonic_sort_desc_with_indices(values):
+    indices = jnp.broadcast_to(jnp.arange(N, dtype=jnp.int32), values.shape)
+    ...
+    left_index = jnp.where(is_left, p_arr, p_partner)
+    is_desc = (left_index & k) == 0
+    ...
+    indices = jnp.where(has_partner, new_idx, indices)
+    return x, indices
+
+def _secure_build_keep_decision(score, prev_decision_2d, keep_count):
+    active_before = prev_decision_2d.squeeze(-1) > 0
+    encoded_key = score - jnp.arange(N, dtype=score.dtype) * 1e-6
+    encoded_masked = jnp.where(active_before, encoded_key, float('-inf'))
+    ...
+    sorted_keys, sorted_indices = _bitonic_sort_desc_with_indices(sortable)
+    top_k_indices = sorted_indices[:, :keep_count]
+    keep_mask = jnp.any(top_k_indices[:, :, None] == pos[None, None, :], axis=1)
+    return (keep_mask[:, :N] & active_before)[:, :, None]
+\end{lstlisting}
+
+\section{JSON 字节长度门与 strict json.loads 钩子}
+
+代码位置：showcase\_api/control\_plane.py:309
+
+该段代码展示了在 \texttt{json.loads} 前先执行字节长度门，并为整数、浮点和常量解析分别挂接严格钩子。
+
+以下仅保留与正文论证直接相关的关键代码节选，已省略无关分支、重复检查与通用异常处理。
+
+\begin{lstlisting}
+def _load_json_part(self, raw_body: bytes, part: RawPart):
+    part_view = memoryview(raw_body)[part.body_start:part.body_end]
+    body_len = len(part_view)
+    if body_len > JSON_PART_MAX_BYTES:
+        raise ValueError('json part exceeds global size limit')
+    field_limit = {...}.get(part.name, JSON_PART_MAX_BYTES)
+    if body_len > field_limit:
+        raise ValueError(f'{part.name} exceeds field size limit')
+    decoded = bytes(part_view).decode('utf-8', 'strict')
+    return json.loads(decoded, parse_int=strict_json_int,
+                      parse_float=strict_json_float,
+                      parse_constant=strict_json_constant)
+\end{lstlisting}
+
+\section{协议层异常输入黑盒验证样例}
+
+代码位置：tools/showcase\_protocol\_fuzz.py:158
+
+该段代码展示了针对 畸形 multipart header的黑盒测试用例，以及脚本对拦截层级和资源状态的记录方式。
+
+以下仅保留与正文论证直接相关的关键代码节选，已省略无关分支、重复检查与通用异常处理。
+
+\begin{lstlisting}
+def case_header_null_byte(base_url: str, timeout: float, server_pid: int | None):
+    boundary = f'nullbyte-{uuid.uuid4().hex}'
+    header = (
+        b'Content-Disposition: form-data; '
+        b'name="domai\x00n"'
+    )
+    body = build_custom_body(boundary, header, b'medical')
+    raw = build_raw_multipart_request(
+        base_url, boundary_param=f'boundary={boundary}', body=body
+    )
+    return capture_case(
+        name='multipart_header_null_byte_blocked',
+        action=lambda: send_raw_http(base_url, raw, timeout),
+        interception_layer='multipart_header_parser',
+        fallback_layer='mime_tree_validation',
+    )
+\end{lstlisting}

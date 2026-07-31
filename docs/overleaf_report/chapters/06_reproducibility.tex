@@ -1,0 +1,79 @@
+\section{最低可复现路径}
+
+系统最低可复现验证步骤如表 15 所示。在模型目录与基础 Python 环境已就位的前提下，可在 10–20 分钟内完成最小闭环验证：先启动 Web 演示并在浏览器端加载一张本地医疗样本，确认系统在本地完成预处理与分片后返回分类、质量保障结论、审计摘要与控制面耗时；再运行协议层异常输入脚本与至少一项控制面守卫检查，验证异常输入阻断与并发/重放防护。完整命令与故障排查说明见 \texttt{README\textbackslash\{\}\_REPRODUCE.md}。
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}}
+\caption{表 15 系统最低可复现验证步骤}\\
+\toprule
+\textbf{步骤} & \textbf{预估耗时} & \textbf{入口} & \textbf{预期输出} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{步骤} & \textbf{预估耗时} & \textbf{入口} & \textbf{预期输出} \\
+\midrule
+\endhead
+启动 Web 演示并加载一张本地医疗样本 & 3–8 分钟 & python3 tools/start\_showcase\_spu\_demo.py --host 0.0.0.0 --port 7860 & 浏览器在本地完成预处理与分片后返回分类结果、质量保障结论、审计摘要与控制面耗时 \\
+运行协议层异常输入验证 & 2–4 分钟 & python3 tools/showcase\_protocol\_fuzz.py --base-url http://127.0.0.1:7860 & 生成 \texttt{protocol\textbackslash\{\}\_fuzz\textbackslash\{\}\_evidence.json}（或自定义输出文件），验证 multipart/JSON/截断请求体阻断 \\
+运行至少一项控制面守卫检查 & 2–6 分钟 & python3 tools/showcase\_guard\_stress.py --base-url http://127.0.0.1:7860 --checks duplicate\_nonce & 验证重复 nonce、重复载荷或并发占满守卫 \\
+可选：更换样本重复复核 & 2–5 分钟 & 浏览器重新加载另一张本地样本；或再次运行 python3 tools/showcase\_guard\_stress.py --base-url http://127.0.0.1:7860 --checks duplicate\_nonce & 验证完整计算链路可重复执行，且审计摘要与控制面统计持续生成 \\
+\bottomrule
+\end{longtable}
+
+从复现层次上看，当前仓库实际上提供了三档入口：第一档是本机展示样例，用于验证浏览器预处理、分片生成与 SPU 分类闭环；第二档是协议层异常输入和控制面守卫验证，用于复核边界阻断与资源状态回落；第三档是真两方部署迁移骨架，用于演练医院侧、模型提供方与协调侧的分角色部署。三档入口共享同一 bundle、阈值口径与证据链文件，目的在于避免“展示链路”“验证链路”“部署链路”彼此割裂。
+
+复现流程强调“结果可验证”而非“环境完全生产化”。本作品保留了本机 SPU 展示样例、服务器复核结果、通信量记录、鲁棒性探针和真实两方部署框架文档，使读者能够分别验证系统是否能运行、关键指标是否有证据、异常输入是否被拦截，以及后续迁移到医院侧与模型提供方分离部署时需要补齐哪些机构配置。该复现边界与第 2.6 节的系统形态划分保持一致。
+
+\section{数据、模型与权重合规声明}
+
+本作品对数据、模型结构与权重文件的分层合规声明与边界说明如表 16所示。作品对数据、模型结构与权重文件分别采用分层合规声明。数据层面，报告与演示不包含真实、未经授权的患者隐私信息；医疗结果仅用于研究验证与竞赛展示，不作为临床诊断依据；金融压力样本仅承担方法边界验证职责。模型层面，公开仓库保留模型结构、运行脚本、图件与报告生成链；权重层面，仓库当前不默认随 Git 分发全部完整权重文件，仅保留必要的 bundle 元数据与加载入口，完整权重需在授权范围内单独提供。
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.32\textwidth}>{\raggedright\arraybackslash}p{0.32\textwidth}>{\raggedright\arraybackslash}p{0.32\textwidth}}
+\caption{表 16 数据、模型与权重合规边界说明}\\
+\toprule
+\textbf{对象} & \textbf{当前做法} & \textbf{合规边界} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{对象} & \textbf{当前做法} & \textbf{合规边界} \\
+\midrule
+\endhead
+测试数据 & 仅使用仓内声明范围内的验证数据与压力样本 & 不对外分发未经授权的原始敏感数据 \\
+模型结构代码 & 随仓保留并可复现运行链 & 遵循仓内第三方来源与修改映射说明 \\
+模型权重 & 默认不随 Git 完整分发，仅保留 bundle 元数据与加载入口 & 需由维护方按授权边界单独提供 \\
+第三方预训练/上游组件 & 按原许可证与来源映射保留 & 不对上游本体主张排他性知识产权 \\
+\bottomrule
+\end{longtable}
+
+\noindent\textit{注：本声明仅适用于本次竞赛提交的原型系统；任何商业使用需单独获得相关数据与模型的授权许可。}
+
+在合规口径上，本作品还区分了“可公开交付物”和“受授权约束资源”两类对象。前者包括代码、报告、图件、验证脚本、公开证据与必要的 bundle 元数据；后者包括完整权重、原始数据集和任何可能恢复真实患者信息或受限模型资产的内容。这样做既是出于竞赛提交的可复核性考虑，也是为了避免将研究验证资产误写为默认可公开再分发资产。
+
+\section{第三方许可、原创边界与技术公开范围}
+
+本作品的知识产权声明按“上游底座、基于 Apache 2.0 的本地适配、团队原创部分”三层边界撰写。报告只描述仓内已实际完成的物理映射，不对未存在的许可证分发项或未落地的文件头声明作超前表述。第三方组件许可与原创边界的物理映射关系如表 17 所示。
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.32\textwidth}>{\raggedright\arraybackslash}p{0.32\textwidth}>{\raggedright\arraybackslash}p{0.32\textwidth}}
+\caption{表 17 第三方组件许可与原创边界物理映射}\\
+\toprule
+\textbf{物理映射项} & \textbf{仓内落点} & \textbf{当前事实} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{物理映射项} & \textbf{仓内落点} & \textbf{当前事实} \\
+\midrule
+\endhead
+上游许可证文本 & spu\_vendored/LICENSE & 已保留 Apache License 2.0 文本 \\
+vendored 变更总说明 & spu\_vendored/MODIFICATIONS.md & 已列出当前交付版明确引用的本地适配文件 \\
+修改文件头声明 1 & spu\_vendored/libspu/spu.proto & 文件头含密捷项目本地修改声明 \\
+修改文件头声明 2 & spu\_vendored/libspu/mpc/cheetah/arithmetic.h & 文件头含密捷项目本地供应链适配声明 \\
+修改文件头声明 3 & spu\_vendored/libspu/mpc/cheetah/arithmetic.cc & 文件头含密捷项目本地供应链适配声明 \\
+修改文件头声明 4 & spu\_vendored/libspu/mpc/cheetah/protocol.cc & 文件头含密捷项目本地供应链适配声明 \\
+第三方来源总表 & THIRD\_PARTY.md & 已保留 DynamicViT / OpenBumbleBee 来源与许可证映射 \\
+\bottomrule
+\end{longtable}
+
+\noindent\textit{注：所有修改文件均已在文件头添加本地修改声明；本作品不对上游开源组件主张任何排他性知识产权。}
+
+本作品的安全计算底座基于 SecretFlow SPU，当前已核对上游分发许可为 Apache License 2.0。当前核对到的上游分发物保留了许可证文件（LICENSE），未发现独立的 NOTICE 分发文件，因此交付物按事实保留许可证文本和本地修改说明，不虚构并不存在的附加分发项。本作品不对上游 SPU、OpenBumbleBee 与相关协议实现本体主张排他性知识产权。
+
+本作品的原创贡献主要集中在动态控制流映射策略、浏览器工作线程控制面、服务端权威快检、前后端审计链闭环、演示程序集成以及报告与图件生成链。当前交付物公开代码、图件、报告与运行脚本；涉及完整模型权重和数据集的部分，按授权边界与来源限制单独管理，不在公开仓库中默认再分发。

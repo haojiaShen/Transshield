@@ -8,6 +8,7 @@
 - 当前仓库不再保留报告源码重建脚本
 - 当前仓库不再保留图件生成脚本
 - 当前仓库不再保留历史报告快照目录
+- 相关工作实验说明：`docs/report/cipherprune_related_work_note.md`
 
 ## 说明
 

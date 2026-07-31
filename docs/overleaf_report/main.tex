@@ -1,0 +1,175 @@
+\documentclass[12pt,a4paper,UTF8]{ctexrep}
+\usepackage{iftex}
+\ifPDFTeX
+  \errmessage{This project must be compiled with XeLaTeX. Please switch Overleaf compiler from pdfLaTeX to XeLaTeX.}
+\fi
+
+% Overleaf 免费版建议保持快速模式。
+% 交稿前如需完整高保真编译，可把下面两项改为 false / true。
+\newif\iffastdraft
+\fastdrafttrue
+\newif\ifusecustomfonts
+\usecustomfontsfalse
+\newif\ifincludeappendix
+\includeappendixfalse
+
+\iffastdraft
+  \PassOptionsToPackage{draft}{graphicx}
+\fi
+
+\usepackage[left=2.54cm,right=2.54cm,top=2.54cm,bottom=2.54cm]{geometry}
+\usepackage{fontspec}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\ifusecustomfonts
+  % 定稿模式：优先使用上传到 Overleaf 的宋体 / 黑体。
+  \IfFontExistsTF{SimSun}{
+    \setCJKmainfont{SimSun}
+  }{
+    \IfFileExists{fonts/simsun.ttc}{
+      \setCJKmainfont{simsun.ttc}[Path=fonts/]
+    }{
+      \setCJKmainfont{FandolSong-Regular}
+    }
+  }
+  \IfFontExistsTF{SimHei}{
+    \setCJKsansfont{SimHei}
+  }{
+    \IfFileExists{fonts/simhei.ttf}{
+      \setCJKsansfont{simhei.ttf}[Path=fonts/]
+    }{
+      \setCJKsansfont{FandolHei-Regular}
+    }
+  }
+\else
+  % 草稿模式：使用 TeX Live 自带中文字体，减少编译时间。
+  \setCJKmainfont{FandolSong-Regular}
+  \setCJKsansfont{FandolHei-Regular}
+\fi
+\IfFontExistsTF{Times New Roman}{
+  \setmainfont{Times New Roman}
+}{
+  \setmainfont{TeX Gyre Termes}
+}
+
+\setstretch{1.5}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0pt}
+\captionsetup{font={normalsize},labelfont=bf}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible,
+  frame=single,
+  framerule=0.3pt,
+  rulecolor=\color{black!30},
+  backgroundcolor=\color{black!2},
+  keepspaces=true
+}
+
+\ctexset{
+  chapter = {
+    name = {第,章},
+    number = \chinese{chapter},
+    format = \centering\heiti\zihao{-4},
+    aftername = \quad,
+    beforeskip = 0pt,
+    afterskip = 6pt
+  },
+  section = {
+    format = \heiti\zihao{-4},
+    beforeskip = 6pt,
+    afterskip = 6pt
+  },
+  appendix = {
+    name = {附录},
+    number = \Alph{chapter},
+    format = \centering\heiti\zihao{-4},
+    aftername = \quad
+  }
+}
+
+\renewcommand{\thesection}{\arabic{chapter}.\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+
+\newcommand{\reportequationplaceholder}[1]{
+  \begin{equation}
+  \tag{#1}
+  \text{[请根据 Word 原稿补录该公式]}
+  \end{equation}
+}
+
+\newcommand{\reportmissingfigure}[2]{
+  \begin{figure}[htbp]
+  \centering
+  \fbox{\parbox[c][0.22\textheight][c]{0.82\textwidth}{\centering 图 #1 暂未找到可直接复用的图片资源}}
+  \caption{#2}
+  \end{figure}
+}
+
+\begin{document}
+\zihao{-4}
+\songti
+
+\begin{titlepage}
+\centering
+{\heiti\zihao{2} 2026年全国大学生信息安全竞赛\par}
+\vspace{1.2cm}
+{\heiti\zihao{1} 作品报告\par}
+\vspace{2.4cm}
+\begin{flushleft}
+\zihao{-4}
+作品名称：\\[0.8cm]
+电子邮箱：\\[0.8cm]
+提交日期：\\[0.8cm]
+\end{flushleft}
+\vfill
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+\chapter*{摘要}
+\addcontentsline{toc}{chapter}{摘要}
+\input{chapters/00_abstract}
+
+\chapter{作品概述}
+\input{chapters/01_overview}
+
+\chapter{系统设计}
+\input{chapters/02_design}
+
+\chapter{系统实现}
+\input{chapters/03_implementation}
+
+\chapter{测试方案与结果分析}
+\input{chapters/04_evaluation}
+
+\chapter{创新性与局限性}
+\input{chapters/05_innovation}
+
+\chapter{复现与参赛声明}
+\input{chapters/06_reproducibility}
+
+\chapter*{参考文献}
+\addcontentsline{toc}{chapter}{参考文献}
+\input{chapters/90_references}
+
+\ifincludeappendix
+  \appendix
+  \renewcommand{\thesection}{\Alph{chapter}.\arabic{section}}
+  \chapter{关键代码实现}
+  \input{chapters/99_appendix_a}
+\fi
+
+\end{document}

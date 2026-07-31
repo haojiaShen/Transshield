@@ -1,6 +1,19 @@
+import hashlib
+import json
+import time
 from pathlib import Path
 
 from integrations.transshield_runtime.e2e_secure_vit.common import load_json
+from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
+    compact_topk_tokens,
+    exact_topk_keep_mask,
+    logical_uniform_mean,
+)
+from integrations.transshield_runtime.e2e_secure_vit.spu_compile_cache import (
+    get_spu_compile_cache_stats,
+    install_spu_compile_cache,
+    reset_spu_compile_cache_stats,
+)
 
 
 def run_static_vit_forward_spu(
@@ -23,14 +36,36 @@ def run_static_vit_forward_spu(
     predictor_params_np=None,
     pruning_metadata=None,
     token_recycle_scale: float = 0.0,
+    secure_pruning_mode: str = "mask",
+    compile_cache_dir=None,
+    performance_metadata=None,
 ):
     import numpy as np
     import jax.numpy as jnp
     import jax.scipy.special as jsp_special
     import spu.utils.distributed as ppd
 
+    runtime_started = time.perf_counter()
     config = load_json(config_path)
+    runtime_config = config["devices"]["SPU"]["config"]["runtime_config"]
+    pruning_ops_path = Path(__file__).with_name("secure_pruning_ops.py")
+    install_spu_compile_cache(
+        compile_cache_dir,
+        namespace=json.dumps(
+            {
+                "runtime_config": runtime_config,
+                "secure_pruning_mode": str(secure_pruning_mode),
+                "spu_static_vit_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                "secure_pruning_ops_sha256": hashlib.sha256(pruning_ops_path.read_bytes()).hexdigest(),
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ),
+    )
+    reset_spu_compile_cache_stats()
+    init_started = time.perf_counter()
     ppd.init(config["nodes"], config["devices"])
+    init_sec = time.perf_counter() - init_started
 
     num_heads = int(metadata["num_heads"])
     head_dim = int(metadata["head_dim"])
@@ -43,6 +78,15 @@ def run_static_vit_forward_spu(
     pruning_loc = tuple(int(value) for value in metadata.get("pruning_loc", ()))
     token_keep_counts_raw = list(metadata.get("token_keep_counts", ()))
     activation_clip_value = float(activation_clip_value)
+    token_recycle_scale = float(token_recycle_scale)
+    secure_pruning_mode = str(secure_pruning_mode)
+    if secure_pruning_mode not in {"mask", "compact"}:
+        raise ValueError(f"unsupported secure_pruning_mode: {secure_pruning_mode}")
+    if secure_pruning_mode == "compact" and token_recycle_scale != 0.0:
+        raise ValueError("secure_pruning_mode=compact currently requires token_recycle_scale=0")
+    fxp_fraction_bits = int(runtime_config.get("fxp_fraction_bits", 0))
+    if secure_pruning_mode == "compact" and fxp_fraction_bits <= 0:
+        raise ValueError("secure_pruning_mode=compact requires positive SPU fxp_fraction_bits")
     attn_scale = head_dim ** -0.5
     if attention_policy not in {"smoothed", "standard", "uniform", "identity"}:
         raise ValueError(f"unsupported attention policy: {attention_policy}")
@@ -252,7 +296,13 @@ def run_static_vit_forward_spu(
         masked_spatial = spatial * km
         return jnp.concatenate([cls_part, masked_spatial], axis=1)
 
-    def block_forward(x, block_param, block_calibration=None, capture_probe=False):
+    def block_forward(
+        x,
+        block_param,
+        block_calibration=None,
+        capture_probe=False,
+        logical_token_count=None,
+    ):
         (
             norm1_weight,
             norm1_bias,
@@ -277,20 +327,45 @@ def run_static_vit_forward_spu(
         norm2_calibration = None if block_calibration is None else block_calibration[2:]
         norm1_out = layer_norm(x, norm1_weight, norm1_bias, norm1_calibration)
         batch, token_count, channels = norm1_out.shape
+        logical_token_count = token_count if logical_token_count is None else int(logical_token_count)
+        if logical_token_count < int(token_count):
+            raise ValueError(
+                f"logical_token_count={logical_token_count} cannot be smaller than physical token_count={token_count}"
+            )
         if attention_policy == "uniform":
+            dropped_value = None
+            if logical_token_count > int(token_count):
+                dropped_norm1 = layer_norm(
+                    jnp.zeros((1, 1, channels), dtype=x.dtype),
+                    norm1_weight,
+                    norm1_bias,
+                    norm1_calibration,
+                )
             if _use_decomposed:
                 # Slice up_weight to extract only V portion
                 up_weight_v = qkv_weight[1][2 * channels :, :]
                 down_weight_v = qkv_weight[0]
                 value_bias_v = qkv_bias[2 * channels : 3 * channels]
                 value = decomposed_linear(norm1_out, down_weight_v, up_weight_v, value_bias_v)
+                if logical_token_count > int(token_count):
+                    dropped_value = decomposed_linear(
+                        dropped_norm1,
+                        down_weight_v,
+                        up_weight_v,
+                        value_bias_v,
+                    )
             else:
                 value_weight = qkv_weight[2 * channels : 3 * channels, :]
                 value_bias = qkv_bias[2 * channels : 3 * channels]
                 value = linear(norm1_out, value_weight, value_bias)
+                if logical_token_count > int(token_count):
+                    dropped_value = linear(dropped_norm1, value_weight, value_bias)
             value = jnp.reshape(value, (batch, token_count, num_heads, head_dim))
             value = jnp.transpose(value, (0, 2, 1, 3))
-            mean_value = jnp.mean(value, axis=2, keepdims=True)
+            if dropped_value is not None:
+                dropped_value = jnp.reshape(dropped_value, (1, 1, num_heads, head_dim))
+                dropped_value = jnp.transpose(dropped_value, (0, 2, 1, 3))
+            mean_value = logical_uniform_mean(value, dropped_value, logical_token_count)
             attn_out = jnp.broadcast_to(mean_value, (batch, num_heads, token_count, head_dim))
         else:
             if _use_decomposed:
@@ -575,9 +650,14 @@ def run_static_vit_forward_spu(
         x = linear(x, out1_w, out1_b)
         x = out1_alpha * (x * x)
 
-        # out_proj: Linear -> clamp -> log_softmax
+        # out_proj: Linear -> clamp.  For the default no-recycling path, ranking
+        # keep log-probability is exactly equivalent to ranking logit0-logit1,
+        # so exp/log are unnecessary inside MPC.
         logits = linear(x, out_proj_w, out_proj_b)
         logits = jnp.clip(logits, -10.0, 10.0)
+        if token_recycle_scale <= 0.0:
+            return logits[:, :, 0] - logits[:, :, 1]
+
         # Manual logsumexp: avoids stablehlo.is_finite which SPU doesn't support
         max_logits = jnp.max(logits, axis=-1, keepdims=True)
         log_sum = max_logits + jnp.log(jnp.sum(jnp.exp(logits - max_logits), axis=-1, keepdims=True))
@@ -586,144 +666,8 @@ def run_static_vit_forward_spu(
         # Return keep-score: log_prob of class-0 (keep)
         return log_probs[:, :, 0]
 
-    def _bitonic_sort_desc(values):
-        """Bitonic sort descending.  O(N log^2 N) compare-and-swap; SPU-friendly fixed pattern.
-
-        values: [B, N] where N must be a power of 2 (caller pads if needed).
-        Fully JAX-tracer-safe: no boolean fancy indexing, only jnp.where operations.
-        """
-        N = int(values.shape[1])
-        x = values
-        k = 2
-        while k <= N:
-            j = k // 2
-            while j >= 1:
-                # For each position p, compute its partner = p XOR j
-                p_arr = jnp.arange(N, dtype=jnp.int32)
-                p_partner = p_arr ^ j
-
-                # Safe partner index for gathering (clip out-of-range to 0)
-                p_partner_safe = jnp.clip(p_partner, 0, N - 1)
-
-                # Gather values from current state
-                x_at_p = x                                       # [B, N]
-                x_at_partner = x[:, p_partner_safe]              # [B, N]
-
-                # Determine: is p the left element of its pair?
-                is_left = (p_arr < p_partner)                    # [N] bool
-                has_partner = (p_partner < N)                    # [N] bool
-
-                # Direction is defined at the LEFT element of the pair
-                left_index = jnp.where(is_left, p_arr, p_partner)
-                is_desc = (left_index & k) == 0                  # [N] bool
-
-                # Descending: left gets max, right gets min
-                # Ascending:   left gets min, right gets max
-                high = jnp.maximum(x_at_p, x_at_partner)
-                low  = jnp.minimum(x_at_p, x_at_partner)
-
-                left_val  = jnp.where(is_desc, high, low)
-                right_val = jnp.where(is_desc, low, high)
-
-                # Position p gets left_val if it is the left element, else right_val
-                new_val = jnp.where(is_left, left_val, right_val)
-
-                # If no partner (out of range), keep original value
-                x = jnp.where(has_partner, new_val, x_at_p)
-
-                j //= 2
-            k *= 2
-        return x
-
-
-    def _bitonic_sort_desc_with_indices(values):
-        """Bitonic sort descending while tracking original indices.
-
-        Returns (sorted_values, sorted_indices) where sorted_indices[b, i] is the
-        original position of the element now at position i in sorted order.
-        Eliminates the need for a separate threshold comparison after sorting.
-
-        values: [B, N] where N must be a power of 2.
-        """
-        N = int(values.shape[1])
-        x = values
-        indices = jnp.broadcast_to(jnp.arange(N, dtype=jnp.int32), values.shape)
-        k = 2
-        while k <= N:
-            j = k // 2
-            while j >= 1:
-                p_arr = jnp.arange(N, dtype=jnp.int32)
-                p_partner = p_arr ^ j
-                p_partner_safe = jnp.clip(p_partner, 0, N - 1)
-
-                x_at_p = x
-                x_at_partner = x[:, p_partner_safe]
-                idx_at_p = indices
-                idx_at_partner = indices[:, p_partner_safe]
-
-                is_left = (p_arr < p_partner)
-                has_partner = (p_partner < N)
-                left_index = jnp.where(is_left, p_arr, p_partner)
-                is_desc = (left_index & k) == 0
-
-                high = jnp.maximum(x_at_p, x_at_partner)
-                low = jnp.minimum(x_at_p, x_at_partner)
-                left_val = jnp.where(is_desc, high, low)
-                right_val = jnp.where(is_desc, low, high)
-                new_val = jnp.where(is_left, left_val, right_val)
-                x = jnp.where(has_partner, new_val, x_at_p)
-
-                # Swap indices in the same pattern
-                idx_high = jnp.where(is_desc, idx_at_p, idx_at_partner)
-                idx_low = jnp.where(is_desc, idx_at_partner, idx_at_p)
-                left_idx = jnp.where(is_left, idx_high, idx_low)
-                right_idx = jnp.where(is_left, idx_low, idx_high)
-                new_idx = jnp.where(is_left, left_idx, right_idx)
-                indices = jnp.where(has_partner, new_idx, indices)
-
-                j //= 2
-            k *= 2
-        return x, indices
-
-
     def _secure_build_keep_decision(score, prev_decision_2d, keep_count):
-        """Build keep decision via index-tracking bitonic sort.
-
-        Instead of: sort -> extract threshold -> compare all >= threshold (2 MPC ops),
-        we now: sort with index tracking -> directly build mask from sorted indices (1 MPC op).
-        Eliminates the separate (encoded_key >= threshold) comparison step.
-        """
-        N = int(score.shape[1])
-        active_before = prev_decision_2d.squeeze(-1) > 0
-
-        epsilon = 1e-6
-        index_vals = jnp.arange(N, dtype=score.dtype) * epsilon
-        encoded_key = score - index_vals
-        encoded_masked = jnp.where(active_before, encoded_key, float('-inf'))
-
-        # Pad to next power of 2
-        padded_count = 1
-        while padded_count < N:
-            padded_count *= 2
-        if padded_count > N:
-            pad_width = padded_count - N
-            neg_inf = jnp.full((int(score.shape[0]), pad_width), float('-inf'), dtype=score.dtype)
-            sortable = jnp.concatenate([encoded_masked, neg_inf], axis=1)
-        else:
-            sortable = encoded_masked
-
-        # Bitonic sort with index tracking: one MPC op instead of two
-        sorted_keys, sorted_indices = _bitonic_sort_desc_with_indices(sortable)
-
-        # Build keep mask directly from sorted indices (vectorized).
-        # The first keep_count elements in sorted order are the top-k tokens.
-        # Compare each position against sorted_indices[:keep_count] to find kept tokens.
-        top_k_indices = sorted_indices[:, :keep_count]  # [B, keep_count]
-        pos = jnp.arange(N, dtype=jnp.int32)  # [N]
-        # keep_mask[b, n] = 1 iff position n appears in top_k_indices[b]
-        keep_mask = jnp.any(top_k_indices[:, :, None] == pos[None, None, :], axis=1)  # [B, N]
-        keep_mask = keep_mask[:, :N] & active_before
-        return keep_mask[:, :, None]
+        return exact_topk_keep_mask(score, prev_decision_2d, int(keep_count))
 
 
     def forward_with_secure_pruning_fn(pixel_values, forward_params, predictor_params):
@@ -790,9 +734,95 @@ def run_static_vit_forward_spu(
         cls_features = x[:, 0]
         return linear(cls_features, head_weight, head_bias)
 
+    def forward_with_compact_secure_pruning_fn(pixel_values, forward_params, predictor_params):
+        """Secure pruning that physically shortens the token dimension.
+
+        The plaintext model masks dropped tokens but uniform attention still
+        evaluates all 197 positions.  ``block_forward(..., logical_token_count)``
+        accounts for the deterministic contribution of omitted zero tokens, so
+        kept-token and CLS computations retain the masked model's semantics
+        while later linears operate on 137/96/67 spatial tokens.
+        """
+        (
+            patch_weight,
+            patch_bias,
+            cls_token,
+            pos_embed,
+            block_params,
+            norm_weight,
+            norm_bias,
+            head_weight,
+            head_bias,
+        ) = forward_params
+
+        loc_set = frozenset(pruning_loc)
+        keep_counts = tuple(int(value) for value in token_keep_counts_raw)
+        block_calibrations = () if layer_norm_calibration is None else layer_norm_calibration["blocks"]
+
+        x = patch_embed(pixel_values, patch_weight, patch_bias)
+        batch = int(x.shape[0])
+        initial_spatial_token_count = int(x.shape[1])
+        logical_token_count = initial_spatial_token_count + 1
+        cls_tokens = jnp.broadcast_to(cls_token, (batch, cls_token.shape[1], cls_token.shape[2]))
+        x = jnp.concatenate([cls_tokens, x], axis=1)
+        x = x + pos_embed
+        original_indices = jnp.broadcast_to(
+            jnp.arange(initial_spatial_token_count, dtype=jnp.int32),
+            (batch, initial_spatial_token_count),
+        )
+        stage_index = 0
+
+        for block_index, block_param in enumerate(block_params):
+            block_calibration = None if not block_calibrations else block_calibrations[block_index]
+            if block_index in loc_set:
+                spatial_x = x[:, 1:]
+                all_active = jnp.ones(
+                    (batch, int(spatial_x.shape[1]), 1),
+                    dtype=spatial_x.dtype,
+                )
+                keep_score = _predictorlg_forward(
+                    spatial_x,
+                    all_active,
+                    predictor_params[stage_index],
+                )
+                spatial_x, original_indices = compact_topk_tokens(
+                    keep_score,
+                    spatial_x,
+                    original_indices,
+                    keep_counts[stage_index],
+                    fxp_fraction_bits=fxp_fraction_bits,
+                    original_token_count=initial_spatial_token_count,
+                )
+                x = jnp.concatenate([x[:, :1], spatial_x], axis=1)
+                stage_index += 1
+
+            x = block_forward(
+                x,
+                block_param,
+                block_calibration,
+                logical_token_count=logical_token_count,
+            )
+
+        final_calibration = None if layer_norm_calibration is None else layer_norm_calibration["final_norm"]
+        x = layer_norm(x, norm_weight, norm_bias, final_calibration)
+        cls_features = x[:, 0]
+        return linear(cls_features, head_weight, head_bias)
+
     def forward_with_secure_pruning_from_shares_fn(share0, share1, forward_params, predictor_params):
         return forward_with_secure_pruning_fn(
             share0 + share1, forward_params, predictor_params
+        )
+
+    def forward_with_compact_secure_pruning_from_shares_fn(
+        share0,
+        share1,
+        forward_params,
+        predictor_params,
+    ):
+        return forward_with_compact_secure_pruning_fn(
+            share0 + share1,
+            forward_params,
+            predictor_params,
         )
 
 
@@ -846,6 +876,7 @@ def run_static_vit_forward_spu(
 
     secret_identity = p1(identity)
     p2_secret_identity = p2(identity)
+    parameter_placement_started = time.perf_counter()
     if params_mode == "secret":
         params_ref = secret_identity(params)
     elif params_mode == "public":
@@ -911,6 +942,10 @@ def run_static_vit_forward_spu(
             }
         # Sync closure-level mutable list so SPU closures see concrete Python ints
         token_keep_counts_raw[:] = [int(x) for x in pruning_metadata.get("token_keep_counts", [])]
+    predictor_params_ref = predictor_params_np
+    if using_secure_pruning and params_mode == "secret":
+        predictor_params_ref = secret_identity(predictor_params_np)
+    initial_parameter_placement_sec = time.perf_counter() - parameter_placement_started
 
     effective_batch_size = max(1, min(int(batch_size), sample_count))
     (
@@ -936,6 +971,19 @@ def run_static_vit_forward_spu(
         head_weight,
         head_bias,
     )
+    logical_token_count = int(pos_embed.shape[1])
+    planned_block_token_counts = []
+    physical_token_count = logical_token_count
+    pruning_stage_index = 0
+    for block_index in range(int(metadata["depth"])):
+        if (
+            using_secure_pruning
+            and secure_pruning_mode == "compact"
+            and block_index in pruning_loc
+        ):
+            physical_token_count = 1 + int(token_keep_counts_raw[pruning_stage_index])
+            pruning_stage_index += 1
+        planned_block_token_counts.append(physical_token_count)
     if external_keep_masks_np is not None:
         expected_stage_count = sum(1 for block_index in range(int(metadata["depth"])) if block_index in pruning_loc)
         if len(external_keep_masks_np) != expected_stage_count:
@@ -1051,8 +1099,7 @@ def run_static_vit_forward_spu(
         return tuple(chunk_keep_masks)
 
     def slice_predictor_params_chunk():
-        """Slice predictor params for the current batch (they are full-batch numpy)."""
-        return predictor_params_np
+        return predictor_params_ref
 
     def make_secret_blockwise_refs():
         if secret_block_param_refs is None:
@@ -1086,7 +1133,19 @@ def run_static_vit_forward_spu(
             )
         return x_ref
 
+    selected_secure_pruning_fn = (
+        forward_with_compact_secure_pruning_fn
+        if secure_pruning_mode == "compact"
+        else forward_with_secure_pruning_fn
+    )
+    selected_secure_pruning_from_shares_fn = (
+        forward_with_compact_secure_pruning_from_shares_fn
+        if secure_pruning_mode == "compact"
+        else forward_with_secure_pruning_from_shares_fn
+    )
+    chunk_timings = []
     for start in range(0, sample_count, effective_batch_size):
+        chunk_started = time.perf_counter()
         end = min(start + effective_batch_size, sample_count)
         chunk = pixel_values_np[start:end]
         if using_input_shares:
@@ -1102,11 +1161,9 @@ def run_static_vit_forward_spu(
                 )
         chunk_keep_masks = slice_keep_mask_chunk(start, end, effective_batch_size)
         if using_secure_pruning:
-            # Build pruning metadata dict for the SPU closure
-            spu_pruning_metadata = dict(pruning_metadata)
             predictor_stage_params = slice_predictor_params_chunk()
             if using_input_shares:
-                result_ref = spu(forward_with_secure_pruning_from_shares_fn)(
+                result_ref = spu(selected_secure_pruning_from_shares_fn)(
                     secret_identity(chunk),
                     p2_secret_identity(chunk_share1),
                     params_ref,
@@ -1125,20 +1182,20 @@ def run_static_vit_forward_spu(
                     end,
                     effective_batch_size,
                 )
-                result_ref = spu(forward_with_secure_pruning_from_shares_fn)(
+                result_ref = spu(selected_secure_pruning_from_shares_fn)(
                     chunk_share0_ref,
                     chunk_share1_ref,
                     params_ref,
                     predictor_stage_params,
                 )
             elif params_mode == "secret":
-                result_ref = spu(forward_with_secure_pruning_fn)(
+                result_ref = spu(selected_secure_pruning_fn)(
                     secret_identity(chunk),
                     params_ref,
                     predictor_stage_params,
                 )
             else:
-                result_ref = spu(forward_with_secure_pruning_fn)(
+                result_ref = spu(selected_secure_pruning_fn)(
                     secret_identity(chunk),
                     params,
                     predictor_stage_params,
@@ -1329,7 +1386,18 @@ def run_static_vit_forward_spu(
                     )
                 else:
                     result_ref = spu(forward_fn)(secret_identity(chunk), params_ref)
+        pre_reveal = time.perf_counter()
         result = ppd.get(result_ref)
+        reveal_finished = time.perf_counter()
+        chunk_timings.append(
+            {
+                "start_index": int(start),
+                "end_index": int(end),
+                "secure_submit_and_execute_sec": float(pre_reveal - chunk_started),
+                "final_reveal_sec": float(reveal_finished - pre_reveal),
+                "total_sec": float(reveal_finished - chunk_started),
+            }
+        )
         if probe_block_index is None:
             logits = np.asarray(result, dtype=np.float32)
             outputs.append(logits[:actual_count])
@@ -1341,6 +1409,22 @@ def run_static_vit_forward_spu(
             probe_outputs[name].append(np.asarray(value, dtype=np.float32)[:actual_count])
 
     logits_output = np.concatenate(outputs, axis=0)
+    if performance_metadata is not None:
+        performance_metadata.update(
+            {
+                "runtime_init_sec": float(init_sec),
+                "initial_parameter_placement_sec": float(initial_parameter_placement_sec),
+                "chunks": chunk_timings,
+                "compile_cache": get_spu_compile_cache_stats(),
+                "secure_pruning_mode": secure_pruning_mode,
+                "logical_block_token_positions": int(
+                    logical_token_count * int(metadata["depth"])
+                ),
+                "planned_physical_block_token_positions": int(sum(planned_block_token_counts)),
+                "planned_block_token_counts": planned_block_token_counts,
+                "total_runtime_sec": float(time.perf_counter() - runtime_started),
+            }
+        )
     if probe_outputs is None:
         return logits_output
 

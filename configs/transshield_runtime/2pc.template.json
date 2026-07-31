@@ -27,8 +27,8 @@
             "enable_mul_lsb_error": false,
             "ot_kind": "YACL_Ferret"
           },
-          "enable_hal_profile": true,
-          "enable_pphlo_profile": true,
+          "enable_hal_profile": false,
+          "enable_pphlo_profile": false,
           "experimental_enable_colocated_optimization": true,
           "field": "FM64",
           "fxp_exp_iters": 4,

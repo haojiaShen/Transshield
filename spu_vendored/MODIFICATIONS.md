@@ -25,3 +25,14 @@ The current report and provenance documents reference the following vendored fil
 - `spu_vendored/libspu/mpc/cheetah/protocol.cc`
 
 These notes do not replace the upstream copyright or Apache 2.0 license headers.
+
+## Runtime performance layer
+
+The final repository keeps the pip-installed SPU package unchanged and applies
+project-scoped runtime optimizations from:
+
+- `integrations/transshield_runtime/e2e_secure_vit/spu_compile_cache.py`: content-addressed JAX-to-SPU executable cache; cached entries contain graph code and public output shape metadata, never request values or secret shares.
+- `integrations/transshield_runtime/e2e_secure_vit/secure_pruning_ops.py`: fixed-schedule exact top-k and optional oblivious token compaction.
+
+Both optimizations are selectable at the runner layer, so the historical mask
+graph remains available for A/B comparison and rollback.

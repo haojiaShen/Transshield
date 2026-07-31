@@ -347,6 +347,7 @@ def apply_output_calibration(logits_cpu, calibration_json: Path):
 def command_run(args):
     import torch
 
+    command_started = time.perf_counter()
     helpers = load_runtime_helpers()
     runtime = args.runtime
 
@@ -496,11 +497,15 @@ def command_run(args):
         if args.max_samples > 0:
             runtime_pruning_keep_masks = [mask[: args.max_samples] for mask in runtime_pruning_keep_masks]
 
+    input_ready_at = time.perf_counter()
     start = time.time()
     cls_features_cpu = None
     token_features_cpu = None
     cpu_forward_mode = str(getattr(args, "cpu_forward_mode", "static_no_pruning"))
     forward_scope = STATIC_FORWARD_SCOPE
+    performance = {
+        "command_setup_and_input_load_sec": float(input_ready_at - command_started),
+    }
     if runtime == "spu":
         if args.include_intermediates:
             raise ValueError(
@@ -508,6 +513,7 @@ def command_run(args):
                 "the e2e reveal policy only returns final logits."
             )
         predictor_params_np = None
+        parameter_load_started = time.perf_counter()
         if runtime_pruning_keep_masks is None:
             # Secure pruning: load predictor params so pruning happens inside SPU
             params, predictor_params_np, spu_metadata = load_static_vit_spu_params_with_predictor(
@@ -534,6 +540,8 @@ def command_run(args):
                 layer_norm_calibration_json,
                 expected_depth=int(spu_metadata["depth"]),
             )
+        parameter_load_finished = time.perf_counter()
+        spu_runtime_performance = {}
         logits_np = run_static_vit_forward_spu(
             (
                 None
@@ -572,12 +580,31 @@ def command_run(args):
                 else None
             ),
             token_recycle_scale=args.spu_token_recycle_scale,
+            secure_pruning_mode=args.spu_secure_pruning_mode,
+            compile_cache_dir=(
+                Path(args.spu_compile_cache_dir).expanduser().resolve()
+                if args.spu_compile_cache_dir
+                else None
+            ),
+            performance_metadata=spu_runtime_performance,
+        )
+        secure_forward_finished = time.perf_counter()
+        performance.update(
+            {
+                "model_parameter_load_sec": float(parameter_load_finished - parameter_load_started),
+                "spu_forward_wall_sec": float(secure_forward_finished - parameter_load_finished),
+                "spu_runtime": spu_runtime_performance,
+            }
         )
         logits_cpu = torch.from_numpy(logits_np).float()
         probabilities_cpu = torch.softmax(logits_cpu, dim=-1)
         if runtime_pruning_keep_masks is None:
             if predictor_params_np is not None:
-                backend = "jax_spu_secure_pruning_forward_backend_v0"
+                backend = (
+                    "jax_spu_secure_pruning_compact_forward_backend_v1"
+                    if args.spu_secure_pruning_mode == "compact"
+                    else "jax_spu_secure_pruning_mask_forward_backend_v1"
+                )
             else:
                 backend = "jax_spu_static_whole_forward_backend_v0"
         else:
@@ -692,6 +719,9 @@ def command_run(args):
             "config": str(Path(args.config).expanduser().resolve()),
             "spu_batch_size": int(args.spu_batch_size),
             "spu_params_mode": args.spu_params_mode,
+            "predictor_params_secret_inside_spu": bool(
+                predictor_params_np is not None and args.spu_params_mode == "secret"
+            ),
             "spu_block_chunk_size": int(args.spu_block_chunk_size),
             "spu_layer_norm_chunk_size": int(args.spu_layer_norm_chunk_size),
             "spu_layer_norm_policy": args.spu_layer_norm_policy,
@@ -700,10 +730,13 @@ def command_run(args):
             ),
             "spu_activation_clip_value": float(args.spu_activation_clip_value),
             "spu_token_recycle_scale": float(args.spu_token_recycle_scale),
+            "spu_secure_pruning_mode": args.spu_secure_pruning_mode,
+            "spu_compile_cache_dir": args.spu_compile_cache_dir or None,
             "spu_token_ratio_base_override": float(getattr(args, "spu_token_ratio_base_override", 0.0)),
             "static_forward_metadata": spu_metadata,
             "reveal_policy": "final_logits_only",
             "private_input_paths_redacted": redact_private_input_paths,
+            "performance": performance,
         }
     output_pt.parent.mkdir(parents=True, exist_ok=True)
     torch.save(payload, output_pt)
@@ -784,6 +817,9 @@ def command_run(args):
             "host_model_params_materialized": True,
             "model_params_loaded_from_bundle_on_runner_host": True,
             "model_params_secret_inside_spu": bool(args.spu_params_mode == "secret"),
+            "predictor_params_secret_inside_spu": bool(
+                predictor_params_np is not None and args.spu_params_mode == "secret"
+            ),
             "spu_block_chunk_size": int(args.spu_block_chunk_size),
             "spu_layer_norm_chunk_size": int(args.spu_layer_norm_chunk_size),
             "spu_layer_norm_policy": args.spu_layer_norm_policy,
@@ -792,12 +828,18 @@ def command_run(args):
             ),
             "spu_activation_clip_value": float(args.spu_activation_clip_value),
             "spu_token_recycle_scale": float(args.spu_token_recycle_scale),
+            "spu_secure_pruning_mode": args.spu_secure_pruning_mode,
+            "spu_compile_cache_dir": args.spu_compile_cache_dir or None,
             "spu_token_ratio_base_override": float(getattr(args, "spu_token_ratio_base_override", 0.0)),
             "runtime_pruning_keep_mask_pt": (
                 None if runtime_pruning_keep_mask_pt is None else str(runtime_pruning_keep_mask_pt)
             ),
             "spu_forward_graph_mode": (
-                "reveal_less_block_chunked" if int(args.spu_block_chunk_size) > 0 else "monolithic"
+                "secure_pruning_compact_monolithic"
+                if predictor_params_np is not None and args.spu_secure_pruning_mode == "compact"
+                else "reveal_less_block_chunked"
+                if int(args.spu_block_chunk_size) > 0
+                else "monolithic"
             ),
             "reveal_policy": "final_logits_only",
             "input_mode": (
@@ -818,6 +860,7 @@ def command_run(args):
                 bool(party_local_share_manifest_paths is not None) and not redact_private_input_paths
             ),
             "static_forward_metadata": spu_metadata,
+            "performance": performance,
         }
         summary["host_model_params_materialized"] = summary["spu"]["host_model_params_materialized"]
         if share_manifest is not None:
@@ -845,6 +888,8 @@ def command_run(args):
         summary["reveal_policy"] = summary["spu"]["reveal_policy"]
         summary["input_mode"] = summary["spu"]["input_mode"]
         summary["spu_token_recycle_scale"] = summary["spu"]["spu_token_recycle_scale"]
+        summary["spu_secure_pruning_mode"] = summary["spu"]["spu_secure_pruning_mode"]
+        summary["performance"] = performance
         summary["host_plaintext_pixel_values_materialized"] = summary["spu"]["host_plaintext_pixel_values_materialized"]
         summary["host_private_share_tensors_loaded"] = summary["spu"]["host_private_share_tensors_loaded"]
         summary["private_input_paths_redacted"] = summary["spu"]["private_input_paths_redacted"]
@@ -1759,6 +1804,23 @@ def build_parser():
         type=float,
         default=0.0,
         help="Scale factor for Dropped-Token Context Recycling: inject weighted summary of dropped tokens into CLS before masking. 0 disables (original behavior).",
+    )
+    run_parser.add_argument(
+        "--spu-secure-pruning-mode",
+        choices=["mask", "compact"],
+        default="mask",
+        help=(
+            "mask preserves the original fixed 196-token graph; compact obliviously sorts and physically "
+            "shrinks the secure token dimension after each pruning stage."
+        ),
+    )
+    run_parser.add_argument(
+        "--spu-compile-cache-dir",
+        default="",
+        help=(
+            "Optional content-addressed directory for compiled SPU executables. The cache stores graph code "
+            "and output shape metadata only, never runtime values or secret shares."
+        ),
     )
     run_parser.add_argument(
         "--spu-token-ratio-base-override",

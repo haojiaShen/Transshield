@@ -52,6 +52,8 @@ class RunnerProfile:
     spu_attention_policy: str
     spu_activation_override: str
     spu_activation_clip_value: float
+    spu_secure_pruning_mode: str
+    spu_compile_cache_dir: Path
 
 
 @dataclass(frozen=True)
@@ -209,6 +211,15 @@ def load_showcase_config() -> ShowcaseConfig:
             ).strip()
             or "fixed_square",
             spu_activation_clip_value=getenv_float("TRANSSHIELD_SHOWCASE_SPU_ACTIVATION_CLIP_VALUE", 0.0),
+            spu_secure_pruning_mode=os.environ.get(
+                "TRANSSHIELD_SHOWCASE_SPU_SECURE_PRUNING_MODE",
+                "compact",
+            ).strip()
+            or "compact",
+            spu_compile_cache_dir=getenv_path(
+                "TRANSSHIELD_SHOWCASE_SPU_COMPILE_CACHE_DIR",
+                REPO_ROOT / "logs" / "showcase_runtime" / "spu_compile_cache",
+            ),
         ),
         formal_threshold=float(threshold_payload["best_threshold"]),
         formal_threshold_accuracy=float(threshold_payload["best_threshold_accuracy"]),

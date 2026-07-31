@@ -165,6 +165,7 @@ def parse_candidate_result(config: ShowcaseConfig, artifacts: dict[str, Path], e
                 "spu_attention_policy": config.runner_profile.spu_attention_policy,
                 "spu_activation_override": config.runner_profile.spu_activation_override,
                 "spu_activation_clip_value": config.runner_profile.spu_activation_clip_value,
+                "spu_secure_pruning_mode": config.runner_profile.spu_secure_pruning_mode,
             },
         },
         "artifacts": {
@@ -221,6 +222,10 @@ def run_spu_live_demo(config: ShowcaseConfig, share0_bytes: bytes, share1_bytes:
         config.runner_profile.spu_activation_override,
         "--spu-activation-clip-value",
         str(config.runner_profile.spu_activation_clip_value),
+        "--spu-secure-pruning-mode",
+        config.runner_profile.spu_secure_pruning_mode,
+        "--spu-compile-cache-dir",
+        str(config.runner_profile.spu_compile_cache_dir),
     ]
     started = time.perf_counter()
     try:

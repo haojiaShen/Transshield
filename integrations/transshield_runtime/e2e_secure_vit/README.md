@@ -232,6 +232,24 @@ Current supported modes:
 8. `block1-subgraph-smoke`
 9. `runtime-primitive-smoke`
 
+### Secure pruning performance switches
+
+The runner keeps two compatible secure-pruning graph modes:
+
+- `--spu-secure-pruning-mode mask` keeps the historical 196-spatial-token mask graph for rollback and A/B checks.
+- `--spu-secure-pruning-mode compact` uses a fixed bitonic schedule to move token payloads with their secret scores and then runs later blocks at 137/96/67 spatial tokens. Uniform-attention blocks account for the omitted logical zero-token contribution before averaging.
+
+`--spu-compile-cache-dir PATH` enables a content-addressed cache across fresh
+runner processes. Cache entries contain the compiled SPU executable and public
+output shape tree only; input values, model values, and secret shares are not
+serialized. Candidate JSON now records model-load, SPU-runtime, compile-cache,
+per-chunk execute, and final-reveal timing separately.
+
+The online `2pc.template.json` disables HAL/PPHLO per-op profiling. Use the
+profile-enabled `2pc.json` or `2pc_e2e.template.json` when collecting operator
+or communication evidence, and compare latency only between runs with the same
+profiling setting.
+
 `run --runtime spu` is experimental. Start with `--max-samples 1
 --spu-batch-size 1 --spu-params-mode public`, then verify with
 `--allow-prefix-candidate` before trying larger sample counts. Use

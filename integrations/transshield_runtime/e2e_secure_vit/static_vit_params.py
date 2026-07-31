@@ -84,13 +84,20 @@ def load_static_vit_spu_params(
     attention_policy: str = "smoothed",
     activation_override: str = "bundle",
     token_ratio_base_override: float = 0.0,
+    *,
+    preloaded_args_snapshot=None,
+    preloaded_state_dict=None,
 ):
     import torch
 
     from tools.transshield_stage2_bundle import load_json as load_stage2_json
     from tools.transshield_stage2_bundle import resolve_model_state_dict_path
 
-    args_snapshot = load_stage2_json(bundle_dir / "args_snapshot.json")
+    args_snapshot = (
+        load_stage2_json(bundle_dir / "args_snapshot.json")
+        if preloaded_args_snapshot is None
+        else preloaded_args_snapshot
+    )
     # Support both deit-s (teacher) and deit-t (student) models
     model_type = args_snapshot.get("model", "deit-s")
     if model_type not in ("deit-s", "deit-t"):
@@ -98,7 +105,11 @@ def load_static_vit_spu_params(
             f"SPU whole-forward backend currently supports deit-s and deit-t only, got {model_type}"
         )
     state_dict_path = resolve_model_state_dict_path(bundle_dir)
-    state_dict = torch.load(state_dict_path, map_location="cpu", weights_only=False)
+    state_dict = (
+        torch.load(state_dict_path, map_location="cpu", weights_only=False)
+        if preloaded_state_dict is None
+        else preloaded_state_dict
+    )
     base_activation_kind = resolve_static_activation_kind(args_snapshot)
     activation_kind = resolve_spu_activation_kind(base_activation_kind, activation_override)
     bundle_base_rate = float(args_snapshot["base_rate"])
@@ -317,6 +328,8 @@ def load_static_vit_spu_params_with_predictor(
     params, metadata = load_static_vit_spu_params(
         bundle_dir, static_depth_limit, attention_policy, activation_override,
         token_ratio_base_override=token_ratio_base_override,
+        preloaded_args_snapshot=args_snapshot,
+        preloaded_state_dict=state_dict,
     )
 
     # Extract predictor params

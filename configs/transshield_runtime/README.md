@@ -5,11 +5,13 @@
 ## 文件
 
 - `2pc.json`：默认 colocated 双方运行配置
-- `2pc.template.json`：端口或临时目录需要重写时使用的模板
+- `2pc.template.json`：在线展示模板；默认关闭逐算子 HAL/PPHLO profiling，避免热路径统计与日志开销
 - `2pc_e2e.template.json`：whole-forward E2E 路径使用的模板
 - `2pc_fm32.template.json`：FM32 变体模板
 
 `tools/start_showcase_spu_demo.py` 不会直接改写上述被仓库跟踪的配置；它会把 `2pc.template.json` 复制到 `logs/showcase_runtime/2pc.runtime.json`，再把自动分配的端口写入这份运行时配置。`logs/` 已被 `.gitignore` 忽略，适合作为本机展示时的临时运行目录。
+
+`2pc.json` 与 `2pc_e2e.template.json` 继续保留 profiling，用于通信量复核和算子归因；在线时延测试使用 `2pc.template.json`。两类结果不要直接混用。
 
 ## 推荐入口
 

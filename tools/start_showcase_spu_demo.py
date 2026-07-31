@@ -68,9 +68,12 @@ def require_spu_bundle():
     )
 
 
-def start_spu(python: str, timeout_sec: float):
+def start_spu(python: str, timeout_sec: float, template: Path):
     SPU_RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(SPU_TEMPLATE, SPU_CONFIG)
+    template = template.expanduser().resolve()
+    if not template.is_file():
+        raise FileNotFoundError(f"SPU runtime template not found: {template}")
+    shutil.copy2(template, SPU_CONFIG)
     run(
         [
             python,
@@ -188,6 +191,24 @@ def build_parser():
     parser.add_argument("--api-log", type=Path, default=DEFAULT_LOG)
     parser.add_argument("--api-startup-timeout-sec", type=float, default=30.0)
     parser.add_argument("--spu-startup-timeout-sec", type=float, default=30.0)
+    parser.add_argument(
+        "--spu-template",
+        type=Path,
+        default=SPU_TEMPLATE,
+        help="Runtime template to copy before allocating local SPU ports.",
+    )
+    parser.add_argument(
+        "--secure-pruning-mode",
+        choices=["mask", "compact"],
+        default="",
+        help="Override TRANSSHIELD_SHOWCASE_SPU_SECURE_PRUNING_MODE for this launch.",
+    )
+    parser.add_argument(
+        "--spu-compile-cache-dir",
+        type=Path,
+        default=None,
+        help="Override the content-addressed SPU compile-cache directory for this launch.",
+    )
     parser.add_argument("--skip-spu-start", action="store_true")
     return parser
 
@@ -197,11 +218,17 @@ def main():
     python = python_bin(args.python_bin)
     if not args.api_log.is_absolute():
         args.api_log = REPO_ROOT / args.api_log
+    if args.secure_pruning_mode:
+        os.environ["TRANSSHIELD_SHOWCASE_SPU_SECURE_PRUNING_MODE"] = args.secure_pruning_mode
+    if args.spu_compile_cache_dir is not None:
+        os.environ["TRANSSHIELD_SHOWCASE_SPU_COMPILE_CACHE_DIR"] = str(
+            args.spu_compile_cache_dir.expanduser().resolve()
+        )
     require_dist()
     if args.runtime_mode == "spu":
         require_spu_bundle()
         if not args.skip_spu_start:
-            start_spu(python, args.spu_startup_timeout_sec)
+            start_spu(python, args.spu_startup_timeout_sec, args.spu_template)
         else:
             print("Skipping SPU runtime startup because --skip-spu-start was provided.")
     elif args.runtime_mode == "mock":

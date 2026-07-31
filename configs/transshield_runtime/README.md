@@ -21,6 +21,19 @@
 python tools/start_showcase_spu_demo.py --host 0.0.0.0 --port 7860
 ```
 
+性能分支可直接切换安全剪枝图和字段模板，不需要改被跟踪的 JSON：
+
+```bash
+python tools/start_showcase_spu_demo.py \
+  --host 127.0.0.1 --port 7862 --daemon \
+  --secure-pruning-mode compact \
+  --spu-template configs/transshield_runtime/2pc.template.json
+```
+
+将 `compact` 换成 `mask` 可复测旧形状图；将模板换成
+`2pc_fm32.template.json` 可做 FM32 候选测试。FM32 会改变定点精度，必须
+单独检查有限值、logit 漂移和预测一致性，不能只比较时间。
+
 该命令只面向单机演示：它会使用 `127.0.0.1` 端口启动两个 colocated SPU 节点，不会把 P1/P2 分别部署到医院侧和 AI 公司侧。
 
 服务器后台启动示例：

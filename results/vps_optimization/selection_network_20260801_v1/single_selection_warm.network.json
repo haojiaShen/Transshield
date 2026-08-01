@@ -1,0 +1,8 @@
+{
+  "case": "single_selection_warm",
+  "tx_bytes_before": 332851607791,
+  "tx_bytes_after": 335129255511,
+  "tx_bytes_delta": 2277647720,
+  "wall_ns": 92738863007,
+  "exit_code": 0
+}

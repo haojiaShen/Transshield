@@ -11,6 +11,7 @@ class ShowcaseRunnerProfileTests(unittest.TestCase):
     def load_profile(self, **overrides):
         names = {
             "TRANSSHIELD_SHOWCASE_SPU_ATTENTION_POLICY",
+            "TRANSSHIELD_SHOWCASE_SPU_SECURE_PRUNING_NETWORK",
             "TRANSSHIELD_SHOWCASE_SPU_FINAL_BLOCK_CLS_ONLY",
             "TRANSSHIELD_SHOWCASE_SPU_UNIFORM_ATTENTION_VALUE_FUSION",
         }
@@ -25,6 +26,7 @@ class ShowcaseRunnerProfileTests(unittest.TestCase):
         self.assertEqual(profile.spu_attention_policy, "uniform")
         self.assertTrue(profile.spu_final_block_cls_only)
         self.assertTrue(profile.spu_uniform_attention_value_fusion)
+        self.assertEqual(profile.spu_secure_pruning_network, "unpadded_selection")
 
     def test_nonuniform_profile_disables_uniform_only_defaults(self):
         profile = self.load_profile(
@@ -32,6 +34,12 @@ class ShowcaseRunnerProfileTests(unittest.TestCase):
         )
         self.assertFalse(profile.spu_final_block_cls_only)
         self.assertFalse(profile.spu_uniform_attention_value_fusion)
+
+    def test_secure_pruning_network_can_select_unpadded_graph(self):
+        profile = self.load_profile(
+            TRANSSHIELD_SHOWCASE_SPU_SECURE_PRUNING_NETWORK="unpadded_selection",
+        )
+        self.assertEqual(profile.spu_secure_pruning_network, "unpadded_selection")
 
     def test_explicit_rollback_overrides_uniform_defaults(self):
         profile = self.load_profile(

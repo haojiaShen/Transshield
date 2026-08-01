@@ -1,0 +1,195 @@
+{
+  "manifest_type": "transshield_vps_unpadded_selection_network_summary_v1",
+  "captured_at_utc": "2026-08-01T15:55:55Z",
+  "status": "accepted_exact_default",
+  "formal_results_changed": false,
+  "vps_only_model_testing": true,
+  "algorithm": {
+    "name": "arbitrary_length_output_sliced_bitonic_selection_network",
+    "public_topology": true,
+    "data_dependent_control_flow": false,
+    "approximate": false,
+    "description": "Build the compare-and-swap network over the actual 196/137/96 token counts, then walk it backwards and remove comparators outside the dependency cone of the required Top-K outputs.",
+    "rollback_option": "--spu-secure-pruning-network full_sort",
+    "stages": [
+      {
+        "block_index": 3,
+        "input_token_count": 196,
+        "keep_count": 137,
+        "threshold_only": false,
+        "baseline_comparator_count": 4608,
+        "candidate_comparator_count": 2921
+      },
+      {
+        "block_index": 6,
+        "input_token_count": 137,
+        "keep_count": 96,
+        "threshold_only": false,
+        "baseline_comparator_count": 4608,
+        "candidate_comparator_count": 1799
+      },
+      {
+        "block_index": 9,
+        "input_token_count": 96,
+        "keep_count": 67,
+        "threshold_only": true,
+        "baseline_comparator_count": 1792,
+        "candidate_comparator_count": 831
+      }
+    ],
+    "baseline_comparator_count": 11008,
+    "candidate_comparator_count": 5551,
+    "comparator_delta_percent": -49.573037790697676
+  },
+  "validation": {
+    "unit_tests": {
+      "status": "37/37 PASS on VPS",
+      "wall_sec": 21.96,
+      "max_rss_kb": 1548472,
+      "zero_one_exhaustive_wire_counts": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "actual_shape_random_checks": [
+        196,
+        137,
+        96
+      ],
+      "log": "test_logs/unittest_final.stderr.log"
+    },
+    "single": {
+      "baseline_json": "../unique_final_topk_20260801_v1/single_unique_warm.json",
+      "candidate_json": "single_unpadded_warm.json",
+      "baseline_spu_forward_wall_sec": 91.62260313799925,
+      "candidate_spu_forward_wall_sec": 86.64059517500209,
+      "time_delta_percent": -5.437531561391474,
+      "baseline_tx_bytes": 2288293436,
+      "candidate_tx_bytes": 2231101222,
+      "tx_delta_percent": -2.4993391625496075,
+      "argmax_match_ratio": 1.0,
+      "formal_threshold_match_ratio": 1.0,
+      "candidate_cold_compile_sec": 4.94168116000219,
+      "candidate_cold_spu_forward_wall_sec": 91.4914476519989
+    },
+    "batch4": {
+      "baseline_json": "../unique_final_topk_20260801_v1/batch4_unique_warm.json",
+      "candidate_json": "batch4_unpadded_warm.json",
+      "baseline_spu_forward_wall_sec": 253.00239770899861,
+      "candidate_spu_forward_wall_sec": 235.66305938099686,
+      "time_delta_percent": -6.853428459577415,
+      "baseline_tx_bytes": 7671622311,
+      "candidate_tx_bytes": 7440932063,
+      "tx_delta_percent": -3.007059506425691,
+      "argmax_match_ratio": 1.0,
+      "formal_threshold_match_ratio": 1.0,
+      "candidate_cold_compile_sec": 5.19975427800091,
+      "candidate_cold_spu_forward_wall_sec": 235.1584931840007
+    },
+    "medical32_batch8": {
+      "dataset_key": "medical_secure_deployment_batch",
+      "sample_count": 32,
+      "class_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "bundle": "artifacts/frozen_bundle_medical_dynamic_mainline",
+      "static_depth": 10,
+      "token_keep_counts": [
+        137,
+        96,
+        67
+      ],
+      "params_mode": "secret",
+      "input_mode": "party_local_debug_share_load",
+      "reveal_policy": "final_logits_only",
+      "field": "FM64",
+      "fxp_fraction_bits": 16,
+      "formal_threshold": 0.6619606018066406,
+      "baseline_json": "../pairwise_bitonic_20260801_v1/medical32_pairwise_bitonic.json",
+      "candidate_json": "medical32_batch8_unpadded.json",
+      "candidate_pt_sha256": "aa1a90ab6413dc3b0d19824daa267022637eed3f1522e22094dceeda7810da97",
+      "finite_logits": true,
+      "baseline_spu_forward_wall_sec": 1620.8881446939995,
+      "candidate_spu_forward_wall_sec": 1463.213834743001,
+      "time_delta_percent": -9.727649034089591,
+      "candidate_sec_per_sample": 45.72543233571878,
+      "baseline_tx_bytes": 58785779251,
+      "candidate_tx_bytes": 56947138987,
+      "tx_delta_percent": -3.1276956560352565,
+      "baseline_loopback_tx_gib": 54.748523282818496,
+      "candidate_loopback_tx_gib": 53.03615609835833,
+      "baseline_argmax_accuracy": 0.5,
+      "candidate_argmax_accuracy": 0.5,
+      "baseline_formal_threshold_accuracy": 0.9375,
+      "candidate_formal_threshold_accuracy": 0.96875,
+      "baseline_auc": 0.98046875,
+      "candidate_auc": 0.984375,
+      "argmax_match_ratio": 1.0,
+      "formal_threshold_match_ratio": 0.96875,
+      "class1_probability_max_abs_delta": 0.031775057315826416,
+      "class1_probability_mean_abs_delta": 0.011964324861764908,
+      "accuracy_interpretation": "The network transformation is exact. Small cross-run probability and threshold differences are attributed to independent SPU probabilistic fixed-point truncation; the candidate did not reduce threshold accuracy on this set, but the increase is not claimed as a model-quality improvement.",
+      "chunk_secure_submit_and_execute_sec": [
+        364.34794048000185,
+        362.68735161699806,
+        366.5895826090018,
+        368.8301052099996
+      ],
+      "compile_cache_hits": 3,
+      "compile_cache_misses": 1,
+      "compile_sec": 5.261512171000504,
+      "max_rss_kb": 699968,
+      "stderr_bytes": 0
+    }
+  },
+  "environment": {
+    "host": "47.120.31.48",
+    "architecture": "x86_64",
+    "cpu": "Intel Xeon Platinum",
+    "vcpu": 16,
+    "memory_bytes": 65928560640,
+    "python": "3.9.25",
+    "spu": "0.9.3b0",
+    "jax": "0.4.30",
+    "jaxlib": "0.4.30",
+    "numpy": "1.26.4",
+    "torch": "1.13.1+cpu",
+    "protocol": "CHEETAH",
+    "ot_kind": "YACL_Ferret",
+    "hal_profile": false,
+    "pphlo_profile": false,
+    "colocated_optimization": true,
+    "environment_note": "Two idle FM32 failure-experiment node processes remained present during candidate timings and were stopped after medical32. They generated no material loopback traffic but may make candidate latency slightly conservative."
+  },
+  "tested_source_sha256": {
+    "secure_pruning_ops.py": "df93b6b1a8508f44e93dd3300f910b2b2ba2b70f440dbfa3c3dfaf01a1ee8830",
+    "spu_static_vit.py": "2deffa30c40bd92fb86a5690ab9c2294559ed408a5a632cafca596f44d369e72",
+    "transshield_e2e_secure_vit.py": "9376a3de9bb6dadfd3f17ab24d7260b4f72217c4f194497cf87087edd43b96ee",
+    "bundle_manifest.json": "e17b29b1ebc081f4988d6c7b692379bd4d02665f07496679578266ec9c229233",
+    "model_state_dict.pth": "bf835ddcaa119aa0cb8fac5515799afd956ab8918f4d51c954445584f92ae30d"
+  },
+  "post_validation_default_wiring_sha256": {
+    "transshield_e2e_secure_vit.py": "7390d583c8d933455237127a060437aba0aba98e0db1f68e0ab77877bf481831",
+    "showcase_api/config.py": "ee9401186ce6693e71e591bea451436d6036f91985f54680105cc171b9e315ed",
+    "showcase_api/runtime.py": "0d539ad1eeeed434b9c87f80c9ae48a9ce87b5a986c1223db84d20fcfdc0d8d8"
+  },
+  "rejected_bottom_layer_experiment": {
+    "name": "FM32_fxp12",
+    "status": "rejected_runtime_incompatible",
+    "reason": "Stock SPU 0.9.3b0 exact LayerNorm rsqrt attempted an I64 integer encoding that FM32 could not represent.",
+    "guardrail": "Do not lower the ring field without replacing and validating exact LayerNorm rsqrt or rebuilding the SPU runtime."
+  },
+  "guardrails": [
+    "Do not rewrite results/final, results/communication, results/fuzzing, or results/guard_stress from this optimization evidence.",
+    "Keep full_sort as the rollback graph.",
+    "Treat the formal calibrated threshold as 0.6619606018066406; the bundle default threshold is not the formal reporting threshold.",
+    "Do not claim the local 49.6% comparator reduction as a 49.6% end-to-end speedup."
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "case": "batch4_unpadded_warm",
+  "tx_bytes_before": 347020568976,
+  "tx_bytes_after": 354461501039,
+  "tx_bytes_delta": 7440932063,
+  "wall_ns": 236849230084,
+  "exit_code": 0
+}

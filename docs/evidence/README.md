@@ -23,6 +23,8 @@
 | VPS 报告口径回归说明 | `docs/evidence/vps_report_regression.md` | 固定 524/32/8 样本、VPS-only 执行、逐文件与逐样本新证据 |
 | VPS 报告测试矩阵 | `configs/report_vps_test_matrix.json` | 报告环境、数据、预处理、模型配置、指标、验收阈值与历史数字 |
 | 2026-08-01 VPS candidate 总证据 | `results/vps_report_tests/report_regression_20260801_v1/report_regression_aggregate.json` | 524/32/8、同机 A/B、13+4、隐私事实、代码测试与逐门槛判定 |
+| SPU 任意长度选择网络说明 | `docs/evidence/spu_unpadded_selection_network.md` | 精确 Top-K 网络构造、比较器预算、回退路径与 VPS 验证 |
+| SPU 选择网络结构化结果 | `results/vps_optimization/selection_network_20260801_v1/optimization_summary.json` | 单样本、batch=4、medical32 的耗时、通信、精度和环境证据 |
 
 ## 说明
 

@@ -64,6 +64,7 @@ class RunnerProfile:
     spu_activation_override: str
     spu_activation_clip_value: float
     spu_secure_pruning_mode: str
+    spu_secure_pruning_network: str
     spu_final_block_cls_only: bool
     spu_uniform_attention_value_fusion: bool
     spu_compile_cache_dir: Path
@@ -229,6 +230,11 @@ def load_showcase_config() -> ShowcaseConfig:
                 "compact",
             ).strip()
             or "compact",
+            spu_secure_pruning_network=os.environ.get(
+                "TRANSSHIELD_SHOWCASE_SPU_SECURE_PRUNING_NETWORK",
+                "unpadded_selection",
+            ).strip()
+            or "unpadded_selection",
             spu_final_block_cls_only=getenv_bool(
                 "TRANSSHIELD_SHOWCASE_SPU_FINAL_BLOCK_CLS_ONLY",
                 spu_attention_policy == "uniform",

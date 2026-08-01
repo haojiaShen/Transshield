@@ -238,6 +238,7 @@ The runner keeps two compatible secure-pruning graph modes:
 
 - `--spu-secure-pruning-mode mask` keeps the historical 196-spatial-token mask graph for rollback and A/B checks.
 - `--spu-secure-pruning-mode compact` uses a fixed bitonic schedule to move token payloads with their secret scores and then runs later blocks at 137/96/67 spatial tokens. Uniform-attention blocks account for the omitted logical zero-token contribution before averaging.
+- `--spu-secure-pruning-network unpadded_selection` is the validated default. It builds an exact arbitrary-length sorting network over the actual 196/137/96 token counts and backward-slices comparators that cannot affect the required Top-K outputs. The public comparator budget is 5,551 instead of 11,008 for `full_sort`; use `--spu-secure-pruning-network full_sort` for rollback A/B runs.
 - `--spu-final-block-cls-only` is an optional uniform-attention optimization: the final block computes the selected-token value aggregate and the CLS output only. When the last block is also a pruning point, it builds the exact keep mask but skips the final oblivious sort of the 384-dimensional token payload. Omit the flag to restore the previous graph for A/B checks.
 
 Uniform-attention blocks also project their shared mean-V output once and then

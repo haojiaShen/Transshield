@@ -204,6 +204,12 @@ def build_parser():
         help="Override TRANSSHIELD_SHOWCASE_SPU_SECURE_PRUNING_MODE for this launch.",
     )
     parser.add_argument(
+        "--secure-pruning-network",
+        choices=["full_sort", "selection", "unpadded_selection"],
+        default="",
+        help="Override TRANSSHIELD_SHOWCASE_SPU_SECURE_PRUNING_NETWORK for this launch.",
+    )
+    parser.add_argument(
         "--spu-compile-cache-dir",
         type=Path,
         default=None,
@@ -239,6 +245,10 @@ def main():
         args.api_log = REPO_ROOT / args.api_log
     if args.secure_pruning_mode:
         os.environ["TRANSSHIELD_SHOWCASE_SPU_SECURE_PRUNING_MODE"] = args.secure_pruning_mode
+    if args.secure_pruning_network:
+        os.environ["TRANSSHIELD_SHOWCASE_SPU_SECURE_PRUNING_NETWORK"] = (
+            args.secure_pruning_network
+        )
     if args.spu_compile_cache_dir is not None:
         os.environ["TRANSSHIELD_SHOWCASE_SPU_COMPILE_CACHE_DIR"] = str(
             args.spu_compile_cache_dir.expanduser().resolve()

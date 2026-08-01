@@ -1,0 +1,11 @@
+                                         [--spu-secure-pruning-network {full_sort,selection,unpadded_selection}]
+                                         [--spu-final-block-cls-only]
+                                         [--spu-uniform-attention-value-fusion]
+                                         [--spu-compile-cache-dir SPU_COMPILE_CACHE_DIR]
+                                         [--token-ratio-base-override SPU_TOKEN_RATIO_BASE_OVERRIDE]
+--
+  --spu-secure-pruning-network {full_sort,selection,unpadded_selection}
+                        full_sort keeps the rollback bitonic sorting graph;
+                        selection removes public comparators outside the exact
+                        Top-K output dependency cone; unpadded_selection also
+                        builds the network over the actual token count instead

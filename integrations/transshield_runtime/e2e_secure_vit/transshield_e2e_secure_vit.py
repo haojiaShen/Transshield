@@ -581,6 +581,7 @@ def command_run(args):
             ),
             token_recycle_scale=args.spu_token_recycle_scale,
             secure_pruning_mode=args.spu_secure_pruning_mode,
+            secure_pruning_network=args.spu_secure_pruning_network,
             final_block_cls_only=args.spu_final_block_cls_only,
             uniform_attention_value_fusion=args.spu_uniform_attention_value_fusion,
             compile_cache_dir=(
@@ -768,6 +769,7 @@ def command_run(args):
             "spu_activation_clip_value": float(args.spu_activation_clip_value),
             "spu_token_recycle_scale": float(args.spu_token_recycle_scale),
             "spu_secure_pruning_mode": args.spu_secure_pruning_mode,
+            "spu_secure_pruning_network": args.spu_secure_pruning_network,
             "spu_final_block_cls_only": bool(args.spu_final_block_cls_only),
             "spu_uniform_attention_value_fusion": bool(
                 args.spu_uniform_attention_value_fusion
@@ -874,6 +876,7 @@ def command_run(args):
             "spu_activation_clip_value": float(args.spu_activation_clip_value),
             "spu_token_recycle_scale": float(args.spu_token_recycle_scale),
             "spu_secure_pruning_mode": args.spu_secure_pruning_mode,
+            "spu_secure_pruning_network": args.spu_secure_pruning_network,
             "spu_final_block_cls_only": bool(args.spu_final_block_cls_only),
             "spu_uniform_attention_value_fusion": bool(
                 args.spu_uniform_attention_value_fusion
@@ -938,6 +941,9 @@ def command_run(args):
         summary["input_mode"] = summary["spu"]["input_mode"]
         summary["spu_token_recycle_scale"] = summary["spu"]["spu_token_recycle_scale"]
         summary["spu_secure_pruning_mode"] = summary["spu"]["spu_secure_pruning_mode"]
+        summary["spu_secure_pruning_network"] = summary["spu"][
+            "spu_secure_pruning_network"
+        ]
         summary["performance"] = performance
         summary["host_plaintext_pixel_values_materialized"] = summary["spu"]["host_plaintext_pixel_values_materialized"]
         summary["host_private_share_tensors_loaded"] = summary["spu"]["host_private_share_tensors_loaded"]
@@ -1870,6 +1876,16 @@ def build_parser():
         help=(
             "mask preserves the original fixed 196-token graph; compact obliviously sorts and physically "
             "shrinks the secure token dimension after each pruning stage."
+        ),
+    )
+    run_parser.add_argument(
+        "--spu-secure-pruning-network",
+        choices=["full_sort", "selection", "unpadded_selection"],
+        default="unpadded_selection",
+        help=(
+            "full_sort keeps the rollback bitonic sorting graph; selection removes public "
+            "comparators outside the exact Top-K output dependency cone; unpadded_selection "
+            "also builds the network over the actual token count instead of padding to a power of two."
         ),
     )
     run_parser.add_argument(

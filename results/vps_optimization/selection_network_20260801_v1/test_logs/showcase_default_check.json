@@ -1,0 +1,6 @@
+{
+  "spu_secure_pruning_mode": "compact",
+  "spu_secure_pruning_network": "unpadded_selection",
+  "spu_final_block_cls_only": true,
+  "spu_uniform_attention_value_fusion": true
+}

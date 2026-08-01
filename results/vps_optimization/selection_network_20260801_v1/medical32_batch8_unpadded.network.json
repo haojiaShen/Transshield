@@ -1,0 +1,8 @@
+{
+  "case": "medical32_batch8_unpadded",
+  "tx_bytes_before": 354461501763,
+  "tx_bytes_after": 411408640750,
+  "tx_bytes_delta": 56947138987,
+  "wall_ns": 1464546141861,
+  "exit_code": 0
+}

@@ -11,6 +11,7 @@ from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
     logical_uniform_mean,
     normalize_pruning_schedule,
     pack_topk_key,
+    pruning_network_comparator_count,
 )
 from integrations.transshield_runtime.e2e_secure_vit.spu_compile_cache import (
     get_spu_compile_cache_stats,
@@ -40,6 +41,7 @@ def run_static_vit_forward_spu(
     pruning_metadata=None,
     token_recycle_scale: float = 0.0,
     secure_pruning_mode: str = "mask",
+    secure_pruning_network: str = "full_sort",
     final_block_cls_only: bool = False,
     uniform_attention_value_fusion: bool = False,
     compile_cache_dir=None,
@@ -76,6 +78,13 @@ def run_static_vit_forward_spu(
         raise ValueError(f"unsupported secure_pruning_mode: {secure_pruning_mode}")
     if secure_pruning_mode == "compact" and token_recycle_scale != 0.0:
         raise ValueError("secure_pruning_mode=compact currently requires token_recycle_scale=0")
+    secure_pruning_network = str(secure_pruning_network)
+    if secure_pruning_network not in {
+        "full_sort",
+        "selection",
+        "unpadded_selection",
+    }:
+        raise ValueError(f"unsupported secure_pruning_network: {secure_pruning_network}")
     final_block_cls_only = bool(final_block_cls_only)
     if final_block_cls_only and attention_policy != "uniform":
         raise ValueError("final_block_cls_only currently requires attention_policy=uniform")
@@ -158,6 +167,7 @@ def run_static_vit_forward_spu(
                     "pruning_metadata": pruning_metadata,
                     "token_recycle_scale": token_recycle_scale,
                     "secure_pruning_mode": secure_pruning_mode,
+                    "secure_pruning_network": secure_pruning_network,
                     "final_block_cls_only": final_block_cls_only,
                     "uniform_attention_value_fusion": uniform_attention_value_fusion,
                     "has_external_keep_masks": external_keep_masks_np is not None,
@@ -750,7 +760,12 @@ def run_static_vit_forward_spu(
         return log_probs[:, :, 0]
 
     def _secure_build_keep_decision(score, prev_decision_2d, keep_count):
-        return exact_topk_keep_mask(score, prev_decision_2d, int(keep_count))
+        return exact_topk_keep_mask(
+            score,
+            prev_decision_2d,
+            int(keep_count),
+            pruning_network=secure_pruning_network,
+        )
 
 
     def forward_with_secure_pruning_fn(pixel_values, forward_params, predictor_params):
@@ -897,6 +912,7 @@ def run_static_vit_forward_spu(
                         all_active,
                         keep_counts[stage_index],
                         unique_keys=True,
+                        pruning_network=secure_pruning_network,
                     )
                     spatial_x = spatial_x * final_keep_mask.astype(spatial_x.dtype)
                 else:
@@ -907,6 +923,7 @@ def run_static_vit_forward_spu(
                         keep_counts[stage_index],
                         fxp_fraction_bits=fxp_fraction_bits,
                         original_token_count=initial_spatial_token_count,
+                        pruning_network=secure_pruning_network,
                     )
                 x = jnp.concatenate([x[:, :1], spatial_x], axis=1)
                 stage_index += 1
@@ -1096,6 +1113,7 @@ def run_static_vit_forward_spu(
     )
     logical_token_count = int(pos_embed.shape[1])
     planned_block_token_counts = []
+    planned_pruning_networks = []
     physical_token_count = logical_token_count
     pruning_stage_index = 0
     for block_index in range(int(metadata["depth"])):
@@ -1104,7 +1122,25 @@ def run_static_vit_forward_spu(
             and secure_pruning_mode == "compact"
             and block_index in pruning_loc
         ):
-            if not (final_block_cls_only and block_index == int(metadata["depth"]) - 1):
+            threshold_only = final_block_cls_only and block_index == int(metadata["depth"]) - 1
+            spatial_token_count = physical_token_count - 1
+            keep_count = int(token_keep_counts_raw[pruning_stage_index])
+            planned_pruning_networks.append(
+                {
+                    "stage_index": int(pruning_stage_index),
+                    "block_index": int(block_index),
+                    "input_token_count": int(spatial_token_count),
+                    "keep_count": keep_count,
+                    "threshold_only": bool(threshold_only),
+                    "comparator_count": pruning_network_comparator_count(
+                        spatial_token_count,
+                        keep_count,
+                        pruning_network=secure_pruning_network,
+                        threshold_only=threshold_only,
+                    ),
+                }
+            )
+            if not threshold_only:
                 physical_token_count = 1 + int(token_keep_counts_raw[pruning_stage_index])
             pruning_stage_index += 1
         planned_block_token_counts.append(physical_token_count)
@@ -1541,6 +1577,7 @@ def run_static_vit_forward_spu(
                 "chunks": chunk_timings,
                 "compile_cache": get_spu_compile_cache_stats(),
                 "secure_pruning_mode": secure_pruning_mode,
+                "secure_pruning_network": secure_pruning_network,
                 "uniform_attention_projection_fused": attention_policy == "uniform",
                 "uniform_attention_value_fused": uniform_attention_value_fusion,
                 "final_block_cls_only": final_block_cls_only,
@@ -1549,6 +1586,10 @@ def run_static_vit_forward_spu(
                 ),
                 "planned_physical_block_token_positions": int(sum(planned_block_token_counts)),
                 "planned_block_token_counts": planned_block_token_counts,
+                "planned_pruning_networks": planned_pruning_networks,
+                "planned_pruning_comparator_count": int(
+                    sum(stage["comparator_count"] for stage in planned_pruning_networks)
+                ),
                 "total_runtime_sec": float(time.perf_counter() - runtime_started),
             }
         )

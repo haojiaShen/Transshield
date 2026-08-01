@@ -5,6 +5,8 @@ control flow is public and can be lowered by SPU.  They intentionally avoid
 data-dependent indexing.
 """
 
+from functools import lru_cache
+
 
 def _next_power_of_two(value: int) -> int:
     result = 1
@@ -26,6 +28,189 @@ def _bitonic_pair_schedule(token_count: int, stage_size: int, stride: int):
     restore = tuple(paired_offset[position] for position in range(int(token_count)))
     descending = tuple((position & int(stage_size)) == 0 for position in left)
     return left, right, restore, descending
+
+
+@lru_cache(maxsize=None)
+def _bitonic_full_schedule(token_count: int):
+    """Return every public compare layer in a bitonic sorting network."""
+    token_count = int(token_count)
+    if token_count <= 0 or token_count & (token_count - 1):
+        raise ValueError(f"bitonic token_count must be a positive power of two, got {token_count}")
+    layers = []
+    stage_size = 2
+    while stage_size <= token_count:
+        stride = stage_size // 2
+        while stride >= 1:
+            left, right, restore, descending = _bitonic_pair_schedule(
+                token_count,
+                stage_size,
+                stride,
+            )
+            layers.append((left, right, restore, descending, ()))
+            stride //= 2
+        stage_size *= 2
+    return tuple(layers)
+
+
+def _parallel_network_layers(left_layers, right_layers):
+    """Overlay two comparator-layer sequences that operate on disjoint wires."""
+    return tuple(
+        (left_layers[index] if index < len(left_layers) else ())
+        + (right_layers[index] if index < len(right_layers) else ())
+        for index in range(max(len(left_layers), len(right_layers)))
+    )
+
+
+def _greatest_power_of_two_less_than(value: int) -> int:
+    return 1 << ((int(value) - 1).bit_length() - 1)
+
+
+@lru_cache(maxsize=None)
+def _bitonic_arbitrary_merge_layers(start: int, count: int, descending: bool):
+    """Build Batcher's bitonic merge network for an arbitrary wire count."""
+    start = int(start)
+    count = int(count)
+    descending = bool(descending)
+    if count <= 1:
+        return ()
+    stride = _greatest_power_of_two_less_than(count)
+    first_layer = tuple(
+        (index, index + stride, descending)
+        for index in range(start, start + count - stride)
+    )
+    tail = _parallel_network_layers(
+        _bitonic_arbitrary_merge_layers(start, stride, descending),
+        _bitonic_arbitrary_merge_layers(start + stride, count - stride, descending),
+    )
+    return (first_layer,) + tail
+
+
+@lru_cache(maxsize=None)
+def _bitonic_arbitrary_sort_layers(start: int, count: int, descending: bool):
+    """Build an exact arbitrary-length bitonic sorting network."""
+    start = int(start)
+    count = int(count)
+    descending = bool(descending)
+    if count <= 1:
+        return ()
+    left_count = count // 2
+    bitonic_input = _parallel_network_layers(
+        _bitonic_arbitrary_sort_layers(start, left_count, not descending),
+        _bitonic_arbitrary_sort_layers(
+            start + left_count,
+            count - left_count,
+            descending,
+        ),
+    )
+    return bitonic_input + _bitonic_arbitrary_merge_layers(start, count, descending)
+
+
+def _network_layer_schedule(token_count: int, pairs):
+    """Convert public comparator triples into gather/restore indices."""
+    left = tuple(pair[0] for pair in pairs)
+    right = tuple(pair[1] for pair in pairs)
+    descending = tuple(pair[2] for pair in pairs)
+    compared = frozenset(left + right)
+    untouched = tuple(index for index in range(int(token_count)) if index not in compared)
+    gathered_order = left + right + untouched
+    gathered_offset = {position: offset for offset, position in enumerate(gathered_order)}
+    restore = tuple(gathered_offset[position] for position in range(int(token_count)))
+    return left, right, restore, descending, untouched
+
+
+@lru_cache(maxsize=None)
+def _bitonic_arbitrary_full_schedule(token_count: int):
+    """Return an exact descending sorting network without power-of-two padding."""
+    token_count = int(token_count)
+    if token_count <= 0:
+        raise ValueError(f"bitonic token_count must be positive, got {token_count}")
+    return tuple(
+        _network_layer_schedule(token_count, layer)
+        for layer in _bitonic_arbitrary_sort_layers(0, token_count, True)
+    )
+
+
+def _slice_network_schedule(token_count: int, full_layers, output_indices):
+    """Backward-slice an arbitrary sorting network to requested output wires."""
+    outputs = tuple(int(index) for index in output_indices)
+    if not outputs:
+        raise ValueError("bitonic selection requires at least one output index")
+    if any(index < 0 or index >= int(token_count) for index in outputs):
+        raise ValueError(
+            f"bitonic output indices must be within [0, {int(token_count)}), got {outputs}"
+        )
+
+    needed = set(outputs)
+    selected_pair_offsets = []
+    for left, right, _, _, _ in reversed(full_layers):
+        offsets = []
+        for offset, (left_index, right_index) in enumerate(zip(left, right)):
+            if left_index in needed or right_index in needed:
+                offsets.append(offset)
+                needed.add(left_index)
+                needed.add(right_index)
+        selected_pair_offsets.append(tuple(offsets))
+    selected_pair_offsets.reverse()
+
+    layers = []
+    for (full_left, full_right, _, full_descending, _), offsets in zip(
+        full_layers,
+        selected_pair_offsets,
+    ):
+        pairs = tuple(
+            (
+                full_left[offset],
+                full_right[offset],
+                full_descending[offset],
+            )
+            for offset in offsets
+        )
+        layers.append(_network_layer_schedule(token_count, pairs))
+    return tuple(layers)
+
+
+@lru_cache(maxsize=None)
+def _bitonic_selection_schedule(token_count: int, output_indices):
+    """Slice away comparators that cannot affect the requested sorted outputs.
+
+    The schedule is obtained by walking the complete sorting network backwards.
+    A compare-and-swap is retained exactly when either of its output wires is
+    still needed.  Both input wires then become dependencies.  The resulting
+    public, fixed-topology network produces the requested outputs exactly while
+    avoiding comparisons and payload muxes outside their dependency cone.
+    """
+    token_count = int(token_count)
+    full_layers = _bitonic_full_schedule(token_count)
+    return _slice_network_schedule(token_count, full_layers, output_indices)
+
+
+@lru_cache(maxsize=None)
+def _bitonic_unpadded_selection_schedule(token_count: int, output_indices):
+    """Return an exact output-sliced network over the actual token count."""
+    token_count = int(token_count)
+    full_layers = _bitonic_arbitrary_full_schedule(token_count)
+    return _slice_network_schedule(token_count, full_layers, output_indices)
+
+
+def _apply_bitonic_value_schedule(values, schedule):
+    """Apply a public bitonic schedule to a ``[batch, token]`` value tensor."""
+    import jax.numpy as jnp
+
+    x = values
+    for left, right, restore, descending, untouched in schedule:
+        left_value = x[:, left]
+        right_value = x[:, right]
+        take_left_as_high = left_value >= right_value
+        high = jnp.where(take_left_as_high, left_value, right_value)
+        low = jnp.where(take_left_as_high, right_value, left_value)
+        descending_pair = jnp.asarray(descending, dtype=jnp.bool_)[None, :]
+        sorted_left = jnp.where(descending_pair, high, low)
+        sorted_right = jnp.where(descending_pair, low, high)
+        gathered = [sorted_left, sorted_right]
+        if untouched:
+            gathered.append(x[:, untouched])
+        x = jnp.concatenate(gathered, axis=1)[:, restore]
+    return x
 
 
 def normalize_pruning_schedule(
@@ -61,34 +246,67 @@ def normalize_pruning_schedule(
 
 def bitonic_sort_desc(values):
     """Sort ``[batch, token]`` values descending with one comparison per pair."""
-    import jax.numpy as jnp
-
     token_count = int(values.shape[1])
-    x = values
-    stage_size = 2
-    while stage_size <= token_count:
-        stride = stage_size // 2
-        while stride >= 1:
-            left, right, restore, descending = _bitonic_pair_schedule(
-                token_count,
-                stage_size,
-                stride,
-            )
-            left_value = x[:, left]
-            right_value = x[:, right]
-            take_left_as_high = left_value >= right_value
-            high = jnp.where(take_left_as_high, left_value, right_value)
-            low = jnp.where(take_left_as_high, right_value, left_value)
-            descending_pair = jnp.asarray(descending, dtype=jnp.bool_)[None, :]
-            sorted_left = jnp.where(descending_pair, high, low)
-            sorted_right = jnp.where(descending_pair, low, high)
-            x = jnp.concatenate([sorted_left, sorted_right], axis=1)[:, restore]
-            stride //= 2
-        stage_size *= 2
-    return x
+    return _apply_bitonic_value_schedule(values, _bitonic_full_schedule(token_count))
 
 
-def exact_topk_keep_mask(score, active_mask, keep_count: int, *, unique_keys: bool = False):
+def bitonic_select_desc(values, output_indices):
+    """Return selected outputs of a descending bitonic sort exactly."""
+    outputs = tuple(int(index) for index in output_indices)
+    token_count = int(values.shape[1])
+    selected = _apply_bitonic_value_schedule(
+        values,
+        _bitonic_selection_schedule(token_count, outputs),
+    )
+    return selected[:, outputs]
+
+
+def bitonic_unpadded_select_desc(values, output_indices):
+    """Select exact sorted outputs without padding to a power of two."""
+    outputs = tuple(int(index) for index in output_indices)
+    token_count = int(values.shape[1])
+    selected = _apply_bitonic_value_schedule(
+        values,
+        _bitonic_unpadded_selection_schedule(token_count, outputs),
+    )
+    return selected[:, outputs]
+
+
+def pruning_network_comparator_count(
+    token_count: int,
+    keep_count: int,
+    *,
+    pruning_network: str,
+    threshold_only: bool = False,
+) -> int:
+    """Return the public comparator count for one Top-K network invocation."""
+    token_count = int(token_count)
+    keep_count = int(keep_count)
+    pruning_network = str(pruning_network)
+    if keep_count <= 0 or keep_count > token_count:
+        raise ValueError(f"keep_count must be within [1, {token_count}], got {keep_count}")
+    outputs = (keep_count - 1,) if threshold_only else tuple(range(keep_count))
+    if pruning_network == "unpadded_selection":
+        schedule = _bitonic_unpadded_selection_schedule(token_count, outputs)
+    else:
+        padded_count = _next_power_of_two(token_count)
+        if pruning_network == "selection":
+            schedule = _bitonic_selection_schedule(padded_count, outputs)
+        elif pruning_network == "full_sort":
+            schedule = _bitonic_full_schedule(padded_count)
+        else:
+            raise ValueError(f"unsupported pruning_network: {pruning_network}")
+    return sum(len(layer[0]) for layer in schedule)
+
+
+def exact_topk_keep_mask(
+    score,
+    active_mask,
+    keep_count: int,
+    *,
+    unique_keys: bool = False,
+    pruning_network: str = "full_sort",
+):
     """Return an exact-size top-k mask with deterministic boundary handling.
 
     ``unique_keys`` is a public graph option for callers that have already
@@ -102,11 +320,14 @@ def exact_topk_keep_mask(score, active_mask, keep_count: int, *, unique_keys: bo
     keep_count = int(keep_count)
     if keep_count <= 0 or keep_count > token_count:
         raise ValueError(f"keep_count must be within [1, {token_count}], got {keep_count}")
+    pruning_network = str(pruning_network)
+    if pruning_network not in {"full_sort", "selection", "unpadded_selection"}:
+        raise ValueError(f"unsupported pruning_network: {pruning_network}")
 
     active = jnp.asarray(active_mask).squeeze(-1) > 0
     masked_score = jnp.where(active, score, jnp.asarray(-1.0e6, dtype=score.dtype))
     padded_count = _next_power_of_two(token_count)
-    if padded_count > token_count:
+    if pruning_network != "unpadded_selection" and padded_count > token_count:
         padding = jnp.full(
             (int(score.shape[0]), padded_count - token_count),
             -1.0e6,
@@ -114,8 +335,13 @@ def exact_topk_keep_mask(score, active_mask, keep_count: int, *, unique_keys: bo
         )
         masked_score = jnp.concatenate([masked_score, padding], axis=1)
 
-    sorted_score = bitonic_sort_desc(masked_score)
-    threshold = sorted_score[:, keep_count - 1 : keep_count]
+    if pruning_network == "unpadded_selection":
+        threshold = bitonic_unpadded_select_desc(masked_score, (keep_count - 1,))
+    elif pruning_network == "selection":
+        threshold = bitonic_select_desc(masked_score, (keep_count - 1,))
+    else:
+        sorted_score = bitonic_sort_desc(masked_score)
+        threshold = sorted_score[:, keep_count - 1 : keep_count]
     if unique_keys:
         return ((score >= threshold) & active)[:, :, None]
     greater = (score > threshold) & active
@@ -175,6 +401,7 @@ def compact_topk_tokens(
     *,
     fxp_fraction_bits: int,
     original_token_count: int,
+    pruning_network: str = "full_sort",
 ):
     """Sort scores and their token payload, then return the first ``keep_count``.
 
@@ -191,6 +418,9 @@ def compact_topk_tokens(
     original_token_count = int(original_token_count)
     if keep_count <= 0 or keep_count > token_count:
         raise ValueError(f"keep_count must be within [1, {token_count}], got {keep_count}")
+    pruning_network = str(pruning_network)
+    if pruning_network not in {"full_sort", "selection", "unpadded_selection"}:
+        raise ValueError(f"unsupported pruning_network: {pruning_network}")
     if tuple(spatial_tokens.shape[:2]) != tuple(score.shape):
         raise ValueError(
             f"spatial token shape {spatial_tokens.shape} does not match score shape {score.shape}"
@@ -208,7 +438,7 @@ def compact_topk_tokens(
     )
 
     padded_count = _next_power_of_two(token_count)
-    if padded_count > token_count:
+    if pruning_network != "unpadded_selection" and padded_count > token_count:
         pad_width = padded_count - token_count
         packed_key = jnp.concatenate(
             [
@@ -242,44 +472,50 @@ def compact_topk_tokens(
     keys = packed_key
     tokens = spatial_tokens
     indices = original_indices
-    stage_size = 2
-    while stage_size <= padded_count:
-        stride = stage_size // 2
-        while stride >= 1:
-            left, right, restore, descending = _bitonic_pair_schedule(
-                padded_count,
-                stage_size,
-                stride,
-            )
-            left_keys = keys[:, left]
-            right_keys = keys[:, right]
-            left_tokens = tokens[:, left, :]
-            right_tokens = tokens[:, right, :]
-            left_indices = indices[:, left]
-            right_indices = indices[:, right]
-            take_left_as_high = left_keys >= right_keys
+    if pruning_network == "unpadded_selection":
+        schedule = _bitonic_unpadded_selection_schedule(
+            token_count,
+            tuple(range(keep_count)),
+        )
+    elif pruning_network == "selection":
+        schedule = _bitonic_selection_schedule(padded_count, tuple(range(keep_count)))
+    else:
+        schedule = _bitonic_full_schedule(padded_count)
+    for left, right, restore, descending, untouched in schedule:
+        left_keys = keys[:, left]
+        right_keys = keys[:, right]
+        left_tokens = tokens[:, left, :]
+        right_tokens = tokens[:, right, :]
+        left_indices = indices[:, left]
+        right_indices = indices[:, right]
+        take_left_as_high = left_keys >= right_keys
 
-            high_keys = jnp.where(take_left_as_high, left_keys, right_keys)
-            low_keys = jnp.where(take_left_as_high, right_keys, left_keys)
-            payload_condition = take_left_as_high[:, :, None]
-            high_tokens = jnp.where(payload_condition, left_tokens, right_tokens)
-            low_tokens = jnp.where(payload_condition, right_tokens, left_tokens)
-            high_indices = jnp.where(take_left_as_high, left_indices, right_indices)
-            low_indices = jnp.where(take_left_as_high, right_indices, left_indices)
+        high_keys = jnp.where(take_left_as_high, left_keys, right_keys)
+        low_keys = jnp.where(take_left_as_high, right_keys, left_keys)
+        payload_condition = take_left_as_high[:, :, None]
+        high_tokens = jnp.where(payload_condition, left_tokens, right_tokens)
+        low_tokens = jnp.where(payload_condition, right_tokens, left_tokens)
+        high_indices = jnp.where(take_left_as_high, left_indices, right_indices)
+        low_indices = jnp.where(take_left_as_high, right_indices, left_indices)
 
-            descending_pair = jnp.asarray(descending, dtype=jnp.bool_)[None, :]
-            left_keys = jnp.where(descending_pair, high_keys, low_keys)
-            right_keys = jnp.where(descending_pair, low_keys, high_keys)
-            direction_condition = descending_pair[:, :, None]
-            left_tokens = jnp.where(direction_condition, high_tokens, low_tokens)
-            right_tokens = jnp.where(direction_condition, low_tokens, high_tokens)
-            left_indices = jnp.where(descending_pair, high_indices, low_indices)
-            right_indices = jnp.where(descending_pair, low_indices, high_indices)
+        descending_pair = jnp.asarray(descending, dtype=jnp.bool_)[None, :]
+        left_keys = jnp.where(descending_pair, high_keys, low_keys)
+        right_keys = jnp.where(descending_pair, low_keys, high_keys)
+        direction_condition = descending_pair[:, :, None]
+        left_tokens = jnp.where(direction_condition, high_tokens, low_tokens)
+        right_tokens = jnp.where(direction_condition, low_tokens, high_tokens)
+        left_indices = jnp.where(descending_pair, high_indices, low_indices)
+        right_indices = jnp.where(descending_pair, low_indices, high_indices)
 
-            keys = jnp.concatenate([left_keys, right_keys], axis=1)[:, restore]
-            tokens = jnp.concatenate([left_tokens, right_tokens], axis=1)[:, restore, :]
-            indices = jnp.concatenate([left_indices, right_indices], axis=1)[:, restore]
-            stride //= 2
-        stage_size *= 2
+        gathered_keys = [left_keys, right_keys]
+        gathered_tokens = [left_tokens, right_tokens]
+        gathered_indices = [left_indices, right_indices]
+        if untouched:
+            gathered_keys.append(keys[:, untouched])
+            gathered_tokens.append(tokens[:, untouched, :])
+            gathered_indices.append(indices[:, untouched])
+        keys = jnp.concatenate(gathered_keys, axis=1)[:, restore]
+        tokens = jnp.concatenate(gathered_tokens, axis=1)[:, restore, :]
+        indices = jnp.concatenate(gathered_indices, axis=1)[:, restore]
 
     return tokens[:, :keep_count, :], indices[:, :keep_count]

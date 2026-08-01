@@ -1,0 +1,9 @@
+{
+  "captured_at_utc": "2026-08-01T11:44:07.146843+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "interface": "lo",
+  "manifest_type": "transshield_vps_network_snapshot_v1",
+  "process": null,
+  "rx_bytes": 133492513207,
+  "tx_bytes": 133492513207
+}

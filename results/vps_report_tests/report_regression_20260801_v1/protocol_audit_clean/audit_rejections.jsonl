@@ -1,0 +1,12 @@
+{"error_code": "transfer_encoding_not_supported", "interception_layer": "http_request_body_gate", "ip": "127.0.0.1", "ts": 1785586622.2147655}
+{"detail": "duplicate multipart field: request_manifest", "error_code": "malformed_multipart_precheck_failed", "interception_layer": "raw_multipart_precheck", "ip": "127.0.0.1", "ts": 1785586622.6410751}
+{"detail": "too many multipart boundaries", "error_code": "malformed_multipart_precheck_failed", "interception_layer": "raw_multipart_precheck", "ip": "127.0.0.1", "ts": 1785586622.8433995}
+{"detail": "nested multipart not allowed", "error_code": "malformed_multipart_precheck_failed", "interception_layer": "raw_multipart_precheck", "ip": "127.0.0.1", "ts": 1785586623.0585043}
+{"detail": "quality_assurance exceeds field size limit", "error_code": "invalid_control_plane_payload", "interception_layer": "json_bytes_gate", "ip": "127.0.0.1", "ts": 1785586623.3096943}
+{"detail": "unexpected multipart field set", "error_code": "malformed_multipart_precheck_failed", "interception_layer": "raw_multipart_precheck", "ip": "127.0.0.1", "ts": 1785586623.5257843}
+{"detail": "multipart boundary missing", "error_code": "malformed_multipart_precheck_failed", "interception_layer": "raw_multipart_precheck", "ip": "127.0.0.1", "ts": 1785586623.7280748}
+{"detail": "invalid multipart header line", "error_code": "malformed_multipart_precheck_failed", "interception_layer": "raw_multipart_precheck", "ip": "127.0.0.1", "ts": 1785586623.9302292}
+{"detail": "multipart field contains null byte", "error_code": "malformed_multipart_precheck_failed", "interception_layer": "raw_multipart_precheck", "ip": "127.0.0.1", "ts": 1785586624.132391}
+{"detail": "multipart epilogue is not allowed", "error_code": "malformed_multipart_precheck_failed", "interception_layer": "raw_multipart_precheck", "ip": "127.0.0.1", "ts": 1785586624.3346953}
+{"detail": "'utf-8' codec can't decode byte 0xff in position 0: invalid start byte", "error_code": "invalid_control_plane_payload", "interception_layer": "json_bytes_gate", "ip": "127.0.0.1", "ts": 1785586624.5830092}
+{"error_code": "truncated_body", "interception_layer": "streaming_body_reader", "ip": "127.0.0.1", "ts": 1785586624.785611}

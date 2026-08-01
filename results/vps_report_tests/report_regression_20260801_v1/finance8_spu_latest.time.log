@@ -1,0 +1,23 @@
+	Command being timed: "/opt/transshield-spu/bin/python integrations/transshield_runtime/e2e_secure_vit/transshield_e2e_secure_vit.py run --runtime spu --bundle-dir artifacts/frozen_bundle_finance_boundary_stress --input-share-public-manifest-json /opt/transshield-project/results/vps_report_tests/report_regression_20260801_v1/finance8_public.json --input-p1-share-manifest-json /opt/transshield-project/results/vps_report_tests/report_regression_20260801_v1/finance8_party_manifests/p1_share_manifest.json --input-p2-share-manifest-json /opt/transshield-project/results/vps_report_tests/report_regression_20260801_v1/finance8_party_manifests/p2_share_manifest.json --party-local-share-load --redact-private-input-paths --output-pt /opt/transshield-project/results/vps_report_tests/report_regression_20260801_v1/finance8_spu_latest.pt --output-json /opt/transshield-project/results/vps_report_tests/report_regression_20260801_v1/finance8_spu_latest.json --config /opt/transshield-smoke/configs/transshield_runtime/2pc.runtime.json --static-depth-limit 12 --spu-batch-size 8 --spu-layer-norm-policy exact --spu-params-mode secret --spu-attention-policy uniform --spu-activation-override fixed_square --spu-secure-pruning-mode compact --spu-final-block-cls-only --spu-uniform-attention-value-fusion --spu-compile-cache-dir /opt/transshield-smoke/compile_cache"
+	User time (seconds): 7.27
+	System time (seconds): 1.90
+	Percent of CPU this job got: 1%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 9:05.70
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 600448
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 163006
+	Voluntary context switches: 49538
+	Involuntary context switches: 282
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 1952
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

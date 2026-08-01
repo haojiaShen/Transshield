@@ -1,0 +1,8 @@
+/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/fraud/sample_000000.png
+/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/fraud/sample_000033.png
+/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/fraud/sample_000066.png
+/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/fraud/sample_000099.png
+/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/normal/sample_000000.png
+/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/normal/sample_000033.png
+/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/normal/sample_000066.png
+/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/normal/sample_000099.png

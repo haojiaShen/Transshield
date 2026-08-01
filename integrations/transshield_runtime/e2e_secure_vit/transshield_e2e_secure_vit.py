@@ -616,30 +616,59 @@ def command_run(args):
         bundle = helpers["load_frozen_bundle"](bundle_dir, device=args.device)
         model = bundle["model"]
         pixel_values = pixel_values_cpu.to(args.device)
+
+        def run_cpu_batch(batch_pixel_values, batch_keep_masks):
+            if batch_keep_masks is not None:
+                return run_external_keep_mask_student_whole_forward_limited(
+                    model,
+                    batch_pixel_values,
+                    batch_keep_masks,
+                    args.static_depth_limit,
+                )
+            if cpu_forward_mode == "runtime_pruning_reference":
+                return run_runtime_pruning_student_whole_forward_limited(
+                    model,
+                    batch_pixel_values,
+                    args.static_depth_limit,
+                )
+            if args.static_depth_limit >= 0:
+                return run_static_student_whole_forward_limited(
+                    model,
+                    batch_pixel_values,
+                    args.static_depth_limit,
+                )
+            return helpers["run_static_student_whole_forward"](model, batch_pixel_values)
+
+        cpu_batch_size = int(getattr(args, "cpu_batch_size", 0))
+        if cpu_batch_size <= 0:
+            cpu_batch_size = int(pixel_values.shape[0])
+        cpu_batch_size = min(cpu_batch_size, int(pixel_values.shape[0]))
+        output_batches = []
         with torch.no_grad():
-            if runtime_pruning_keep_masks is not None:
-                outputs = run_external_keep_mask_student_whole_forward_limited(
-                    model,
-                    pixel_values,
-                    runtime_pruning_keep_masks,
-                    args.static_depth_limit,
+            for batch_start in range(0, int(pixel_values.shape[0]), cpu_batch_size):
+                batch_end = min(batch_start + cpu_batch_size, int(pixel_values.shape[0]))
+                batch_keep_masks = (
+                    None
+                    if runtime_pruning_keep_masks is None
+                    else [mask[batch_start:batch_end].to(args.device) for mask in runtime_pruning_keep_masks]
                 )
-                forward_scope = "student_patch_embed_blocks_head_with_external_runtime_pruning_keep_masks"
-            elif cpu_forward_mode == "runtime_pruning_reference":
-                outputs = run_runtime_pruning_student_whole_forward_limited(
-                    model,
-                    pixel_values,
-                    args.static_depth_limit,
+                output_batches.append(
+                    run_cpu_batch(pixel_values[batch_start:batch_end], batch_keep_masks)
                 )
-                forward_scope = "student_patch_embed_blocks_head_with_runtime_pruning_predictor_path"
-            elif args.static_depth_limit >= 0:
-                outputs = run_static_student_whole_forward_limited(model, pixel_values, args.static_depth_limit)
-            else:
-                outputs = helpers["run_static_student_whole_forward"](model, pixel_values)
-            logits = outputs["logits"]
-            cls_features = outputs["cls_features"]
-            token_features = outputs["token_features"]
-            probabilities = torch.softmax(logits, dim=-1)
+        outputs = {
+            key: torch.cat([batch[key] for batch in output_batches], dim=0)
+            for key in ["logits", "cls_features", "token_features"]
+        }
+        if runtime_pruning_keep_masks is not None:
+            forward_scope = "student_patch_embed_blocks_head_with_external_runtime_pruning_keep_masks"
+        elif cpu_forward_mode == "runtime_pruning_reference":
+            forward_scope = "student_patch_embed_blocks_head_with_runtime_pruning_predictor_path"
+        performance["cpu_batch_size"] = cpu_batch_size
+        performance["cpu_batch_count"] = len(output_batches)
+        logits = outputs["logits"]
+        cls_features = outputs["cls_features"]
+        token_features = outputs["token_features"]
+        probabilities = torch.softmax(logits, dim=-1)
         logits_cpu = logits.detach().cpu()
         probabilities_cpu = probabilities.detach().cpu()
         cls_features_cpu = cls_features.detach().cpu()
@@ -783,6 +812,7 @@ def command_run(args):
         "include_intermediates": bool(args.include_intermediates),
         "max_samples": int(args.max_samples),
         "cpu_forward_mode": cpu_forward_mode if runtime == "cpu" else None,
+        "cpu_batch_size": int(getattr(args, "cpu_batch_size", 0)) if runtime == "cpu" else None,
         "runtime_pruning_keep_mask_stage_count": (
             None if runtime_pruning_keep_masks is None else len(runtime_pruning_keep_masks)
         ),
@@ -1718,6 +1748,15 @@ def build_parser():
         help=(
             "CPU-only reference mode. static_no_pruning keeps the existing static whole-forward contract; "
             "runtime_pruning_reference replays DyViT eval-time pruning semantics inside the CPU whole-forward path."
+        ),
+    )
+    run_parser.add_argument(
+        "--cpu-batch-size",
+        type=int,
+        default=0,
+        help=(
+            "CPU-only forward batch size. 0 preserves the historical all-at-once behavior; "
+            "set a positive value for memory-bounded full-validation runs."
         ),
     )
     run_parser.add_argument(

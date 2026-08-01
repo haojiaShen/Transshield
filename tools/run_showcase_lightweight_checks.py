@@ -61,7 +61,8 @@ def run_check(
     base_url = f"http://127.0.0.1:{port}"
     env = os.environ.copy()
     env.update(server_env)
-    env["TRANSSHIELD_SHOWCASE_AUDIT_DIR"] = str(temp_dir / f"{script_name}_audit")
+    audit_dir = temp_dir / f"{script_name}_audit"
+    env["TRANSSHIELD_SHOWCASE_AUDIT_DIR"] = str(audit_dir)
     env["TRANSSHIELD_SHOWCASE_RUN_DIR"] = str(temp_dir / f"{script_name}_runs")
     log_path = temp_dir / f"{script_name}_server.log"
     with log_path.open("w", encoding="utf-8") as log_handle:
@@ -84,16 +85,19 @@ def run_check(
         )
         try:
             wait_for_health(base_url, process)
+            command = [
+                sys.executable,
+                str(REPO_ROOT / "tools" / script_name),
+                "--base-url",
+                base_url,
+                "--server-pid",
+                str(process.pid),
+                *script_args,
+            ]
+            if script_name == "showcase_protocol_fuzz.py":
+                command.extend(["--audit-rejections-jsonl", str(audit_dir / "audit_rejections.jsonl")])
             completed = subprocess.run(
-                [
-                    sys.executable,
-                    str(REPO_ROOT / "tools" / script_name),
-                    "--base-url",
-                    base_url,
-                    "--server-pid",
-                    str(process.pid),
-                    *script_args,
-                ],
+                command,
                 cwd=str(REPO_ROOT),
                 text=True,
                 capture_output=True,

@@ -1,0 +1,235 @@
+{
+  "manifest_type": "transshield_report_vps_test_matrix_v1",
+  "report": {
+    "title": "西安电子科技大学-王艺博-密捷基于 ViT 动态剪枝的双向隐私推理-作品报告.pdf",
+    "submitted_date": "2026-07-04",
+    "page_count": 93,
+    "sha256": "8493f651c86f4049c4e0193c9da641634a64469ee552b9fee6c217a3269f5936",
+    "evaluation_pages": [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65]
+  },
+  "execution_policy": {
+    "tests_run_on": "vps_only",
+    "local_machine_role": "source_review_editing_and_result_organization_only",
+    "formal_results_are_immutable": true,
+    "candidate_results_root": "results/vps_report_tests",
+    "do_not_overwrite": [
+      "results/final",
+      "results/communication",
+      "results/fuzzing",
+      "results/guard_stress"
+    ]
+  },
+  "report_reference_environment": {
+    "cpu": "Intel Xeon Gold 6148 @ 2.40GHz, 80 logical CPUs, 2 sockets x 20 cores, SMT enabled",
+    "memory_gib": 62,
+    "os": "Ubuntu 20.04.6 LTS",
+    "kernel": "Linux 5.15.0-139-generic",
+    "python": "3.9.25",
+    "spu": "0.9.3.dev20241118",
+    "gpu": "4 x NVIDIA GeForce RTX 3090 24GiB; driver 570.133.07; CUDA 12.8",
+    "runtime_mode": "colocated_localhost_2pc",
+    "communication_source": "fresh-run SPU LinkDetails counters"
+  },
+  "common_model": {
+    "architecture": "DeiT-S / DynamicViT",
+    "input_shape": [3, 224, 224],
+    "patch_size": 16,
+    "initial_spatial_tokens": 196,
+    "embedding_dimension": 384,
+    "attention_heads": 6,
+    "pruning_locations": [3, 6, 9],
+    "activation": "fixed_square",
+    "attention": "uniform",
+    "layer_norm": "exact",
+    "reveal_policy": "final_logits_only",
+    "protocol_parties": 2,
+    "threat_model": "semi_honest_non_colluding"
+  },
+  "preprocessing": {
+    "input_size": 224,
+    "crop_pct": 0.875,
+    "resize_short_side": 256,
+    "interpolation": "bicubic",
+    "center_crop": [224, 224],
+    "color_mode": "RGB",
+    "tensor_dtype": "float32",
+    "channel_order": "CHW",
+    "scale": "pixel / 255",
+    "mean": [0.485, 0.456, 0.406],
+    "std": [0.229, 0.224, 0.225],
+    "browser_normalized_clip": [-2.0, 2.0],
+    "share_count": 2,
+    "share_dtype": "little-endian float32",
+    "share_seed_for_retest": 0,
+    "share_semantics": "debug_float_additive_share_not_production_mpc_share"
+  },
+  "datasets": {
+    "medical_full_validation": {
+      "report_table": "4-1, 4-4, 4-5, 4-8",
+      "dataset": "PneumoniaMNIST image-folder validation split",
+      "purpose": "full validation threshold search, accuracy, AUC and dynamic-pruning ablation",
+      "list_file": "results/final/medical_threshold_calibration_raw/fullval_524_image_list.txt",
+      "sample_count": 524,
+      "class_counts": {"0": 135, "1": 389},
+      "selection": "complete frozen validation split in the recorded order",
+      "runtime": "CPU plaintext runtime-pruning reference on VPS",
+      "static_depth_limit": 10,
+      "expected": {
+        "argmax_accuracy": 0.7423664331436157,
+        "best_threshold": 0.6619606018066406,
+        "best_threshold_accuracy": 0.927480936050415,
+        "auc": 0.9639150500297546
+      }
+    },
+    "medical_secure_deployment_batch": {
+      "report_table": "4-1, 4-5",
+      "dataset": "PneumoniaMNIST frozen balanced evenly-spaced deployment batch",
+      "purpose": "end-to-end 2PC latency, communication, semantic agreement and privacy-boundary regression",
+      "list_file": "archive/old_runs/artifacts/server_pipeline_run/medical_dynamic_prepare_final/e2e_secure_poc/smoke32_balanced_evenly_spaced.txt",
+      "list_file_sha256": "40ec5149fccedb44a9de4dc7442020a9addefb4385633aabb7a4b4e40248b14f",
+      "frozen_preprocessed_pt": "archive/old_runs/artifacts/server_pipeline_run/medical_dynamic_prepare_final/e2e_secure_poc/plaintext_same_images_pixel_values.pt",
+      "frozen_preprocessed_pt_sha256": "026dc8a0d3ff7b432ae5b62a2ccedac05f37f76ff5afb1dc700e670e089a0977",
+      "sample_count": 32,
+      "class_counts": {"0": 16, "1": 16},
+      "selection": "16 evenly-spaced sorted files per class",
+      "static_depth_limit": 10,
+      "spu_batch_size": 8,
+      "base_rate": 0.7,
+      "token_ratios": [0.7, 0.49, 0.343],
+      "historical_token_keep_counts": [137, 96, 67],
+      "report_expected": {
+        "threshold_accuracy": 0.9375,
+        "elapsed_sec": 2849.9446952342987,
+        "sec_per_sample": 89.06077172607183,
+        "dual_total_bytes": 90694658258,
+        "dual_total_gib": 84.46598263271153,
+        "per_sample_gib": 2.6395619572722353
+      },
+      "latest_candidate": {
+        "spu_params_mode": "secret",
+        "party_local_share_load": true,
+        "secure_pruning_mode": "compact",
+        "final_block_cls_only": true,
+        "uniform_attention_value_fusion": true,
+        "compile_cache": true
+      }
+    },
+    "finance_boundary_stress": {
+      "report_table": "4-1, 4-8",
+      "dataset": "finance fraud v3 image-encoded frozen boundary-stress subset",
+      "purpose": "extreme-distribution stability boundary; not a second formal application mainline",
+      "list_file": "archive/old_runs/artifacts/server_pipeline_run/finance_dynamic_static_prepare_final/e2e_secure_poc/finance_smoke8_balanced_evenly_spaced.txt",
+      "list_file_sha256": "cb2ba8293f7a8b73a439011b56e43817ffcac5564140762f0ded451560c57484",
+      "frozen_preprocessed_pt": "archive/old_runs/artifacts/server_pipeline_run/finance_dynamic_static_prepare_final/e2e_secure_poc/plaintext_same_images_pixel_values.pt",
+      "frozen_preprocessed_pt_sha256": "1852f8092a14cc5807501176a192c32f23fac16ad0230dc961d3d0d9fce5d590",
+      "sample_count": 8,
+      "class_counts": {"fraud": 4, "normal": 4},
+      "selection": "indices 000000, 000033, 000066 and 000099 from each class",
+      "static_depth_limit": 12,
+      "spu_batch_size": 8,
+      "base_rate": 0.9,
+      "token_ratios": [0.9, 0.81, 0.729],
+      "historical_token_keep_counts": [176, 158, 142],
+      "parameter_retention_ratio": 0.6839,
+      "report_expected": {
+        "argmax_match_ratio": 1.0,
+        "threshold_match_ratio": 1.0,
+        "elapsed_sec": 849.2608470916748,
+        "sec_per_sample": 106.15760588645935,
+        "dual_total_bytes": 27168265566,
+        "dual_total_gib": 25.30241903476417,
+        "per_sample_gib": 3.1628023793455213
+      }
+    }
+  },
+  "bundles": {
+    "medical": {
+      "path": "artifacts/frozen_bundle_medical_dynamic_mainline",
+      "weight": "artifacts/frozen_bundle_medical_dynamic_mainline/modified_plaintext_model_state_dict.pth",
+      "weight_sha256": "bf835ddcaa119aa0cb8fac5515799afd956ab8918f4d51c954445584f92ae30d"
+    },
+    "finance": {
+      "path": "artifacts/frozen_bundle_finance_boundary_stress",
+      "weight": "artifacts/frozen_bundle_finance_boundary_stress/modified_plaintext_model_state_dict.pth",
+      "weight_sha256": "9ee74c5f36f89d0165b0a4f9f23b3a42d031995ac5e42092f44b6f3d2f623777"
+    }
+  },
+  "robustness": {
+    "report_table": "4-9",
+    "protocol_cases": 13,
+    "guard_cases": 4,
+    "total_cases": 17,
+    "protocol_case_matrix": [
+      {"name": "transfer_encoding_chunked_blocked", "expected_status": 400, "expected_error_code": "transfer_encoding_not_supported", "first_interception_layer": "http_request_body_gate", "fallback_layer": "not_applicable"},
+      {"name": "oversized_content_length_best_effort_413", "expected_status": 413, "expected_error_code": "payload_too_large", "first_interception_layer": "content_length_header_gate", "fallback_layer": "tcp_force_close_allowed"},
+      {"name": "duplicate_field_blocked", "expected_status": 400, "expected_error_code": "malformed_multipart_precheck_failed", "first_interception_layer": "raw_multipart_precheck", "fallback_layer": "mime_tree_validation"},
+      {"name": "boundary_fanout_blocked", "expected_status": 400, "expected_error_code": "malformed_multipart_precheck_failed", "first_interception_layer": "raw_multipart_precheck", "fallback_layer": "mime_tree_validation"},
+      {"name": "nested_multipart_blocked", "expected_status": 400, "expected_error_code": "malformed_multipart_precheck_failed", "first_interception_layer": "raw_multipart_precheck", "fallback_layer": "mime_tree_validation"},
+      {"name": "oversized_json_part_blocked", "expected_status": 400, "expected_error_code": "invalid_control_plane_payload", "first_interception_layer": "json_bytes_gate", "fallback_layer": "strict_json_decoder"},
+      {"name": "unexpected_field_set_blocked", "expected_status": 400, "expected_error_code": "malformed_multipart_precheck_failed", "first_interception_layer": "raw_multipart_precheck", "fallback_layer": "exact_field_set_gate"},
+      {"name": "boundary_param_whitespace_rejected", "expected_status": 400, "expected_error_code": "malformed_multipart_precheck_failed", "first_interception_layer": "content_type_boundary_parser", "fallback_layer": "raw_multipart_precheck"},
+      {"name": "malformed_part_header_blocked", "expected_status": 400, "expected_error_code": "malformed_multipart_precheck_failed", "first_interception_layer": "multipart_header_parser", "fallback_layer": "mime_tree_validation"},
+      {"name": "multipart_header_null_byte_blocked", "expected_status": 400, "expected_error_code": "malformed_multipart_precheck_failed", "first_interception_layer": "multipart_header_parser", "fallback_layer": "mime_tree_validation"},
+      {"name": "non_empty_epilogue_blocked", "expected_status": 400, "expected_error_code": "malformed_multipart_precheck_failed", "first_interception_layer": "raw_multipart_precheck", "fallback_layer": "mime_tree_validation"},
+      {"name": "utf16_json_charset_blocked", "expected_status": 400, "expected_error_code": "invalid_control_plane_payload", "first_interception_layer": "strict_utf8_json_decoder", "fallback_layer": "json_numeric_hooks"},
+      {"name": "truncated_body_blocked", "report_expected_status": 400, "report_expected_error_code": "truncated_body", "vps_accepted_transport_outcomes": ["http_400_truncated_body", "tcp_disconnect_no_response_with_matching_server_audit"], "first_interception_layer": "streaming_body_reader", "fallback_layer": "tcp_disconnect_no_response"}
+    ],
+    "guard_case_matrix": [
+      {"name": "duplicate_nonce_concurrent", "expected": "exactly one HTTP 200 and remaining requests HTTP 409/duplicate_nonce", "first_interception_layer": "replay_guard_nonce_cache", "fallback_layer": "payload_fingerprint_guard"},
+      {"name": "duplicate_payload_different_nonce", "expected": "first HTTP 200 and second HTTP 409/duplicate_payload", "first_interception_layer": "replay_guard_payload_cache", "fallback_layer": "ip_inflight_limit"},
+      {"name": "inflight_limit", "expected": "at least one HTTP 200, at least one HTTP 429/busy_retry_later, then retry HTTP 200", "first_interception_layer": "per_ip_inflight_guard", "fallback_layer": "global_inflight_guard"},
+      {"name": "ip_window_rate_limit", "expected": "burst reaches HTTP 429/rate_limited_ip before body parsing", "first_interception_layer": "ip_sliding_window_guard", "fallback_layer": "not_applicable"}
+    ],
+    "required_observations": [
+      "status",
+      "error_code",
+      "first_interception_layer",
+      "fallback_layer",
+      "fd_delta",
+      "socket_fd_delta",
+      "rss_delta_kib",
+      "thread_delta",
+      "inflight_recovered"
+    ],
+    "expected": {
+      "protocol_passed": 13,
+      "guard_passed": 4,
+      "fd_socket_no_leak": 17,
+      "steady_state_recovered": 12
+    }
+  },
+  "operator_proxy_benchmarks": {
+    "report_tables": "4-6, 4-7 and figures 4-5, 4-6",
+    "same_shape": {
+      "relu_softmax": {"mean_sec": 15.1696, "mean_mib": 5918.69},
+      "quad_softmax_2quad": {"mean_sec": 8.0973, "mean_mib": 881.05},
+      "time_ratio": 0.528,
+      "communication_ratio": 0.149
+    },
+    "network_profiles": ["Local", "LAN", "WAN"],
+    "activation_input_shape": [1, 197, 1536],
+    "attention_input_shape": [1, 6, 197, 197],
+    "low_level_primitives": ["Beaver additive triple", "binary triple", "B2A RNG", "A2B", "B2A one-bit"],
+    "status": "historical frozen evidence; rerun only after the matching legacy benchmark harness is restored on VPS"
+  },
+  "acceptance": {
+    "data_inventory": "all listed files exist; counts, class counts, list hashes and bundle hashes match",
+    "medical_full_validation": "524 samples; metrics recomputed from VPS output; no prefix or representative subset",
+    "medical_secure_candidate": {
+      "finite_logits": true,
+      "minimum_argmax_match_ratio_vs_vps_cpu_reference": 0.96875,
+      "minimum_threshold_match_ratio_vs_vps_cpu_reference": 0.875,
+      "minimum_threshold_accuracy": 0.90625,
+      "maximum_accuracy_drop_vs_report_points": 3.125,
+      "historical_spu_probability_max_abs_error_vs_vps_cpu_reference": 0.07726244628429413,
+      "note": "The report's 93.75% is the historical SPU result on the fixed 32-sample batch; the freshly reproduced CPU runtime-pruning reference is 87.50%. Fixed-point SPU truncation can move samples around the calibrated threshold, so argmax agreement, probability drift and final task accuracy are reported separately."
+    },
+    "finance_secure_candidate": {
+      "finite_logits": true,
+      "minimum_argmax_match_ratio_vs_vps_cpu_reference": 1.0,
+      "minimum_threshold_match_ratio_vs_vps_cpu_reference": 1.0
+    },
+    "performance_comparison_rule": "do not compare latency across different hardware as an optimization proof; use same-VPS A/B evidence",
+    "privacy_wording_rule": "record runner-host materialization, SPU secret placement and peer disclosure as separate facts"
+  }
+}

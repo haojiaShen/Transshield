@@ -1,0 +1,25 @@
+/opt/transshield-spu/lib/python3.9/site-packages/torchvision/transforms/transforms.py:329: UserWarning: Argument 'interpolation' of type int is deprecated since 0.13 and will be removed in 0.15. Please use InterpolationMode enum.
+  warnings.warn(
+	Command being timed: "/opt/transshield-spu/bin/python integrations/transshield_runtime/e2e_secure_vit/transshield_e2e_secure_vit.py run --runtime cpu --bundle-dir artifacts/frozen_bundle_medical_dynamic_mainline --input-pt /opt/transshield-project/results/vps_report_tests/report_regression_20260801_v1/medical524_plain.pt --cpu-forward-mode runtime_pruning_reference --static-depth-limit 10 --cpu-batch-size 32 --output-pt /opt/transshield-project/results/vps_report_tests/report_regression_20260801_v1/medical524_cpu_depth10.pt --output-json /opt/transshield-project/results/vps_report_tests/report_regression_20260801_v1/medical524_cpu_depth10.json"
+	User time (seconds): 48.55
+	System time (seconds): 13.48
+	Percent of CPU this job got: 647%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:09.57
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1299036
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 5096919
+	Voluntary context switches: 2788
+	Involuntary context switches: 269
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 440
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

@@ -1,0 +1,18 @@
+INFO:     Started server process [267247]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:7865 (Press CTRL+C to quit)
+INFO:     127.0.0.1:41800 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39958 - "GET /api/medical/config HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39962 - "POST /api/medical/live-run HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:39964 - "POST /api/medical/live-run HTTP/1.1" 413 Request Entity Too Large
+INFO:     127.0.0.1:39974 - "POST /api/medical/live-run HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:39984 - "POST /api/medical/live-run HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:40000 - "POST /api/medical/live-run HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:40004 - "POST /api/medical/live-run HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:40006 - "POST /api/medical/live-run HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:40020 - "POST /api/medical/live-run HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:40032 - "POST /api/medical/live-run HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:40040 - "POST /api/medical/live-run HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:40052 - "POST /api/medical/live-run HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:40062 - "POST /api/medical/live-run HTTP/1.1" 400 Bad Request

@@ -19,6 +19,7 @@ from tools.showcase_validation_common import (
     build_medical_parts,
     describe_process_state_delta,
     encode_multipart,
+    http_get_json,
     load_remote_medical_config,
     post_multipart,
     sample_process_state,
@@ -30,9 +31,12 @@ class GuardCheck:
     name: str
     passed: bool
     interception_layer: str
+    fallback_layer: str
     summary: str
     details: dict
     system_state: dict
+    guard_state_after: dict | None
+    inflight_recovered: bool | None
 
 
 def run_medical_request(base_url: str, timeout: float, config: dict, *, tensor_seed: int, share_seed: int, nonce: str):
@@ -59,9 +63,11 @@ def run_invalid_empty_request(base_url: str, timeout: float):
 
 def capture_guard_check(
     *,
+    base_url: str,
     server_pid: int | None,
     name: str,
     interception_layer: str,
+    fallback_layer: str,
     summary: str,
     action: Callable[[], tuple[bool, dict]],
     settle_sec: float = 0.35,
@@ -70,13 +76,22 @@ def capture_guard_check(
     passed, details = action()
     time.sleep(settle_sec)
     after = sample_process_state(server_pid)
+    try:
+        guard_state_after = http_get_json(base_url, "/api/health", timeout=3.0).get("inflight", {})
+        inflight_recovered = guard_state_after.get("global_inflight") == 0
+    except Exception:
+        guard_state_after = None
+        inflight_recovered = None
     return GuardCheck(
         name=name,
         passed=passed,
         interception_layer=interception_layer,
+        fallback_layer=fallback_layer,
         summary=summary,
         details=details,
         system_state=describe_process_state_delta(before, after),
+        guard_state_after=guard_state_after,
+        inflight_recovered=inflight_recovered,
     )
 
 
@@ -104,9 +119,11 @@ def check_duplicate_nonce(base_url: str, timeout: float, config: dict, concurren
         return passed, {"results": results, "success": success, "duplicate_nonce": duplicate}
 
     return capture_guard_check(
+        base_url=base_url,
         server_pid=server_pid,
         name="duplicate_nonce_concurrent",
-        interception_layer="replay_guard",
+        interception_layer="replay_guard_nonce_cache",
+        fallback_layer="payload_fingerprint_guard",
         summary="One request should pass; concurrent requests with the same nonce should be rejected as duplicate_nonce.",
         action=action,
     )
@@ -121,9 +138,11 @@ def check_duplicate_payload(base_url: str, timeout: float, config: dict, server_
         return passed, {"first": first, "second": second}
 
     return capture_guard_check(
+        base_url=base_url,
         server_pid=server_pid,
         name="duplicate_payload_different_nonce",
-        interception_layer="replay_guard",
+        interception_layer="replay_guard_payload_cache",
+        fallback_layer="ip_inflight_limit",
         summary="Same share payload with a fresh nonce should still be rejected as duplicate_payload.",
         action=action,
     )
@@ -176,9 +195,11 @@ def check_inflight_limit(base_url: str, timeout: float, config: dict, concurrenc
         }
 
     return capture_guard_check(
+        base_url=base_url,
         server_pid=server_pid,
         name="inflight_limit",
-        interception_layer="inflight_guard",
+        interception_layer="per_ip_inflight_guard",
+        fallback_layer="global_inflight_guard",
         summary=(
             "With single-channel limits, only one request should enter at a time and a busy request "
             "must remain retryable after the active request finishes."
@@ -196,9 +217,11 @@ def check_rate_limit(base_url: str, timeout: float, count: int, server_pid: int 
         return passed, {"results": results, "rate_limited_ip": limited}
 
     return capture_guard_check(
+        base_url=base_url,
         server_pid=server_pid,
         name="ip_window_rate_limit",
-        interception_layer="ip_rate_limit_guard",
+        interception_layer="ip_sliding_window_guard",
+        fallback_layer="not_applicable",
         summary="After a short burst from the same IP, the endpoint should return rate_limited_ip before payload parsing.",
         action=action,
     )

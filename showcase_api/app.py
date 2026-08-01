@@ -11,6 +11,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.requests import ClientDisconnect
 
 from showcase_api.bundle_preflight import inspect_bundle
 from showcase_api.config import REPO_ROOT, ShowcaseConfig, load_json, load_showcase_config
@@ -222,7 +223,29 @@ async def medical_live_run(request: Request):
         )
         return response_json(int(HTTPStatus.REQUEST_ENTITY_TOO_LARGE), payload)
 
-    raw_body = await request.body()
+    try:
+        raw_body = await request.body()
+    except ClientDisconnect:
+        payload = build_response_payload(
+            status="rejected",
+            result=None,
+            quality_assurance=None,
+            audit=None,
+            control_plane_metrics=None,
+            error_code="truncated_body",
+            interception_layer="streaming_body_reader",
+            detail="请求体在达到声明的 Content-Length 前断开。",
+        )
+        record_event(
+            AUDIT_REJECTIONS_PATH,
+            {
+                "ts": time.time(),
+                "ip": client_ip,
+                "error_code": "truncated_body",
+                "interception_layer": "streaming_body_reader",
+            },
+        )
+        return response_json(int(HTTPStatus.BAD_REQUEST), payload)
     if len(raw_body) > CONFIG.max_request_bytes:
         payload = build_response_payload(
             status="rejected",

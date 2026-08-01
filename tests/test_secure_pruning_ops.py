@@ -6,6 +6,32 @@ JAX_AVAILABLE = importlib.util.find_spec("jax") is not None
 
 
 class SecurePruningScheduleTests(unittest.TestCase):
+    def test_bitonic_schedule_compares_each_pair_once_and_restores_token_order(self):
+        from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
+            _bitonic_pair_schedule,
+        )
+
+        for token_count in (2, 4, 8, 256):
+            stage_size = 2
+            while stage_size <= token_count:
+                stride = stage_size // 2
+                while stride >= 1:
+                    left, right, restore, _ = _bitonic_pair_schedule(
+                        token_count,
+                        stage_size,
+                        stride,
+                    )
+                    self.assertEqual(len(left), token_count // 2)
+                    self.assertEqual(len(right), token_count // 2)
+                    paired_order = left + right
+                    self.assertEqual(sorted(paired_order), list(range(token_count)))
+                    self.assertEqual(
+                        [paired_order[offset] for offset in restore],
+                        list(range(token_count)),
+                    )
+                    stride //= 2
+                stage_size *= 2
+
     def test_static_loader_trims_stages_outside_prefix_depth(self):
         from integrations.transshield_runtime.e2e_secure_vit.static_vit_params import (
             pruning_schedule_for_depth,
@@ -54,6 +80,25 @@ class SecurePruningScheduleTests(unittest.TestCase):
 
 @unittest.skipUnless(JAX_AVAILABLE, "full JAX/SPU runtime is intentionally absent from lightweight CI")
 class SecurePruningOpsTests(unittest.TestCase):
+    def test_bitonic_sort_desc_matches_reference_with_ties(self):
+        import jax.numpy as jnp
+        import numpy as np
+
+        from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
+            bitonic_sort_desc,
+        )
+
+        values = np.asarray(
+            [
+                [0.5, -1.0, 0.5, 3.0, 2.0, 2.0, -4.0, 1.0],
+                [8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0],
+            ],
+            dtype=np.float32,
+        )
+        actual = np.asarray(bitonic_sort_desc(jnp.asarray(values)))
+        expected = np.sort(values, axis=1)[:, ::-1]
+        np.testing.assert_allclose(actual, expected)
+
     def test_exact_topk_mask_uses_lowest_index_for_boundary_ties(self):
         import jax.numpy as jnp
         import numpy as np

@@ -1,0 +1,135 @@
+{
+  "manifest_type": "transshield_pairwise_bitonic_optimization_v1",
+  "captured_at_utc": "2026-08-01T13:24:42Z",
+  "status": "accepted_as_communication_optimization",
+  "execution_policy": {
+    "compute_and_tests": "VPS only",
+    "vps_host": "47.120.31.48",
+    "repo_root": "/opt/transshield-project",
+    "python": "/opt/transshield-spu/bin/python",
+    "runtime_config": "/opt/transshield-smoke/configs/transshield_runtime/2pc.runtime.json",
+    "formal_results_overwritten": false
+  },
+  "optimization": {
+    "file": "integrations/transshield_runtime/e2e_secure_vit/secure_pruning_ops.py",
+    "description": "Evaluate every public bitonic comparator pair once, move both secret outputs from that result, then restore token order with a public permutation.",
+    "model_semantics_changed": false,
+    "privacy_boundary_changed": false,
+    "token_schedule_changed": false,
+    "old_sort_network_secret_comparisons_per_sample": 22016,
+    "new_sort_network_secret_comparisons_per_sample": 11008,
+    "scheduled_sort_comparison_reduction_fraction": 0.5,
+    "count_scope": "two 256-position compact payload sorts plus one 128-position final threshold sort; excludes post-threshold comparisons shared by both versions"
+  },
+  "fixed_model_and_runtime": {
+    "bundle": "artifacts/frozen_bundle_medical_dynamic_mainline",
+    "input_shape": [3, 224, 224],
+    "depth": 10,
+    "pruning_locations": [3, 6, 9],
+    "token_keep_counts": [137, 96, 67],
+    "planned_block_token_counts": [197, 197, 197, 138, 138, 138, 97, 97, 97, 97],
+    "attention": "uniform",
+    "activation": "fixed_square",
+    "layer_norm": "exact",
+    "params_mode": "secret",
+    "secure_pruning_mode": "compact",
+    "field": "FM64",
+    "fxp_fraction_bits": 16,
+    "protocol": "CHEETAH",
+    "reveal_policy": "final_logits_only"
+  },
+  "same_vps_ab": {
+    "single_sample": {
+      "old_elapsed_sec": 93.47568464279175,
+      "new_elapsed_sec": 91.84987807273865,
+      "elapsed_change_fraction": -0.017392828694071216,
+      "old_loopback_tx_bytes": 2404729244,
+      "new_loopback_tx_bytes": 2288487060,
+      "loopback_tx_reduction_fraction": 0.04833899046640444,
+      "verdict": "communication reduced; time within run-to-run variation"
+    },
+    "four_samples_batch4": {
+      "old_elapsed_sec": 251.32430720329285,
+      "new_elapsed_sec": 257.78412413597107,
+      "elapsed_change_fraction": 0.025703112462786892,
+      "old_loopback_tx_bytes": 8134448229,
+      "new_loopback_tx_bytes": 7669381158,
+      "loopback_tx_reduction_fraction": 0.05717254052241627,
+      "argmax_match_vs_cpu": 1.0,
+      "threshold_match_vs_cpu": 1.0,
+      "probabilities_max_abs_error_vs_cpu": 0.05101156234741211,
+      "verdict": "communication reduced; time 2.57% slower"
+    },
+    "medical32_batch8": {
+      "sample_source": "frozen balanced evenly-spaced medical deployment batch",
+      "sample_count": 32,
+      "class_counts": {"0": 16, "1": 16},
+      "sample_list_sha256": "7ab944d956cc41de77c1725d5acb707eff8f6e47de018f9563c74b5a3360512e",
+      "formal_threshold": 0.6619606018066406,
+      "old_elapsed_sec": 1589.6226346492767,
+      "new_elapsed_sec": 1620.9502034187317,
+      "old_sec_per_sample": 49.6757073327899,
+      "new_sec_per_sample": 50.654693856835365,
+      "elapsed_change_fraction": 0.019707550764944237,
+      "old_loopback_tx_bytes": 62555604660,
+      "new_loopback_tx_bytes": 58785779251,
+      "old_loopback_total_gib": 58.259446788579226,
+      "new_loopback_total_gib": 54.748523282818496,
+      "new_loopback_per_sample_gib": 1.710891352588078,
+      "loopback_tx_reduction_fraction": 0.06026359155969507,
+      "old_threshold_accuracy": 0.90625,
+      "new_threshold_accuracy": 0.9375,
+      "old_auc": 0.9765625,
+      "new_auc": 0.98046875,
+      "argmax_match_vs_cpu": 1.0,
+      "old_threshold_match_vs_cpu": 0.84375,
+      "new_threshold_match_vs_cpu": 0.9375,
+      "old_probabilities_max_abs_error_vs_cpu": 0.0626959502696991,
+      "new_probabilities_max_abs_error_vs_cpu": 0.06705218553543091,
+      "candidate_prediction_counts": {
+        "argmax": {"0": 0, "1": 32},
+        "formal_threshold": {"0": 16, "1": 16}
+      },
+      "verdict": "communication reduced 6.03%; time 1.97% slower; accuracy and agreement gates pass"
+    }
+  },
+  "accuracy_interpretation": "The graph is mathematically equivalent, but Cheetah fixed-point truncation is randomized. Accuracy changes between individual runs are retained as observations and are not attributed as deterministic model improvements.",
+  "vps_tests": {
+    "command": "/opt/transshield-spu/bin/python -m unittest discover -s tests -v",
+    "passed": 26,
+    "failed": 0,
+    "elapsed_sec": 1.949,
+    "new_checks": [
+      "every bitonic pass schedules exactly one comparison per pair and restores public token order",
+      "descending bitonic output matches NumPy for batches containing ties"
+    ]
+  },
+  "source_provenance": {
+    "secure_pruning_ops_sha256": "07dc77d8e43665baabbf477a70cfce8789dbe139d13e291d76e46c2f9b69202a",
+    "spu_static_vit_sha256": "8b22d63bc14f3e8fdb3ca21b1f1f06d732367e838fea9098eebfaf19f1243246",
+    "test_secure_pruning_ops_sha256": "e75f4726a5f23e2a4ce37f7655d2d8a58f9fad61af935848a8afef20c4e8e977"
+  },
+  "evidence": {
+    "single_warm_json": {
+      "path": "candidate_pairwise_bitonic_warm.json",
+      "sha256": "a463ab05d084352be2d1a37afe6cb701d2fd5b1ad282c3b18343dd7141359388"
+    },
+    "medical4_json": {
+      "path": "medical4_pairwise_bitonic.json",
+      "sha256": "e6ccc5ca6f9cdcf6da7fc40eb55aac39691dd52edaaed156019c4784541d6243"
+    },
+    "medical32_json": {
+      "path": "medical32_pairwise_bitonic.json",
+      "sha256": "9d66addfa61c036ac67dab63bedac4e2b2c6bfd4d97050cb08ebdb8755707529"
+    },
+    "medical32_per_sample_summary": {
+      "path": "medical32_pairwise_bitonic_summary.json",
+      "sha256": "87817cb52d291b1d1c1fe0b67359fe6c7d181d58d9a3def8ea2e9c3be78e1cc1"
+    },
+    "unittest_log": {
+      "path": "unittest_vps.stderr.log",
+      "sha256": "c4c1c0d576c4315e8d7b7a7b9976c6ab1ca0cedb89dbcb17f10e8d332e3476da"
+    },
+    "candidate_pt_retention": "VPS only; excluded from Git because the JSON summary already retains per-sample outputs and the PT is a large intermediate artifact"
+  }
+}

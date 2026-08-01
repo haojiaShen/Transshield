@@ -13,6 +13,21 @@ def _next_power_of_two(value: int) -> int:
     return result
 
 
+def _bitonic_pair_schedule(token_count: int, stage_size: int, stride: int):
+    """Return public pair indices and the permutation back to token order."""
+    left = tuple(
+        position
+        for position in range(int(token_count))
+        if position < (position ^ int(stride))
+    )
+    right = tuple(position ^ int(stride) for position in left)
+    paired_order = left + right
+    paired_offset = {position: offset for offset, position in enumerate(paired_order)}
+    restore = tuple(paired_offset[position] for position in range(int(token_count)))
+    descending = tuple((position & int(stage_size)) == 0 for position in left)
+    return left, right, restore, descending
+
+
 def normalize_pruning_schedule(
     pruning_loc,
     token_keep_counts,
@@ -54,19 +69,20 @@ def bitonic_sort_desc(values):
     while stage_size <= token_count:
         stride = stage_size // 2
         while stride >= 1:
-            positions = jnp.arange(token_count, dtype=jnp.int32)
-            partners = positions ^ stride
-            partner_values = x[:, partners]
-            take_current_as_high = x >= partner_values
-            high = jnp.where(take_current_as_high, x, partner_values)
-            low = jnp.where(take_current_as_high, partner_values, x)
-
-            is_left = positions < partners
-            left_positions = jnp.where(is_left, positions, partners)
-            descending_pair = (left_positions & stage_size) == 0
-            left_value = jnp.where(descending_pair, high, low)
-            right_value = jnp.where(descending_pair, low, high)
-            x = jnp.where(is_left, left_value, right_value)
+            left, right, restore, descending = _bitonic_pair_schedule(
+                token_count,
+                stage_size,
+                stride,
+            )
+            left_value = x[:, left]
+            right_value = x[:, right]
+            take_left_as_high = left_value >= right_value
+            high = jnp.where(take_left_as_high, left_value, right_value)
+            low = jnp.where(take_left_as_high, right_value, left_value)
+            descending_pair = jnp.asarray(descending, dtype=jnp.bool_)[None, :]
+            sorted_left = jnp.where(descending_pair, high, low)
+            sorted_right = jnp.where(descending_pair, low, high)
+            x = jnp.concatenate([sorted_left, sorted_right], axis=1)[:, restore]
             stride //= 2
         stage_size *= 2
     return x
@@ -222,37 +238,39 @@ def compact_topk_tokens(
     while stage_size <= padded_count:
         stride = stage_size // 2
         while stride >= 1:
-            positions = jnp.arange(padded_count, dtype=jnp.int32)
-            partners = positions ^ stride
+            left, right, restore, descending = _bitonic_pair_schedule(
+                padded_count,
+                stage_size,
+                stride,
+            )
+            left_keys = keys[:, left]
+            right_keys = keys[:, right]
+            left_tokens = tokens[:, left, :]
+            right_tokens = tokens[:, right, :]
+            left_indices = indices[:, left]
+            right_indices = indices[:, right]
+            take_left_as_high = left_keys >= right_keys
 
-            partner_keys = keys[:, partners]
-            partner_tokens = tokens[:, partners, :]
-            partner_indices = indices[:, partners]
-            take_current_as_high = keys >= partner_keys
+            high_keys = jnp.where(take_left_as_high, left_keys, right_keys)
+            low_keys = jnp.where(take_left_as_high, right_keys, left_keys)
+            payload_condition = take_left_as_high[:, :, None]
+            high_tokens = jnp.where(payload_condition, left_tokens, right_tokens)
+            low_tokens = jnp.where(payload_condition, right_tokens, left_tokens)
+            high_indices = jnp.where(take_left_as_high, left_indices, right_indices)
+            low_indices = jnp.where(take_left_as_high, right_indices, left_indices)
 
-            high_keys = jnp.where(take_current_as_high, keys, partner_keys)
-            low_keys = jnp.where(take_current_as_high, partner_keys, keys)
-            payload_condition = take_current_as_high[:, :, None]
-            high_tokens = jnp.where(payload_condition, tokens, partner_tokens)
-            low_tokens = jnp.where(payload_condition, partner_tokens, tokens)
-            high_indices = jnp.where(take_current_as_high, indices, partner_indices)
-            low_indices = jnp.where(take_current_as_high, partner_indices, indices)
-
-            is_left = positions < partners
-            left_positions = jnp.where(is_left, positions, partners)
-            descending_pair = (left_positions & stage_size) == 0
+            descending_pair = jnp.asarray(descending, dtype=jnp.bool_)[None, :]
             left_keys = jnp.where(descending_pair, high_keys, low_keys)
             right_keys = jnp.where(descending_pair, low_keys, high_keys)
-            direction_condition = descending_pair[None, :, None]
+            direction_condition = descending_pair[:, :, None]
             left_tokens = jnp.where(direction_condition, high_tokens, low_tokens)
             right_tokens = jnp.where(direction_condition, low_tokens, high_tokens)
             left_indices = jnp.where(descending_pair, high_indices, low_indices)
             right_indices = jnp.where(descending_pair, low_indices, high_indices)
 
-            keys = jnp.where(is_left, left_keys, right_keys)
-            side_condition = is_left[None, :, None]
-            tokens = jnp.where(side_condition, left_tokens, right_tokens)
-            indices = jnp.where(is_left, left_indices, right_indices)
+            keys = jnp.concatenate([left_keys, right_keys], axis=1)[:, restore]
+            tokens = jnp.concatenate([left_tokens, right_tokens], axis=1)[:, restore, :]
+            indices = jnp.concatenate([left_indices, right_indices], axis=1)[:, restore]
             stride //= 2
         stage_size *= 2
 

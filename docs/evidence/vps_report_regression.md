@@ -168,3 +168,30 @@ argmax 4/4 不变。完整原始数值、SHA-256 和概率最大误差均在 agg
   --run-root "$RUN_ROOT" \
   --out "$RUN_ROOT/report_regression_aggregate.json"
 ```
+
+## 8. 2026-08-01 bitonic 成对比较优化
+
+在不修改模型、token 保留数、隐私边界和 reveal 策略的前提下，compact top-k 的
+bitonic 网络由“每个 pair 的左右位置各做一次秘密比较”改为“每个 pair 只比较一次，
+同时产生两侧结果，再按公开排列恢复 token 顺序”。两次 256 位 payload sort 加一次
+128 位阈值 sort 的计划比较数由每样本 22016 降到 11008；这是排序网络层面的精确
+计数，不把共享的阈值后处理算进降幅。
+
+同 VPS、同模型、同固定输入和同 FM64/Cheetah 配置的结果如下：
+
+| 规模 | 旧版时延 | 新版时延 | 旧版 loopback TX | 新版 loopback TX | 判定 |
+|---|---:|---:|---:|---:|---|
+| 单图 | 93.48 秒 | 91.85 秒 | 2.405 GB | 2.288 GB | 通信 -4.83%；时延属于运行波动 |
+| 4 张，batch=4 | 251.32 秒 | 257.78 秒 | 8.134 GB | 7.669 GB | 通信 -5.72%；时延 +2.57% |
+| 正式医疗 32 张，batch=8 | 1589.62 秒 | 1620.95 秒 | 62.556 GB | 58.786 GB | 通信 -6.03%；时延 +1.97% |
+
+32 张使用报告正式阈值 `0.6619606018066406`：阈值精度 93.75%，AUC
+0.98046875，argmax 对 CPU 一致率 100%，阈值对 CPU 一致率 93.75%，概率最大
+绝对误差 0.06705。模型数学图等价，但 Cheetah 固定点截断带随机性，因此精度变化
+只作为本次观测保存，不宣称该排序重写能确定性提升精度。
+
+新增的 pair schedule 与含 ties 排序测试连同原回归在 VPS 上为 26/26 通过。机器
+可读总表见
+`results/vps_optimization/pairwise_bitonic_20260801_v1/optimization_summary.json`，
+32 张逐样本 logits、概率、预测、CPU 误差和网络快照见同目录
+`medical32_pairwise_bitonic_summary.json`。本改动不覆盖正式展示数字。

@@ -3,6 +3,7 @@ import json
 import math
 import sys
 import types
+from collections import abc as collections_abc
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Optional
@@ -92,10 +93,14 @@ def resolve_threshold(bundle_dir: Path, threshold_json: Optional[str]):
 
 
 def _ensure_torch_six():
-    if "torch._six" not in sys.modules:
+    torch_six = sys.modules.get("torch._six")
+    if torch_six is None:
         torch_six = types.ModuleType("torch._six")
-        torch_six.inf = math.inf
         sys.modules["torch._six"] = torch_six
+    if not hasattr(torch_six, "inf"):
+        torch_six.inf = math.inf
+    if not hasattr(torch_six, "container_abcs"):
+        torch_six.container_abcs = collections_abc
 
 
 def import_repo_modules(repo_root: Path):

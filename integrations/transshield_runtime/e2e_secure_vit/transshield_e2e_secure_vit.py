@@ -630,6 +630,9 @@ def command_run(args):
                     model,
                     batch_pixel_values,
                     args.static_depth_limit,
+                    token_ratio_base_override=getattr(
+                        args, "spu_token_ratio_base_override", 0.0
+                    ),
                 )
             if args.static_depth_limit >= 0:
                 return run_static_student_whole_forward_limited(
@@ -739,6 +742,9 @@ def command_run(args):
     }
     if runtime == "cpu":
         payload["cpu_forward_mode"] = cpu_forward_mode
+        payload["token_ratio_base_override"] = float(
+            getattr(args, "spu_token_ratio_base_override", 0.0)
+        )
     if raw_logits_before_output_calibration is not None:
         payload["raw_logits_before_output_calibration"] = raw_logits_before_output_calibration
         payload["output_calibration"] = output_calibration
@@ -813,6 +819,9 @@ def command_run(args):
         "max_samples": int(args.max_samples),
         "cpu_forward_mode": cpu_forward_mode if runtime == "cpu" else None,
         "cpu_batch_size": int(getattr(args, "cpu_batch_size", 0)) if runtime == "cpu" else None,
+        "token_ratio_base_override": float(
+            getattr(args, "spu_token_ratio_base_override", 0.0)
+        ),
         "runtime_pruning_keep_mask_stage_count": (
             None if runtime_pruning_keep_masks is None else len(runtime_pruning_keep_masks)
         ),
@@ -1889,10 +1898,17 @@ def build_parser():
         ),
     )
     run_parser.add_argument(
+        "--token-ratio-base-override",
         "--spu-token-ratio-base-override",
+        dest="spu_token_ratio_base_override",
         type=float,
         default=0.0,
-        help="Override the base_rate for token pruning ratio computation (token_ratio=[r, r^2, r^3]). 0 uses bundle default (0.7 -> 137/96/67 tokens). Lower values = more aggressive pruning = fewer tokens = faster but potentially less accurate.",
+        help=(
+            "Override the base_rate for token pruning ratio computation "
+            "(token_ratio=[r, r^2, r^3]) in SPU runs and CPU runtime-pruning references. "
+            "0 uses the bundle default (0.7 -> 137/96/67 tokens). The legacy "
+            "--spu-token-ratio-base-override spelling remains supported."
+        ),
     )
     run_parser.set_defaults(func=command_run)
 

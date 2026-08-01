@@ -896,6 +896,7 @@ def run_static_vit_forward_spu(
                         packed_score,
                         all_active,
                         keep_counts[stage_index],
+                        unique_keys=True,
                     )
                     spatial_x = spatial_x * final_keep_mask.astype(spatial_x.dtype)
                 else:

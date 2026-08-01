@@ -1,0 +1,23 @@
+	Command being timed: "/opt/transshield-spu/bin/python integrations/transshield_runtime/e2e_secure_vit/transshield_e2e_secure_vit.py run --runtime spu --bundle-dir artifacts/frozen_bundle_medical_dynamic_mainline --input-share-public-manifest-json results/vps_report_tests/report_regression_20260801_v1/medical32_public.json --input-p1-share-manifest-json results/vps_report_tests/report_regression_20260801_v1/medical32_party_manifests/p1_share_manifest.json --input-p2-share-manifest-json results/vps_report_tests/report_regression_20260801_v1/medical32_party_manifests/p2_share_manifest.json --party-local-share-load --redact-private-input-paths --output-pt results/vps_optimization/pruning_boundary_20260801_v1/spu_single_r0655_warm.pt --output-json results/vps_optimization/pruning_boundary_20260801_v1/spu_single_r0655_warm.json --config /opt/transshield-smoke/configs/transshield_runtime/2pc.runtime.json --device cpu --max-samples 1 --static-depth-limit 10 --spu-batch-size 1 --spu-params-mode secret --spu-layer-norm-policy exact --spu-attention-policy uniform --spu-activation-override fixed_square --spu-activation-clip-value 0 --spu-secure-pruning-mode compact --spu-final-block-cls-only --spu-uniform-attention-value-fusion --spu-compile-cache-dir results/vps_optimization/pruning_boundary_20260801_v1/compile_cache --token-ratio-base-override 0.655"
+	User time (seconds): 2.87
+	System time (seconds): 1.43
+	Percent of CPU this job got: 4%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:28.48
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 552888
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 128049
+	Voluntary context switches: 20454
+	Involuntary context switches: 150
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 88
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

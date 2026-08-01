@@ -1,0 +1,79 @@
+{
+  "manifest_type": "transshield_vps_latency_optimization_summary_v2",
+  "captured_at_utc": "2026-08-01T14:43:00.550659+00:00",
+  "formal_results_changed": false,
+  "vps_only_model_testing": true,
+  "accepted_default_semantics_optimization": {
+    "name": "unique-packed-final-topk-threshold",
+    "status": "accepted",
+    "semantic_note": "Packed final-stage keys are unique by fixed-point score and original index; the generic equality/rank tie path is skipped only there.",
+    "unit_tests": "28/28 PASS on VPS",
+    "single": {
+      "baseline_spu_forward_wall_sec": 91.78745685399917,
+      "candidate_spu_forward_wall_sec": 91.62260313799925,
+      "time_delta_percent": -0.17960375159118414,
+      "baseline_tx_bytes": 2288487060,
+      "candidate_tx_bytes": 2288293436,
+      "tx_delta_percent": -0.008460786315300783
+    },
+    "batch4": {
+      "baseline_spu_forward_wall_sec": 257.7222865340009,
+      "candidate_spu_forward_wall_sec": 253.00239770899861,
+      "time_delta_percent": -1.8313855927937328,
+      "baseline_tx_bytes": 7669381158,
+      "candidate_tx_bytes": 7671622311,
+      "tx_delta_percent": 0.02922208394431358,
+      "argmax_match_ratio": 1.0,
+      "formal_threshold_match_ratio": 1.0
+    }
+  },
+  "experimental_low_latency_profile": {
+    "name": "medical-r0655",
+    "status": "optional_experimental_calibration_required",
+    "token_ratio_base_override": 0.655,
+    "token_keep_counts": [
+      128,
+      84,
+      55
+    ],
+    "default_token_keep_counts": [
+      137,
+      96,
+      67
+    ],
+    "single": {
+      "baseline_spu_forward_wall_sec": 91.78745685399917,
+      "candidate_spu_forward_wall_sec": 87.30274805199952,
+      "time_delta_percent": -4.885971303391945,
+      "baseline_tx_bytes": 2288487060,
+      "candidate_tx_bytes": 2110185545,
+      "tx_delta_percent": -7.791239815880802
+    },
+    "batch4": {
+      "baseline_spu_forward_wall_sec": 257.7222865340009,
+      "candidate_spu_forward_wall_sec": 226.18848130100014,
+      "time_delta_percent": -12.235575610121142,
+      "baseline_tx_bytes": 7669381158,
+      "candidate_tx_bytes": 7166497088,
+      "tx_delta_percent": -6.5570358238804864
+    },
+    "medical32_batch8": {
+      "baseline_spu_forward_wall_sec": 1620.8881446939995,
+      "candidate_spu_forward_wall_sec": 1432.356246731997,
+      "time_delta_percent": -11.631394712779175,
+      "baseline_tx_bytes": 58785779251,
+      "candidate_tx_bytes": 54900639571,
+      "tx_delta_percent": -6.608978786198383,
+      "uncalibrated_threshold_accuracy": 0.8125,
+      "baseline_threshold_accuracy": 0.9375,
+      "calibrated_4fold_mean_threshold_accuracy": 0.96875
+    },
+    "cpu524_validation": {
+      "uncalibrated_threshold_accuracy": 0.8778625954198473,
+      "baseline_threshold_accuracy": 0.9274809160305344,
+      "calibrated_5fold_mean_threshold_accuracy": 0.9160805860805862,
+      "calibrated_5fold_mean_reference_match_ratio": 0.9885531135531135
+    },
+    "guardrail": "Do not enable as the formal/default profile without an independently frozen calibration asset and a fresh full secure validation."
+  }
+}

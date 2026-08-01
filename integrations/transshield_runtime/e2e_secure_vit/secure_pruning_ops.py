@@ -88,8 +88,14 @@ def bitonic_sort_desc(values):
     return x
 
 
-def exact_topk_keep_mask(score, active_mask, keep_count: int):
-    """Return an exact-size top-k mask with lowest-index boundary tie breaking."""
+def exact_topk_keep_mask(score, active_mask, keep_count: int, *, unique_keys: bool = False):
+    """Return an exact-size top-k mask with deterministic boundary handling.
+
+    ``unique_keys`` is a public graph option for callers that have already
+    packed a unique tie-breaker into every active score.  In that case the
+    threshold comparison alone selects exactly ``keep_count`` entries and the
+    generic secret equality/rank path is unnecessary.
+    """
     import jax.numpy as jnp
 
     token_count = int(score.shape[1])
@@ -110,6 +116,8 @@ def exact_topk_keep_mask(score, active_mask, keep_count: int):
 
     sorted_score = bitonic_sort_desc(masked_score)
     threshold = sorted_score[:, keep_count - 1 : keep_count]
+    if unique_keys:
+        return ((score >= threshold) & active)[:, :, None]
     greater = (score > threshold) & active
     equal = (score == threshold) & active
     remaining = keep_count - jnp.sum(greater.astype(jnp.int32), axis=1, keepdims=True)

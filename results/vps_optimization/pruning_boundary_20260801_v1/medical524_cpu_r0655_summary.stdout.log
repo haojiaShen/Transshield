@@ -1,0 +1,20 @@
+{
+  "out": "/opt/transshield-project/results/vps_optimization/pruning_boundary_20260801_v1/medical524_cpu_r0655_summary.json",
+  "sample_count": 524,
+  "argmax_accuracy": 0.7423664331436157,
+  "threshold_accuracy": 0.8778625726699829,
+  "auc": 0.9624869085023326,
+  "sec_per_sample": 0.018985514877406694,
+  "reference_comparison": {
+    "argmax_match_ratio": 1.0,
+    "threshold_match_ratio": 0.9045801758766174,
+    "logits_max_abs_error": 0.13537420332431793,
+    "logits_mean_abs_error": 0.0468137301504612,
+    "probabilities_max_abs_error": 0.05666041374206543,
+    "probabilities_mean_abs_error": 0.019544078037142754,
+    "reference_argmax_accuracy": 0.7423664331436157,
+    "reference_threshold_accuracy": 0.927480936050415,
+    "reference_auc": 0.9639150718842235
+  },
+  "network": null
+}

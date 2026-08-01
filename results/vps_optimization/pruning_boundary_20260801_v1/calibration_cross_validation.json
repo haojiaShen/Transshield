@@ -1,0 +1,139 @@
+{
+  "manifest_type": "transshield_low_latency_calibration_cross_validation_v1",
+  "profile": {
+    "token_ratio_base_override": 0.655,
+    "token_keep_counts": [
+      128,
+      84,
+      55
+    ],
+    "default_token_keep_counts": [
+      137,
+      96,
+      67
+    ]
+  },
+  "spu_secure_32": {
+    "sample_count": 32,
+    "formal_threshold": 0.6619606018066406,
+    "uncalibrated_threshold_accuracy": 0.8125,
+    "baseline_threshold_accuracy": 0.9375,
+    "best_direct_threshold": 0.689401244469044,
+    "best_direct_threshold_accuracy": 0.96875,
+    "full_fit": {
+      "scale": 1.1594144184522637,
+      "bias": -0.22568465073302235,
+      "weights": [
+        -1.1594144184522637,
+        1.1594144184522637
+      ],
+      "threshold_accuracy": 0.96875,
+      "reference_match_ratio": 0.96875
+    },
+    "stratified_cross_validation": {
+      "fold_count": 4,
+      "folds": [
+        {
+          "fold": 0,
+          "sample_count": 8,
+          "scale": 1.1266685470323778,
+          "bias": -0.18123752125670192,
+          "threshold_accuracy": 1.0,
+          "reference_match_ratio": 1.0
+        },
+        {
+          "fold": 1,
+          "sample_count": 8,
+          "scale": 1.2121232654266536,
+          "bias": -0.2776085397587061,
+          "threshold_accuracy": 0.875,
+          "reference_match_ratio": 1.0
+        },
+        {
+          "fold": 2,
+          "sample_count": 8,
+          "scale": 1.1758170727188964,
+          "bias": -0.25686331873237395,
+          "threshold_accuracy": 1.0,
+          "reference_match_ratio": 0.875
+        },
+        {
+          "fold": 3,
+          "sample_count": 8,
+          "scale": 1.1307775938525786,
+          "bias": -0.19321516819075552,
+          "threshold_accuracy": 1.0,
+          "reference_match_ratio": 1.0
+        }
+      ],
+      "mean_threshold_accuracy": 0.96875,
+      "mean_reference_match_ratio": 0.96875
+    }
+  },
+  "cpu_plaintext_524": {
+    "sample_count": 524,
+    "formal_threshold": 0.6619606018066406,
+    "uncalibrated_threshold_accuracy": 0.8778625954198473,
+    "baseline_threshold_accuracy": 0.9274809160305344,
+    "best_direct_threshold": 0.688152923150007,
+    "best_direct_threshold_accuracy": 0.9198473282442748,
+    "full_fit": {
+      "scale": 1.1673398837210884,
+      "bias": -0.26997106012609784,
+      "weights": [
+        -1.1673398837210884,
+        1.1673398837210884
+      ],
+      "threshold_accuracy": 0.916030534351145,
+      "reference_match_ratio": 0.9885496183206107
+    },
+    "stratified_cross_validation": {
+      "fold_count": 5,
+      "folds": [
+        {
+          "fold": 0,
+          "sample_count": 105,
+          "scale": 1.1669892347137167,
+          "bias": -0.269565715845679,
+          "threshold_accuracy": 0.9428571428571428,
+          "reference_match_ratio": 0.9904761904761905
+        },
+        {
+          "fold": 1,
+          "sample_count": 105,
+          "scale": 1.1696760336533478,
+          "bias": -0.27216570359334846,
+          "threshold_accuracy": 0.8857142857142857,
+          "reference_match_ratio": 0.9904761904761905
+        },
+        {
+          "fold": 2,
+          "sample_count": 105,
+          "scale": 1.1673737953949614,
+          "bias": -0.27015818990628704,
+          "threshold_accuracy": 0.8857142857142857,
+          "reference_match_ratio": 0.9809523809523809
+        },
+        {
+          "fold": 3,
+          "sample_count": 105,
+          "scale": 1.1654377568996508,
+          "bias": -0.26732526851768407,
+          "threshold_accuracy": 0.9238095238095239,
+          "reference_match_ratio": 0.9904761904761905
+        },
+        {
+          "fold": 4,
+          "sample_count": 104,
+          "scale": 1.1672442607425686,
+          "bias": -0.2706456030613695,
+          "threshold_accuracy": 0.9423076923076923,
+          "reference_match_ratio": 0.9903846153846154
+        }
+      ],
+      "mean_threshold_accuracy": 0.9160805860805862,
+      "mean_reference_match_ratio": 0.9885531135531135
+    }
+  },
+  "status": "experimental_optional_profile_not_formal_default"
+}

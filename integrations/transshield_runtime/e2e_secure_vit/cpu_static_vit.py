@@ -1,6 +1,21 @@
+import math
+
 import torch
 
 from integrations.transshield_runtime.e2e_secure_vit.static_vit_params import normalize_depth_limit
+
+
+def resolve_runtime_pruning_token_ratios(model_token_ratios, token_ratio_base_override: float):
+    """Resolve an optional cumulative pruning-rate override without mutating the model."""
+    base_rate = float(token_ratio_base_override)
+    if base_rate == 0.0:
+        return tuple(float(value) for value in model_token_ratios)
+    if not math.isfinite(base_rate) or not 0.0 < base_rate <= 1.0:
+        raise ValueError(
+            "token_ratio_base_override must be 0 (bundle default) or within (0, 1], "
+            f"got {base_rate}"
+        )
+    return tuple(base_rate**stage for stage in range(1, 4))
 
 
 def _prepare_student_tokens(model, pixel_values):
@@ -53,10 +68,19 @@ def run_static_student_whole_forward_limited(model, pixel_values, static_depth_l
     }
 
 
-def run_runtime_pruning_student_whole_forward_limited(model, pixel_values, static_depth_limit: int):
+def run_runtime_pruning_student_whole_forward_limited(
+    model,
+    pixel_values,
+    static_depth_limit: int,
+    token_ratio_base_override: float = 0.0,
+):
     import torch
 
     depth = normalize_depth_limit(static_depth_limit, full_depth=len(model.blocks))
+    token_ratios = resolve_runtime_pruning_token_ratios(
+        model.token_ratio,
+        token_ratio_base_override,
+    )
     x = _prepare_student_tokens(model, pixel_values)
     prev_decision, policy = _init_full_keep_policy(x)
     pruning_trace = []
@@ -73,7 +97,7 @@ def run_runtime_pruning_student_whole_forward_limited(model, pixel_values, stati
                 pixel_values.shape[0], -1, 2
             )
             score = pred_score[:, :, 0]
-            keep_count = int(init_n * model.token_ratio[pruning_stage_index])
+            keep_count = int(init_n * token_ratios[pruning_stage_index])
             active_before = prev_decision.squeeze(-1).sum(dim=1)
             prev_decision = model._build_eval_keep_decision(score, prev_decision, keep_count)
             active_after = prev_decision.squeeze(-1).sum(dim=1)

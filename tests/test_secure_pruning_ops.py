@@ -1,4 +1,5 @@
 import importlib.util
+import math
 import unittest
 
 
@@ -6,6 +7,22 @@ JAX_AVAILABLE = importlib.util.find_spec("jax") is not None
 
 
 class SecurePruningScheduleTests(unittest.TestCase):
+    def test_runtime_pruning_ratio_override_is_cumulative_and_validated(self):
+        from integrations.transshield_runtime.e2e_secure_vit.cpu_static_vit import (
+            resolve_runtime_pruning_token_ratios,
+        )
+
+        self.assertEqual(
+            resolve_runtime_pruning_token_ratios((0.7, 0.49, 0.343), 0.0),
+            (0.7, 0.49, 0.343),
+        )
+        ratios = resolve_runtime_pruning_token_ratios((0.7, 0.49, 0.343), 0.655)
+        self.assertEqual([int(196 * value) for value in ratios], [128, 84, 55])
+        for invalid in (-0.1, 1.1, math.nan, math.inf):
+            with self.subTest(invalid=invalid):
+                with self.assertRaisesRegex(ValueError, "token_ratio_base_override"):
+                    resolve_runtime_pruning_token_ratios((0.7, 0.49, 0.343), invalid)
+
     def test_bitonic_schedule_compares_each_pair_once_and_restores_token_order(self):
         from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
             _bitonic_pair_schedule,
@@ -111,6 +128,28 @@ class SecurePruningOpsTests(unittest.TestCase):
         active = jnp.asarray([[[1], [1], [1], [1], [0]]], dtype=jnp.float32)
         keep = np.asarray(exact_topk_keep_mask(score, active, 3)).reshape(-1)
         np.testing.assert_array_equal(keep, np.asarray([True, True, True, False, False]))
+
+    def test_unique_packed_topk_mask_matches_generic_tie_path(self):
+        import jax.numpy as jnp
+        import numpy as np
+
+        from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
+            exact_topk_keep_mask,
+            pack_topk_key,
+        )
+
+        score = jnp.asarray([[0.5, 0.25, 0.5, -0.125, 0.25]], dtype=jnp.float32)
+        indices = jnp.asarray([[4, 1, 3, 0, 2]], dtype=jnp.int32)
+        packed = pack_topk_key(
+            score,
+            indices,
+            fxp_fraction_bits=16,
+            original_token_count=5,
+        )
+        active = jnp.ones((1, 5, 1), dtype=jnp.float32)
+        generic = np.asarray(exact_topk_keep_mask(packed, active, 3))
+        unique = np.asarray(exact_topk_keep_mask(packed, active, 3, unique_keys=True))
+        np.testing.assert_array_equal(unique, generic)
 
     def test_compact_topk_moves_matching_token_payload(self):
         import jax.numpy as jnp

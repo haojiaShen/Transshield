@@ -238,6 +238,18 @@ The runner keeps two compatible secure-pruning graph modes:
 
 - `--spu-secure-pruning-mode mask` keeps the historical 196-spatial-token mask graph for rollback and A/B checks.
 - `--spu-secure-pruning-mode compact` uses a fixed bitonic schedule to move token payloads with their secret scores and then runs later blocks at 137/96/67 spatial tokens. Uniform-attention blocks account for the omitted logical zero-token contribution before averaging.
+- `--spu-final-block-cls-only` is an optional uniform-attention optimization: the final block computes the selected-token value aggregate and the CLS output only. When the last block is also a pruning point, it builds the exact keep mask but skips the final oblivious sort of the 384-dimensional token payload. Omit the flag to restore the previous graph for A/B checks.
+
+Uniform-attention blocks also project their shared mean-V output once and then
+broadcast the projected value. This removes repeated identical secure matrix
+multiplications without changing the graph's mathematical result or any
+privacy boundary.
+
+The CLS-only switch does not change weights, depth, keep counts, parameter
+visibility, input-share loading, or the final-logits-only reveal policy. It is
+restricted to `uniform` attention because only that policy has a token-shared
+value aggregate that makes the unused spatial outputs removable without an
+attention-matrix approximation.
 
 `--spu-compile-cache-dir PATH` enables a content-addressed cache across fresh
 runner processes. Cache entries contain the compiled SPU executable and public

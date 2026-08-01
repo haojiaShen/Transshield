@@ -166,6 +166,7 @@ def parse_candidate_result(config: ShowcaseConfig, artifacts: dict[str, Path], e
                 "spu_activation_override": config.runner_profile.spu_activation_override,
                 "spu_activation_clip_value": config.runner_profile.spu_activation_clip_value,
                 "spu_secure_pruning_mode": config.runner_profile.spu_secure_pruning_mode,
+                "spu_final_block_cls_only": config.runner_profile.spu_final_block_cls_only,
             },
         },
         "artifacts": {
@@ -227,6 +228,8 @@ def run_spu_live_demo(config: ShowcaseConfig, share0_bytes: bytes, share1_bytes:
         "--spu-compile-cache-dir",
         str(config.runner_profile.spu_compile_cache_dir),
     ]
+    if config.runner_profile.spu_final_block_cls_only:
+        command.append("--spu-final-block-cls-only")
     started = time.perf_counter()
     try:
         with artifacts["runner_log_path"].open("w", encoding="utf-8") as handle:

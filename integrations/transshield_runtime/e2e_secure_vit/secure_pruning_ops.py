@@ -90,6 +90,28 @@ def logical_uniform_mean(value, dropped_zero_value, logical_token_count: int):
     return value_sum / logical_token_count
 
 
+def pack_topk_key(
+    score,
+    original_indices,
+    *,
+    fxp_fraction_bits: int,
+    original_token_count: int,
+):
+    """Pack a fixed-point score with the public lowest-original-index tie rule."""
+    import jax.numpy as jnp
+
+    original_token_count = int(original_token_count)
+    if tuple(original_indices.shape) != tuple(score.shape):
+        raise ValueError(
+            f"original index shape {original_indices.shape} does not match score shape {score.shape}"
+        )
+    tie_unit = 2.0 ** (-int(fxp_fraction_bits))
+    return (
+        score * float(original_token_count + 1)
+        + (float(original_token_count) - original_indices.astype(jnp.asarray(score).dtype)) * tie_unit
+    )
+
+
 def compact_topk_tokens(
     score,
     spatial_tokens,
@@ -123,10 +145,11 @@ def compact_topk_tokens(
             f"original index shape {original_indices.shape} does not match score shape {score.shape}"
         )
 
-    tie_unit = 2.0 ** (-int(fxp_fraction_bits))
-    packed_key = (
-        score * float(original_token_count + 1)
-        + (float(original_token_count) - original_indices.astype(score.dtype)) * tie_unit
+    packed_key = pack_topk_key(
+        score,
+        original_indices,
+        fxp_fraction_bits=fxp_fraction_bits,
+        original_token_count=original_token_count,
     )
 
     padded_count = _next_power_of_two(token_count)

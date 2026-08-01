@@ -581,6 +581,7 @@ def command_run(args):
             ),
             token_recycle_scale=args.spu_token_recycle_scale,
             secure_pruning_mode=args.spu_secure_pruning_mode,
+            final_block_cls_only=args.spu_final_block_cls_only,
             compile_cache_dir=(
                 Path(args.spu_compile_cache_dir).expanduser().resolve()
                 if args.spu_compile_cache_dir
@@ -731,6 +732,7 @@ def command_run(args):
             "spu_activation_clip_value": float(args.spu_activation_clip_value),
             "spu_token_recycle_scale": float(args.spu_token_recycle_scale),
             "spu_secure_pruning_mode": args.spu_secure_pruning_mode,
+            "spu_final_block_cls_only": bool(args.spu_final_block_cls_only),
             "spu_compile_cache_dir": args.spu_compile_cache_dir or None,
             "spu_token_ratio_base_override": float(getattr(args, "spu_token_ratio_base_override", 0.0)),
             "static_forward_metadata": spu_metadata,
@@ -829,6 +831,7 @@ def command_run(args):
             "spu_activation_clip_value": float(args.spu_activation_clip_value),
             "spu_token_recycle_scale": float(args.spu_token_recycle_scale),
             "spu_secure_pruning_mode": args.spu_secure_pruning_mode,
+            "spu_final_block_cls_only": bool(args.spu_final_block_cls_only),
             "spu_compile_cache_dir": args.spu_compile_cache_dir or None,
             "spu_token_ratio_base_override": float(getattr(args, "spu_token_ratio_base_override", 0.0)),
             "runtime_pruning_keep_mask_pt": (
@@ -1812,6 +1815,14 @@ def build_parser():
         help=(
             "mask preserves the original fixed 196-token graph; compact obliviously sorts and physically "
             "shrinks the secure token dimension after each pruning stage."
+        ),
+    )
+    run_parser.add_argument(
+        "--spu-final-block-cls-only",
+        action="store_true",
+        help=(
+            "For uniform attention, compute only the CLS output after the final block's V aggregation. "
+            "This preserves final-logit semantics while skipping unused spatial-token projection and MLP outputs."
         ),
     )
     run_parser.add_argument(

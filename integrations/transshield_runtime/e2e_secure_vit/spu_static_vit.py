@@ -8,6 +8,7 @@ from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
     compact_topk_tokens,
     exact_topk_keep_mask,
     logical_uniform_mean,
+    pack_topk_key,
 )
 from integrations.transshield_runtime.e2e_secure_vit.spu_compile_cache import (
     get_spu_compile_cache_stats,
@@ -37,6 +38,7 @@ def run_static_vit_forward_spu(
     pruning_metadata=None,
     token_recycle_scale: float = 0.0,
     secure_pruning_mode: str = "mask",
+    final_block_cls_only: bool = False,
     compile_cache_dir=None,
     performance_metadata=None,
 ):
@@ -84,6 +86,9 @@ def run_static_vit_forward_spu(
         raise ValueError(f"unsupported secure_pruning_mode: {secure_pruning_mode}")
     if secure_pruning_mode == "compact" and token_recycle_scale != 0.0:
         raise ValueError("secure_pruning_mode=compact currently requires token_recycle_scale=0")
+    final_block_cls_only = bool(final_block_cls_only)
+    if final_block_cls_only and attention_policy != "uniform":
+        raise ValueError("final_block_cls_only currently requires attention_policy=uniform")
     fxp_fraction_bits = int(runtime_config.get("fxp_fraction_bits", 0))
     if secure_pruning_mode == "compact" and fxp_fraction_bits <= 0:
         raise ValueError("secure_pruning_mode=compact requires positive SPU fxp_fraction_bits")
@@ -302,6 +307,7 @@ def run_static_vit_forward_spu(
         block_calibration=None,
         capture_probe=False,
         logical_token_count=None,
+        output_cls_only=False,
     ):
         (
             norm1_weight,
@@ -322,7 +328,10 @@ def run_static_vit_forward_spu(
         # Detect decomposed LRD weights (tuple of down_weight, up_weight)
         _use_decomposed = isinstance(qkv_weight, tuple)
         block_input = x
-        residual = x
+        output_cls_only = bool(output_cls_only)
+        if output_cls_only and attention_policy != "uniform":
+            raise ValueError("output_cls_only currently requires uniform attention")
+        residual = x[:, :1] if output_cls_only else x
         norm1_calibration = None if block_calibration is None else block_calibration[:2]
         norm2_calibration = None if block_calibration is None else block_calibration[2:]
         norm1_out = layer_norm(x, norm1_weight, norm1_bias, norm1_calibration)
@@ -365,8 +374,10 @@ def run_static_vit_forward_spu(
             if dropped_value is not None:
                 dropped_value = jnp.reshape(dropped_value, (1, 1, num_heads, head_dim))
                 dropped_value = jnp.transpose(dropped_value, (0, 2, 1, 3))
-            mean_value = logical_uniform_mean(value, dropped_value, logical_token_count)
-            attn_out = jnp.broadcast_to(mean_value, (batch, num_heads, token_count, head_dim))
+            # Uniform attention gives every query the same mean V.  Project
+            # that one shared output before broadcasting instead of repeating
+            # the identical secure projection once per token.
+            attn_out = logical_uniform_mean(value, dropped_value, logical_token_count)
         else:
             if _use_decomposed:
                 qkv = decomposed_linear(norm1_out, qkv_weight[0], qkv_weight[1], qkv_bias)
@@ -382,11 +393,17 @@ def run_static_vit_forward_spu(
                 attn = attention_softmax(attn)
                 attn_out = jnp.matmul(attn, value)
         attn_out = jnp.transpose(attn_out, (0, 2, 1, 3))
-        attn_out = jnp.reshape(attn_out, (batch, token_count, channels))
+        output_token_count = 1 if attention_policy == "uniform" else token_count
+        attn_out = jnp.reshape(attn_out, (batch, output_token_count, channels))
         if _use_decomposed:
             projected_attn_out = decomposed_linear(attn_out, proj_weight[0], proj_weight[1], proj_bias)
         else:
             projected_attn_out = linear(attn_out, proj_weight, proj_bias)
+        if attention_policy == "uniform" and not output_cls_only:
+            projected_attn_out = jnp.broadcast_to(
+                projected_attn_out,
+                (batch, token_count, channels),
+            )
         x = residual + projected_attn_out
 
         residual = x
@@ -708,6 +725,7 @@ def run_static_vit_forward_spu(
 
         for block_index, block_param in enumerate(block_params):
             block_calibration = None if not block_calibrations else block_calibrations[block_index]
+            output_cls_only = final_block_cls_only and block_index == len(block_params) - 1
             if block_index in loc_set:
                 # Run PredictorLG on spatial tokens
                 spatial_x = x[:, 1:]
@@ -721,13 +739,25 @@ def run_static_vit_forward_spu(
                 # Apply spatial mask with Dropped-Token Context Recycling
                 x = _apply_spatial_mask_with_recycle(x, prev_decision, keep_score)
                 # Run block
-                x = block_forward(x, block_param, block_calibration)
+                x = block_forward(
+                    x,
+                    block_param,
+                    block_calibration,
+                    output_cls_only=output_cls_only,
+                )
                 # Apply spatial mask again (post-block) — no recycling needed here
-                x = apply_spatial_mask(x, prev_decision)
+                if not output_cls_only:
+                    x = apply_spatial_mask(x, prev_decision)
                 stage_index += 1
             else:
-                x = block_forward(x, block_param, block_calibration)
-                x = apply_spatial_mask(x, prev_decision)
+                x = block_forward(
+                    x,
+                    block_param,
+                    block_calibration,
+                    output_cls_only=output_cls_only,
+                )
+                if not output_cls_only:
+                    x = apply_spatial_mask(x, prev_decision)
 
         final_calibration = None if layer_norm_calibration is None else layer_norm_calibration["final_norm"]
         x = layer_norm(x, norm_weight, norm_bias, final_calibration)
@@ -785,14 +815,32 @@ def run_static_vit_forward_spu(
                     all_active,
                     predictor_params[stage_index],
                 )
-                spatial_x, original_indices = compact_topk_tokens(
-                    keep_score,
-                    spatial_x,
-                    original_indices,
-                    keep_counts[stage_index],
-                    fxp_fraction_bits=fxp_fraction_bits,
-                    original_token_count=initial_spatial_token_count,
-                )
+                if final_block_cls_only and block_index == len(block_params) - 1:
+                    # The final block only needs the selected-token V aggregate
+                    # for CLS.  Keep the already compact physical shape and
+                    # mask the last-stage drops instead of sorting the entire
+                    # 384-dimensional token payload one final time.
+                    packed_score = pack_topk_key(
+                        keep_score,
+                        original_indices,
+                        fxp_fraction_bits=fxp_fraction_bits,
+                        original_token_count=initial_spatial_token_count,
+                    )
+                    final_keep_mask = exact_topk_keep_mask(
+                        packed_score,
+                        all_active,
+                        keep_counts[stage_index],
+                    )
+                    spatial_x = spatial_x * final_keep_mask.astype(spatial_x.dtype)
+                else:
+                    spatial_x, original_indices = compact_topk_tokens(
+                        keep_score,
+                        spatial_x,
+                        original_indices,
+                        keep_counts[stage_index],
+                        fxp_fraction_bits=fxp_fraction_bits,
+                        original_token_count=initial_spatial_token_count,
+                    )
                 x = jnp.concatenate([x[:, :1], spatial_x], axis=1)
                 stage_index += 1
 
@@ -801,6 +849,9 @@ def run_static_vit_forward_spu(
                 block_param,
                 block_calibration,
                 logical_token_count=logical_token_count,
+                output_cls_only=(
+                    final_block_cls_only and block_index == len(block_params) - 1
+                ),
             )
 
         final_calibration = None if layer_norm_calibration is None else layer_norm_calibration["final_norm"]
@@ -981,7 +1032,8 @@ def run_static_vit_forward_spu(
             and secure_pruning_mode == "compact"
             and block_index in pruning_loc
         ):
-            physical_token_count = 1 + int(token_keep_counts_raw[pruning_stage_index])
+            if not (final_block_cls_only and block_index == int(metadata["depth"]) - 1):
+                physical_token_count = 1 + int(token_keep_counts_raw[pruning_stage_index])
             pruning_stage_index += 1
         planned_block_token_counts.append(physical_token_count)
     if external_keep_masks_np is not None:
@@ -1417,6 +1469,8 @@ def run_static_vit_forward_spu(
                 "chunks": chunk_timings,
                 "compile_cache": get_spu_compile_cache_stats(),
                 "secure_pruning_mode": secure_pruning_mode,
+                "uniform_attention_projection_fused": attention_policy == "uniform",
+                "final_block_cls_only": final_block_cls_only,
                 "logical_block_token_positions": int(
                     logical_token_count * int(metadata["depth"])
                 ),

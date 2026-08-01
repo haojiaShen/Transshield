@@ -63,6 +63,27 @@ class SecurePruningOpsTests(unittest.TestCase):
         )
         np.testing.assert_array_equal(np.asarray(compact_indices), np.asarray([[1, 3]]))
 
+    def test_packed_topk_key_preserves_score_then_original_index_order(self):
+        import jax.numpy as jnp
+        import numpy as np
+
+        from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
+            pack_topk_key,
+        )
+
+        score = jnp.asarray([[0.25, 0.5, 0.5, 0.125]], dtype=jnp.float32)
+        indices = jnp.asarray([[4, 3, 1, 0]], dtype=jnp.int32)
+        packed = np.asarray(
+            pack_topk_key(
+                score,
+                indices,
+                fxp_fraction_bits=16,
+                original_token_count=5,
+            )
+        )
+        order = np.argsort(-packed, axis=1)
+        np.testing.assert_array_equal(order, np.asarray([[2, 1, 0, 3]]))
+
     def test_logical_uniform_mean_matches_explicit_zero_token_outputs(self):
         import jax.numpy as jnp
         import numpy as np

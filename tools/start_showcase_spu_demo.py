@@ -209,6 +209,15 @@ def build_parser():
         default=None,
         help="Override the content-addressed SPU compile-cache directory for this launch.",
     )
+    parser.add_argument(
+        "--final-block-cls-only",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help=(
+            "Enable the uniform-attention final-block CLS-only graph. "
+            "Use --no-final-block-cls-only for rollback A/B runs."
+        ),
+    )
     parser.add_argument("--skip-spu-start", action="store_true")
     return parser
 
@@ -223,6 +232,10 @@ def main():
     if args.spu_compile_cache_dir is not None:
         os.environ["TRANSSHIELD_SHOWCASE_SPU_COMPILE_CACHE_DIR"] = str(
             args.spu_compile_cache_dir.expanduser().resolve()
+        )
+    if args.final_block_cls_only is not None:
+        os.environ["TRANSSHIELD_SHOWCASE_SPU_FINAL_BLOCK_CLS_ONLY"] = (
+            "1" if args.final_block_cls_only else "0"
         )
     require_dist()
     if args.runtime_mode == "spu":

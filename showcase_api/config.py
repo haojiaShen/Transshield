@@ -43,6 +43,17 @@ def getenv_float(name: str, default: float) -> float:
     return value
 
 
+def getenv_bool(name: str, default: bool) -> bool:
+    raw = os.environ.get(name, "").strip().lower()
+    if not raw:
+        return default
+    if raw in {"1", "true", "yes", "on"}:
+        return True
+    if raw in {"0", "false", "no", "off"}:
+        return False
+    return default
+
+
 @dataclass(frozen=True)
 class RunnerProfile:
     static_depth_limit: int
@@ -53,6 +64,7 @@ class RunnerProfile:
     spu_activation_override: str
     spu_activation_clip_value: float
     spu_secure_pruning_mode: str
+    spu_final_block_cls_only: bool
     spu_compile_cache_dir: Path
 
 
@@ -147,6 +159,10 @@ def load_showcase_config() -> ShowcaseConfig:
     eval_crop_pct = getenv_float("TRANSSHIELD_SHOWCASE_EVAL_CROP_PCT", DEFAULT_EVAL_CROP_PCT)
     if eval_crop_pct <= 0:
         eval_crop_pct = DEFAULT_EVAL_CROP_PCT
+    spu_attention_policy = (
+        os.environ.get("TRANSSHIELD_SHOWCASE_SPU_ATTENTION_POLICY", "uniform").strip()
+        or "uniform"
+    )
 
     threshold_payload = load_json(threshold_source_json)
     communication_payload = load_json(communication_json)
@@ -200,11 +216,7 @@ def load_showcase_config() -> ShowcaseConfig:
                 "exact",
             ).strip()
             or "exact",
-            spu_attention_policy=os.environ.get(
-                "TRANSSHIELD_SHOWCASE_SPU_ATTENTION_POLICY",
-                "uniform",
-            ).strip()
-            or "uniform",
+            spu_attention_policy=spu_attention_policy,
             spu_activation_override=os.environ.get(
                 "TRANSSHIELD_SHOWCASE_SPU_ACTIVATION_OVERRIDE",
                 "fixed_square",
@@ -216,6 +228,10 @@ def load_showcase_config() -> ShowcaseConfig:
                 "compact",
             ).strip()
             or "compact",
+            spu_final_block_cls_only=getenv_bool(
+                "TRANSSHIELD_SHOWCASE_SPU_FINAL_BLOCK_CLS_ONLY",
+                spu_attention_policy == "uniform",
+            ),
             spu_compile_cache_dir=getenv_path(
                 "TRANSSHIELD_SHOWCASE_SPU_COMPILE_CACHE_DIR",
                 REPO_ROOT / "logs" / "showcase_runtime" / "spu_compile_cache",

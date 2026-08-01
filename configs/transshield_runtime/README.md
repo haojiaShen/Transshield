@@ -27,8 +27,13 @@ python tools/start_showcase_spu_demo.py --host 0.0.0.0 --port 7860
 python tools/start_showcase_spu_demo.py \
   --host 127.0.0.1 --port 7862 --daemon \
   --secure-pruning-mode compact \
+  --final-block-cls-only \
   --spu-template configs/transshield_runtime/2pc.template.json
 ```
+
+正式 `uniform` attention 配置默认开启最后一层 CLS-only 图；使用
+`--no-final-block-cls-only` 可恢复旧图做 A/B。该开关不改变权重、深度、
+保留 token 数、秘密参数/秘密输入状态或最终只公开 logits 的策略。
 
 将 `compact` 换成 `mask` 可复测旧形状图；将模板换成
 `2pc_fm32.template.json` 可做 FM32 候选测试。FM32 会改变定点精度，必须

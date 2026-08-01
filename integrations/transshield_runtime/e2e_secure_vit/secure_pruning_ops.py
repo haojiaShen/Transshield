@@ -13,6 +13,37 @@ def _next_power_of_two(value: int) -> int:
     return result
 
 
+def normalize_pruning_schedule(
+    pruning_loc,
+    token_keep_counts,
+    *,
+    depth: int,
+    max_token_count=None,
+):
+    """Validate and normalize the public cumulative pruning schedule."""
+    depth = int(depth)
+    locations = tuple(int(value) for value in pruning_loc)
+    keep_counts = tuple(int(value) for value in token_keep_counts)
+    if len(locations) != len(keep_counts):
+        raise ValueError(
+            "pruning location/count length mismatch: "
+            f"{len(locations)} locations vs {len(keep_counts)} counts"
+        )
+    if any(location < 0 or location >= depth for location in locations):
+        raise ValueError(f"pruning locations must be within executed depth={depth}: {locations}")
+    if any(left >= right for left, right in zip(locations, locations[1:])):
+        raise ValueError(f"pruning locations must be strictly increasing: {locations}")
+    if any(count <= 0 for count in keep_counts):
+        raise ValueError(f"token keep counts must be positive: {keep_counts}")
+    if max_token_count is not None and any(count > int(max_token_count) for count in keep_counts):
+        raise ValueError(
+            f"token keep counts cannot exceed {int(max_token_count)}: {keep_counts}"
+        )
+    if any(left < right for left, right in zip(keep_counts, keep_counts[1:])):
+        raise ValueError(f"cumulative token keep counts must be non-increasing: {keep_counts}")
+    return locations, keep_counts
+
+
 def bitonic_sort_desc(values):
     """Sort ``[batch, token]`` values descending with one comparison per pair."""
     import jax.numpy as jnp

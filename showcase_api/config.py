@@ -65,6 +65,7 @@ class RunnerProfile:
     spu_activation_clip_value: float
     spu_secure_pruning_mode: str
     spu_final_block_cls_only: bool
+    spu_uniform_attention_value_fusion: bool
     spu_compile_cache_dir: Path
 
 
@@ -230,6 +231,10 @@ def load_showcase_config() -> ShowcaseConfig:
             or "compact",
             spu_final_block_cls_only=getenv_bool(
                 "TRANSSHIELD_SHOWCASE_SPU_FINAL_BLOCK_CLS_ONLY",
+                spu_attention_policy == "uniform",
+            ),
+            spu_uniform_attention_value_fusion=getenv_bool(
+                "TRANSSHIELD_SHOWCASE_SPU_UNIFORM_ATTENTION_VALUE_FUSION",
                 spu_attention_policy == "uniform",
             ),
             spu_compile_cache_dir=getenv_path(

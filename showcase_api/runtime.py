@@ -167,6 +167,9 @@ def parse_candidate_result(config: ShowcaseConfig, artifacts: dict[str, Path], e
                 "spu_activation_clip_value": config.runner_profile.spu_activation_clip_value,
                 "spu_secure_pruning_mode": config.runner_profile.spu_secure_pruning_mode,
                 "spu_final_block_cls_only": config.runner_profile.spu_final_block_cls_only,
+                "spu_uniform_attention_value_fusion": (
+                    config.runner_profile.spu_uniform_attention_value_fusion
+                ),
             },
         },
         "artifacts": {
@@ -230,6 +233,8 @@ def run_spu_live_demo(config: ShowcaseConfig, share0_bytes: bytes, share1_bytes:
     ]
     if config.runner_profile.spu_final_block_cls_only:
         command.append("--spu-final-block-cls-only")
+    if config.runner_profile.spu_uniform_attention_value_fusion:
+        command.append("--spu-uniform-attention-value-fusion")
     started = time.perf_counter()
     try:
         with artifacts["runner_log_path"].open("w", encoding="utf-8") as handle:

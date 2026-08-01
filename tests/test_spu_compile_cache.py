@@ -44,6 +44,47 @@ class SpuCompileCacheTests(unittest.TestCase):
             self.assertEqual(stats["hits"], 1)
             self.assertEqual(stats["errors"], 0)
 
+    def test_cache_hit_refreshes_runtime_input_and_output_names(self):
+        import numpy as np
+        from spu import spu_pb2
+        from spu.utils import frontend
+
+        from integrations.transshield_runtime.e2e_secure_vit.spu_compile_cache import (
+            get_spu_compile_cache_stats,
+            install_spu_compile_cache,
+            reset_spu_compile_cache_stats,
+        )
+
+        def add_one(value):
+            return value + 1.0
+
+        with tempfile.TemporaryDirectory(prefix="transshield_spu_compile_cache_names_test_") as cache_dir:
+            install_spu_compile_cache(cache_dir, namespace="unit-test-runtime-names-v1")
+            reset_spu_compile_cache_stats()
+            common = (
+                frontend.Kind.JAX,
+                add_one,
+                (np.zeros((2,), dtype=np.float32),),
+                {},
+            )
+            frontend.compile(
+                *common,
+                ["input-first"],
+                [spu_pb2.Visibility.VIS_SECRET],
+                lambda output: ["output-first"],
+            )
+            executable, _ = frontend.compile(
+                *common,
+                ["input-second"],
+                [spu_pb2.Visibility.VIS_SECRET],
+                lambda output: ["output-second"],
+            )
+            stats = get_spu_compile_cache_stats()
+            self.assertEqual(stats["misses"], 1)
+            self.assertEqual(stats["hits"], 1)
+            self.assertEqual(list(executable.input_names), ["input-second"])
+            self.assertEqual(list(executable.output_names), ["output-second"])
+
 
 if __name__ == "__main__":
     unittest.main()

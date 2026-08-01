@@ -12,11 +12,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+import marshal
 import os
 import pickle
 import sys
 import time
-from functools import wraps
+from functools import partial, wraps
 from importlib import metadata as importlib_metadata
 from pathlib import Path
 
@@ -80,12 +81,26 @@ def _cache_key(
     static_argnames,
     copts,
 ) -> str:
-    import cloudpickle
     import jax
 
-    function_digest = hashlib.sha256(cloudpickle.dumps(fn, protocol=pickle.HIGHEST_PROTOCOL)).hexdigest()
+    code = getattr(fn, "__code__", None)
+    if code is None:
+        import cloudpickle
+
+        function_bytes = cloudpickle.dumps(fn, protocol=pickle.HIGHEST_PROTOCOL)
+    else:
+        function_bytes = b"\0".join(
+            [
+                str(getattr(fn, "__module__", "")).encode("utf-8"),
+                str(getattr(fn, "__qualname__", "")).encode("utf-8"),
+                marshal.dumps(code),
+                repr(getattr(fn, "__defaults__", None)).encode("utf-8"),
+                repr(getattr(fn, "__kwdefaults__", None)).encode("utf-8"),
+            ]
+        )
+    function_digest = hashlib.sha256(function_bytes).hexdigest()
     payload = {
-        "cache_format": 1,
+        "cache_format": 2,
         "namespace": _CACHE_NAMESPACE,
         "python": list(sys.version_info[:3]),
         "jax": str(jax.__version__),
@@ -102,7 +117,8 @@ def _cache_key(
     return hashlib.sha256(encoded).hexdigest()
 
 
-def _load_entry(path: Path):
+def _load_entry(path: Path, fn, input_names, output_name_gen):
+    import jax
     from spu import spu_pb2
 
     payload = pickle.loads(path.read_bytes())
@@ -110,7 +126,14 @@ def _load_entry(path: Path):
         raise ValueError("unsupported SPU compile-cache format")
     executable = spu_pb2.ExecutableProto()
     executable.ParseFromString(payload["executable"])
-    return executable, payload["output"]
+    output = payload["output"]
+    output_flat, _ = jax.tree_util.tree_flatten(output)
+    del executable.input_names[:]
+    executable.input_names.extend(input_names)
+    del executable.output_names[:]
+    executable.output_names.extend(output_name_gen(output_flat))
+    executable.name = fn.func.__name__ if isinstance(fn, partial) else fn.__name__
+    return executable, output
 
 
 def _write_entry(path: Path, executable, output):
@@ -130,6 +153,9 @@ def install_spu_compile_cache(cache_dir: str | Path | None, *, namespace: str = 
     global _ORIGINAL_COMPILE, _CACHE_DIR, _CACHE_NAMESPACE
 
     if not cache_dir:
+        _CACHE_DIR = None
+        _CACHE_NAMESPACE = ""
+        _STATS["enabled"] = False
         return False
     cache_path = Path(cache_dir).expanduser().resolve()
     cache_path.mkdir(parents=True, exist_ok=True)
@@ -161,6 +187,19 @@ def install_spu_compile_cache(cache_dir: str | Path | None, *, namespace: str = 
             from spu import spu_pb2
 
             copts = spu_pb2.CompilerOptions()
+        if _CACHE_DIR is None:
+            return _ORIGINAL_COMPILE(
+                kind,
+                fn,
+                m_args,
+                m_kwargs,
+                input_names,
+                input_vis,
+                outputNameGen,
+                static_argnums=static_argnums,
+                static_argnames=static_argnames,
+                copts=copts,
+            )
         try:
             key = _cache_key(
                 kind,
@@ -191,7 +230,7 @@ def install_spu_compile_cache(cache_dir: str | Path | None, *, namespace: str = 
         if entry_path.is_file():
             started = time.perf_counter()
             try:
-                result = _load_entry(entry_path)
+                result = _load_entry(entry_path, fn, input_names, outputNameGen)
                 _STATS["hits"] += 1
                 _STATS["cache_read_sec"] += time.perf_counter() - started
                 return result

@@ -1,5 +1,6 @@
 import hashlib
 import json
+import pickle
 import time
 from pathlib import Path
 
@@ -8,6 +9,7 @@ from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
     compact_topk_tokens,
     exact_topk_keep_mask,
     logical_uniform_mean,
+    normalize_pruning_schedule,
     pack_topk_key,
 )
 from integrations.transshield_runtime.e2e_secure_vit.spu_compile_cache import (
@@ -39,6 +41,7 @@ def run_static_vit_forward_spu(
     token_recycle_scale: float = 0.0,
     secure_pruning_mode: str = "mask",
     final_block_cls_only: bool = False,
+    uniform_attention_value_fusion: bool = False,
     compile_cache_dir=None,
     performance_metadata=None,
 ):
@@ -50,24 +53,6 @@ def run_static_vit_forward_spu(
     runtime_started = time.perf_counter()
     config = load_json(config_path)
     runtime_config = config["devices"]["SPU"]["config"]["runtime_config"]
-    pruning_ops_path = Path(__file__).with_name("secure_pruning_ops.py")
-    install_spu_compile_cache(
-        compile_cache_dir,
-        namespace=json.dumps(
-            {
-                "runtime_config": runtime_config,
-                "secure_pruning_mode": str(secure_pruning_mode),
-                "spu_static_vit_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-                "secure_pruning_ops_sha256": hashlib.sha256(pruning_ops_path.read_bytes()).hexdigest(),
-            },
-            sort_keys=True,
-            separators=(",", ":"),
-        ),
-    )
-    reset_spu_compile_cache_stats()
-    init_started = time.perf_counter()
-    ppd.init(config["nodes"], config["devices"])
-    init_sec = time.perf_counter() - init_started
 
     num_heads = int(metadata["num_heads"])
     head_dim = int(metadata["head_dim"])
@@ -77,8 +62,13 @@ def run_static_vit_forward_spu(
     attention_policy_eps = float(metadata["attention_policy_eps"])
     activation_kind = str(metadata["activation_kind"])
     use_mask_pruning = bool(metadata.get("use_mask_pruning", False))
-    pruning_loc = tuple(int(value) for value in metadata.get("pruning_loc", ()))
-    token_keep_counts_raw = list(metadata.get("token_keep_counts", ()))
+    pruning_loc, token_keep_counts = normalize_pruning_schedule(
+        metadata.get("pruning_loc", ()),
+        metadata.get("token_keep_counts", ()),
+        depth=int(metadata["depth"]),
+        max_token_count=int(params[3].shape[1]) - 1,
+    )
+    token_keep_counts_raw = list(token_keep_counts)
     activation_clip_value = float(activation_clip_value)
     token_recycle_scale = float(token_recycle_scale)
     secure_pruning_mode = str(secure_pruning_mode)
@@ -89,6 +79,9 @@ def run_static_vit_forward_spu(
     final_block_cls_only = bool(final_block_cls_only)
     if final_block_cls_only and attention_policy != "uniform":
         raise ValueError("final_block_cls_only currently requires attention_policy=uniform")
+    uniform_attention_value_fusion = bool(uniform_attention_value_fusion)
+    if uniform_attention_value_fusion and attention_policy != "uniform":
+        raise ValueError("uniform_attention_value_fusion requires attention_policy=uniform")
     fxp_fraction_bits = int(runtime_config.get("fxp_fraction_bits", 0))
     if secure_pruning_mode == "compact" and fxp_fraction_bits <= 0:
         raise ValueError("secure_pruning_mode=compact requires positive SPU fxp_fraction_bits")
@@ -138,6 +131,50 @@ def run_static_vit_forward_spu(
             raise ValueError("external_keep_masks_np currently requires attention_policy=uniform")
         if params_mode not in {"public", "secret"}:
             raise ValueError("external_keep_masks_np currently supports only public or secret SPU params mode")
+
+    pruning_ops_path = Path(__file__).with_name("secure_pruning_ops.py")
+    calibration_sha256 = (
+        None
+        if layer_norm_calibration is None
+        else hashlib.sha256(
+            pickle.dumps(layer_norm_calibration, protocol=pickle.HIGHEST_PROTOCOL)
+        ).hexdigest()
+    )
+    install_spu_compile_cache(
+        compile_cache_dir,
+        namespace=json.dumps(
+            {
+                "cache_namespace_format": 2,
+                "runtime_config": runtime_config,
+                "graph_options": {
+                    "metadata": metadata,
+                    "params_mode": str(params_mode),
+                    "probe_block_index": probe_block_index,
+                    "block_chunk_size": block_chunk_size,
+                    "layer_norm_chunk_size": layer_norm_chunk_size,
+                    "layer_norm_policy": layer_norm_policy,
+                    "layer_norm_calibration_sha256": calibration_sha256,
+                    "activation_clip_value": activation_clip_value,
+                    "pruning_metadata": pruning_metadata,
+                    "token_recycle_scale": token_recycle_scale,
+                    "secure_pruning_mode": secure_pruning_mode,
+                    "final_block_cls_only": final_block_cls_only,
+                    "uniform_attention_value_fusion": uniform_attention_value_fusion,
+                    "has_external_keep_masks": external_keep_masks_np is not None,
+                    "has_secure_predictor": predictor_params_np is not None,
+                },
+                "spu_static_vit_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                "secure_pruning_ops_sha256": hashlib.sha256(pruning_ops_path.read_bytes()).hexdigest(),
+            },
+            default=str,
+            sort_keys=True,
+            separators=(",", ":"),
+        ),
+    )
+    reset_spu_compile_cache_stats()
+    init_started = time.perf_counter()
+    ppd.init(config["nodes"], config["devices"])
+    init_sec = time.perf_counter() - init_started
 
     def linear(x, weight, bias):
         return jnp.matmul(x, jnp.swapaxes(weight, -1, -2)) + bias
@@ -342,7 +379,7 @@ def run_static_vit_forward_spu(
                 f"logical_token_count={logical_token_count} cannot be smaller than physical token_count={token_count}"
             )
         if attention_policy == "uniform":
-            dropped_value = None
+            dropped_norm1 = None
             if logical_token_count > int(token_count):
                 dropped_norm1 = layer_norm(
                     jnp.zeros((1, 1, channels), dtype=x.dtype),
@@ -350,34 +387,63 @@ def run_static_vit_forward_spu(
                     norm1_bias,
                     norm1_calibration,
                 )
-            if _use_decomposed:
-                # Slice up_weight to extract only V portion
-                up_weight_v = qkv_weight[1][2 * channels :, :]
-                down_weight_v = qkv_weight[0]
-                value_bias_v = qkv_bias[2 * channels : 3 * channels]
-                value = decomposed_linear(norm1_out, down_weight_v, up_weight_v, value_bias_v)
-                if logical_token_count > int(token_count):
-                    dropped_value = decomposed_linear(
-                        dropped_norm1,
-                        down_weight_v,
-                        up_weight_v,
-                        value_bias_v,
+            if uniform_attention_value_fusion:
+                # mean(linear(x)) == linear(mean(x)): aggregate the secret
+                # normalized tokens first, then evaluate V once.  This keeps
+                # the real-valued graph exact while changing fixed-point
+                # truncation order, so it remains an explicit opt-in switch.
+                mean_norm1 = logical_uniform_mean(
+                    norm1_out[:, None, :, :],
+                    None if dropped_norm1 is None else dropped_norm1[:, None, :, :],
+                    logical_token_count,
+                )
+                mean_norm1 = jnp.reshape(mean_norm1, (batch, 1, channels))
+                if _use_decomposed:
+                    value = decomposed_linear(
+                        mean_norm1,
+                        qkv_weight[0],
+                        qkv_weight[1][2 * channels :, :],
+                        qkv_bias[2 * channels : 3 * channels],
                     )
+                else:
+                    value = linear(
+                        mean_norm1,
+                        qkv_weight[2 * channels : 3 * channels, :],
+                        qkv_bias[2 * channels : 3 * channels],
+                    )
+                value = jnp.reshape(value, (batch, 1, num_heads, head_dim))
+                attn_out = jnp.transpose(value, (0, 2, 1, 3))
             else:
-                value_weight = qkv_weight[2 * channels : 3 * channels, :]
-                value_bias = qkv_bias[2 * channels : 3 * channels]
-                value = linear(norm1_out, value_weight, value_bias)
-                if logical_token_count > int(token_count):
-                    dropped_value = linear(dropped_norm1, value_weight, value_bias)
-            value = jnp.reshape(value, (batch, token_count, num_heads, head_dim))
-            value = jnp.transpose(value, (0, 2, 1, 3))
-            if dropped_value is not None:
-                dropped_value = jnp.reshape(dropped_value, (1, 1, num_heads, head_dim))
-                dropped_value = jnp.transpose(dropped_value, (0, 2, 1, 3))
+                dropped_value = None
+                if _use_decomposed:
+                    # Slice up_weight to extract only V portion
+                    up_weight_v = qkv_weight[1][2 * channels :, :]
+                    down_weight_v = qkv_weight[0]
+                    value_bias_v = qkv_bias[2 * channels : 3 * channels]
+                    value = decomposed_linear(norm1_out, down_weight_v, up_weight_v, value_bias_v)
+                    if dropped_norm1 is not None:
+                        dropped_value = decomposed_linear(
+                            dropped_norm1,
+                            down_weight_v,
+                            up_weight_v,
+                            value_bias_v,
+                        )
+                else:
+                    value_weight = qkv_weight[2 * channels : 3 * channels, :]
+                    value_bias = qkv_bias[2 * channels : 3 * channels]
+                    value = linear(norm1_out, value_weight, value_bias)
+                    if dropped_norm1 is not None:
+                        dropped_value = linear(dropped_norm1, value_weight, value_bias)
+                value = jnp.reshape(value, (batch, token_count, num_heads, head_dim))
+                value = jnp.transpose(value, (0, 2, 1, 3))
+                if dropped_value is not None:
+                    dropped_value = jnp.reshape(dropped_value, (1, 1, num_heads, head_dim))
+                    dropped_value = jnp.transpose(dropped_value, (0, 2, 1, 3))
+                attn_out = logical_uniform_mean(value, dropped_value, logical_token_count)
+
             # Uniform attention gives every query the same mean V.  Project
             # that one shared output before broadcasting instead of repeating
             # the identical secure projection once per token.
-            attn_out = logical_uniform_mean(value, dropped_value, logical_token_count)
         else:
             if _use_decomposed:
                 qkv = decomposed_linear(norm1_out, qkv_weight[0], qkv_weight[1], qkv_bias)
@@ -971,6 +1037,8 @@ def run_static_vit_forward_spu(
         return np.zeros((0, 2), dtype=np.float32)
     external_keep_masks_np = None if external_keep_masks_np is None else tuple(external_keep_masks_np)
     using_secure_pruning = predictor_params_np is not None
+    if final_block_cls_only and not using_secure_pruning:
+        raise ValueError("final_block_cls_only currently requires the secure predictor pruning path")
     if using_secure_pruning:
         if external_keep_masks_np is not None:
             raise ValueError("predictor_params_np and external_keep_masks_np are mutually exclusive")
@@ -983,16 +1051,19 @@ def run_static_vit_forward_spu(
         if params_mode not in {"public", "secret"}:
             raise ValueError("predictor_params_np currently supports only public or secret SPU params mode")
         predictor_params_np = tuple(predictor_params_np)
-        if pruning_metadata is None:
-            pruning_metadata = {
-                "pruning_loc": list(pruning_loc),
-                "token_keep_counts": [
-                    int(int(metadata.get('pruning_loc', pruning_loc)[i] is not None) * 1)
-                    for i in range(len(pruning_loc))
-                ],
-            }
-        # Sync closure-level mutable list so SPU closures see concrete Python ints
-        token_keep_counts_raw[:] = [int(x) for x in pruning_metadata.get("token_keep_counts", [])]
+        if pruning_metadata is not None:
+            supplied_loc, supplied_keep_counts = normalize_pruning_schedule(
+                pruning_metadata.get("pruning_loc", ()),
+                pruning_metadata.get("token_keep_counts", ()),
+                depth=int(metadata["depth"]),
+                max_token_count=int(params[3].shape[1]) - 1,
+            )
+            if supplied_loc != pruning_loc or supplied_keep_counts != token_keep_counts:
+                raise ValueError(
+                    "pruning_metadata must match the static forward metadata: "
+                    f"locations {supplied_loc} vs {pruning_loc}, "
+                    f"counts {supplied_keep_counts} vs {token_keep_counts}"
+                )
     predictor_params_ref = predictor_params_np
     if using_secure_pruning and params_mode == "secret":
         predictor_params_ref = secret_identity(predictor_params_np)
@@ -1470,6 +1541,7 @@ def run_static_vit_forward_spu(
                 "compile_cache": get_spu_compile_cache_stats(),
                 "secure_pruning_mode": secure_pruning_mode,
                 "uniform_attention_projection_fused": attention_policy == "uniform",
+                "uniform_attention_value_fused": uniform_attention_value_fusion,
                 "final_block_cls_only": final_block_cls_only,
                 "logical_block_token_positions": int(
                     logical_token_count * int(metadata["depth"])

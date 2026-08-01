@@ -29,6 +29,20 @@ class SecureRuntimeMetadataTest(unittest.TestCase):
         self.assertIn("torch.load(state_dict_path, map_location=\"cpu\"", loader_source)
         self.assertNotIn("host_model_params_materialized = false", loader_source)
 
+    def test_secure_predictor_loader_does_not_claim_pruning_is_bypassed(self):
+        from integrations.transshield_runtime.e2e_secure_vit.static_vit_params import (
+            secure_pruning_unsupported_items,
+        )
+
+        remaining = secure_pruning_unsupported_items(
+            [
+                "intermediate feature reveal",
+                "runtime pruning predictor path",
+                "dynamic masking-pruning inside secure forward",
+            ]
+        )
+        self.assertEqual(remaining, ["intermediate feature reveal"])
+
 
 if __name__ == "__main__":
     unittest.main()

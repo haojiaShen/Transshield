@@ -37,12 +37,6 @@ def resolve_block_activation_params(state_dict, block_index: int, activation_kin
         alpha = scalar_state_value(state_dict, f"{prefix}.alpha", 0.0)
         beta = scalar_state_value(state_dict, f"{prefix}.beta", 1.0)
         return alpha, beta
-        # Fallback: compute from scratch
-        import numpy as np_lib
-        x_min, x_max = -8.0, 8.0
-        bp = np_lib.linspace(x_min, x_max, num_segments + 1).astype(np.float32)
-        vals = (0.5 * bp * (1 + np_lib.tanh(np_lib.sqrt(2 / np_lib.pi) * (bp + 0.044715 * bp**3)))).astype(np.float32)
-        return bp, vals
     raise ValueError(f"unsupported activation kind for SPU backend: {activation_kind}")
 
 
@@ -61,6 +55,34 @@ def normalize_depth_limit(raw_depth_limit: int, full_depth: int = 12) -> int:
     if raw_depth_limit < 0:
         return int(full_depth)
     return max(0, min(raw_depth_limit, int(full_depth)))
+
+
+def pruning_schedule_for_depth(base_rate: float, depth: int):
+    """Return only pruning stages that execute within the selected prefix depth."""
+    base_rate = float(base_rate)
+    if not 0.0 < base_rate <= 1.0:
+        raise ValueError(f"base_rate must be within (0, 1], got {base_rate}")
+    depth = int(depth)
+    full_locations = (3, 6, 9)
+    full_ratios = (
+        base_rate,
+        base_rate**2,
+        base_rate**3,
+    )
+    active = [
+        (location, ratio)
+        for location, ratio in zip(full_locations, full_ratios)
+        if location < depth
+    ]
+    return [location for location, _ in active], [ratio for _, ratio in active]
+
+
+def secure_pruning_unsupported_items(items):
+    implemented = {
+        "runtime pruning predictor path",
+        "dynamic masking-pruning inside secure forward",
+    }
+    return [item for item in items if item not in implemented]
 
 
 def resolve_spu_activation_kind(base_activation_kind: str, activation_override: str) -> str:
@@ -117,8 +139,6 @@ def load_static_vit_spu_params(
         base_rate = token_ratio_base_override
     else:
         base_rate = bundle_base_rate
-    token_ratio = [base_rate, base_rate ** 2, base_rate ** 3]
-    pruning_loc = [3, 6, 9]
     attention_policy = str(attention_policy)
     if attention_policy not in {"smoothed", "standard", "uniform", "identity"}:
         raise ValueError(f"unsupported SPU attention policy: {attention_policy}")
@@ -133,6 +153,7 @@ def load_static_vit_spu_params(
     # Read architecture parameters from args_snapshot (support both teacher and student models)
     full_depth = int(args_snapshot.get("depth", 12))
     depth = normalize_depth_limit(static_depth_limit, full_depth=full_depth)
+    pruning_loc, token_ratio = pruning_schedule_for_depth(base_rate, depth)
     num_heads = int(args_snapshot.get("num_heads", 6))
     embed_dim = int(args_snapshot.get("embed_dim", 384))
     patch_size = int(args_snapshot.get("patch_size", 16))
@@ -350,9 +371,8 @@ def load_static_vit_spu_params_with_predictor(
     metadata["eval_pruning_mode"] = str(args_snapshot.get("eval_pruning_mode", "topk_argsort"))
     metadata["eval_tie_policy"] = str(args_snapshot.get("eval_tie_policy", "lowest_index"))
     if "unsupported_currently_bypassed" in metadata:
-        metadata["unsupported_currently_bypassed"] = [
-            item for item in metadata["unsupported_currently_bypassed"]
-            if item != "runtime pruning predictor path"
-        ]
+        metadata["unsupported_currently_bypassed"] = secure_pruning_unsupported_items(
+            metadata["unsupported_currently_bypassed"]
+        )
 
     return params, predictor_params, metadata

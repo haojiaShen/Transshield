@@ -582,6 +582,7 @@ def command_run(args):
             token_recycle_scale=args.spu_token_recycle_scale,
             secure_pruning_mode=args.spu_secure_pruning_mode,
             final_block_cls_only=args.spu_final_block_cls_only,
+            uniform_attention_value_fusion=args.spu_uniform_attention_value_fusion,
             compile_cache_dir=(
                 Path(args.spu_compile_cache_dir).expanduser().resolve()
                 if args.spu_compile_cache_dir
@@ -733,6 +734,9 @@ def command_run(args):
             "spu_token_recycle_scale": float(args.spu_token_recycle_scale),
             "spu_secure_pruning_mode": args.spu_secure_pruning_mode,
             "spu_final_block_cls_only": bool(args.spu_final_block_cls_only),
+            "spu_uniform_attention_value_fusion": bool(
+                args.spu_uniform_attention_value_fusion
+            ),
             "spu_compile_cache_dir": args.spu_compile_cache_dir or None,
             "spu_token_ratio_base_override": float(getattr(args, "spu_token_ratio_base_override", 0.0)),
             "static_forward_metadata": spu_metadata,
@@ -832,6 +836,9 @@ def command_run(args):
             "spu_token_recycle_scale": float(args.spu_token_recycle_scale),
             "spu_secure_pruning_mode": args.spu_secure_pruning_mode,
             "spu_final_block_cls_only": bool(args.spu_final_block_cls_only),
+            "spu_uniform_attention_value_fusion": bool(
+                args.spu_uniform_attention_value_fusion
+            ),
             "spu_compile_cache_dir": args.spu_compile_cache_dir or None,
             "spu_token_ratio_base_override": float(getattr(args, "spu_token_ratio_base_override", 0.0)),
             "runtime_pruning_keep_mask_pt": (
@@ -1823,6 +1830,15 @@ def build_parser():
         help=(
             "For uniform attention, compute only the CLS output after the final block's V aggregation. "
             "This preserves final-logit semantics while skipping unused spatial-token projection and MLP outputs."
+        ),
+    )
+    run_parser.add_argument(
+        "--spu-uniform-attention-value-fusion",
+        action="store_true",
+        help=(
+            "For uniform attention, average normalized tokens before the V projection. "
+            "This is exact over real arithmetic but changes fixed-point truncation order, "
+            "so it must be accuracy-validated for the selected runtime field."
         ),
     )
     run_parser.add_argument(

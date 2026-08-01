@@ -5,6 +5,53 @@ import unittest
 JAX_AVAILABLE = importlib.util.find_spec("jax") is not None
 
 
+class SecurePruningScheduleTests(unittest.TestCase):
+    def test_static_loader_trims_stages_outside_prefix_depth(self):
+        from integrations.transshield_runtime.e2e_secure_vit.static_vit_params import (
+            pruning_schedule_for_depth,
+        )
+
+        self.assertEqual(pruning_schedule_for_depth(0.7, 1), ([], []))
+        locations, ratios = pruning_schedule_for_depth(0.7, 7)
+        self.assertEqual(locations, [3, 6])
+        self.assertEqual(len(ratios), 2)
+        self.assertAlmostEqual(ratios[0], 0.7)
+        self.assertAlmostEqual(ratios[1], 0.49)
+        with self.assertRaisesRegex(ValueError, "base_rate"):
+            pruning_schedule_for_depth(1.1, 10)
+
+    def test_normalizes_valid_cumulative_schedule(self):
+        from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
+            normalize_pruning_schedule,
+        )
+
+        locations, counts = normalize_pruning_schedule([3, 6, 9], [137, 96, 67], depth=10)
+        self.assertEqual(locations, (3, 6, 9))
+        self.assertEqual(counts, (137, 96, 67))
+
+    def test_rejects_mismatched_or_increasing_schedule(self):
+        from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
+            normalize_pruning_schedule,
+        )
+
+        with self.assertRaisesRegex(ValueError, "length mismatch"):
+            normalize_pruning_schedule([3, 6], [137], depth=10)
+        with self.assertRaisesRegex(ValueError, "non-increasing"):
+            normalize_pruning_schedule([3, 6], [96, 137], depth=10)
+        with self.assertRaisesRegex(ValueError, "cannot exceed"):
+            normalize_pruning_schedule([3], [197], depth=10, max_token_count=196)
+
+    def test_rejects_duplicate_or_out_of_depth_locations(self):
+        from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
+            normalize_pruning_schedule,
+        )
+
+        with self.assertRaisesRegex(ValueError, "strictly increasing"):
+            normalize_pruning_schedule([3, 3], [137, 96], depth=10)
+        with self.assertRaisesRegex(ValueError, "executed depth"):
+            normalize_pruning_schedule([3, 10], [137, 96], depth=10)
+
+
 @unittest.skipUnless(JAX_AVAILABLE, "full JAX/SPU runtime is intentionally absent from lightweight CI")
 class SecurePruningOpsTests(unittest.TestCase):
     def test_exact_topk_mask_uses_lowest_index_for_boundary_ties(self):

@@ -218,6 +218,16 @@ def build_parser():
             "Use --no-final-block-cls-only for rollback A/B runs."
         ),
     )
+    parser.add_argument(
+        "--uniform-attention-value-fusion",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help=(
+            "Average normalized tokens before the uniform-attention V projection. "
+            "Enabled by default for the validated uniform-attention profile; use the "
+            "--no-uniform-attention-value-fusion form for rollback A/B runs."
+        ),
+    )
     parser.add_argument("--skip-spu-start", action="store_true")
     return parser
 
@@ -236,6 +246,10 @@ def main():
     if args.final_block_cls_only is not None:
         os.environ["TRANSSHIELD_SHOWCASE_SPU_FINAL_BLOCK_CLS_ONLY"] = (
             "1" if args.final_block_cls_only else "0"
+        )
+    if args.uniform_attention_value_fusion is not None:
+        os.environ["TRANSSHIELD_SHOWCASE_SPU_UNIFORM_ATTENTION_VALUE_FUSION"] = (
+            "1" if args.uniform_attention_value_fusion else "0"
         )
     require_dist()
     if args.runtime_mode == "spu":

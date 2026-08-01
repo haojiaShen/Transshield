@@ -245,6 +245,13 @@ broadcast the projected value. This removes repeated identical secure matrix
 multiplications without changing the graph's mathematical result or any
 privacy boundary.
 
+`--spu-uniform-attention-value-fusion` additionally uses
+`mean(linear(x)) = linear(mean(x))` to aggregate normalized tokens before the
+V projection. The identity is exact over real arithmetic, but it changes the
+fixed-point truncation order; keep the switch tied to the validated FM64
+profile and re-check logit/probability drift before enabling it for another
+field or fraction-bit setting.
+
 The CLS-only switch does not change weights, depth, keep counts, parameter
 visibility, input-share loading, or the final-logits-only reveal policy. It is
 restricted to `uniform` attention because only that policy has a token-shared

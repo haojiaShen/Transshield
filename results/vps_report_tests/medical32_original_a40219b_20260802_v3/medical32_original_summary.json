@@ -1,0 +1,1586 @@
+{
+  "argmax_accuracy": 0.5,
+  "auc": 0.96484375,
+  "candidate_json": "/opt/transshield-project/results/vps_report_tests/medical32_original_a40219b_20260802_v3/medical32_original.json",
+  "candidate_pt": "/opt/transshield-project/results/vps_report_tests/medical32_original_a40219b_20260802_v3/medical32_original.pt",
+  "candidate_pt_sha256": "acb7b8dcfec2d0d4b8adbed55546be6ee0008637e4f8375a474ed527b51b2f1d",
+  "captured_at_utc": "2026-08-02T15:12:13.146049+00:00",
+  "class1_probability": {
+    "max": 0.8001362085342407,
+    "mean": 0.6703796982765198,
+    "min": 0.5370413661003113
+  },
+  "class_counts": {
+    "0": 16,
+    "1": 16
+  },
+  "dataset_key": "medical_secure_deployment_batch",
+  "elapsed_sec": 1558.2030792236328,
+  "finite_logits": true,
+  "finite_probabilities": true,
+  "manifest_type": "transshield_report_vps_inference_summary_v1",
+  "network": {
+    "after": {
+      "captured_at_utc": "2026-08-02T23:10:19+08:00",
+      "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+      "interface": "lo",
+      "manifest_type": "transshield_vps_network_snapshot_v1",
+      "process": null,
+      "rx_bytes": 364779837931,
+      "tx_bytes": 364779837931
+    },
+    "before": {
+      "captured_at_utc": "2026-08-02T22:44:18+08:00",
+      "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+      "interface": "lo",
+      "manifest_type": "transshield_vps_network_snapshot_v1",
+      "process": null,
+      "rx_bytes": 291357412084,
+      "tx_bytes": 291357412084
+    },
+    "interface": "lo",
+    "loopback_total_bytes_rule": "use tx_delta once; loopback tx and rx mirror the same transferred bytes",
+    "per_sample_gib": 2.1368738335731905,
+    "rx_delta_bytes": 73422425847,
+    "total_bytes": 73422425847,
+    "total_gib": 68.3799626743421,
+    "tx_delta_bytes": 73422425847
+  },
+  "per_sample": [
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 0,
+      "logits": [
+        0.07391357421875,
+        0.2913360595703125
+      ],
+      "probabilities": [
+        0.4458574950695038,
+        0.5541424751281738
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          0.017584195360541344,
+          0.33160126209259033
+        ],
+        "logits_max_abs_error": 0.05632937699556351,
+        "probabilities": [
+          0.42213451862335205,
+          0.577865481376648
+        ],
+        "probabilities_max_abs_error": 0.02372300624847412,
+        "threshold_prediction": 0
+      },
+      "relative_path": "0/00003.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 1,
+      "logits": [
+        0.015869140625,
+        0.3409881591796875
+      ],
+      "probabilities": [
+        0.41942867636680603,
+        0.5805712342262268
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.030717601999640465,
+          0.37293362617492676
+        ],
+        "logits_max_abs_error": 0.046586744487285614,
+        "probabilities": [
+          0.4004354178905487,
+          0.5995646119117737
+        ],
+        "probabilities_max_abs_error": 0.018993377685546875,
+        "threshold_prediction": 0
+      },
+      "relative_path": "0/00035.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 2,
+      "logits": [
+        -0.072265625,
+        0.3995361328125
+      ],
+      "probabilities": [
+        0.3841898441314697,
+        0.6158100962638855
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.14207668602466583,
+          0.44922351837158203
+        ],
+        "logits_max_abs_error": 0.06981106102466583,
+        "probabilities": [
+          0.3563365936279297,
+          0.6436634063720703
+        ],
+        "probabilities_max_abs_error": 0.027853310108184814,
+        "threshold_prediction": 0
+      },
+      "relative_path": "0/00069.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 3,
+      "logits": [
+        -0.0317535400390625,
+        0.36822509765625
+      ],
+      "probabilities": [
+        0.40131744742393494,
+        0.5986825227737427
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.1383887380361557,
+          0.44663870334625244
+        ],
+        "logits_max_abs_error": 0.1066351979970932,
+        "probabilities": [
+          0.35777661204338074,
+          0.6422234177589417
+        ],
+        "probabilities_max_abs_error": 0.043540894985198975,
+        "threshold_prediction": 0
+      },
+      "relative_path": "0/00118.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 4,
+      "logits": [
+        -0.0452117919921875,
+        0.3756103515625
+      ],
+      "probabilities": [
+        0.39632004499435425,
+        0.6036800146102905
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.19939330220222473,
+          0.48916757106781006
+        ],
+        "logits_max_abs_error": 0.15418151021003723,
+        "probabilities": [
+          0.3343532979488373,
+          0.6656467318534851
+        ],
+        "probabilities_max_abs_error": 0.06196674704551697,
+        "threshold_prediction": 1
+      },
+      "relative_path": "0/00157.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 5,
+      "logits": [
+        0.0537872314453125,
+        0.2935943603515625
+      ],
+      "probabilities": [
+        0.44033387303352356,
+        0.559666097164154
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          0.05651741847395897,
+          0.2929648458957672
+        ],
+        "logits_max_abs_error": 0.002730187028646469,
+        "probabilities": [
+          0.4411620497703552,
+          0.5588380098342896
+        ],
+        "probabilities_max_abs_error": 0.000828176736831665,
+        "threshold_prediction": 0
+      },
+      "relative_path": "0/00189.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 6,
+      "logits": [
+        -0.108673095703125,
+        0.4264068603515625
+      ],
+      "probabilities": [
+        0.36933282017707825,
+        0.6306670904159546
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.13300509750843048,
+          0.44471949338912964
+        ],
+        "logits_max_abs_error": 0.02433200180530548,
+        "probabilities": [
+          0.359456330537796,
+          0.6405436992645264
+        ],
+        "probabilities_max_abs_error": 0.009876608848571777,
+        "threshold_prediction": 0
+      },
+      "relative_path": "0/00204.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 7,
+      "logits": [
+        0.0924835205078125,
+        0.2813568115234375
+      ],
+      "probabilities": [
+        0.4529215693473816,
+        0.5470784902572632
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          0.07078041136264801,
+          0.29671627283096313
+        ],
+        "logits_max_abs_error": 0.02170310914516449,
+        "probabilities": [
+          0.4437550902366638,
+          0.5562449097633362
+        ],
+        "probabilities_max_abs_error": 0.009166479110717773,
+        "threshold_prediction": 0
+      },
+      "relative_path": "0/00227.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 8,
+      "logits": [
+        -0.0436553955078125,
+        0.3761138916015625
+      ],
+      "probabilities": [
+        0.39657196402549744,
+        0.603428065776825
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.0961899384856224,
+          0.41123074293136597
+        ],
+        "logits_max_abs_error": 0.052534542977809906,
+        "probabilities": [
+          0.37579837441444397,
+          0.6242015957832336
+        ],
+        "probabilities_max_abs_error": 0.020773589611053467,
+        "threshold_prediction": 0
+      },
+      "relative_path": "0/00259.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 9,
+      "logits": [
+        -0.0819549560546875,
+        0.4051055908203125
+      ],
+      "probabilities": [
+        0.38058626651763916,
+        0.6194137334823608
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.2006789594888687,
+          0.49088576436042786
+        ],
+        "logits_max_abs_error": 0.11872400343418121,
+        "probabilities": [
+          0.33368510007858276,
+          0.666314959526062
+        ],
+        "probabilities_max_abs_error": 0.04690122604370117,
+        "threshold_prediction": 1
+      },
+      "relative_path": "0/00299.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 10,
+      "logits": [
+        0.116912841796875,
+        0.265350341796875
+      ],
+      "probabilities": [
+        0.46295857429504395,
+        0.5370413661003113
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          0.12169341742992401,
+          0.26141977310180664
+        ],
+        "logits_max_abs_error": 0.004780575633049011,
+        "probabilities": [
+          0.4651251435279846,
+          0.5348748564720154
+        ],
+        "probabilities_max_abs_error": 0.002166569232940674,
+        "threshold_prediction": 0
+      },
+      "relative_path": "0/00349.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 11,
+      "logits": [
+        0.0023040771484375,
+        0.3396453857421875
+      ],
+      "probabilities": [
+        0.41645547747612,
+        0.5835445523262024
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.09263796359300613,
+          0.40674781799316406
+        ],
+        "logits_max_abs_error": 0.09494204074144363,
+        "probabilities": [
+          0.3776850402355194,
+          0.622314989566803
+        ],
+        "probabilities_max_abs_error": 0.038770437240600586,
+        "threshold_prediction": 0
+      },
+      "relative_path": "0/00383.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 12,
+      "logits": [
+        -0.1832275390625,
+        0.5048828125
+      ],
+      "probabilities": [
+        0.3344535827636719,
+        0.6655464172363281
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.09103768318891525,
+          0.43853533267974854
+        ],
+        "logits_max_abs_error": 0.09218985587358475,
+        "probabilities": [
+          0.37061646580696106,
+          0.6293835043907166
+        ],
+        "probabilities_max_abs_error": 0.03616291284561157,
+        "threshold_prediction": 0
+      },
+      "relative_path": "0/00417.png",
+      "target": 0,
+      "threshold_correct": false,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 13,
+      "logits": [
+        -0.17193603515625,
+        0.48895263671875
+      ],
+      "probabilities": [
+        0.3405400216579437,
+        0.6594600081443787
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.14129392802715302,
+          0.4668446183204651
+        ],
+        "logits_max_abs_error": 0.030642107129096985,
+        "probabilities": [
+          0.35248392820358276,
+          0.6475160717964172
+        ],
+        "probabilities_max_abs_error": 0.011943936347961426,
+        "threshold_prediction": 0
+      },
+      "relative_path": "0/00456.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 14,
+      "logits": [
+        -0.1444549560546875,
+        0.449462890625
+      ],
+      "probabilities": [
+        0.3557364344596863,
+        0.6442635655403137
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.3262852430343628,
+          0.5872935652732849
+        ],
+        "logits_max_abs_error": 0.1818302869796753,
+        "probabilities": [
+          0.28626805543899536,
+          0.7137319445610046
+        ],
+        "probabilities_max_abs_error": 0.06946837902069092,
+        "threshold_prediction": 1
+      },
+      "relative_path": "0/00490.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": false,
+      "argmax_prediction": 1,
+      "index": 15,
+      "logits": [
+        0.045562744140625,
+        0.3126373291015625
+      ],
+      "probabilities": [
+        0.4336254298686981,
+        0.5663745999336243
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          0.004506560042500496,
+          0.3418639600276947
+        ],
+        "logits_max_abs_error": 0.04105618596076965,
+        "probabilities": [
+          0.41645151376724243,
+          0.5835484266281128
+        ],
+        "probabilities_max_abs_error": 0.01717391610145569,
+        "threshold_prediction": 0
+      },
+      "relative_path": "0/00522.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 16,
+      "logits": [
+        -0.5110015869140625,
+        0.7386322021484375
+      ],
+      "probabilities": [
+        0.2227635383605957,
+        0.7772364616394043
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.6027124524116516,
+          0.8355991840362549
+        ],
+        "logits_max_abs_error": 0.09696698188781738,
+        "probabilities": [
+          0.19180694222450256,
+          0.808193027973175
+        ],
+        "probabilities_max_abs_error": 0.03095659613609314,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00000.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 17,
+      "logits": [
+        -0.52276611328125,
+        0.747589111328125
+      ],
+      "probabilities": [
+        0.21919643878936768,
+        0.7808035016059875
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.6475846767425537,
+          0.9027454257011414
+        ],
+        "logits_max_abs_error": 0.15515631437301636,
+        "probabilities": [
+          0.17503859102725983,
+          0.8249614238739014
+        ],
+        "probabilities_max_abs_error": 0.04415792226791382,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00036.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 18,
+      "logits": [
+        -0.3016815185546875,
+        0.5490570068359375
+      ],
+      "probabilities": [
+        0.2992779314517975,
+        0.7007219791412354
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.5139744281768799,
+          0.7365032434463501
+        ],
+        "logits_max_abs_error": 0.21229290962219238,
+        "probabilities": [
+          0.22261746227741241,
+          0.777382493019104
+        ],
+        "probabilities_max_abs_error": 0.07666051387786865,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00071.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 19,
+      "logits": [
+        -0.362396240234375,
+        0.62689208984375
+      ],
+      "probabilities": [
+        0.27105265855789185,
+        0.7289473414421082
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.36186036467552185,
+          0.6261827349662781
+        ],
+        "logits_max_abs_error": 0.0007093548774719238,
+        "probabilities": [
+          0.2712987959384918,
+          0.7287012338638306
+        ],
+        "probabilities_max_abs_error": 0.0002461373805999756,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00103.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 20,
+      "logits": [
+        -0.262908935546875,
+        0.5531768798828125
+      ],
+      "probabilities": [
+        0.30659517645835876,
+        0.6934048533439636
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.29865995049476624,
+          0.5783854722976685
+        ],
+        "logits_max_abs_error": 0.035751014947891235,
+        "probabilities": [
+          0.29379042983055115,
+          0.7062095999717712
+        ],
+        "probabilities_max_abs_error": 0.012804746627807617,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00136.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 21,
+      "logits": [
+        -0.564422607421875,
+        0.8024139404296875
+      ],
+      "probabilities": [
+        0.20313142240047455,
+        0.7968685626983643
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.5502476692199707,
+          0.7908862829208374
+        ],
+        "logits_max_abs_error": 0.014174938201904297,
+        "probabilities": [
+          0.20732364058494568,
+          0.7926763892173767
+        ],
+        "probabilities_max_abs_error": 0.00419221818447113,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00169.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 22,
+      "logits": [
+        -0.5466461181640625,
+        0.7916107177734375
+      ],
+      "probabilities": [
+        0.2077968716621399,
+        0.7922031283378601
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.5311008095741272,
+          0.7778646945953369
+        ],
+        "logits_max_abs_error": 0.015545308589935303,
+        "probabilities": [
+          0.21265999972820282,
+          0.7873399257659912
+        ],
+        "probabilities_max_abs_error": 0.0048632025718688965,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00212.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 23,
+      "logits": [
+        -0.4510040283203125,
+        0.6856231689453125
+      ],
+      "probabilities": [
+        0.24294017255306244,
+        0.7570598721504211
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.6151450872421265,
+          0.8514257073402405
+        ],
+        "logits_max_abs_error": 0.16580253839492798,
+        "probabilities": [
+          0.1874644011259079,
+          0.8125356435775757
+        ],
+        "probabilities_max_abs_error": 0.05547577142715454,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00249.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 24,
+      "logits": [
+        -0.5748443603515625,
+        0.8123016357421875
+      ],
+      "probabilities": [
+        0.1998637616634369,
+        0.8001362085342407
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.5155519843101501,
+          0.7627360224723816
+        ],
+        "logits_max_abs_error": 0.059292376041412354,
+        "probabilities": [
+          0.21784178912639618,
+          0.7821582555770874
+        ],
+        "probabilities_max_abs_error": 0.01797802746295929,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00279.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 25,
+      "logits": [
+        -0.0062255859375,
+        0.3500518798828125
+      ],
+      "probabilities": [
+        0.41186097264289856,
+        0.588138997554779
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.10319799929857254,
+          0.4192136526107788
+        ],
+        "logits_max_abs_error": 0.09697241336107254,
+        "probabilities": [
+          0.3722884953022003,
+          0.6277115345001221
+        ],
+        "probabilities_max_abs_error": 0.03957253694534302,
+        "threshold_prediction": 0
+      },
+      "relative_path": "1/00316.png",
+      "target": 1,
+      "threshold_correct": false,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 26,
+      "logits": [
+        -0.461029052734375,
+        0.69866943359375
+      ],
+      "probabilities": [
+        0.2387220710515976,
+        0.7612779140472412
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.5416016578674316,
+          0.7710291147232056
+        ],
+        "logits_max_abs_error": 0.08057260513305664,
+        "probabilities": [
+          0.21204695105552673,
+          0.7879530191421509
+        ],
+        "probabilities_max_abs_error": 0.026675119996070862,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00348.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 27,
+      "logits": [
+        -0.2079315185546875,
+        0.509124755859375
+      ],
+      "probabilities": [
+        0.32804155349731445,
+        0.6719585061073303
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.25258874893188477,
+          0.5399242639541626
+        ],
+        "logits_max_abs_error": 0.044657230377197266,
+        "probabilities": [
+          0.3116293251514435,
+          0.6883706450462341
+        ],
+        "probabilities_max_abs_error": 0.01641222834587097,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00384.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 28,
+      "logits": [
+        -0.4633026123046875,
+        0.6927490234375
+      ],
+      "probabilities": [
+        0.2393854707479477,
+        0.7606145739555359
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.584770143032074,
+          0.8127802014350891
+        ],
+        "logits_max_abs_error": 0.12146753072738647,
+        "probabilities": [
+          0.1982051283121109,
+          0.8017948865890503
+        ],
+        "probabilities_max_abs_error": 0.04118034243583679,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00418.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 29,
+      "logits": [
+        -0.49951171875,
+        0.7316436767578125
+      ],
+      "probabilities": [
+        0.225979283452034,
+        0.774020791053772
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.559624195098877,
+          0.7879334092140198
+        ],
+        "logits_max_abs_error": 0.06011247634887695,
+        "probabilities": [
+          0.2062699794769287,
+          0.7937300205230713
+        ],
+        "probabilities_max_abs_error": 0.019709303975105286,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00450.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 30,
+      "logits": [
+        -0.546783447265625,
+        0.7771453857421875
+      ],
+      "probabilities": [
+        0.21016539633274078,
+        0.7898346781730652
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.6002413034439087,
+          0.8325397968292236
+        ],
+        "logits_max_abs_error": 0.05539441108703613,
+        "probabilities": [
+          0.1926657110452652,
+          0.8073342442512512
+        ],
+        "probabilities_max_abs_error": 0.017499685287475586,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00487.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 31,
+      "logits": [
+        -0.3090667724609375,
+        0.5841522216796875
+      ],
+      "probabilities": [
+        0.2904459834098816,
+        0.7095540165901184
+      ],
+      "reference": {
+        "argmax_prediction": 1,
+        "logits": [
+          -0.32130274176597595,
+          0.59116530418396
+        ],
+        "logits_max_abs_error": 0.012235969305038452,
+        "probabilities": [
+          0.28649505972862244,
+          0.7135049700737
+        ],
+        "probabilities_max_abs_error": 0.003950953483581543,
+        "threshold_prediction": 1
+      },
+      "relative_path": "1/00523.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    }
+  ],
+  "prediction_counts": {
+    "argmax": {
+      "0": 0,
+      "1": 32
+    },
+    "threshold": {
+      "0": 16,
+      "1": 16
+    }
+  },
+  "privacy_facts": {
+    "host_plaintext_pixel_values_materialized": false,
+    "host_private_share_tensors_loaded": false,
+    "input_mode": "party_local_debug_share_load",
+    "model_params_secret_inside_spu": null,
+    "predictor_params_secret_inside_spu": null,
+    "reveal_policy": "final_logits_only",
+    "runner_host_model_params_materialized": false
+  },
+  "reference_comparison": {
+    "argmax_match_ratio": 1.0,
+    "logits_max_abs_error": 0.21229290962219238,
+    "logits_mean_abs_error": 0.06561781466007233,
+    "probabilities_max_abs_error": 0.07666051387786865,
+    "probabilities_mean_abs_error": 0.026613876223564148,
+    "reference_argmax_accuracy": 0.5,
+    "reference_auc": 0.95703125,
+    "reference_threshold_accuracy": 0.875,
+    "threshold_match_ratio": 0.875
+  },
+  "reference_pt": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_cpu_depth10.pt",
+  "report_scope": {
+    "base_rate": 0.7,
+    "class_counts": {
+      "0": 16,
+      "1": 16
+    },
+    "dataset": "PneumoniaMNIST frozen balanced evenly-spaced deployment batch",
+    "frozen_preprocessed_pt": "archive/old_runs/artifacts/server_pipeline_run/medical_dynamic_prepare_final/e2e_secure_poc/plaintext_same_images_pixel_values.pt",
+    "frozen_preprocessed_pt_sha256": "026dc8a0d3ff7b432ae5b62a2ccedac05f37f76ff5afb1dc700e670e089a0977",
+    "historical_token_keep_counts": [
+      137,
+      96,
+      67
+    ],
+    "latest_candidate": {
+      "compile_cache": true,
+      "final_block_cls_only": true,
+      "party_local_share_load": true,
+      "secure_pruning_mode": "compact",
+      "spu_params_mode": "secret",
+      "uniform_attention_value_fusion": true
+    },
+    "list_file": "archive/old_runs/artifacts/server_pipeline_run/medical_dynamic_prepare_final/e2e_secure_poc/smoke32_balanced_evenly_spaced.txt",
+    "list_file_sha256": "40ec5149fccedb44a9de4dc7442020a9addefb4385633aabb7a4b4e40248b14f",
+    "purpose": "end-to-end 2PC latency, communication, semantic agreement and privacy-boundary regression",
+    "report_expected": {
+      "dual_total_bytes": 90694658258,
+      "dual_total_gib": 84.46598263271153,
+      "elapsed_sec": 2849.9446952342987,
+      "per_sample_gib": 2.6395619572722353,
+      "sec_per_sample": 89.06077172607183,
+      "threshold_accuracy": 0.9375
+    },
+    "report_table": "4-1, 4-5",
+    "sample_count": 32,
+    "selection": "16 evenly-spaced sorted files per class",
+    "spu_batch_size": 8,
+    "static_depth_limit": 10,
+    "token_ratios": [
+      0.7,
+      0.49,
+      0.343
+    ]
+  },
+  "runtime_metadata": {
+    "backend": "jax_spu_secure_pruning_forward_backend_v0",
+    "bundle_dir": "/opt/transshield-project/artifacts/frozen_bundle_medical_dynamic_mainline",
+    "cls_features": null,
+    "cpu_forward_mode": null,
+    "driver_private_share_manifest_paths_recorded": false,
+    "effective_static_depth": 10,
+    "elapsed_sec": 1558.2030792236328,
+    "finite_logits": true,
+    "forward_scope": "student_patch_embed_blocks_head_with_secure_internal_pruning_predictor_path",
+    "host_model_params_materialized": false,
+    "host_plaintext_pixel_values_materialized": false,
+    "host_private_share_tensors_loaded": false,
+    "include_intermediates": false,
+    "input_mode": "party_local_debug_share_load",
+    "input_p1_share_manifest_json": "[redacted:p1_share_manifest]",
+    "input_p2_share_manifest_json": "[redacted:p2_share_manifest]",
+    "input_pt": null,
+    "input_share_manifest_json": null,
+    "input_share_public_manifest_json": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_public.json",
+    "input_source": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_public.json",
+    "logits": {
+      "dtype": "torch.float32",
+      "max": 0.8123016357421875,
+      "mean": 0.1483783721923828,
+      "min": -0.5748443603515625,
+      "shape": [
+        32,
+        2
+      ],
+      "std": 0.42266878485679626
+    },
+    "manifest_type": "transshield_e2e_static_whole_forward_candidate_summary_v0",
+    "max_samples": 32,
+    "output_calibration": null,
+    "output_pt": "/opt/transshield-project/results/vps_report_tests/medical32_original_a40219b_20260802_v3/medical32_original.pt",
+    "prediction_preview": {
+      "argmax_predictions": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "logits": [
+        [
+          0.07391357421875,
+          0.2913360595703125
+        ],
+        [
+          0.015869140625,
+          0.3409881591796875
+        ],
+        [
+          -0.072265625,
+          0.3995361328125
+        ],
+        [
+          -0.0317535400390625,
+          0.36822509765625
+        ],
+        [
+          -0.0452117919921875,
+          0.3756103515625
+        ],
+        [
+          0.0537872314453125,
+          0.2935943603515625
+        ],
+        [
+          -0.108673095703125,
+          0.4264068603515625
+        ],
+        [
+          0.0924835205078125,
+          0.2813568115234375
+        ],
+        [
+          -0.0436553955078125,
+          0.3761138916015625
+        ],
+        [
+          -0.0819549560546875,
+          0.4051055908203125
+        ],
+        [
+          0.116912841796875,
+          0.265350341796875
+        ],
+        [
+          0.0023040771484375,
+          0.3396453857421875
+        ],
+        [
+          -0.1832275390625,
+          0.5048828125
+        ],
+        [
+          -0.17193603515625,
+          0.48895263671875
+        ],
+        [
+          -0.1444549560546875,
+          0.449462890625
+        ],
+        [
+          0.045562744140625,
+          0.3126373291015625
+        ],
+        [
+          -0.5110015869140625,
+          0.7386322021484375
+        ],
+        [
+          -0.52276611328125,
+          0.747589111328125
+        ],
+        [
+          -0.3016815185546875,
+          0.5490570068359375
+        ],
+        [
+          -0.362396240234375,
+          0.62689208984375
+        ],
+        [
+          -0.262908935546875,
+          0.5531768798828125
+        ],
+        [
+          -0.564422607421875,
+          0.8024139404296875
+        ],
+        [
+          -0.5466461181640625,
+          0.7916107177734375
+        ],
+        [
+          -0.4510040283203125,
+          0.6856231689453125
+        ],
+        [
+          -0.5748443603515625,
+          0.8123016357421875
+        ],
+        [
+          -0.0062255859375,
+          0.3500518798828125
+        ],
+        [
+          -0.461029052734375,
+          0.69866943359375
+        ],
+        [
+          -0.2079315185546875,
+          0.509124755859375
+        ],
+        [
+          -0.4633026123046875,
+          0.6927490234375
+        ],
+        [
+          -0.49951171875,
+          0.7316436767578125
+        ],
+        [
+          -0.546783447265625,
+          0.7771453857421875
+        ],
+        [
+          -0.3090667724609375,
+          0.5841522216796875
+        ]
+      ],
+      "probabilities": [
+        [
+          0.4458574950695038,
+          0.5541424751281738
+        ],
+        [
+          0.41942867636680603,
+          0.5805712342262268
+        ],
+        [
+          0.3841898441314697,
+          0.6158100962638855
+        ],
+        [
+          0.40131744742393494,
+          0.5986825227737427
+        ],
+        [
+          0.39632004499435425,
+          0.6036800146102905
+        ],
+        [
+          0.44033387303352356,
+          0.559666097164154
+        ],
+        [
+          0.36933282017707825,
+          0.6306670904159546
+        ],
+        [
+          0.4529215693473816,
+          0.5470784902572632
+        ],
+        [
+          0.39657196402549744,
+          0.603428065776825
+        ],
+        [
+          0.38058626651763916,
+          0.6194137334823608
+        ],
+        [
+          0.46295857429504395,
+          0.5370413661003113
+        ],
+        [
+          0.41645547747612,
+          0.5835445523262024
+        ],
+        [
+          0.3344535827636719,
+          0.6655464172363281
+        ],
+        [
+          0.3405400216579437,
+          0.6594600081443787
+        ],
+        [
+          0.3557364344596863,
+          0.6442635655403137
+        ],
+        [
+          0.4336254298686981,
+          0.5663745999336243
+        ],
+        [
+          0.2227635383605957,
+          0.7772364616394043
+        ],
+        [
+          0.21919643878936768,
+          0.7808035016059875
+        ],
+        [
+          0.2992779314517975,
+          0.7007219791412354
+        ],
+        [
+          0.27105265855789185,
+          0.7289473414421082
+        ],
+        [
+          0.30659517645835876,
+          0.6934048533439636
+        ],
+        [
+          0.20313142240047455,
+          0.7968685626983643
+        ],
+        [
+          0.2077968716621399,
+          0.7922031283378601
+        ],
+        [
+          0.24294017255306244,
+          0.7570598721504211
+        ],
+        [
+          0.1998637616634369,
+          0.8001362085342407
+        ],
+        [
+          0.41186097264289856,
+          0.588138997554779
+        ],
+        [
+          0.2387220710515976,
+          0.7612779140472412
+        ],
+        [
+          0.32804155349731445,
+          0.6719585061073303
+        ],
+        [
+          0.2393854707479477,
+          0.7606145739555359
+        ],
+        [
+          0.225979283452034,
+          0.774020791053772
+        ],
+        [
+          0.21016539633274078,
+          0.7898346781730652
+        ],
+        [
+          0.2904459834098816,
+          0.7095540165901184
+        ]
+      ],
+      "threshold_predictions": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "privacy_note": "This candidate runs the configured whole-forward SPU/JAX function and reveals final logits only. In party-local share-load mode, the driver does not materialize plaintext pixel_values or private share tensors; P1/P2 device functions load their own share files before SPU recomposition. It is still a debug bridge until P1/P2 are launched as independent party processes.",
+    "private_input_paths_redacted": true,
+    "probabilities": {
+      "dtype": "torch.float32",
+      "max": 0.8001362085342407,
+      "mean": 0.5,
+      "min": 0.1998637616634369,
+      "shape": [
+        32,
+        2
+      ],
+      "std": 0.19117717444896698
+    },
+    "raw_logits_before_output_calibration": null,
+    "reveal_policy": "final_logits_only",
+    "runtime": "spu",
+    "runtime_pruning_keep_mask_pt": null,
+    "runtime_pruning_keep_mask_stage_count": null,
+    "sample_count": 32,
+    "spu": {
+      "config": "/opt/transshield-original-a40219b/configs/transshield_runtime/2pc.json",
+      "driver_private_share_manifest_paths_recorded": false,
+      "host_model_params_materialized": false,
+      "host_plaintext_pixel_values_materialized": false,
+      "host_private_share_tensors_loaded": false,
+      "input_mode": "party_local_debug_share_load",
+      "party_manifest_types": [
+        "transshield_e2e_debug_float_additive_share_party_manifest_v0",
+        "transshield_e2e_debug_float_additive_share_party_manifest_v0"
+      ],
+      "private_input_paths_redacted": true,
+      "reveal_policy": "final_logits_only",
+      "runtime_pruning_keep_mask_pt": null,
+      "share_manifest_type": "transshield_e2e_debug_float_additive_share_public_manifest_v0",
+      "share_semantics": "debug_float_additive_share_not_production_mpc_share",
+      "spu_activation_clip_value": 0.0,
+      "spu_batch_size": 8,
+      "spu_block_chunk_size": 0,
+      "spu_forward_graph_mode": "monolithic",
+      "spu_layer_norm_calibration_json": null,
+      "spu_layer_norm_chunk_size": 0,
+      "spu_layer_norm_policy": "exact",
+      "spu_params_mode": "secret",
+      "spu_token_ratio_base_override": 0.0,
+      "spu_token_recycle_scale": 0.0,
+      "static_forward_metadata": {
+        "activation_kind": "fixed_square",
+        "activation_override": "fixed_square",
+        "attention_policy": "uniform",
+        "attention_policy_eps": 1e-06,
+        "base_activation_kind": "fixed_square",
+        "base_rate": 0.7,
+        "bundle_base_rate": 0.7,
+        "depth": 10,
+        "embed_dim": 384,
+        "eval_pruning_mode": "topk_argsort",
+        "eval_tie_policy": "lowest_index",
+        "forward_scope": "student_patch_embed_blocks_head_with_secure_internal_pruning_predictor_path",
+        "full_depth": 12,
+        "has_predictor_params": true,
+        "head_dim": 64,
+        "layer_norm_eps": 1e-06,
+        "num_heads": 6,
+        "patch_size": 16,
+        "pruning_loc": [
+          3,
+          6,
+          9
+        ],
+        "secure_pruning_note": "PredictorLG + kth_threshold + tie_resolution now execute inside SPU (jax_spu_secure_pruning_forward_backend_v0). host_model_params_materialized = false.",
+        "state_dict_path": "/opt/transshield-project/artifacts/frozen_bundle_medical_dynamic_mainline/modified_plaintext_model_state_dict.pth",
+        "static_depth_limit": 10,
+        "token_keep_counts": [
+          137,
+          96,
+          67
+        ],
+        "token_ratio": [
+          0.7,
+          0.48999999999999994,
+          0.3429999999999999
+        ],
+        "unsupported_currently_bypassed": [
+          "intermediate feature reveal",
+          "dynamic masking-pruning inside secure forward"
+        ],
+        "use_mask_pruning": false
+      }
+    },
+    "spu_forward_graph_mode": "monolithic",
+    "spu_params_mode": "secret",
+    "spu_token_recycle_scale": 0.0,
+    "static_depth_limit": 10,
+    "threshold": 0.3577311038970947,
+    "token_features": null
+  },
+  "sample_count": 32,
+  "sample_list": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/lists/medical_secure_deployment_batch.txt",
+  "sample_list_sha256": "7ab944d956cc41de77c1725d5acb707eff8f6e47de018f9563c74b5a3360512e",
+  "sec_per_sample": 48.693846225738525,
+  "threshold": 0.6619606018066406,
+  "threshold_accuracy": 0.9375
+}

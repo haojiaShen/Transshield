@@ -1,0 +1,80 @@
+{
+  "captured_at_utc": "2026-08-02T15:14:04.147397+00:00",
+  "comparisons": {
+    "latest_same_vps_vs_original_same_vps": {
+      "communication_reduction_fraction_same_loopback_method": 0.3773826324771609,
+      "seconds_saved": 593.9955387115479,
+      "speedup_ratio": 1.6160453157170709,
+      "time_reduction_fraction": 0.3812054709887387
+    },
+    "latest_same_vps_vs_report_comm_rerun": {
+      "seconds_saved": 1885.7371547222137,
+      "speedup_ratio": 2.9557378214660193,
+      "time_reduction_fraction": 0.6616749994747474
+    },
+    "original_same_vps_vs_historical_candidate": {
+      "seconds_saved": 1222.8161823749542,
+      "speedup_ratio": 1.7847604710062674,
+      "time_reduction_fraction": 0.4397007238533308
+    },
+    "original_same_vps_vs_report_comm_rerun": {
+      "seconds_saved": 1291.741616010666,
+      "speedup_ratio": 1.8289943931148371,
+      "time_reduction_fraction": 0.45325146771118996
+    }
+  },
+  "hardware_observed": {
+    "cores_per_socket": 8,
+    "cpu_model_reported": "Intel(R) Xeon(R) Platinum",
+    "logical_vcpus": 16,
+    "memory_total_gib": 61,
+    "sockets": 1,
+    "swap_gib": 0,
+    "threads_per_core": 2
+  },
+  "historical_report": {
+    "communication_method": "SPU LinkDetails counters",
+    "communication_rerun_elapsed_sec": 2849.9446952342987,
+    "formal_linkdetails_dual_total_gib": 84.46598263271153,
+    "historical_candidate_elapsed_sec": 2781.019261598587
+  },
+  "latest_same_vps": {
+    "auc": 0.96484375,
+    "batch_size": 16,
+    "elapsed_sec": 964.207540512085,
+    "graph_mode": "secure_pruning_compact_monolithic",
+    "loopback_tx_once_gib": 42.57455235160887,
+    "sec_per_sample": 30.131485641002655,
+    "threshold_accuracy": 0.9375
+  },
+  "limitations": [
+    "The historical school-server hardware inventory and contemporaneous load are not preserved, so the 43.97%-45.33% same-code gap is environment/configuration evidence, not a CPU-only causal measurement.",
+    "Do not directly compare the formal report LinkDetails GiB to VPS loopback-TX-once GiB as if they were the same counter basis.",
+    "The same-VPS latest-vs-original comparison combines source/runtime-kernel optimizations and batch-size tuning (16 versus original 8)."
+  ],
+  "manifest_type": "transshield_medical32_original_same_vps_comparison_v1",
+  "original_same_vps": {
+    "activation": "fixed_square",
+    "attention": "uniform",
+    "auc": 0.96484375,
+    "batch_size": 8,
+    "depth": 10,
+    "elapsed_sec": 1558.2030792236328,
+    "finite_logits": true,
+    "graph_mode": "monolithic",
+    "layer_norm": "exact",
+    "loopback_tx_once_gib": 68.3799626743421,
+    "network_measurement_rule": "use tx_delta once; loopback tx and rx mirror the same transferred bytes",
+    "params_mode": "secret",
+    "sample_count": 32,
+    "sec_per_sample": 48.693846225738525,
+    "threshold_accuracy": 0.9375
+  },
+  "scope": "medical secure deployment batch; fixed 32 samples; no reduced or micro model",
+  "source_identity": {
+    "core_files_byte_identical_between_commits": true,
+    "earliest_repository_commit": "827551969b5127c94f75d56601e8f380386e347e",
+    "note": "The only relevant subtree difference between these commits is README text; runner, SPU graph, helper, and 2PC config hashes are identical.",
+    "tested_commit": "a40219ba9f6a200f98aa7edf2ba2d76d8f6f4abd"
+  }
+}

@@ -1,0 +1,462 @@
+{
+  "backend": "jax_spu_secure_pruning_forward_backend_v0",
+  "bundle_dir": "/opt/transshield-project/artifacts/frozen_bundle_medical_dynamic_mainline",
+  "cls_features": null,
+  "cpu_forward_mode": null,
+  "driver_private_share_manifest_paths_recorded": false,
+  "effective_static_depth": 10,
+  "elapsed_sec": 1558.2030792236328,
+  "finite_logits": true,
+  "forward_scope": "student_patch_embed_blocks_head_with_secure_internal_pruning_predictor_path",
+  "host_model_params_materialized": false,
+  "host_plaintext_pixel_values_materialized": false,
+  "host_private_share_tensors_loaded": false,
+  "include_intermediates": false,
+  "input_mode": "party_local_debug_share_load",
+  "input_p1_share_manifest_json": "[redacted:p1_share_manifest]",
+  "input_p2_share_manifest_json": "[redacted:p2_share_manifest]",
+  "input_pt": null,
+  "input_share_manifest_json": null,
+  "input_share_public_manifest_json": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_public.json",
+  "input_source": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_public.json",
+  "logits": {
+    "dtype": "torch.float32",
+    "max": 0.8123016357421875,
+    "mean": 0.1483783721923828,
+    "min": -0.5748443603515625,
+    "shape": [
+      32,
+      2
+    ],
+    "std": 0.42266878485679626
+  },
+  "manifest_type": "transshield_e2e_static_whole_forward_candidate_summary_v0",
+  "max_samples": 32,
+  "output_calibration": null,
+  "output_pt": "/opt/transshield-project/results/vps_report_tests/medical32_original_a40219b_20260802_v3/medical32_original.pt",
+  "prediction_preview": {
+    "argmax_predictions": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "logits": [
+      [
+        0.07391357421875,
+        0.2913360595703125
+      ],
+      [
+        0.015869140625,
+        0.3409881591796875
+      ],
+      [
+        -0.072265625,
+        0.3995361328125
+      ],
+      [
+        -0.0317535400390625,
+        0.36822509765625
+      ],
+      [
+        -0.0452117919921875,
+        0.3756103515625
+      ],
+      [
+        0.0537872314453125,
+        0.2935943603515625
+      ],
+      [
+        -0.108673095703125,
+        0.4264068603515625
+      ],
+      [
+        0.0924835205078125,
+        0.2813568115234375
+      ],
+      [
+        -0.0436553955078125,
+        0.3761138916015625
+      ],
+      [
+        -0.0819549560546875,
+        0.4051055908203125
+      ],
+      [
+        0.116912841796875,
+        0.265350341796875
+      ],
+      [
+        0.0023040771484375,
+        0.3396453857421875
+      ],
+      [
+        -0.1832275390625,
+        0.5048828125
+      ],
+      [
+        -0.17193603515625,
+        0.48895263671875
+      ],
+      [
+        -0.1444549560546875,
+        0.449462890625
+      ],
+      [
+        0.045562744140625,
+        0.3126373291015625
+      ],
+      [
+        -0.5110015869140625,
+        0.7386322021484375
+      ],
+      [
+        -0.52276611328125,
+        0.747589111328125
+      ],
+      [
+        -0.3016815185546875,
+        0.5490570068359375
+      ],
+      [
+        -0.362396240234375,
+        0.62689208984375
+      ],
+      [
+        -0.262908935546875,
+        0.5531768798828125
+      ],
+      [
+        -0.564422607421875,
+        0.8024139404296875
+      ],
+      [
+        -0.5466461181640625,
+        0.7916107177734375
+      ],
+      [
+        -0.4510040283203125,
+        0.6856231689453125
+      ],
+      [
+        -0.5748443603515625,
+        0.8123016357421875
+      ],
+      [
+        -0.0062255859375,
+        0.3500518798828125
+      ],
+      [
+        -0.461029052734375,
+        0.69866943359375
+      ],
+      [
+        -0.2079315185546875,
+        0.509124755859375
+      ],
+      [
+        -0.4633026123046875,
+        0.6927490234375
+      ],
+      [
+        -0.49951171875,
+        0.7316436767578125
+      ],
+      [
+        -0.546783447265625,
+        0.7771453857421875
+      ],
+      [
+        -0.3090667724609375,
+        0.5841522216796875
+      ]
+    ],
+    "probabilities": [
+      [
+        0.4458574950695038,
+        0.5541424751281738
+      ],
+      [
+        0.41942867636680603,
+        0.5805712342262268
+      ],
+      [
+        0.3841898441314697,
+        0.6158100962638855
+      ],
+      [
+        0.40131744742393494,
+        0.5986825227737427
+      ],
+      [
+        0.39632004499435425,
+        0.6036800146102905
+      ],
+      [
+        0.44033387303352356,
+        0.559666097164154
+      ],
+      [
+        0.36933282017707825,
+        0.6306670904159546
+      ],
+      [
+        0.4529215693473816,
+        0.5470784902572632
+      ],
+      [
+        0.39657196402549744,
+        0.603428065776825
+      ],
+      [
+        0.38058626651763916,
+        0.6194137334823608
+      ],
+      [
+        0.46295857429504395,
+        0.5370413661003113
+      ],
+      [
+        0.41645547747612,
+        0.5835445523262024
+      ],
+      [
+        0.3344535827636719,
+        0.6655464172363281
+      ],
+      [
+        0.3405400216579437,
+        0.6594600081443787
+      ],
+      [
+        0.3557364344596863,
+        0.6442635655403137
+      ],
+      [
+        0.4336254298686981,
+        0.5663745999336243
+      ],
+      [
+        0.2227635383605957,
+        0.7772364616394043
+      ],
+      [
+        0.21919643878936768,
+        0.7808035016059875
+      ],
+      [
+        0.2992779314517975,
+        0.7007219791412354
+      ],
+      [
+        0.27105265855789185,
+        0.7289473414421082
+      ],
+      [
+        0.30659517645835876,
+        0.6934048533439636
+      ],
+      [
+        0.20313142240047455,
+        0.7968685626983643
+      ],
+      [
+        0.2077968716621399,
+        0.7922031283378601
+      ],
+      [
+        0.24294017255306244,
+        0.7570598721504211
+      ],
+      [
+        0.1998637616634369,
+        0.8001362085342407
+      ],
+      [
+        0.41186097264289856,
+        0.588138997554779
+      ],
+      [
+        0.2387220710515976,
+        0.7612779140472412
+      ],
+      [
+        0.32804155349731445,
+        0.6719585061073303
+      ],
+      [
+        0.2393854707479477,
+        0.7606145739555359
+      ],
+      [
+        0.225979283452034,
+        0.774020791053772
+      ],
+      [
+        0.21016539633274078,
+        0.7898346781730652
+      ],
+      [
+        0.2904459834098816,
+        0.7095540165901184
+      ]
+    ],
+    "threshold_predictions": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "privacy_note": "This candidate runs the configured whole-forward SPU/JAX function and reveals final logits only. In party-local share-load mode, the driver does not materialize plaintext pixel_values or private share tensors; P1/P2 device functions load their own share files before SPU recomposition. It is still a debug bridge until P1/P2 are launched as independent party processes.",
+  "private_input_paths_redacted": true,
+  "probabilities": {
+    "dtype": "torch.float32",
+    "max": 0.8001362085342407,
+    "mean": 0.5,
+    "min": 0.1998637616634369,
+    "shape": [
+      32,
+      2
+    ],
+    "std": 0.19117717444896698
+  },
+  "raw_logits_before_output_calibration": null,
+  "reveal_policy": "final_logits_only",
+  "runtime": "spu",
+  "runtime_pruning_keep_mask_pt": null,
+  "runtime_pruning_keep_mask_stage_count": null,
+  "sample_count": 32,
+  "spu": {
+    "config": "/opt/transshield-original-a40219b/configs/transshield_runtime/2pc.json",
+    "driver_private_share_manifest_paths_recorded": false,
+    "host_model_params_materialized": false,
+    "host_plaintext_pixel_values_materialized": false,
+    "host_private_share_tensors_loaded": false,
+    "input_mode": "party_local_debug_share_load",
+    "party_manifest_types": [
+      "transshield_e2e_debug_float_additive_share_party_manifest_v0",
+      "transshield_e2e_debug_float_additive_share_party_manifest_v0"
+    ],
+    "private_input_paths_redacted": true,
+    "reveal_policy": "final_logits_only",
+    "runtime_pruning_keep_mask_pt": null,
+    "share_manifest_type": "transshield_e2e_debug_float_additive_share_public_manifest_v0",
+    "share_semantics": "debug_float_additive_share_not_production_mpc_share",
+    "spu_activation_clip_value": 0.0,
+    "spu_batch_size": 8,
+    "spu_block_chunk_size": 0,
+    "spu_forward_graph_mode": "monolithic",
+    "spu_layer_norm_calibration_json": null,
+    "spu_layer_norm_chunk_size": 0,
+    "spu_layer_norm_policy": "exact",
+    "spu_params_mode": "secret",
+    "spu_token_ratio_base_override": 0.0,
+    "spu_token_recycle_scale": 0.0,
+    "static_forward_metadata": {
+      "activation_kind": "fixed_square",
+      "activation_override": "fixed_square",
+      "attention_policy": "uniform",
+      "attention_policy_eps": 1e-06,
+      "base_activation_kind": "fixed_square",
+      "base_rate": 0.7,
+      "bundle_base_rate": 0.7,
+      "depth": 10,
+      "embed_dim": 384,
+      "eval_pruning_mode": "topk_argsort",
+      "eval_tie_policy": "lowest_index",
+      "forward_scope": "student_patch_embed_blocks_head_with_secure_internal_pruning_predictor_path",
+      "full_depth": 12,
+      "has_predictor_params": true,
+      "head_dim": 64,
+      "layer_norm_eps": 1e-06,
+      "num_heads": 6,
+      "patch_size": 16,
+      "pruning_loc": [
+        3,
+        6,
+        9
+      ],
+      "secure_pruning_note": "PredictorLG + kth_threshold + tie_resolution now execute inside SPU (jax_spu_secure_pruning_forward_backend_v0). host_model_params_materialized = false.",
+      "state_dict_path": "/opt/transshield-project/artifacts/frozen_bundle_medical_dynamic_mainline/modified_plaintext_model_state_dict.pth",
+      "static_depth_limit": 10,
+      "token_keep_counts": [
+        137,
+        96,
+        67
+      ],
+      "token_ratio": [
+        0.7,
+        0.48999999999999994,
+        0.3429999999999999
+      ],
+      "unsupported_currently_bypassed": [
+        "intermediate feature reveal",
+        "dynamic masking-pruning inside secure forward"
+      ],
+      "use_mask_pruning": false
+    }
+  },
+  "spu_forward_graph_mode": "monolithic",
+  "spu_params_mode": "secret",
+  "spu_token_recycle_scale": 0.0,
+  "static_depth_limit": 10,
+  "threshold": 0.3577311038970947,
+  "token_features": null
+}

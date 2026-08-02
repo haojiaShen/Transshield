@@ -1,0 +1,23 @@
+	Command being timed: "/opt/transshield-spu/bin/python /opt/transshield-original-a40219b/integrations/transshield_runtime/e2e_secure_vit/transshield_e2e_secure_vit.py run --runtime spu --bundle-dir /opt/transshield-project/artifacts/frozen_bundle_medical_dynamic_mainline --input-share-public-manifest-json /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_public.json --input-p1-share-manifest-json /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_party_manifests/p1_share_manifest.json --input-p2-share-manifest-json /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_party_manifests/p2_share_manifest.json --party-local-share-load --redact-private-input-paths --output-pt /opt/transshield-project/results/vps_report_tests/medical32_original_a40219b_20260802_v3/medical32_original.pt --output-json /opt/transshield-project/results/vps_report_tests/medical32_original_a40219b_20260802_v3/medical32_original.json --config /opt/transshield-original-a40219b/configs/transshield_runtime/2pc.json --max-samples 32 --static-depth-limit 10 --spu-batch-size 8 --spu-params-mode secret --spu-attention-policy uniform --spu-activation-override fixed_square --spu-layer-norm-policy exact"
+	User time (seconds): 8.54
+	System time (seconds): 2.60
+	Percent of CPU this job got: 0%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 25:59.16
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 699764
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 198958
+	Voluntary context switches: 139653
+	Involuntary context switches: 392
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 72
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

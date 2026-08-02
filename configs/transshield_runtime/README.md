@@ -53,6 +53,12 @@ python tools/start_showcase_spu_demo.py \
 `r=0.7` 档；低延迟档的性能与精度边界见
 `docs/evidence/spu_low_latency_r0655.md`。不要把 `r=0.655` 与正式档阈值混用。
 
+批量离线任务已有至少 16 个排队样本时，可在 E2E runner 命令中使用
+`--spu-batch-size 16`。medical32 实测相对同一 `r=0.655/batch8` 图的
+安全前向减少 7.89%。该设置只提高批量吞吐；单张 live upload 会被补齐到
+16 个位置，因此展示 API 仍保持 `batch=1`。完整边界和复现命令见
+`docs/evidence/spu_batch16_throughput.md`。
+
 将 `compact` 换成 `mask` 可复测旧形状图；将模板换成
 `2pc_fm32.template.json` 可做 FM32 候选测试。FM32 会改变定点精度，必须
 单独检查有限值、logit 漂移和预测一致性，不能只比较时间。

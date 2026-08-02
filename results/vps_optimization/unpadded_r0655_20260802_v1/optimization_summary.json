@@ -176,7 +176,7 @@
     "showcase_api/config.py": "17c3fac674bff8039957cdf8dccf488cfc36b4657bae5e8b527b44f8b1f6b928",
     "showcase_api/runtime.py": "7d0663adafc82feb00515a8a03836596e2351ee47f9f5337f994a4b939be3fd5",
     "tools/start_showcase_spu_demo.py": "9c94696b8028ef19840712b4077751c6eeac3b7086561f6912ac9cbe3d9caed9",
-    "configs/transshield_runtime/medical_low_latency_r0655_threshold.json": "a8d177c75daebb7cfc0f15fd941b7a0c1e1226294c67e17121143d80ad82e6e6"
+    "configs/transshield_runtime/medical_low_latency_r0655_threshold.json": "1848c8e6d06a39709d6e65b8c6672e23c5afe3ba4b4a12044996d32201a662e8"
   },
   "rejected_experiments": [
     {

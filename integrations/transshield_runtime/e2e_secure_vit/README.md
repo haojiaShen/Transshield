@@ -278,6 +278,12 @@ threshold accuracy changed from 96.875% to 93.75%. The full environment,
 calibration and rollback evidence is recorded in
 `docs/evidence/spu_low_latency_r0655.md`.
 
+For queued bulk inference, `--spu-batch-size 16` is validated with the same
+`r=0.655` profile. On medical32 it reduced secure-forward time by another
+7.89% versus batch8. This is a throughput setting, not a single-request latency
+setting: incomplete chunks are padded to the configured batch shape, so the
+live one-image API must keep batch1. See `docs/evidence/spu_batch16_throughput.md`.
+
 `run --runtime spu` is experimental. Start with `--max-samples 1
 --spu-batch-size 1 --spu-params-mode public`, then verify with
 `--allow-prefix-candidate` before trying larger sample counts. Use

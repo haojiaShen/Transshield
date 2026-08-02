@@ -28,6 +28,9 @@
 | SPU 低延迟 r=0.655 档说明 | `docs/evidence/spu_low_latency_r0655.md` | 可选 token 保留率、配套阈值、性能收益、精度代价与回退方式 |
 | SPU 低延迟档结构化结果 | `results/vps_optimization/unpadded_r0655_20260802_v1/optimization_summary.json` | medical32 耗时、通信、精度、源码哈希及 524 样本校准证据 |
 | SPU 0.9.5 原生排序否决证据 | `results/vps_optimization/native_sort_spu095_20260802_v1/optimization_summary.json` | 局部微基准收益与整图性能/通信回退的对照 |
+| SPU batch16 批量吞吐说明 | `docs/evidence/spu_batch16_throughput.md` | 批量适用边界、medical32 性能/精度、复现命令和单图禁用条件 |
+| SPU batch16 结构化结果 | `results/vps_optimization/batch_scaling_20260802_v1/optimization_summary.json` | 两个 chunk 耗时、通信、固定点漂移、源码哈希和回退约束 |
+| SPU 微优化否决证据 | `results/vps_optimization/pruning_clip_elision_20260802_v1/optimization_summary.json` | predictor clip 与低精度 rsqrt 的同机热缓存 A/B |
 
 ## 说明
 

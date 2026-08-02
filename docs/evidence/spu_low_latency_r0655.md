@@ -46,6 +46,14 @@ python3 tools/start_showcase_spu_demo.py \
 
 完整结构化数据、原始 candidate JSON/PT、网络快照和 time log 位于 `results/vps_optimization/unpadded_r0655_20260802_v1/`。
 
+## 批量吞吐补充
+
+在相同 `r=0.655` 图上将 medical32 从 `batch=8` 调整为两个 `batch=16`
+chunk 后，安全前向进一步从 1151.815 秒降到 1060.968 秒，通信从
+50.407 GiB 降到 49.504 GiB；阈值准确率仍为 93.75%。该结果只适用于
+已有批量队列的吞吐场景，不适用于单图实时上传。详细证据见
+`docs/evidence/spu_batch16_throughput.md`。
+
 ## 被否决的底层候选
 
 - SPU 0.9.5 原生秘密排序：196×384 的局部微基准明显更快，但整图单样本热缓存为 89.422 秒，比当前 86.641 秒慢 3.21%；通信增加 24.22%，因此未升级正式 runtime，也未跑 medical32。

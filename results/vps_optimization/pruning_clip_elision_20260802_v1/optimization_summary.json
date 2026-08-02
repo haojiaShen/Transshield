@@ -1,0 +1,48 @@
+{
+  "manifest_type": "transshield_vps_micro_optimization_rejections_v1",
+  "captured_at_utc": "2026-08-02T02:20:00+00:00",
+  "status": "rejected_no_material_end_to_end_gain",
+  "formal_results_changed": false,
+  "vps_only_model_testing": true,
+  "profile": {
+    "sample_count": 1,
+    "spu_batch_size": 1,
+    "token_ratio_base_override": 0.655,
+    "token_keep_counts": [128, 84, 55],
+    "secure_pruning_network": "unpadded_selection",
+    "static_depth": 10,
+    "params_mode": "secret",
+    "field": "FM64",
+    "fxp_fraction_bits": 16
+  },
+  "pruning_logit_clip_elision": {
+    "calibration_sample_count": 524,
+    "raw_predictor_logit_ranges": [
+      [-0.002053320175036788, 0.0020521939732134342],
+      [-0.0006575285224243999, 0.0006575343431904912],
+      [-0.002985083032399416, 0.0029870551079511642]
+    ],
+    "values_outside_minus10_plus10": 0,
+    "baseline_warm_sec": 73.94211562999999,
+    "candidate_warm_sec": 74.11066277000009,
+    "time_delta_percent": 0.22794470859273108,
+    "baseline_warm_tx_bytes": 2086618274,
+    "candidate_warm_tx_bytes": 2086344947,
+    "communication_delta_percent": -0.01309904180394339,
+    "compiled_pphlo_less_nodes_removed": 6,
+    "compiled_pphlo_select_nodes_removed": 6,
+    "decision": "Rejected: the tiny communication reduction did not produce a latency gain. The temporary code switch was removed."
+  },
+  "lower_accuracy_rsqrt": {
+    "runtime_option": "enable_lower_accuracy_rsqrt=true",
+    "rsqrt_nodes_in_compiled_graph": 24,
+    "baseline_warm_sec": 73.94211562999999,
+    "candidate_warm_sec": 73.89018300099997,
+    "time_delta_percent": -0.07023416703396679,
+    "baseline_warm_tx_bytes": 2086618274,
+    "candidate_warm_tx_bytes": 2085130234,
+    "communication_delta_percent": -0.07131347494371276,
+    "decision": "Rejected: both deltas are below one tenth of one percent and do not justify an accuracy-sensitive runtime change."
+  },
+  "conclusion": "The complete graph is dominated by secret MLP matrix multiplications, not predictor clipping or rsqrt. No medical32 run was spent on either rejected option."
+}

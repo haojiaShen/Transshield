@@ -14,5 +14,14 @@
     "sec_per_sample": 35.995711758732796,
     "loopback_gib_per_sample": 1.575216262950562,
     "evidence": "results/vps_optimization/unpadded_r0655_20260802_v1/medical32_unpadded_r0655_summary.json"
+  },
+  "medical32_bulk_batch16_validation": {
+    "spu_batch_size": 16,
+    "threshold_accuracy": 0.9375,
+    "auc": 0.98046875,
+    "sec_per_sample": 33.156764805316925,
+    "loopback_gib_per_sample": 1.5470125664432999,
+    "evidence": "results/vps_optimization/batch_scaling_20260802_v1/medical32_batch16_summary.json",
+    "scope": "bulk_throughput_only_not_single_request_latency"
   }
 }

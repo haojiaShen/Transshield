@@ -1,0 +1,141 @@
+{
+  "manifest_type": "transshield_vps_batch16_throughput_summary_v1",
+  "captured_at_utc": "2026-08-02T02:51:32.143748+00:00",
+  "status": "accepted_opt_in_bulk_throughput_profile",
+  "formal_results_changed": false,
+  "showcase_single_request_default_changed": false,
+  "vps_only_model_testing": true,
+  "profile": {
+    "workload": "medical_secure_deployment_batch",
+    "sample_count": 32,
+    "spu_batch_size": 16,
+    "chunk_count": 2,
+    "token_ratio_base_override": 0.655,
+    "token_keep_counts": [128, 84, 55],
+    "secure_pruning_network": "unpadded_selection",
+    "decision_threshold": 0.688152923150007,
+    "static_depth": 10,
+    "params_mode": "secret",
+    "input_mode": "party_local_debug_share_load",
+    "reveal_policy": "final_logits_only",
+    "protocol": "CHEETAH",
+    "ot_kind": "YACL_Ferret",
+    "field": "FM64",
+    "fxp_fraction_bits": 16
+  },
+  "medical16_screen": {
+    "sample_count": 16,
+    "spu_forward_wall_sec": 543.3146311379996,
+    "sec_per_sample": 33.95716444612498,
+    "tx_bytes": 26675973514,
+    "loopback_gib": 24.843936333432794,
+    "loopback_gib_per_sample": 1.5527460208395496,
+    "compile_cache_hits": 0,
+    "compile_cache_misses": 1,
+    "compile_sec": 3.340953874000661,
+    "finite_logits": true
+  },
+  "medical32_validation": {
+    "candidate_json": "medical32_batch16.json",
+    "candidate_summary_json": "medical32_batch16_summary.json",
+    "candidate_pt_sha256": "dd68f997495576318406295eac629f033cf6f80baae84e9702b06a74f47bba31",
+    "spu_forward_wall_sec": 1060.9676724210003,
+    "sec_per_sample": 33.15523976315626,
+    "end_to_end_elapsed_sec": 1061.0164737701416,
+    "end_to_end_sec_per_sample": 33.156764805316925,
+    "tx_bytes": 53154947035,
+    "loopback_gib": 49.504402126185596,
+    "loopback_gib_per_sample": 1.5470125664432999,
+    "threshold_accuracy": 0.9375,
+    "auc": 0.98046875,
+    "argmax_accuracy": 0.5,
+    "finite_logits": true,
+    "compile_cache_hits": 2,
+    "compile_cache_misses": 0,
+    "compile_sec": 0.0,
+    "chunks": [
+      {
+        "start_index": 0,
+        "end_index": 16,
+        "total_sec": 527.9456600390004
+      },
+      {
+        "start_index": 16,
+        "end_index": 32,
+        "total_sec": 532.4185050370006
+      }
+    ]
+  },
+  "post_profile_validation": {
+    "status": "32/32 PASS on VPS",
+    "wall_sec": 17.91,
+    "suites": [
+      "tests.test_secure_pruning_ops",
+      "tests.test_spu_compile_cache",
+      "tests.test_showcase_runner_profile"
+    ],
+    "logs": [
+      "test_logs/final_unittest.stderr.log",
+      "test_logs/final_unittest.time.log"
+    ]
+  },
+  "comparisons": {
+    "against_r0655_batch8": {
+      "baseline_spu_forward_wall_sec": 1151.815082211,
+      "time_delta_percent": -7.887325942599288,
+      "baseline_tx_bytes": 54124018668,
+      "communication_delta_percent": -1.790465040935607,
+      "baseline_threshold_accuracy": 0.9375,
+      "threshold_accuracy_delta_points": 0.0,
+      "baseline_auc": 0.9765625,
+      "auc_delta": 0.00390625,
+      "argmax_match_ratio": 1.0,
+      "threshold_match_ratio": 0.9375,
+      "probabilities_max_abs_error": 0.030384957790374756
+    },
+    "against_r070_batch8": {
+      "baseline_spu_forward_wall_sec": 1463.213834743001,
+      "time_delta_percent": -27.490593156717324,
+      "baseline_tx_bytes": 56947138987,
+      "communication_delta_percent": -6.65914393498449,
+      "baseline_threshold_accuracy": 0.96875,
+      "threshold_accuracy_delta_points": -3.125,
+      "baseline_auc": 0.984375,
+      "auc_delta": -0.00390625
+    },
+    "against_report_expected": {
+      "report_spu_elapsed_sec": 2849.9446952342987,
+      "time_delta_percent": -62.772341716133674,
+      "report_dual_total_bytes": 90694658258,
+      "communication_delta_percent": -41.391314487574796,
+      "report_threshold_accuracy": 0.9375,
+      "threshold_accuracy_delta_points": 0.0
+    }
+  },
+  "environment": {
+    "host": "47.120.31.48",
+    "architecture": "x86_64",
+    "cpu": "Intel Xeon Platinum",
+    "vcpu": 16,
+    "memory_gib_approx": 61.4,
+    "python": "3.9.25",
+    "spu": "0.9.3b0",
+    "jax": "0.4.30",
+    "jaxlib": "0.4.30",
+    "colocated_optimization": true
+  },
+  "tested_source_sha256": {
+    "secure_pruning_ops.py": "df93b6b1a8508f44e93dd3300f910b2b2ba2b70f440dbfa3c3dfaf01a1ee8830",
+    "spu_static_vit.py": "67b364f051a3bb1ea488f24bce37f1eb42d66947aac903c3e6c08217146d9af7",
+    "spu_compile_cache.py": "67365a5fa5eb1ec5fee4efc384f8c8c54737265fb037f9eafc61cec978f55fe9",
+    "transshield_e2e_secure_vit.py": "7390d583c8d933455237127a060437aba0aba98e0db1f68e0ab77877bf481831",
+    "transshield_stage2_bundle.py": "288d2772cd3f0417df59825d556b97b25ad421d3050ec8129e02736aa7d3e123"
+  },
+  "guardrails": [
+    "This profile improves bulk throughput; it does not reduce one-image live request latency.",
+    "Do not set the single-image showcase runner to batch_size=16 because one request would be padded to a 16-image secure graph.",
+    "Use batch_size=16 only when the workload contains at least 16 queued samples and preferably when the sample count is divisible by 16.",
+    "Keep the r=0.655 threshold paired with token_ratio_base_override=0.655.",
+    "The formal r=0.7 showcase default and results/final remain unchanged."
+  ]
+}

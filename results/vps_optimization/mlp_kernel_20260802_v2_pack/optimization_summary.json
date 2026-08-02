@@ -1,0 +1,156 @@
+{
+  "manifest_type": "transshield_spu_mlp_parallel_packing_experiment_v1",
+  "captured_at_utc": "2026-08-02T05:14:00+00:00",
+  "status": "rejected_not_promoted_accuracy_stability_gate",
+  "formal_results_changed": false,
+  "showcase_default_changed": false,
+  "production_runtime_changed": false,
+  "vps_only_model_testing": true,
+  "candidate": {
+    "description": "parallelize independent Cheetah RLWE response packing groups",
+    "spu_tag": "0.9.3b0",
+    "spu_source_commit": "a1411c5489c5599f89b23fe84cdcb01232995b87",
+    "compiler": "GCC 11.5",
+    "protocol": "CHEETAH",
+    "ot_kind": "YACL_Ferret",
+    "field": "FM64",
+    "fxp_fraction_bits": 16,
+    "unchanged_model_graph": true,
+    "unchanged_model_weights": true,
+    "unchanged_matrix_dimensions": true,
+    "unchanged_activation": true,
+    "unchanged_protocol_parameters": true,
+    "communication_reduction_expected": false,
+    "patch": "../../../spu_vendored/patches/cheetah_parallel_rlwe_packing.patch",
+    "build_only_eigen_mirror_patch": "../../../spu_vendored/patches/spu093_eigen_github_mirror.patch"
+  },
+  "runtime_isolation": {
+    "baseline_runtime": "/opt/transshield-spu",
+    "candidate_runtime": "/opt/transshield-spu-mlp-pack",
+    "baseline_libspu_sha256": "9adbea0ec7b932d547d8695c89afc1ca7e9f349307585c69caa2f7cb2cdfce44",
+    "candidate_libspu_sha256": "67037d89d6a5afdb1fd03d12ee4106671ab4dc503f897a7a3ead4779e4c8ddc8",
+    "baseline_runtime_overwritten": false
+  },
+  "lower_level_validation": {
+    "build_succeeded": true,
+    "tests": [
+      {
+        "target": "//libspu/mpc/cheetah/arith:cheetah_dot_test",
+        "status": "passed",
+        "wall_sec": 54.1
+      },
+      {
+        "target": "//libspu/mpc/cheetah/rlwe:packlwes_test",
+        "status": "passed",
+        "wall_sec": 6.4
+      }
+    ],
+    "log": "logs/lower_level_tests.log"
+  },
+  "exact_mlp_microbenchmark": {
+    "shape": {
+      "batch": 16,
+      "tokens": 197,
+      "flattened_tokens": 3152,
+      "fc1": [3152, 384, 1536],
+      "fc2": [3152, 1536, 384]
+    },
+    "graph": "x + (alpha * square(x @ W1.T + b1)) @ W2.T + b2",
+    "baseline": {
+      "cold_sec": 53.77960023200012,
+      "hot_sec": 47.65299648099972,
+      "hot_tx_bytes": 2028172838,
+      "hot_reference_max_abs_error": 0.0001538395881652832,
+      "evidence": "../mlp_kernel_20260802_v1/baseline.json"
+    },
+    "candidate": {
+      "cold_sec": 46.53946232499948,
+      "hot_sec_runs": [40.34937686699959, 40.374289483999746],
+      "hot_sec_mean": 40.36183317549967,
+      "hot_tx_bytes_mean": 2028074745,
+      "maximum_reference_max_abs_error": 0.00014483928680419922,
+      "evidence": "pack.json"
+    },
+    "cold_time_delta_percent": -13.46261012682759,
+    "hot_time_delta_percent": -15.30053479093848,
+    "communication_materially_changed": false,
+    "numerical_error_increased": false
+  },
+  "medical32_validation": {
+    "profile": {
+      "sample_count": 32,
+      "spu_batch_size": 16,
+      "static_depth": 10,
+      "token_ratio_base_override": 0.655,
+      "token_keep_counts": [128, 84, 55],
+      "secure_pruning_network": "unpadded_selection",
+      "decision_threshold": 0.688152923150007,
+      "params_mode": "secret",
+      "input_mode": "party_local_debug_share_load",
+      "reveal_policy": "final_logits_only"
+    },
+    "accepted_baseline": {
+      "spu_forward_wall_sec": 1060.9676724210003,
+      "sec_per_sample": 33.15523976315626,
+      "loopback_gib": 49.504402126185596,
+      "threshold_accuracy": 0.9375,
+      "auc": 0.98046875,
+      "evidence": "../batch_scaling_20260802_v1/optimization_summary.json"
+    },
+    "candidate_run_1": {
+      "spu_forward_wall_sec": 981.7088757820002,
+      "time_delta_percent": -7.470425225882815,
+      "chunks_sec": [491.52626922799936, 489.5628405410007],
+      "loopback_gib": 49.50364223308861,
+      "threshold_accuracy": 0.9375,
+      "auc": 0.96875,
+      "finite_logits": true,
+      "evidence": "medical32_pack_summary.json"
+    },
+    "candidate_run_2": {
+      "spu_forward_wall_sec": 982.8970142730013,
+      "time_delta_percent": -7.358438921126709,
+      "loopback_gib": 49.50401405058801,
+      "threshold_accuracy": 0.90625,
+      "auc": 0.95703125,
+      "finite_logits": true,
+      "evidence": "medical32_pack_repeat2_summary.json"
+    },
+    "accuracy_stability_gate_passed": false,
+    "reason": "the second identical medical32 run lost one threshold-correct sample and both candidate runs had lower 32-sample AUC than the accepted baseline"
+  },
+  "diagnosis": {
+    "new_threshold_error_sample": "0/00456.png",
+    "accepted_baseline_probability": 0.6685185432434082,
+    "candidate_run_1_probability": 0.6693903803825378,
+    "candidate_run_2_probability": 0.6982908844947815,
+    "threshold": 0.688152923150007,
+    "cheetah_truncation_note": "SPU 0.9.3b0 documents Cheetah truncation as allowing a probabilistic error with absolute magnitude at most one LSB; secure pruning can amplify small run-to-run score changes.",
+    "alternative_equal_fit_threshold_not_adopted": 0.6995182931423187,
+    "alternative_threshold_calibration_correct": 482,
+    "current_threshold_calibration_correct": 482,
+    "alternative_not_adopted_reason": "it would couple an MLP kernel experiment to a threshold change and would not restore AUC"
+  },
+  "decision": {
+    "candidate_runtime_promoted": false,
+    "vendored_source_modified": false,
+    "experimental_patch_preserved": true,
+    "benchmark_tool_preserved": true,
+    "rollback": "continue using /opt/transshield-spu and do not apply the experimental packing patch"
+  },
+  "tested_artifact_sha256": {
+    "benchmark_spu_mlp.py": "79d5f56c9600b105a5d131d4a8061d62ee7af35dcec8f00f9618acac3020df4f",
+    "cheetah_parallel_rlwe_packing.patch": "ce481e9120784cf5865d22be8ac81a99b99b2ea4d5cdfb02f397fe1034669f00",
+    "spu093_eigen_github_mirror.patch": "817a3afb334c2eb53df6f866bd06ec5e3ccdd8cdf72c8403a32b7451eebb4326",
+    "baseline_mlp_json": "4cb201331df63d5cb851db13490887a694ce71107c7ba222f523bfa557424cf0",
+    "candidate_mlp_json": "41bb69daf58cb6d4e14d458f2cee3a4c4ed32a41655924c30c73e157817e6ab0",
+    "candidate_medical32_run_1_json": "19d0886d48b7b6b635bf0bc5e36e3a7117ba7d51409e55d15dd82e8394d96e37",
+    "candidate_medical32_run_2_json": "177618e3f3696f3649fb0fec44d9bfc68568615e97119f133d2719adf8fbd179"
+  },
+  "guardrails": [
+    "Do not replace the installed SPU runtime with the candidate libspu.so.",
+    "Do not apply the experimental packing patch in the default build.",
+    "Do not change the r=0.655 threshold to make this experiment pass.",
+    "Do not update results/final, results/communication, results/fuzzing, or results/guard_stress from this experiment."
+  ]
+}

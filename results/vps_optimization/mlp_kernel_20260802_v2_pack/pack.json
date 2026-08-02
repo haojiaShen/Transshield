@@ -1,0 +1,95 @@
+{
+  "manifest_type": "transshield_spu_exact_mlp_benchmark_v1",
+  "captured_at_utc": "2026-08-02T04:33:48.580693+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.39",
+  "spu_version": "0.9.3b0",
+  "config": "/opt/transshield-project/results/vps_optimization/mlp_kernel_20260802_v2_pack/configs/pack.json",
+  "runtime_config": {
+    "cheetah_2pc_config": {
+      "enable_mul_lsb_error": false,
+      "ot_kind": "YACL_Ferret"
+    },
+    "enable_hal_profile": false,
+    "enable_pphlo_profile": false,
+    "experimental_enable_colocated_optimization": true,
+    "field": "FM64",
+    "fxp_exp_iters": 4,
+    "fxp_exp_mode": 0,
+    "fxp_fraction_bits": 16,
+    "protocol": "CHEETAH"
+  },
+  "ownership": {
+    "input": "P1",
+    "model_parameters": "P2",
+    "reveal": "full synthetic final MLP output only"
+  },
+  "graph": "x + (alpha * square(x @ W1.T + b1)) @ W2.T + b2",
+  "shape": {
+    "input": [
+      16,
+      197,
+      384
+    ],
+    "flattened_tokens": 3152,
+    "fc1": [
+      3152,
+      384,
+      1536
+    ],
+    "fc2": [
+      3152,
+      1536,
+      384
+    ]
+  },
+  "seed": 20260802,
+  "interface": "lo",
+  "reference_output_sha256": "f47e1e4b607949e914d1e565b55b554466e568fa209d10626d47fc8d8a8afdea",
+  "repetitions": [
+    {
+      "repeat_index": 0,
+      "elapsed_sec": 46.53946232499948,
+      "loopback_tx_bytes": 2089286891,
+      "loopback_rx_bytes": 2089286891,
+      "output_sha256": "aed1896625c0295074f999d4c45bebc444bc2de6a1f562f6aa4a658a6ee1aca0",
+      "output_min": -1.2944488525390625,
+      "output_max": 1.164642333984375,
+      "output_mean": -0.0015441651921719313,
+      "finite": true,
+      "reference_max_abs_error": 0.0001418590545654297,
+      "reference_mean_abs_error": 2.4313425456057303e-05
+    },
+    {
+      "repeat_index": 1,
+      "elapsed_sec": 40.34937686699959,
+      "loopback_tx_bytes": 2028050739,
+      "loopback_rx_bytes": 2028050739,
+      "output_sha256": "2acc7f4fed8013e8db3e821e10cd6d1ed8b0e3d03f2184e8da313772801148dc",
+      "output_min": -1.2944488525390625,
+      "output_max": 1.16461181640625,
+      "output_mean": -0.0015441824216395617,
+      "finite": true,
+      "reference_max_abs_error": 0.00013849139213562012,
+      "reference_mean_abs_error": 2.4305953047587536e-05
+    },
+    {
+      "repeat_index": 2,
+      "elapsed_sec": 40.374289483999746,
+      "loopback_tx_bytes": 2028098751,
+      "loopback_rx_bytes": 2028098751,
+      "output_sha256": "42abc5f7e3d506b5ae1d780429984ef6e17c93fadb16307f8cf1e96749216a7a",
+      "output_min": -1.2944488525390625,
+      "output_max": 1.1646270751953125,
+      "output_mean": -0.0015441861469298601,
+      "finite": true,
+      "reference_max_abs_error": 0.00014483928680419922,
+      "reference_mean_abs_error": 2.4304941689479165e-05
+    }
+  ],
+  "acceptance": {
+    "unchanged_math_graph": true,
+    "unchanged_field_and_fraction_bits": true,
+    "all_finite": true
+  }
+}

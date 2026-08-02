@@ -1,0 +1,175 @@
+[2026-08-02 11:09:13,263] [MainProcess] Starting grpc server at 127.0.0.1:33137
+[2026-08-02 11:09:13,352] [MainProcess] Run : builtin_spu_init at node:1
+I0802 11:09:13.355968 160058     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1204] Server[yacl::link::transport::internal::ReceiverServiceImpl] is serving on port=37349.
+W0802 11:09:13.355983 160058     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1210] Builtin services are disabled according to ServerOptions.has_builtin_services
+[2026-08-02 11:09:13.357] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 11:09:13.358] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 11:09:13,359] [MainProcess] spu-runtime (SPU) initialized
+[2026-08-02 11:09:13,406] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 11:09:13,412] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:09:31,616] [MainProcess] Run : builtin_spu_init at node:1
+[2026-08-02 11:09:31,616] [MainProcess] spu-runtime (SPU) already exist, reuse it
+[2026-08-02 11:09:31,776] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:09:31,779] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:09:31,782] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:09:31,794] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:09:31,796] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:09:31,847] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:09:31.859] [info] [thread_pool.cc:30] Create a fixed thread pool with size 15
+[2026-08-02 11:09:31,881] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:09:31,883] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:09:31,884] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:09:31,886] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:09:31,887] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:09:31,888] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:09:31,904] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:09:31,905] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:09:31,906] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:09:31,943] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 11:09:31,944] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:09:31,980] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:09:31,981] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:09:31,982] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:09:32,029] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:09:58.783] [info] [cheetah_mul.cc:335] CheetahMul uses 4 modulus for 64 bit input over 64 bit ring
+[2026-08-02 11:10:25,518] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:10:25,633] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:10:25,642] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:10:25,643] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:10:25,645] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:10:25,646] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:10:25,648] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:10:25,649] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:10:25,657] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:10:25,659] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:10:25,660] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:10:25,666] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 11:10:25,667] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:10:25,695] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:10:25,697] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:10:25,701] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:10:25,710] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:11:13,203] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:12:06,782] [MainProcess] Run : builtin_spu_init at node:1
+[2026-08-02 11:12:06,782] [MainProcess] spu-runtime (SPU) already exist, reuse it
+[2026-08-02 11:12:06,908] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:12:06,911] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:12:06,913] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:12:06,920] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:12:06,921] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:12:06,961] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:12:06,974] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:12:06,976] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:12:06,977] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:12:06,979] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:12:06,980] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:12:06,981] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:12:06,990] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:12:06,991] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:12:06,992] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:12:07,028] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 11:12:07,030] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:12:07,065] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:12:07,067] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:12:07,071] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:12:07,081] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:12:54,596] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:12:54,686] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:12:54,695] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:12:54,697] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:12:54,698] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:12:54,700] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:12:54,701] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:12:54,702] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:12:54,710] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:12:54,712] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:12:54,713] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:12:54,719] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 11:12:54,720] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:12:54,751] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:12:54,752] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:12:54,757] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:12:54,766] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:13:42,125] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:14:19,965] [MainProcess] Run : builtin_spu_init at node:1
+[2026-08-02 11:14:19,965] [MainProcess] spu-runtime (SPU) already exist, reuse it
+[2026-08-02 11:14:20,094] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:14:20,096] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:14:20,097] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:14:20,111] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:14:20,114] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:14:20,161] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:14:20,170] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:14:20,172] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:14:20,173] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:14:20,175] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:14:20,176] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:14:20,177] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:14:20,187] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:14:20,189] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:14:20,190] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:14:20,226] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 11:14:20,227] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:14:20,282] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:14:20,284] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:14:20,288] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:14:20,296] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:15:07,944] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:15:08,037] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:15:08,046] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:15:08,048] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:15:08,049] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:15:08,051] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:15:08,052] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:15:08,053] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:15:08,061] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:15:08,062] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:15:08,063] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:15:08,069] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 11:15:08,070] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:15:08,094] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:15:08,110] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:15:08,111] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:15:08,121] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:15:55,622] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:16:22,937] [MainProcess] Run : builtin_spu_init at node:1
+[2026-08-02 11:16:22,937] [MainProcess] spu-runtime (SPU) already exist, reuse it
+[2026-08-02 11:16:23,071] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:16:23,074] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:16:23,076] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:16:23,084] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:16:23,086] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 11:16:23,134] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:16:23,143] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:16:23,145] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:16:23,146] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:16:23,147] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:16:23,148] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:16:23,150] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:16:23,158] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:16:23,160] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:16:23,161] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:16:23,197] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 11:16:23,198] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:16:23,230] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:16:23,232] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:16:23,236] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:16:23,245] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:17:10,732] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:17:10,826] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:17:10,835] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:17:10,837] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:17:10,838] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:17:10,840] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:17:10,841] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:17:10,842] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:17:10,850] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:17:10,852] [MainProcess] Run : make_shares at node:1
+[2026-08-02 11:17:10,853] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 11:17:10,859] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 11:17:10,860] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:17:10,890] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:17:10,892] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:17:10,896] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:17:10,906] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 11:17:58,320] [MainProcess] RunR: builtin_fetch_object at node:1

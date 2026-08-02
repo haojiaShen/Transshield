@@ -1,0 +1,259 @@
+[2026-08-02 12:31:02,783] [MainProcess] Starting grpc server at 127.0.0.1:33001
+[2026-08-02 12:31:02,863] [MainProcess] Run : builtin_spu_init at node:1
+I0802 12:31:02.867191 260287     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1204] Server[yacl::link::transport::internal::ReceiverServiceImpl] is serving on port=33259.
+W0802 12:31:02.867205 260287     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1210] Builtin services are disabled according to ServerOptions.has_builtin_services
+[2026-08-02 12:31:03.874] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 12:31:03.875] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 12:31:03,876] [MainProcess] spu-runtime (SPU) initialized
+[2026-08-02 12:31:03,925] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 12:31:03,931] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:31:41,081] [MainProcess] Run : builtin_spu_init at node:1
+[2026-08-02 12:31:41,081] [MainProcess] spu-runtime (SPU) already exist, reuse it
+[2026-08-02 12:31:41,238] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 12:31:41,241] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 12:31:41,243] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 12:31:41,261] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 12:31:41,264] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 12:31:41,320] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:31:41.331] [info] [thread_pool.cc:30] Create a fixed thread pool with size 15
+[2026-08-02 12:31:41,354] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:31:41,355] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:31:41,357] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:31:41,358] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:31:41,359] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:31:41,361] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:31:41,376] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:31:41,378] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:31:41,379] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:31:41,416] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 12:31:41,428] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:31:41,491] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:31:41,493] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:31:41,494] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:31:41,508] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:32:02.695] [info] [cheetah_mul.cc:335] CheetahMul uses 4 modulus for 64 bit input over 64 bit ring
+[2026-08-02 12:32:27,742] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:32:27,859] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:32:27,868] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:32:27,869] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:32:27,871] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:32:27,872] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:32:27,873] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:32:27,875] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:32:27,883] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:32:27,885] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:32:27,886] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:32:27,892] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 12:32:27,893] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:32:27,927] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:32:27,928] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:32:27,933] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:32:27,943] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:33:08,126] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:33:08,210] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:33:08,219] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:33:08,221] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:33:08,222] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:33:08,224] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:33:08,225] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:33:08,226] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:33:08,235] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:33:08,236] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:33:08,237] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:33:08,243] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 12:33:08,251] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:33:08,278] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:33:08,279] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:33:08,284] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:33:08,293] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:33:48,516] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:36:54,599] [MainProcess] Run : builtin_spu_init at node:1
+[2026-08-02 12:36:54,599] [MainProcess] spu-runtime (SPU) already exist, reuse it
+[2026-08-02 12:36:55,457] [MainProcess] Run : load_share_chunk_from_party_manifest at node:1
+[2026-08-02 12:36:56,082] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:36:56,165] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:36:57,028] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 12:36:57,028] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:37:07.642] [info] [cheetah_dot.cc:487] 1@3136x768x384 => 1x64x128 Recv 6.35 MiB, Response 35.658 MiB Pack 3950.373 ms (interleave)
+[2026-08-02 12:37:34.040] [info] [cheetah_dot.cc:487] 1@3152x384x1536 => 1x16x512 Recv 12.701 MiB, Response 143.361 MiB Pack 3938.993 ms (interleave)
+[2026-08-02 12:37:59.525] [info] [cheetah_dot.cc:487] 1@3152x1536x384 => 1x64x128 Recv 12.701 MiB, Response 35.901 MiB Pack 4114.75 ms (interleave)
+[2026-08-02 12:38:25.030] [info] [cheetah_dot.cc:487] 1@3152x384x1536 => 1x16x512 Recv 12.701 MiB, Response 143.361 MiB Pack 3924.68 ms (interleave)
+[2026-08-02 12:38:50.419] [info] [cheetah_dot.cc:487] 1@3152x1536x384 => 1x64x128 Recv 12.701 MiB, Response 35.9 MiB Pack 4033.584 ms (interleave)
+[2026-08-02 12:39:15.513] [info] [cheetah_dot.cc:487] 1@3152x384x1536 => 1x16x512 Recv 12.7 MiB, Response 143.361 MiB Pack 3932.349 ms (interleave)
+[2026-08-02 12:39:41.319] [info] [cheetah_dot.cc:487] 1@3152x1536x384 => 1x64x128 Recv 12.701 MiB, Response 35.901 MiB Pack 4037.057 ms (interleave)
+[2026-08-02 12:39:52.723] [info] [cheetah_dot.cc:487] 1@3136x384x384 => 1x64x128 Recv 3.175 MiB, Response 35.659 MiB Pack 4029.276 ms (interleave)
+[2026-08-02 12:40:00.929] [info] [cheetah_dot.cc:487] 1@3136x384x192 => 1x128x64 Recv 1.588 MiB, Response 17.95 MiB Pack 4087.282 ms (interleave)
+[2026-08-02 12:40:04.785] [info] [cheetah_dot.cc:487] 1@3136x192x96 => 2x128x32 Recv 1.058 MiB, Response 8.975 MiB Pack 2015.482 ms (interleave)
+[2026-08-02 12:40:05.688] [info] [cheetah_dot.cc:487] 1@3136x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 180.399 ms (interleave)
+[2026-08-02 12:41:24.306] [info] [cheetah_dot.cc:487] 1@2064x384x1536 => 1x16x512 Recv 12.7 MiB, Response 93.876 MiB Pack 2582.684 ms (interleave)
+[2026-08-02 12:41:40.995] [info] [cheetah_dot.cc:487] 1@2064x1536x384 => 1x64x128 Recv 12.701 MiB, Response 23.529 MiB Pack 2590.606 ms (interleave)
+[2026-08-02 12:41:58.031] [info] [cheetah_dot.cc:487] 1@2064x384x1536 => 1x16x512 Recv 12.7 MiB, Response 93.875 MiB Pack 2585.834 ms (interleave)
+[2026-08-02 12:42:14.609] [info] [cheetah_dot.cc:487] 1@2064x1536x384 => 1x64x128 Recv 12.7 MiB, Response 23.529 MiB Pack 2589.711 ms (interleave)
+[2026-08-02 12:42:31.995] [info] [cheetah_dot.cc:487] 1@2064x384x1536 => 1x16x512 Recv 12.701 MiB, Response 93.876 MiB Pack 2578.5 ms (interleave)
+[2026-08-02 12:42:48.897] [info] [cheetah_dot.cc:487] 1@2064x1536x384 => 1x64x128 Recv 12.701 MiB, Response 23.53 MiB Pack 2591.563 ms (interleave)
+[2026-08-02 12:42:56.442] [info] [cheetah_dot.cc:487] 1@2048x384x384 => 1x64x128 Recv 3.175 MiB, Response 23.287 MiB Pack 2648.47 ms (interleave)
+[2026-08-02 12:43:01.796] [info] [cheetah_dot.cc:487] 1@2048x384x192 => 1x128x64 Recv 1.588 MiB, Response 11.644 MiB Pack 2661.933 ms (interleave)
+[2026-08-02 12:43:04.272] [info] [cheetah_dot.cc:487] 1@2048x192x96 => 2x128x32 Recv 1.058 MiB, Response 5.822 MiB Pack 1264.504 ms (interleave)
+[2026-08-02 12:43:04.939] [info] [cheetah_dot.cc:487] 1@2048x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 170.173 ms (interleave)
+[2026-08-02 12:43:49.122] [info] [cheetah_dot.cc:487] 1@1360x384x1536 => 1x16x512 Recv 12.701 MiB, Response 61.856 MiB Pack 1693.384 ms (interleave)
+[2026-08-02 12:44:00.236] [info] [cheetah_dot.cc:487] 1@1360x1536x384 => 1x64x128 Recv 12.7 MiB, Response 15.525 MiB Pack 1763.534 ms (interleave)
+[2026-08-02 12:44:12.492] [info] [cheetah_dot.cc:487] 1@1360x384x1536 => 1x16x512 Recv 12.701 MiB, Response 61.857 MiB Pack 1700.418 ms (interleave)
+[2026-08-02 12:44:23.869] [info] [cheetah_dot.cc:487] 1@1360x1536x384 => 1x64x128 Recv 12.7 MiB, Response 15.525 MiB Pack 1766.789 ms (interleave)
+[2026-08-02 12:44:35.762] [info] [cheetah_dot.cc:487] 1@1360x384x1536 => 1x16x512 Recv 12.701 MiB, Response 61.857 MiB Pack 1697.212 ms (interleave)
+[2026-08-02 12:44:46.762] [info] [cheetah_dot.cc:487] 1@1360x1536x384 => 1x64x128 Recv 12.701 MiB, Response 15.525 MiB Pack 1762.501 ms (interleave)
+[2026-08-02 12:44:51.727] [info] [cheetah_dot.cc:487] 1@1344x384x384 => 1x64x128 Recv 3.175 MiB, Response 15.282 MiB Pack 1761.91 ms (interleave)
+[2026-08-02 12:44:55.297] [info] [cheetah_dot.cc:487] 1@1344x384x192 => 1x128x64 Recv 1.588 MiB, Response 7.763 MiB Pack 1772.545 ms (interleave)
+[2026-08-02 12:44:56.997] [info] [cheetah_dot.cc:487] 1@1344x192x96 => 2x128x32 Recv 1.058 MiB, Response 3.881 MiB Pack 888.535 ms (interleave)
+[2026-08-02 12:44:57.462] [info] [cheetah_dot.cc:487] 1@1344x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 136.542 ms (interleave)
+[2026-08-02 12:45:06,376] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:45:06,379] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:45:06,382] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:45:06,385] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:45:06,388] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:45:06,391] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:45:06,393] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:45:06,396] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:45:06,801] [MainProcess] Run : load_share_chunk_from_party_manifest at node:1
+[2026-08-02 12:45:07,037] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:45:07,066] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:45:07,942] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 12:45:07,953] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:45:18.017] [info] [cheetah_dot.cc:487] 1@3136x768x384 => 1x64x128 Recv 6.351 MiB, Response 35.657 MiB Pack 4037.3 ms (interleave)
+[2026-08-02 12:45:43.860] [info] [cheetah_dot.cc:487] 1@3152x384x1536 => 1x16x512 Recv 12.701 MiB, Response 143.361 MiB Pack 3916.261 ms (interleave)
+[2026-08-02 12:46:09.279] [info] [cheetah_dot.cc:487] 1@3152x1536x384 => 1x64x128 Recv 12.701 MiB, Response 35.901 MiB Pack 4039.372 ms (interleave)
+[2026-08-02 12:46:34.760] [info] [cheetah_dot.cc:487] 1@3152x384x1536 => 1x16x512 Recv 12.7 MiB, Response 143.36 MiB Pack 3934.777 ms (interleave)
+[2026-08-02 12:47:02.382] [info] [cheetah_dot.cc:487] 1@3152x1536x384 => 1x64x128 Recv 12.701 MiB, Response 35.901 MiB Pack 4073.276 ms (interleave)
+[2026-08-02 12:47:27.880] [info] [cheetah_dot.cc:487] 1@3152x384x1536 => 1x16x512 Recv 12.7 MiB, Response 143.361 MiB Pack 3921.474 ms (interleave)
+[2026-08-02 12:47:53.349] [info] [cheetah_dot.cc:487] 1@3152x1536x384 => 1x64x128 Recv 12.701 MiB, Response 35.9 MiB Pack 3982.595 ms (interleave)
+[2026-08-02 12:48:05.510] [info] [cheetah_dot.cc:487] 1@3136x384x384 => 1x64x128 Recv 3.175 MiB, Response 35.658 MiB Pack 4048.513 ms (interleave)
+[2026-08-02 12:48:13.698] [info] [cheetah_dot.cc:487] 1@3136x384x192 => 1x128x64 Recv 1.588 MiB, Response 17.95 MiB Pack 4062.152 ms (interleave)
+[2026-08-02 12:48:17.660] [info] [cheetah_dot.cc:487] 1@3136x192x96 => 2x128x32 Recv 1.058 MiB, Response 8.975 MiB Pack 2110.95 ms (interleave)
+[2026-08-02 12:48:18.563] [info] [cheetah_dot.cc:487] 1@3136x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 180.132 ms (interleave)
+[2026-08-02 12:49:32.416] [info] [cheetah_dot.cc:487] 1@2064x384x1536 => 1x16x512 Recv 12.701 MiB, Response 93.877 MiB Pack 2573.849 ms (interleave)
+[2026-08-02 12:49:48.927] [info] [cheetah_dot.cc:487] 1@2064x1536x384 => 1x64x128 Recv 12.7 MiB, Response 23.529 MiB Pack 2609.855 ms (interleave)
+[2026-08-02 12:50:06.341] [info] [cheetah_dot.cc:487] 1@2064x384x1536 => 1x16x512 Recv 12.701 MiB, Response 93.875 MiB Pack 2586.086 ms (interleave)
+[2026-08-02 12:50:23.181] [info] [cheetah_dot.cc:487] 1@2064x1536x384 => 1x64x128 Recv 12.701 MiB, Response 23.53 MiB Pack 2593.653 ms (interleave)
+[2026-08-02 12:50:40.624] [info] [cheetah_dot.cc:487] 1@2064x384x1536 => 1x16x512 Recv 12.7 MiB, Response 93.876 MiB Pack 2583.156 ms (interleave)
+[2026-08-02 12:50:57.180] [info] [cheetah_dot.cc:487] 1@2064x1536x384 => 1x64x128 Recv 12.7 MiB, Response 23.529 MiB Pack 2597.276 ms (interleave)
+[2026-08-02 12:51:04.977] [info] [cheetah_dot.cc:487] 1@2048x384x384 => 1x64x128 Recv 3.175 MiB, Response 23.287 MiB Pack 2646.07 ms (interleave)
+[2026-08-02 12:51:10.320] [info] [cheetah_dot.cc:487] 1@2048x384x192 => 1x128x64 Recv 1.588 MiB, Response 11.643 MiB Pack 2662.7 ms (interleave)
+[2026-08-02 12:51:12.812] [info] [cheetah_dot.cc:487] 1@2048x192x96 => 2x128x32 Recv 1.058 MiB, Response 5.822 MiB Pack 1280.431 ms (interleave)
+[2026-08-02 12:51:13.458] [info] [cheetah_dot.cc:487] 1@2048x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 168.773 ms (interleave)
+[2026-08-02 12:51:56.822] [info] [cheetah_dot.cc:487] 1@1360x384x1536 => 1x16x512 Recv 12.701 MiB, Response 61.857 MiB Pack 1697.626 ms (interleave)
+[2026-08-02 12:52:07.798] [info] [cheetah_dot.cc:487] 1@1360x1536x384 => 1x64x128 Recv 12.701 MiB, Response 15.525 MiB Pack 1761.176 ms (interleave)
+[2026-08-02 12:52:20.048] [info] [cheetah_dot.cc:487] 1@1360x384x1536 => 1x16x512 Recv 12.701 MiB, Response 61.856 MiB Pack 1695.665 ms (interleave)
+[2026-08-02 12:52:33.180] [info] [cheetah_dot.cc:487] 1@1360x1536x384 => 1x64x128 Recv 12.701 MiB, Response 15.525 MiB Pack 1763.99 ms (interleave)
+[2026-08-02 12:52:45.409] [info] [cheetah_dot.cc:487] 1@1360x384x1536 => 1x16x512 Recv 12.701 MiB, Response 61.857 MiB Pack 1715.237 ms (interleave)
+[2026-08-02 12:52:56.392] [info] [cheetah_dot.cc:487] 1@1360x1536x384 => 1x64x128 Recv 12.7 MiB, Response 15.525 MiB Pack 1763.039 ms (interleave)
+[2026-08-02 12:53:01.729] [info] [cheetah_dot.cc:487] 1@1344x384x384 => 1x64x128 Recv 3.175 MiB, Response 15.282 MiB Pack 1765.048 ms (interleave)
+[2026-08-02 12:53:05.309] [info] [cheetah_dot.cc:487] 1@1344x384x192 => 1x128x64 Recv 1.588 MiB, Response 7.763 MiB Pack 1780.598 ms (interleave)
+[2026-08-02 12:53:07.015] [info] [cheetah_dot.cc:487] 1@1344x192x96 => 2x128x32 Recv 1.058 MiB, Response 3.881 MiB Pack 889.806 ms (interleave)
+[2026-08-02 12:53:07.473] [info] [cheetah_dot.cc:487] 1@1344x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 136.192 ms (interleave)
+[2026-08-02 12:53:15,937] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:53:15,941] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:53:15,944] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:53:15,946] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:53:15,949] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:53:15,952] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:53:15,955] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:53:15,957] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:53:15,960] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:53:15,968] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:53:15,977] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:53:15,979] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:53:15,982] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 12:55:30,953] [MainProcess] Run : builtin_spu_init at node:1
+[2026-08-02 12:55:30,953] [MainProcess] spu-runtime (SPU) already exist, reuse it
+[2026-08-02 12:55:31,227] [MainProcess] Run : load_share_chunk_from_party_manifest at node:1
+[2026-08-02 12:55:31,266] [MainProcess] Run : make_shares at node:1
+[2026-08-02 12:55:31,297] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 12:55:32,061] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 12:55:32,072] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 12:55:41.954] [info] [cheetah_dot.cc:487] 1@3136x768x384 => 1x64x128 Recv 6.35 MiB, Response 35.658 MiB Pack 4015.206 ms (interleave)
+[2026-08-02 12:56:07.754] [info] [cheetah_dot.cc:487] 1@3152x384x1536 => 1x16x512 Recv 12.7 MiB, Response 143.362 MiB Pack 3930.276 ms (interleave)
+[2026-08-02 12:56:33.355] [info] [cheetah_dot.cc:487] 1@3152x1536x384 => 1x64x128 Recv 12.7 MiB, Response 35.901 MiB Pack 4109.991 ms (interleave)
+[2026-08-02 12:56:59.260] [info] [cheetah_dot.cc:487] 1@3152x384x1536 => 1x16x512 Recv 12.701 MiB, Response 143.361 MiB Pack 3932.669 ms (interleave)
+[2026-08-02 12:57:24.645] [info] [cheetah_dot.cc:487] 1@3152x1536x384 => 1x64x128 Recv 12.701 MiB, Response 35.901 MiB Pack 4073.302 ms (interleave)
+[2026-08-02 12:57:50.124] [info] [cheetah_dot.cc:487] 1@3152x384x1536 => 1x16x512 Recv 12.701 MiB, Response 143.361 MiB Pack 3917.793 ms (interleave)
+[2026-08-02 12:58:15.411] [info] [cheetah_dot.cc:487] 1@3152x1536x384 => 1x64x128 Recv 12.701 MiB, Response 35.901 MiB Pack 3968.066 ms (interleave)
+[2026-08-02 12:58:26.754] [info] [cheetah_dot.cc:487] 1@3136x384x384 => 1x64x128 Recv 3.175 MiB, Response 35.659 MiB Pack 4037.687 ms (interleave)
+[2026-08-02 12:58:35.366] [info] [cheetah_dot.cc:487] 1@3136x384x192 => 1x128x64 Recv 1.588 MiB, Response 17.95 MiB Pack 4118.627 ms (interleave)
+[2026-08-02 12:58:39.312] [info] [cheetah_dot.cc:487] 1@3136x192x96 => 2x128x32 Recv 1.058 MiB, Response 8.975 MiB Pack 2115.943 ms (interleave)
+[2026-08-02 12:58:40.214] [info] [cheetah_dot.cc:487] 1@3136x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 179.438 ms (interleave)
+[2026-08-02 12:59:55.416] [info] [cheetah_dot.cc:487] 1@2064x384x1536 => 1x16x512 Recv 12.701 MiB, Response 93.876 MiB Pack 2581.997 ms (interleave)
+[2026-08-02 13:00:14.253] [info] [cheetah_dot.cc:487] 1@2064x1536x384 => 1x64x128 Recv 12.701 MiB, Response 23.53 MiB Pack 2642.535 ms (interleave)
+[2026-08-02 13:00:31.714] [info] [cheetah_dot.cc:487] 1@2064x384x1536 => 1x16x512 Recv 12.7 MiB, Response 93.876 MiB Pack 2584.198 ms (interleave)
+[2026-08-02 13:00:48.264] [info] [cheetah_dot.cc:487] 1@2064x1536x384 => 1x64x128 Recv 12.701 MiB, Response 23.53 MiB Pack 2613.884 ms (interleave)
+[2026-08-02 13:01:05.740] [info] [cheetah_dot.cc:487] 1@2064x384x1536 => 1x16x512 Recv 12.701 MiB, Response 93.876 MiB Pack 2581.189 ms (interleave)
+[2026-08-02 13:01:22.263] [info] [cheetah_dot.cc:487] 1@2064x1536x384 => 1x64x128 Recv 12.701 MiB, Response 23.53 MiB Pack 2587.052 ms (interleave)
+[2026-08-02 13:01:29.710] [info] [cheetah_dot.cc:487] 1@2048x384x384 => 1x64x128 Recv 3.175 MiB, Response 23.287 MiB Pack 2660.925 ms (interleave)
+[2026-08-02 13:01:35.467] [info] [cheetah_dot.cc:487] 1@2048x384x192 => 1x128x64 Recv 1.588 MiB, Response 11.644 MiB Pack 2661.776 ms (interleave)
+[2026-08-02 13:01:38.307] [info] [cheetah_dot.cc:487] 1@2048x192x96 => 2x128x32 Recv 1.058 MiB, Response 5.822 MiB Pack 1269.599 ms (interleave)
+[2026-08-02 13:01:38.951] [info] [cheetah_dot.cc:487] 1@2048x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 168.55 ms (interleave)
+[2026-08-02 13:02:24.296] [info] [cheetah_dot.cc:487] 1@1360x384x1536 => 1x16x512 Recv 12.7 MiB, Response 61.855 MiB Pack 1696.989 ms (interleave)
+[2026-08-02 13:02:35.296] [info] [cheetah_dot.cc:487] 1@1360x1536x384 => 1x64x128 Recv 12.701 MiB, Response 15.525 MiB Pack 1764.462 ms (interleave)
+[2026-08-02 13:02:47.152] [info] [cheetah_dot.cc:487] 1@1360x384x1536 => 1x16x512 Recv 12.7 MiB, Response 61.856 MiB Pack 1697.202 ms (interleave)
+[2026-08-02 13:02:58.098] [info] [cheetah_dot.cc:487] 1@1360x1536x384 => 1x64x128 Recv 12.701 MiB, Response 15.525 MiB Pack 1767.629 ms (interleave)
+[2026-08-02 13:03:10.372] [info] [cheetah_dot.cc:487] 1@1360x384x1536 => 1x16x512 Recv 12.701 MiB, Response 61.856 MiB Pack 1699.354 ms (interleave)
+[2026-08-02 13:03:21.334] [info] [cheetah_dot.cc:487] 1@1360x1536x384 => 1x64x128 Recv 12.701 MiB, Response 15.525 MiB Pack 1766.238 ms (interleave)
+[2026-08-02 13:03:26.323] [info] [cheetah_dot.cc:487] 1@1344x384x384 => 1x64x128 Recv 3.175 MiB, Response 15.282 MiB Pack 1762.182 ms (interleave)
+[2026-08-02 13:03:29.871] [info] [cheetah_dot.cc:487] 1@1344x384x192 => 1x128x64 Recv 1.588 MiB, Response 7.762 MiB Pack 1773.572 ms (interleave)
+[2026-08-02 13:03:31.578] [info] [cheetah_dot.cc:487] 1@1344x192x96 => 2x128x32 Recv 1.058 MiB, Response 3.881 MiB Pack 890.203 ms (interleave)
+[2026-08-02 13:03:32.034] [info] [cheetah_dot.cc:487] 1@1344x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 135.73 ms (interleave)
+[2026-08-02 13:03:40,491] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:03:40,494] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:03:40,497] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:03:40,500] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:03:40,503] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:03:40,505] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:03:40,508] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:03:40,510] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 13:03:40,517] [MainProcess] Run : load_share_chunk_from_party_manifest at node:1
+[2026-08-02 13:03:40,556] [MainProcess] Run : make_shares at node:1
+[2026-08-02 13:03:40,586] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 13:03:41,382] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 13:03:41,383] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 13:03:51.229] [info] [cheetah_dot.cc:487] 1@3136x768x384 => 1x64x128 Recv 6.35 MiB, Response 35.658 MiB Pack 3948.626 ms (interleave)
+[2026-08-02 13:04:18.157] [info] [cheetah_dot.cc:487] 1@3152x384x1536 => 1x16x512 Recv 12.7 MiB, Response 143.361 MiB Pack 3916.509 ms (interleave)
+[2026-08-02 13:04:43.634] [info] [cheetah_dot.cc:487] 1@3152x1536x384 => 1x64x128 Recv 12.701 MiB, Response 35.901 MiB Pack 4031.571 ms (interleave)
+[2026-08-02 13:05:09.117] [info] [cheetah_dot.cc:487] 1@3152x384x1536 => 1x16x512 Recv 12.701 MiB, Response 143.36 MiB Pack 3927.774 ms (interleave)
+[2026-08-02 13:05:34.541] [info] [cheetah_dot.cc:487] 1@3152x1536x384 => 1x64x128 Recv 12.701 MiB, Response 35.901 MiB Pack 4042.775 ms (interleave)
+[2026-08-02 13:05:59.940] [info] [cheetah_dot.cc:487] 1@3152x384x1536 => 1x16x512 Recv 12.7 MiB, Response 143.363 MiB Pack 3915.991 ms (interleave)
+[2026-08-02 13:06:27.377] [info] [cheetah_dot.cc:487] 1@3152x1536x384 => 1x64x128 Recv 12.701 MiB, Response 35.901 MiB Pack 4032.822 ms (interleave)
+[2026-08-02 13:06:39.079] [info] [cheetah_dot.cc:487] 1@3136x384x384 => 1x64x128 Recv 3.175 MiB, Response 35.658 MiB Pack 3963.741 ms (interleave)
+[2026-08-02 13:06:47.258] [info] [cheetah_dot.cc:487] 1@3136x384x192 => 1x128x64 Recv 1.588 MiB, Response 17.95 MiB Pack 4046.628 ms (interleave)
+[2026-08-02 13:06:51.130] [info] [cheetah_dot.cc:487] 1@3136x192x96 => 2x128x32 Recv 1.058 MiB, Response 8.975 MiB Pack 2028.498 ms (interleave)
+[2026-08-02 13:06:52.022] [info] [cheetah_dot.cc:487] 1@3136x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 179.259 ms (interleave)
+[2026-08-02 13:08:07.559] [info] [cheetah_dot.cc:487] 1@2064x384x1536 => 1x16x512 Recv 12.7 MiB, Response 93.876 MiB Pack 2583.677 ms (interleave)
+[2026-08-02 13:08:24.511] [info] [cheetah_dot.cc:487] 1@2064x1536x384 => 1x64x128 Recv 12.701 MiB, Response 23.53 MiB Pack 2632.795 ms (interleave)
+[2026-08-02 13:08:41.943] [info] [cheetah_dot.cc:487] 1@2064x384x1536 => 1x16x512 Recv 12.701 MiB, Response 93.877 MiB Pack 2597.562 ms (interleave)
+[2026-08-02 13:08:58.493] [info] [cheetah_dot.cc:487] 1@2064x1536x384 => 1x64x128 Recv 12.701 MiB, Response 23.53 MiB Pack 2605.192 ms (interleave)
+[2026-08-02 13:09:15.713] [info] [cheetah_dot.cc:487] 1@2064x384x1536 => 1x16x512 Recv 12.701 MiB, Response 93.875 MiB Pack 2597.174 ms (interleave)
+[2026-08-02 13:09:32.263] [info] [cheetah_dot.cc:487] 1@2064x1536x384 => 1x64x128 Recv 12.701 MiB, Response 23.53 MiB Pack 2611.429 ms (interleave)
+[2026-08-02 13:09:39.793] [info] [cheetah_dot.cc:487] 1@2048x384x384 => 1x64x128 Recv 3.175 MiB, Response 23.287 MiB Pack 2648.401 ms (interleave)
+[2026-08-02 13:09:45.143] [info] [cheetah_dot.cc:487] 1@2048x384x192 => 1x128x64 Recv 1.588 MiB, Response 11.643 MiB Pack 2662.61 ms (interleave)
+[2026-08-02 13:09:47.618] [info] [cheetah_dot.cc:487] 1@2048x192x96 => 2x128x32 Recv 1.058 MiB, Response 5.822 MiB Pack 1269.787 ms (interleave)
+[2026-08-02 13:09:48.256] [info] [cheetah_dot.cc:487] 1@2048x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 168.688 ms (interleave)
+[2026-08-02 13:10:33.475] [info] [cheetah_dot.cc:487] 1@1360x384x1536 => 1x16x512 Recv 12.701 MiB, Response 61.856 MiB Pack 1699.108 ms (interleave)
+[2026-08-02 13:10:44.509] [info] [cheetah_dot.cc:487] 1@1360x1536x384 => 1x64x128 Recv 12.701 MiB, Response 15.525 MiB Pack 1764.358 ms (interleave)
+[2026-08-02 13:10:56.378] [info] [cheetah_dot.cc:487] 1@1360x384x1536 => 1x16x512 Recv 12.7 MiB, Response 61.857 MiB Pack 1697.117 ms (interleave)
+[2026-08-02 13:11:07.793] [info] [cheetah_dot.cc:487] 1@1360x1536x384 => 1x64x128 Recv 12.701 MiB, Response 15.525 MiB Pack 1766.318 ms (interleave)
+[2026-08-02 13:11:20.052] [info] [cheetah_dot.cc:487] 1@1360x384x1536 => 1x16x512 Recv 12.701 MiB, Response 61.856 MiB Pack 1698.033 ms (interleave)
+[2026-08-02 13:11:31.048] [info] [cheetah_dot.cc:487] 1@1360x1536x384 => 1x64x128 Recv 12.7 MiB, Response 15.525 MiB Pack 1764.011 ms (interleave)
+[2026-08-02 13:11:38.354] [info] [cheetah_dot.cc:487] 1@1344x384x384 => 1x64x128 Recv 3.175 MiB, Response 15.282 MiB Pack 1757.968 ms (interleave)
+[2026-08-02 13:11:41.903] [info] [cheetah_dot.cc:487] 1@1344x384x192 => 1x128x64 Recv 1.587 MiB, Response 7.762 MiB Pack 1774.799 ms (interleave)
+[2026-08-02 13:11:43.602] [info] [cheetah_dot.cc:487] 1@1344x192x96 => 2x128x32 Recv 1.058 MiB, Response 3.881 MiB Pack 887.207 ms (interleave)
+[2026-08-02 13:11:44.059] [info] [cheetah_dot.cc:487] 1@1344x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 135.327 ms (interleave)
+[2026-08-02 13:11:52,962] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:11:52,965] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:11:52,968] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:11:52,971] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:11:52,974] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:11:52,976] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:11:52,979] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:11:52,982] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:11:52,984] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 13:11:52,987] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:11:52,989] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:11:52,992] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 13:11:52,994] [MainProcess] RunR: builtin_gc at node:1

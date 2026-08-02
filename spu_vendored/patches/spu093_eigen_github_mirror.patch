@@ -1,0 +1,20 @@
+diff --git a/bazel/repositories.bzl b/bazel/repositories.bzl
+--- a/bazel/repositories.bzl
++++ b/bazel/repositories.bzl
+@@ -227,13 +227,13 @@
+ def _com_github_eigenteam_eigen():
+     EIGEN_COMMIT = "66e8f38891841bf88ee976a316c0c78a52f0cee5"
+-    EIGEN_SHA256 = "01fcd68409c038bbcfd16394274c2bf71e2bb6dda89a2319e23fc59a2da17210"
++    EIGEN_SHA256 = "d75401228d5192d56932c5cb46572f0b91fb844d2ff8c47b22e90d0b1b7219a1"
+     maybe(
+         http_archive,
+         name = "eigen_archive",
+         sha256 = EIGEN_SHA256,
+         build_file = "@spulib//bazel:eigen.BUILD",
+-        strip_prefix = "eigen-{commit}".format(commit = EIGEN_COMMIT),
++        strip_prefix = "eigen-git-mirror-{commit}".format(commit = EIGEN_COMMIT),
+         urls = [
+-            "https://gitlab.com/libeigen/eigen/-/archive/{commit}/eigen-{commit}.tar.gz".format(commit = EIGEN_COMMIT),
++            "https://github.com/eigenteam/eigen-git-mirror/archive/{commit}.tar.gz".format(commit = EIGEN_COMMIT),
+         ],
+     )

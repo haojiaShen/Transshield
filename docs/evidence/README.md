@@ -31,6 +31,8 @@
 | SPU batch16 批量吞吐说明 | `docs/evidence/spu_batch16_throughput.md` | 批量适用边界、medical32 性能/精度、复现命令和单图禁用条件 |
 | SPU batch16 结构化结果 | `results/vps_optimization/batch_scaling_20260802_v1/optimization_summary.json` | 两个 chunk 耗时、通信、固定点漂移、源码哈希和回退约束 |
 | SPU 微优化否决证据 | `results/vps_optimization/pruning_clip_elision_20260802_v1/optimization_summary.json` | predictor clip 与低精度 rsqrt 的同机热缓存 A/B |
+| SPU MLP 底层并行实验说明 | `docs/evidence/spu_mlp_parallel_packing.md` | 真实 MLP 形状、RLWE packing 并行、两次 medical32 及精度稳定性否决 |
+| SPU MLP 底层并行结构化结果 | `results/vps_optimization/mlp_kernel_20260802_v2_pack/optimization_summary.json` | 构建/单测、微基准、medical32 性能与不接入判定 |
 
 ## 说明
 
@@ -41,3 +43,4 @@
 - `tools/showcase_protocol_fuzz.py` 与 `tools/showcase_guard_stress.py` 面向新展示站接口做运行时验收；正式报告中的最终鲁棒性数字仍以 `results/fuzzing/` 与 `results/guard_stress/` 为准。
 - 后续测试只在 VPS 执行，并将 candidate 结果写入 `results/vps_report_tests/`；除非另行审核批准，不回写或覆盖本页列出的正式结果。
 - `r=0.655` 是显式启用的低延迟候选档，不替换正式 `r=0.7` 展示口径；启用时必须同时切换到其独立校准阈值。
+- MLP RLWE packing 并行只保留为实验补丁；其性能收益已验证，但完整模型精度稳定性门槛未通过，默认 runtime 不应用。

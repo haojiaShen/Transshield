@@ -1,0 +1,549 @@
+Loading:
+Loading:
+Loading: 0 packages loaded
+Analyzing: 2 targets (0 packages loaded, 0 targets configured)
+INFO: Analyzed 2 targets (1 packages loaded, 65 targets configured).
+INFO: Found 2 test targets...
+[0 / 6] [Prepa] BazelWorkspaceStatusAction stable-status.txt
+[328 / 1,179] Compiling googletest/src/gtest.cc; 1s linux-sandbox ... (14 actions, 13 running)
+[341 / 1,179] Compiling googletest/src/gtest.cc; 2s linux-sandbox ... (14 actions, 13 running)
+[352 / 1,179] Compiling googletest/src/gtest.cc; 3s linux-sandbox ... (14 actions, 13 running)
+[359 / 1,179] Compiling googletest/src/gtest.cc; 4s linux-sandbox ... (14 actions, 13 running)
+[367 / 1,179] Compiling googletest/src/gtest.cc; 5s linux-sandbox ... (14 actions, 13 running)
+[373 / 1,179] Compiling googletest/src/gtest.cc; 6s linux-sandbox ... (14 actions, 13 running)
+INFO: From Compiling llvm/lib/Support/APFloat.cpp:
+external/llvm-project/llvm/lib/Support/APFloat.cpp: In member function 'llvm::Expected<llvm::APFloatBase::opStatus> llvm::detail::IEEEFloat::convertFromDecimalString(llvm::StringRef, llvm::APFloatBase::roundingMode)':
+external/llvm-project/llvm/lib/Support/APFloat.cpp:3145:16: warning: 'D.llvm::decimalInfo::lastSigDigit' may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 3145 |     } while (p <= D.lastSigDigit);
+      |              ~~^~~~~~~~~~~~~~~~~
+external/llvm-project/llvm/lib/Support/APFloat.cpp:3068:36: warning: 'D.llvm::decimalInfo::firstSigDigit' may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 3068 |   if (D.firstSigDigit == str.end() || decDigitValue(*D.firstSigDigit) >= 10U) {
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[402 / 1,179] Compiling googletest/src/gtest.cc; 7s linux-sandbox ... (14 actions, 13 running)
+INFO: From Compiling llvm/lib/Support/YAMLParser.cpp:
+external/llvm-project/llvm/lib/Support/YAMLParser.cpp: In member function 'bool llvm::yaml::Scanner::findBlockScalarIndent(unsigned int&, unsigned int, unsigned int&, bool&)':
+external/llvm-project/llvm/lib/Support/YAMLParser.cpp:267:5: warning: 'LongestAllSpaceLine' may be used uninitialized in this function [-Wmaybe-uninitialized]
+  267 |     if (Position >= End)
+      |     ^~
+external/llvm-project/llvm/lib/Support/YAMLParser.cpp:1643:23: note: 'LongestAllSpaceLine' was declared here
+ 1643 |   StringRef::iterator LongestAllSpaceLine;
+      |                       ^~~~~~~~~~~~~~~~~~~
+[410 / 1,179] Compiling src/google/protobuf/compiler/cpp/file.cc; 3s linux-sandbox ... (14 actions, 13 running)
+[419 / 1,179] Compiling src/google/protobuf/compiler/cpp/file.cc; 4s linux-sandbox ... (14 actions, 13 running)
+[430 / 1,179] Compiling src/google/protobuf/descriptor.cc; 5s linux-sandbox ... (14 actions, 13 running)
+[433 / 1,179] Compiling src/google/protobuf/descriptor.cc; 6s linux-sandbox ... (14 actions, 13 running)
+[442 / 1,179] Compiling src/google/protobuf/descriptor.cc; 7s linux-sandbox ... (14 actions, 13 running)
+[451 / 1,179] Compiling src/google/protobuf/descriptor.cc; 8s linux-sandbox ... (14 actions running)
+[464 / 1,179] Compiling src/google/protobuf/descriptor.cc; 9s linux-sandbox ... (14 actions, 13 running)
+[473 / 1,179] Compiling src/google/protobuf/descriptor.cc; 10s linux-sandbox ... (14 actions, 13 running)
+[480 / 1,179] Compiling src/google/protobuf/descriptor.cc; 11s linux-sandbox ... (14 actions, 13 running)
+INFO: From Compiling llvm/lib/Support/VirtualFileSystem.cpp:
+external/llvm-project/llvm/lib/Support/VirtualFileSystem.cpp: In member function 'std::unique_ptr<llvm::vfs::RedirectingFileSystem::Entry> llvm::vfs::RedirectingFileSystemParser::parseEntry(llvm::yaml::Node*, llvm::vfs::RedirectingFileSystem*, bool)':
+external/llvm-project/llvm/lib/Support/VirtualFileSystem.cpp:1994:5: warning: 'Kind' may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 1994 |     switch (Kind) {
+      |     ^~~~~~
+[492 / 1,179] Compiling googletest/src/gtest-death-test.cc; 2s linux-sandbox ... (14 actions, 13 running)
+[503 / 1,179] Compiling src/google/protobuf/struct.pb.cc; 1s linux-sandbox ... (14 actions, 13 running)
+[513 / 1,179] Compiling llvm/lib/Support/CommandLine.cpp; 2s linux-sandbox ... (14 actions, 13 running)
+INFO: From Compiling llvm/lib/Support/UnicodeCaseFold.cpp:
+external/llvm-project/llvm/lib/Support/UnicodeCaseFold.cpp:8:1: warning: multi-line comment [-Wcomment]
+    8 | //   utils/unicode-case-fold.py \
+      | ^
+[523 / 1,179] Compiling llvm/lib/Support/CommandLine.cpp; 3s linux-sandbox ... (14 actions, 13 running)
+[533 / 1,179] Compiling llvm/lib/Support/CommandLine.cpp; 4s linux-sandbox ... (13 actions, 12 running)
+[545 / 1,179] Compiling googlemock/src/gmock-spec-builders.cc; 2s linux-sandbox ... (14 actions, 13 running)
+[553 / 1,179] Compiling src/google/protobuf/util/internal/default_value_objectwriter.cc; 2s linux-sandbox ... (14 actions, 13 running)
+[561 / 1,179] Compiling src/google/protobuf/compiler/java/enum_field_lite.cc; 2s linux-sandbox ... (14 actions, 13 running)
+[569 / 1,179] Compiling external/com_github_brpc_brpc/_virtual_imports/brpc_internal_proto/brpc/policy/baidu_rpc_meta.pb.cc; 2s linux-sandbox ... (14 actions, 13 running)
+[579 / 1,179] Compiling src/google/protobuf/compiler/java/file.cc; 2s linux-sandbox ... (14 actions, 13 running)
+[586 / 1,179] Compiling llvm/lib/Support/ELFAttributeParser.cpp; 2s linux-sandbox ... (14 actions, 13 running)
+[596 / 1,179] Compiling src/google/protobuf/compiler/java/helpers.cc; 2s linux-sandbox ... (14 actions running)
+[611 / 1,181] Compiling src/google/protobuf/util/message_differencer.cc; 3s linux-sandbox ... (14 actions, 13 running)
+[620 / 1,181] Compiling src/google/protobuf/util/message_differencer.cc; 4s linux-sandbox ... (14 actions, 13 running)
+[630 / 1,181] Compiling src/google/protobuf/wire_format.cc; 3s linux-sandbox ... (14 actions, 13 running)
+[639 / 1,181] Compiling yacl/utils/spi/argument/util.cc; 4s linux-sandbox ... (14 actions, 13 running)
+[656 / 1,181] Compiling src/google/protobuf/generated_message_tctable_lite.cc; 2s linux-sandbox ... (14 actions, 13 running)
+[664 / 1,181] Compiling src/google/protobuf/generated_message_tctable_lite.cc; 3s linux-sandbox ... (14 actions, 13 running)
+[676 / 1,181] Compiling external/com_github_brpc_brpc/_virtual_imports/brpc_internal_proto/brpc/builtin_service.pb.cc; 1s linux-sandbox ... (14 actions, 13 running)
+INFO: From Compiling src/google/protobuf/message_lite.cc:
+In file included from /usr/include/string.h:548,
+                 from external/com_google_protobuf/src/google/protobuf/stubs/port.h:39,
+                 from external/com_google_protobuf/src/google/protobuf/stubs/common.h:48,
+                 from external/com_google_protobuf/src/google/protobuf/message_lite.h:46,
+                 from external/com_google_protobuf/src/google/protobuf/message_lite.cc:36:
+In function 'void* memcpy(void*, const void*, size_t)',
+    inlined from 'uint8_t* google::protobuf::io::EpsCopyOutputStream::WriteRaw(const void*, int, uint8_t*)' at external/com_google_protobuf/src/google/protobuf/io/coded_stream.h:684:16,
+    inlined from 'virtual uint8_t* google::protobuf::internal::ImplicitWeakMessage::_InternalSerialize(uint8_t*, google::protobuf::io::EpsCopyOutputStream*) const' at external/com_google_protobuf/src/google/protobuf/implicit_weak_message.h:103:28,
+    inlined from 'bool google::protobuf::MessageLite::SerializePartialToZeroCopyStream(google::protobuf::io::ZeroCopyOutputStream*) const' at external/com_google_protobuf/src/google/protobuf/message_lite.cc:411:30:
+/usr/include/x86_64-linux-gnu/bits/string_fortified.h:29:33: warning: 'void* __builtin___memcpy_chk(void*, const void*, long unsigned int, long unsigned int)' specified size between 18446744071562067968 and 18446744073709551615 exceeds maximum object size 9223372036854775807 [-Wstringop-overflow=]
+   29 |   return __builtin___memcpy_chk (__dest, __src, __len,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+   30 |                                  __glibc_objsize0 (__dest));
+      |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+[686 / 1,181] Compiling src/google/protobuf/compiler/objectivec/objectivec_enum.cc; 1s linux-sandbox ... (14 actions, 13 running)
+[698 / 1,181] Compiling src/google/protobuf/compiler/objectivec/objectivec_field.cc; 2s linux-sandbox ... (14 actions, 13 running)
+[707 / 1,181] Compiling yacl/link/trace.cc; 2s linux-sandbox ... (13 actions, 12 running)
+[728 / 1,187] Compiling yacl/link/trace.cc; 3s linux-sandbox ... (14 actions running)
+[739 / 1,187] Compiling yacl/link/trace.cc; 4s linux-sandbox ... (14 actions, 13 running)
+[747 / 1,187] Compiling yacl/link/trace.cc; 5s linux-sandbox ... (14 actions, 13 running)
+[758 / 1,187] Compiling yacl/link/trace.cc; 6s linux-sandbox ... (14 actions, 13 running)
+[764 / 1,187] Compiling yacl/link/trace.cc; 7s linux-sandbox ... (14 actions, 13 running)
+INFO: From Compiling llvm/lib/Support/Process.cpp:
+In file included from external/llvm-project/llvm/lib/Support/Process.cpp:123:
+external/llvm-project/llvm/lib/Support/Unix/Process.inc: In static member function 'static size_t llvm::sys::Process::GetMallocUsage()':
+external/llvm-project/llvm/lib/Support/Unix/Process.inc:101:10: warning: 'mallinfo mallinfo()' is deprecated [-Wdeprecated-declarations]
+  101 |   mi = ::mallinfo();
+      |          ^~~~~~~~
+In file included from external/llvm-project/llvm/lib/Support/Unix/Process.inc:35,
+                 from external/llvm-project/llvm/lib/Support/Process.cpp:123:
+/usr/include/malloc.h:114:24: note: declared here
+  114 | extern struct mallinfo mallinfo (void) __THROW __MALLOC_DEPRECATED;
+      |                        ^~~~~~~~
+In file included from external/llvm-project/llvm/lib/Support/Process.cpp:123:
+external/llvm-project/llvm/lib/Support/Unix/Process.inc:101:18: warning: 'mallinfo mallinfo()' is deprecated [-Wdeprecated-declarations]
+  101 |   mi = ::mallinfo();
+      |        ~~~~~~~~~~^~
+In file included from external/llvm-project/llvm/lib/Support/Unix/Process.inc:35,
+                 from external/llvm-project/llvm/lib/Support/Process.cpp:123:
+/usr/include/malloc.h:114:24: note: declared here
+  114 | extern struct mallinfo mallinfo (void) __THROW __MALLOC_DEPRECATED;
+      |                        ^~~~~~~~
+[773 / 1,187] Compiling yacl/link/trace.cc; 9s linux-sandbox ... (14 actions, 13 running)
+[788 / 1,187] Compiling yacl/link/trace.cc; 10s linux-sandbox ... (14 actions, 13 running)
+[802 / 1,187] Compiling yacl/utils/thread_pool.cc; 5s linux-sandbox ... (14 actions, 13 running)
+[813 / 1,187] Compiling yacl/utils/thread_pool.cc; 6s linux-sandbox ... (14 actions running)
+[846 / 1,187] Compiling yacl/utils/thread_pool.cc; 7s linux-sandbox ... (14 actions running)
+[853 / 1,187] Compiling yacl/utils/thread_pool.cc; 8s linux-sandbox ... (14 actions, 13 running)
+INFO: From Compiling src/json2pb/json_to_pb.cpp:
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp: In function 'bool json2pb::JsonValueToProtoField(const Value&, const google::protobuf::FieldDescriptor*, google::protobuf::Message*, const json2pb::Json2PbOptions&, std::string*)':
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:49:69: warning: 'this' pointer is null [-Wnonnull]
+   49 |             butil::string_appendf(perr, " [%s]", (pb)->GetDescriptor()->name().c_str());  \
+      |                                                  ~~~~~~~~~~~~~~~~~~~^~
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:40:5: note: in expansion of macro 'J2PERROR_WITH_PB'
+   40 |     J2PERROR_WITH_PB((::google::protobuf::Message*)nullptr, perr, fmt, ##__VA_ARGS__)
+      |     ^~~~~~~~~~~~~~~~
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:313:13: note: in expansion of macro 'J2PERROR'
+  313 |             J2PERROR(err, "Missing required field: %s", field->full_name().c_str());
+      |             ^~~~~~~~
+In file included from external/com_github_brpc_brpc/src/json2pb/json_to_pb.h:24,
+                 from external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:30:
+external/com_google_protobuf/src/google/protobuf/message.h:357:21: note: in a call to non-static member function 'const google::protobuf::Descriptor* google::protobuf::Message::GetDescriptor() const'
+  357 |   const Descriptor* GetDescriptor() const { return GetMetadata().descriptor; }
+      |                     ^~~~~~~~~~~~~
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:49:69: warning: 'this' pointer is null [-Wnonnull]
+   49 |             butil::string_appendf(perr, " [%s]", (pb)->GetDescriptor()->name().c_str());  \
+      |                                                  ~~~~~~~~~~~~~~~~~~~^~
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:40:5: note: in expansion of macro 'J2PERROR_WITH_PB'
+   40 |     J2PERROR_WITH_PB((::google::protobuf::Message*)nullptr, perr, fmt, ##__VA_ARGS__)
+      |     ^~~~~~~~~~~~~~~~
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:321:13: note: in expansion of macro 'J2PERROR'
+  321 |             J2PERROR(err, "Invalid value for repeated field: %s",
+      |             ^~~~~~~~
+In file included from external/com_github_brpc_brpc/src/json2pb/json_to_pb.h:24,
+                 from external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:30:
+external/com_google_protobuf/src/google/protobuf/message.h:357:21: note: in a call to non-static member function 'const google::protobuf::Descriptor* google::protobuf::Message::GetDescriptor() const'
+  357 |   const Descriptor* GetDescriptor() const { return GetMetadata().descriptor; }
+      |                     ^~~~~~~~~~~~~
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp: In function 'bool json2pb::JsonMapToProtoMap(const Value&, const google::protobuf::FieldDescriptor*, google::protobuf::Message*, const json2pb::Json2PbOptions&, std::string*)':
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:49:69: warning: 'this' pointer is null [-Wnonnull]
+   49 |             butil::string_appendf(perr, " [%s]", (pb)->GetDescriptor()->name().c_str());  \
+      |                                                  ~~~~~~~~~~~~~~~~~~~^~
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:40:5: note: in expansion of macro 'J2PERROR_WITH_PB'
+   40 |     J2PERROR_WITH_PB((::google::protobuf::Message*)nullptr, perr, fmt, ##__VA_ARGS__)
+      |     ^~~~~~~~~~~~~~~~
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:493:9: note: in expansion of macro 'J2PERROR'
+  493 |         J2PERROR(err, "Non-object value for map field: %s",
+      |         ^~~~~~~~
+In file included from external/com_github_brpc_brpc/src/json2pb/json_to_pb.h:24,
+                 from external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:30:
+external/com_google_protobuf/src/google/protobuf/message.h:357:21: note: in a call to non-static member function 'const google::protobuf::Descriptor* google::protobuf::Message::GetDescriptor() const'
+  357 |   const Descriptor* GetDescriptor() const { return GetMetadata().descriptor; }
+      |                     ^~~~~~~~~~~~~
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp: In function 'bool json2pb::JsonValueToProtoMessage(const Value&, google::protobuf::Message*, const json2pb::Json2PbOptions&, std::string*, bool)':
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:49:69: warning: 'this' pointer is null [-Wnonnull]
+   49 |             butil::string_appendf(perr, " [%s]", (pb)->GetDescriptor()->name().c_str());  \
+      |                                                  ~~~~~~~~~~~~~~~~~~~^~
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:40:5: note: in expansion of macro 'J2PERROR_WITH_PB'
+   40 |     J2PERROR_WITH_PB((::google::protobuf::Message*)nullptr, perr, fmt, ##__VA_ARGS__)
+      |     ^~~~~~~~~~~~~~~~
+external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:577:17: note: in expansion of macro 'J2PERROR'
+  577 |                 J2PERROR(err, "Missing required field: %s", field->full_name().c_str());
+      |                 ^~~~~~~~
+In file included from external/com_github_brpc_brpc/src/json2pb/json_to_pb.h:24,
+                 from external/com_github_brpc_brpc/src/json2pb/json_to_pb.cpp:30:
+external/com_google_protobuf/src/google/protobuf/message.h:357:21: note: in a call to non-static member function 'const google::protobuf::Descriptor* google::protobuf::Message::GetDescriptor() const'
+  357 |   const Descriptor* GetDescriptor() const { return GetMetadata().descriptor; }
+      |                     ^~~~~~~~~~~~~
+[864 / 1,187] Compiling yacl/math/mpint/tommath_ext_features.cc; 4s linux-sandbox ... (14 actions, 13 running)
+[875 / 1,187] Compiling libspu/core/type_util.cc; 3s linux-sandbox ... (14 actions, 13 running)
+[885 / 1,187] Compiling libspu/core/type_util.cc; 4s linux-sandbox ... (14 actions, 13 running)
+[895 / 1,187] Compiling libspu/core/type_util.cc; 5s linux-sandbox ... (14 actions, 13 running)
+[905 / 1,187] Compiling yacl/crypto/block_cipher/symmetric_crypto.cc; 6s linux-sandbox ... (14 actions, 13 running)
+[913 / 1,187] Compiling yacl/crypto/block_cipher/symmetric_crypto.cc; 7s linux-sandbox ... (14 actions, 13 running)
+[924 / 1,187] Compiling yacl/crypto/block_cipher/symmetric_crypto.cc; 8s linux-sandbox ... (14 actions, 13 running)
+[933 / 1,187] Compiling yacl/crypto/block_cipher/symmetric_crypto.cc; 9s linux-sandbox ... (14 actions, 13 running)
+[945 / 1,187] Compiling yacl/crypto/tools/prg.cc; 10s linux-sandbox ... (14 actions, 13 running)
+[954 / 1,187] Compiling libspu/core/type.cc; 5s linux-sandbox ... (14 actions, 13 running)
+[968 / 1,187] Compiling libspu/core/pt_buffer_view.cc; 4s linux-sandbox ... (14 actions, 13 running)
+[985 / 1,187] Compiling libspu/core/pt_buffer_view.cc; 5s linux-sandbox ... (14 actions, 13 running)
+[991 / 1,187] Compiling libspu/core/pt_buffer_view.cc; 6s linux-sandbox ... (14 actions running)
+[999 / 1,187] Compiling libspu/core/pt_buffer_view.cc; 7s linux-sandbox ... (14 actions running)
+[1,004 / 1,187] Compiling libspu/core/pt_buffer_view.cc; 8s linux-sandbox ... (14 actions, 13 running)
+[1,012 / 1,187] Compiling libspu/core/pt_buffer_view.cc; 10s linux-sandbox ... (14 actions, 13 running)
+[1,016 / 1,187] Compiling libspu/core/pt_buffer_view.cc; 11s linux-sandbox ... (14 actions, 13 running)
+[1,021 / 1,187] Compiling yacl/link/transport/channel.cc; 7s linux-sandbox ... (14 actions running)
+[1,022 / 1,187] Compiling yacl/link/transport/channel.cc; 8s linux-sandbox ... (14 actions, 13 running)
+[1,025 / 1,187] Compiling yacl/link/transport/channel.cc; 9s linux-sandbox ... (14 actions, 13 running)
+[1,032 / 1,187] Compiling yacl/link/transport/channel.cc; 11s linux-sandbox ... (14 actions, 13 running)
+[1,039 / 1,187] Compiling yacl/link/transport/channel.cc; 12s linux-sandbox ... (14 actions, 13 running)
+[1,043 / 1,187] Compiling yacl/link/transport/channel.cc; 13s linux-sandbox ... (14 actions, 13 running)
+[1,046 / 1,187] Compiling yacl/link/transport/channel.cc; 14s linux-sandbox ... (14 actions running)
+[1,050 / 1,187] Compiling yacl/link/transport/channel_mem.cc; 11s linux-sandbox ... (14 actions running)
+[1,054 / 1,187] Compiling yacl/link/transport/channel_mem.cc; 12s linux-sandbox ... (14 actions running)
+[1,062 / 1,187] Compiling yacl/link/context.cc; 5s linux-sandbox ... (14 actions, 13 running)
+[1,065 / 1,187] Compiling yacl/link/context.cc; 7s linux-sandbox ... (14 actions, 13 running)
+[1,071 / 1,187] Compiling yacl/link/context.cc; 8s linux-sandbox ... (14 actions, 13 running)
+INFO: From Compiling src/brpc/socket.cpp:
+In file included from external/com_github_brpc_brpc/src/butil/logging.h:31,
+                 from external/com_github_brpc_brpc/src/bthread/types.h:27,
+                 from external/com_github_brpc_brpc/src/bthread/unstable.h:27,
+                 from external/com_github_brpc_brpc/src/brpc/socket.cpp:30:
+external/com_github_brpc_brpc/src/brpc/socket.cpp: In member function 'void brpc::Socket::GetStat(brpc::SocketStat*) const':
+external/com_github_brpc_brpc/src/brpc/socket.cpp:2936:28: warning: 'offsetof' within non-standard-layout type 'brpc::Socket' is conditionally-supported [-Winvalid-offsetof]
+ 2936 |     BAIDU_CASSERT(offsetof(Socket, _preferred_index) >= 64, different_cacheline);
+      |                            ^
+[1,077 / 1,187] Compiling yacl/link/context.cc; 9s linux-sandbox ... (14 actions, 13 running)
+INFO: From Compiling src/brpc/details/ssl_helper.cpp:
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp: In function 'SSL_CTX* brpc::CreateServerSSLContext(const string&, const string&, const brpc::ServerSSLOptions&, const string*, std::vector<std::__cxx11::basic_string<char> >*)':
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:551:32: warning: 'void SSL_CTX_set_tmp_dh_callback(SSL_CTX*, DH* (*)(SSL*, int, int))' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  551 |     SSL_CTX_set_tmp_dh_callback(ssl_ctx.get(), SSLGetDHCallback);
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:24:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:2275:6: note: declared here
+ 2275 | void SSL_CTX_set_tmp_dh_callback(SSL_CTX *ctx,
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:556:48: warning: 'EC_KEY* EC_KEY_new_by_curve_name(int)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  556 |     if (!i || ((ecdh = EC_KEY_new_by_curve_name(i)) == NULL)) {
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:33,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:24:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ec.h:1017:31: note: declared here
+ 1017 | OSSL_DEPRECATEDIN_3_0 EC_KEY *EC_KEY_new_by_curve_name(int nid);
+      |                               ^~~~~~~~~~~~~~~~~~~~~~~~
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:563:16: warning: 'void EC_KEY_free(EC_KEY*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  563 |     EC_KEY_free(ecdh);
+      |     ~~~~~~~~~~~^~~~~~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:33,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:24:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ec.h:1022:28: note: declared here
+ 1022 | OSSL_DEPRECATEDIN_3_0 void EC_KEY_free(EC_KEY *key);
+      |                            ^~~~~~~~~~~
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp: In function 'DH* brpc::SSLGetDH1024()':
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:725:20: warning: 'DH* DH_new()' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  725 |     DH *dh = DH_new();
+      |              ~~~~~~^~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:24:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:210:27: note: declared here
+  210 | OSSL_DEPRECATEDIN_3_0 DH *DH_new(void);
+      |                           ^~~~~~
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:731:16: warning: 'int DH_set0_pqg(DH*, BIGNUM*, BIGNUM*, BIGNUM*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  731 |     DH_set0_pqg(dh, p, NULL, g);
+      |     ~~~~~~~~~~~^~~~~~~~~~~~~~~~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:24:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:266:27: note: declared here
+  266 | OSSL_DEPRECATEDIN_3_0 int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g);
+      |                           ^~~~~~~~~~~
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp: In function 'DH* brpc::SSLGetDH2048()':
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:748:20: warning: 'DH* DH_new()' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  748 |     DH* dh = DH_new();
+      |              ~~~~~~^~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:24:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:210:27: note: declared here
+  210 | OSSL_DEPRECATEDIN_3_0 DH *DH_new(void);
+      |                           ^~~~~~
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:754:16: warning: 'int DH_set0_pqg(DH*, BIGNUM*, BIGNUM*, BIGNUM*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  754 |     DH_set0_pqg(dh, p, NULL, g);
+      |     ~~~~~~~~~~~^~~~~~~~~~~~~~~~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:24:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:266:27: note: declared here
+  266 | OSSL_DEPRECATEDIN_3_0 int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g);
+      |                           ^~~~~~~~~~~
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp: In function 'DH* brpc::SSLGetDH4096()':
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:771:20: warning: 'DH* DH_new()' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  771 |     DH *dh = DH_new();
+      |              ~~~~~~^~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:24:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:210:27: note: declared here
+  210 | OSSL_DEPRECATEDIN_3_0 DH *DH_new(void);
+      |                           ^~~~~~
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:777:16: warning: 'int DH_set0_pqg(DH*, BIGNUM*, BIGNUM*, BIGNUM*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  777 |     DH_set0_pqg(dh, p, NULL, g);
+      |     ~~~~~~~~~~~^~~~~~~~~~~~~~~~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:24:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:266:27: note: declared here
+  266 | OSSL_DEPRECATEDIN_3_0 int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g);
+      |                           ^~~~~~~~~~~
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp: In function 'DH* brpc::SSLGetDH8192()':
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:794:20: warning: 'DH* DH_new()' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  794 |     DH *dh = DH_new();
+      |              ~~~~~~^~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:24:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:210:27: note: declared here
+  210 | OSSL_DEPRECATEDIN_3_0 DH *DH_new(void);
+      |                           ^~~~~~
+external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:800:16: warning: 'int DH_set0_pqg(DH*, BIGNUM*, BIGNUM*, BIGNUM*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  800 |     DH_set0_pqg(dh, p, NULL, g);
+      |     ~~~~~~~~~~~^~~~~~~~~~~~~~~~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/brpc/details/ssl_helper.cpp:24:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:266:27: note: declared here
+  266 | OSSL_DEPRECATEDIN_3_0 int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g);
+      |                           ^~~~~~~~~~~
+[1,078 / 1,187] Compiling yacl/link/context.cc; 10s linux-sandbox ... (14 actions, 13 running)
+INFO: From Compiling src/brpc/controller.cpp:
+external/com_github_brpc_brpc/src/brpc/controller.cpp: In member function 'void brpc::Controller::AppendServerIdentiy()':
+external/com_github_brpc_brpc/src/brpc/controller.cpp:394:12: warning: 'unsigned char* MD5(const unsigned char*, size_t, unsigned char*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  394 |         MD5((const unsigned char*)ipbuf, len, digest);
+      |         ~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from external/com_github_brpc_brpc/src/brpc/controller.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/md5.h:52:38: note: declared here
+   52 | OSSL_DEPRECATEDIN_3_0 unsigned char *MD5(const unsigned char *d, size_t n,
+      |                                      ^~~
+[1,084 / 1,187] Compiling yacl/link/context.cc; 11s linux-sandbox ... (14 actions, 13 running)
+[1,089 / 1,187] Compiling yacl/link/context.cc; 12s linux-sandbox ... (14 actions, 13 running)
+[1,093 / 1,187] Compiling yacl/link/context.cc; 13s linux-sandbox ... (14 actions, 13 running)
+[1,096 / 1,187] Compiling yacl/link/transport/interconnection_link.cc; 11s linux-sandbox ... (14 actions, 13 running)
+INFO: From Compiling src/brpc/parallel_channel.cpp:
+In file included from /usr/include/unistd.h:226,
+                 from external/com_github_brpc_brpc/src/butil/build_config.h:44,
+                 from external/com_github_brpc_brpc/src/butil/compiler_specific.h:8,
+                 from external/com_github_brpc_brpc/src/butil/macros.h:17,
+                 from external/com_github_brpc_brpc/src/butil/logging.h:31,
+                 from external/com_github_brpc_brpc/src/bthread/types.h:27,
+                 from external/com_github_brpc_brpc/src/bthread/bthread.h:27,
+                 from external/com_github_brpc_brpc/src/brpc/parallel_channel.cpp:19:
+external/com_github_brpc_brpc/src/brpc/parallel_channel.cpp: In static member function 'static brpc::ParallelChannelDone* brpc::ParallelChannelDone::Create(int, int, const brpc::SubCall*, int, brpc::Controller*, google::protobuf::Closure*)':
+external/com_github_brpc_brpc/src/brpc/parallel_channel.cpp:104:36: warning: 'offsetof' within non-standard-layout type 'brpc::ParallelChannelDone' is conditionally-supported [-Winvalid-offsetof]
+  104 |         size_t req_size = offsetof(ParallelChannelDone, _sub_done) +
+      |                                    ^
+[1,103 / 1,187] Compiling yacl/link/transport/interconnection_link.cc; 12s linux-sandbox ... (14 actions, 13 running)
+[1,107 / 1,187] Compiling yacl/link/algorithm/gather.cc; 12s linux-sandbox ... (14 actions, 13 running)
+INFO: From Compiling src/brpc/policy/dh.cpp:
+external/com_github_brpc_brpc/src/brpc/policy/dh.cpp: In member function 'void brpc::policy::DHWrapper::clear()':
+external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:29:16: warning: 'void DH_free(DH*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   29 |         DH_free(_pdh);
+      |         ~~~~~~~^~~~~~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/butil/ssl_compat.h:21,
+                 from external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:211:28: note: declared here
+  211 | OSSL_DEPRECATEDIN_3_0 void DH_free(DH *dh);
+      |                            ^~~~~~~
+external/com_github_brpc_brpc/src/brpc/policy/dh.cpp: In member function 'int brpc::policy::DHWrapper::initialize(bool)':
+external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:41:24: warning: 'void DH_get0_key(const DH*, const BIGNUM**, const BIGNUM**)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   41 |             DH_get0_key(_pdh, &pub_key, NULL);
+      |             ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/butil/ssl_compat.h:21,
+                 from external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:267:28: note: declared here
+  267 | OSSL_DEPRECATEDIN_3_0 void DH_get0_key(const DH *dh, const BIGNUM **pub_key,
+      |                            ^~~~~~~~~~~
+external/com_github_brpc_brpc/src/brpc/policy/dh.cpp: In member function 'int brpc::policy::DHWrapper::copy_public_key(char*, int*) const':
+external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:56:16: warning: 'void DH_get0_key(const DH*, const BIGNUM**, const BIGNUM**)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   56 |     DH_get0_key(_pdh, &pub_key, NULL);
+      |     ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/butil/ssl_compat.h:21,
+                 from external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:267:28: note: declared here
+  267 | OSSL_DEPRECATEDIN_3_0 void DH_get0_key(const DH *dh, const BIGNUM **pub_key,
+      |                            ^~~~~~~~~~~
+external/com_github_brpc_brpc/src/brpc/policy/dh.cpp: In member function 'int brpc::policy::DHWrapper::copy_shared_key(const void*, int, void*, int*) const':
+external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:83:34: warning: 'int DH_compute_key(unsigned char*, const BIGNUM*, DH*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   83 |     int key_size = DH_compute_key((unsigned char*)skey, ppk, _pdh);
+      |                    ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/butil/ssl_compat.h:21,
+                 from external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:235:27: note: declared here
+  235 | OSSL_DEPRECATEDIN_3_0 int DH_compute_key(unsigned char *key,
+      |                           ^~~~~~~~~~~~~~
+external/com_github_brpc_brpc/src/brpc/policy/dh.cpp: In member function 'int brpc::policy::DHWrapper::do_initialize()':
+external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:106:18: warning: 'DH* DH_new()' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  106 |     _pdh = DH_new();
+      |            ~~~~~~^~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/butil/ssl_compat.h:21,
+                 from external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:210:27: note: declared here
+  210 | OSSL_DEPRECATEDIN_3_0 DH *DH_new(void);
+      |                           ^~~~~~
+external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:112:16: warning: 'int DH_set0_pqg(DH*, BIGNUM*, BIGNUM*, BIGNUM*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  112 |     DH_set0_pqg(_pdh, p, NULL, g);
+      |     ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/butil/ssl_compat.h:21,
+                 from external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:266:27: note: declared here
+  266 | OSSL_DEPRECATEDIN_3_0 int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g);
+      |                           ^~~~~~~~~~~
+external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:115:25: warning: 'int DH_generate_key(DH*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+  115 |     if (!DH_generate_key(_pdh)) {
+      |          ~~~~~~~~~~~~~~~^~~~~~
+In file included from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dsa.h:31,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/x509.h:37,
+                 from bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/ssl.h:32,
+                 from external/com_github_brpc_brpc/src/butil/ssl_compat.h:21,
+                 from external/com_github_brpc_brpc/src/brpc/policy/dh.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/dh.h:234:27: note: declared here
+  234 | OSSL_DEPRECATEDIN_3_0 int DH_generate_key(DH *dh);
+      |                           ^~~~~~~~~~~~~~~
+[1,110 / 1,187] Compiling yacl/link/algorithm/gather.cc; 13s linux-sandbox ... (14 actions running)
+[1,115 / 1,187] Compiling src/brpc/server.cpp; 8s linux-sandbox ... (14 actions, 13 running)
+INFO: From Compiling src/brpc/server.cpp:
+In file included from external/com_github_brpc_brpc/src/butil/logging.h:31,
+                 from external/com_github_brpc_brpc/src/bthread/types.h:27,
+                 from external/com_github_brpc_brpc/src/bthread/unstable.h:27,
+                 from external/com_github_brpc_brpc/src/brpc/server.cpp:26:
+external/com_github_brpc_brpc/src/brpc/server.cpp: In constructor 'brpc::Server::Server(brpc::ProfilerLinker)':
+external/com_github_brpc_brpc/src/brpc/server.cpp:425:28: warning: 'offsetof' within non-standard-layout type 'brpc::Server' is conditionally-supported [-Winvalid-offsetof]
+  425 |     BAIDU_CASSERT(offsetof(Server, _concurrency) % 64 == 0,
+      |                            ^
+INFO: From Compiling src/brpc/policy/hasher.cpp:
+external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp: In function 'void brpc::policy::MD5HashSignature(const void*, size_t, unsigned char*)':
+external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp:30:13: warning: 'int MD5_Init(MD5_CTX*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   30 |     MD5_Init(&my_md5);
+      |     ~~~~~~~~^~~~~~~~~
+In file included from external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/md5.h:49:27: note: declared here
+   49 | OSSL_DEPRECATEDIN_3_0 int MD5_Init(MD5_CTX *c);
+      |                           ^~~~~~~~
+external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp:31:15: warning: 'int MD5_Update(MD5_CTX*, const void*, size_t)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   31 |     MD5_Update(&my_md5, (const unsigned char *)key, len);
+      |     ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/md5.h:50:27: note: declared here
+   50 | OSSL_DEPRECATEDIN_3_0 int MD5_Update(MD5_CTX *c, const void *data, size_t len);
+      |                           ^~~~~~~~~~
+external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp:32:14: warning: 'int MD5_Final(unsigned char*, MD5_CTX*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   32 |     MD5_Final(results, &my_md5);
+      |     ~~~~~~~~~^~~~~~~~~~~~~~~~~~
+In file included from external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/md5.h:51:27: note: declared here
+   51 | OSSL_DEPRECATEDIN_3_0 int MD5_Final(unsigned char *md, MD5_CTX *c);
+      |                           ^~~~~~~~~
+external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp: In function 'uint32_t brpc::policy::MD5Hash32V(const StringPiece*, size_t)':
+external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp:46:13: warning: 'int MD5_Init(MD5_CTX*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   46 |     MD5_Init(&ctx);
+      |     ~~~~~~~~^~~~~~
+In file included from external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/md5.h:49:27: note: declared here
+   49 | OSSL_DEPRECATEDIN_3_0 int MD5_Init(MD5_CTX *c);
+      |                           ^~~~~~~~
+external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp:48:19: warning: 'int MD5_Update(MD5_CTX*, const void*, size_t)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   48 |         MD5_Update(&ctx, (const unsigned char *)keys[i].data(),
+      |         ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   49 |                    keys[i].size());
+      |                    ~~~~~~~~~~~~~~~
+In file included from external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/md5.h:50:27: note: declared here
+   50 | OSSL_DEPRECATEDIN_3_0 int MD5_Update(MD5_CTX *c, const void *data, size_t len);
+      |                           ^~~~~~~~~~
+external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp:52:14: warning: 'int MD5_Final(unsigned char*, MD5_CTX*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   52 |     MD5_Final(results, &ctx);
+      |     ~~~~~~~~~^~~~~~~~~~~~~~~
+In file included from external/com_github_brpc_brpc/src/brpc/policy/hasher.cpp:20:
+bazel-out/k8-opt/bin/external/com_github_openssl_openssl/openssl/include/openssl/md5.h:51:27: note: declared here
+   51 | OSSL_DEPRECATEDIN_3_0 int MD5_Final(unsigned char *md, MD5_CTX *c);
+      |                           ^~~~~~~~~
+[1,123 / 1,187] Compiling yacl/link/algorithm/allgather.cc; 6s linux-sandbox ... (14 actions, 13 running)
+[1,127 / 1,187] Compiling yacl/link/algorithm/allgather.cc; 7s linux-sandbox ... (14 actions running)
+INFO: From Compiling src/brpc/policy/http2_rpc_protocol.cpp:
+external/com_github_brpc_brpc/src/brpc/policy/http2_rpc_protocol.cpp: In member function 'brpc::policy::H2ParseResult brpc::policy::H2StreamContext::OnData(butil::IOBufBytesIterator&, const brpc::policy::H2FrameHead&, uint32_t, uint8_t)':
+external/com_github_brpc_brpc/src/brpc/policy/http2_rpc_protocol.cpp:747:13: warning: comparison of integer expressions of different signedness: 'const int64_t' {aka 'const long int'} and 'long unsigned int' [-Wsign-compare]
+  747 |     if (acc >= static_cast<int64_t>(_conn_ctx->local_settings().stream_window_size) / (_conn_ctx->VolatilePendingStreamSize() + 1)) {
+      |         ~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/bits/socket.h:27,
+                 from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+                 from /usr/include/netinet/in.h:23,
+                 from external/com_github_brpc_brpc/src/butil/endpoint.h:25,
+                 from external/com_github_brpc_brpc/src/brpc/details/http_message.h:27,
+                 from external/com_github_brpc_brpc/src/brpc/policy/http_rpc_protocol.h:22,
+                 from external/com_github_brpc_brpc/src/brpc/policy/http2_rpc_protocol.h:22,
+                 from external/com_github_brpc_brpc/src/brpc/policy/http2_rpc_protocol.cpp:19:
+external/com_github_brpc_brpc/src/brpc/policy/http2_rpc_protocol.cpp: In static member function 'static brpc::policy::H2UnsentRequest* brpc::policy::H2UnsentRequest::New(brpc::Controller*)':
+external/com_github_brpc_brpc/src/brpc/policy/http2_rpc_protocol.cpp:1394:37: warning: 'offsetof' within non-standard-layout type 'brpc::policy::H2UnsentRequest' is conditionally-supported [-Winvalid-offsetof]
+ 1394 |     const size_t memsize = offsetof(H2UnsentRequest, _list) +
+      |                                     ^
+external/com_github_brpc_brpc/src/brpc/policy/http2_rpc_protocol.cpp: In static member function 'static brpc::policy::H2UnsentResponse* brpc::policy::H2UnsentResponse::New(brpc::Controller*, int, bool)':
+external/com_github_brpc_brpc/src/brpc/policy/http2_rpc_protocol.cpp:1656:37: warning: 'offsetof' within non-standard-layout type 'brpc::policy::H2UnsentResponse' is conditionally-supported [-Winvalid-offsetof]
+ 1656 |     const size_t memsize = offsetof(H2UnsentResponse, _list) +
+      |                                     ^
+[1,130 / 1,187] Compiling yacl/link/algorithm/allgather.cc; 8s linux-sandbox ... (14 actions running)
+[1,133 / 1,187] Compiling yacl/link/algorithm/allgather.cc; 9s linux-sandbox ... (14 actions, 13 running)
+[1,137 / 1,187] Compiling yacl/link/algorithm/allgather.cc; 10s linux-sandbox ... (14 actions, 13 running)
+[1,139 / 1,187] Compiling yacl/link/algorithm/allgather.cc; 12s linux-sandbox ... (14 actions running)
+[1,148 / 1,187] Compiling libspu/mpc/utils/ring_ops.cc; 11s linux-sandbox ... (14 actions, 13 running)
+[1,150 / 1,187] Compiling libspu/mpc/utils/ring_ops.cc; 12s linux-sandbox ... (14 actions running)
+[1,159 / 1,187] Compiling libspu/mpc/utils/ring_ops.cc; 13s linux-sandbox ... (14 actions, 13 running)
+[1,166 / 1,187] Compiling libspu/mpc/utils/ring_ops.cc; 15s linux-sandbox ... (14 actions, 13 running)
+[1,169 / 1,187] Compiling libspu/mpc/utils/ring_ops.cc; 16s linux-sandbox ... (14 actions, 13 running)
+[1,170 / 1,187] Compiling libspu/mpc/utils/ring_ops.cc; 17s linux-sandbox ... (14 actions running)
+[1,171 / 1,187] Compiling libspu/mpc/utils/ring_ops.cc; 19s linux-sandbox ... (14 actions running)
+[1,173 / 1,187] Compiling libspu/mpc/utils/ring_ops.cc; 22s linux-sandbox ... (12 actions running)
+[1,176 / 1,187] Compiling libspu/mpc/utils/ring_ops.cc; 24s linux-sandbox ... (9 actions running)
+[1,181 / 1,187] Compiling libspu/mpc/cheetah/arith/matmat_prot.cc; 11s linux-sandbox ... (5 actions, 4 running)
+[1,182 / 1,188] Compiling libspu/mpc/cheetah/arith/matmat_prot.cc; 12s linux-sandbox ... (5 actions running)
+[1,183 / 1,188] Compiling libspu/mpc/cheetah/arith/cheetah_dot.cc; 13s linux-sandbox ... (4 actions running)
+[1,184 / 1,188] Compiling libspu/mpc/cheetah/arith/cheetah_dot.cc; 15s linux-sandbox ... (3 actions running)
+[1,185 / 1,188] Compiling libspu/mpc/cheetah/arith/cheetah_dot_test.cc; 15s linux-sandbox ... (2 actions running)
+[1,188 / 1,189] 1 / 2 tests; Testing //libspu/mpc/cheetah/arith:cheetah_dot_test; 1s linux-sandbox
+[1,188 / 1,189] 1 / 2 tests; Testing //libspu/mpc/cheetah/arith:cheetah_dot_test; 11s linux-sandbox
+[1,188 / 1,189] 1 / 2 tests; Testing //libspu/mpc/cheetah/arith:cheetah_dot_test; 41s linux-sandbox
+[1,188 / 1,189] 2 / 2 tests; Testing //libspu/mpc/cheetah/arith:cheetah_dot_test; 54s linux-sandbox
+INFO: Elapsed time: 182.115s, Critical Path: 79.44s
+INFO: 812 processes: 7 internal, 805 linux-sandbox.
+INFO: Build completed successfully, 812 total actions
+//libspu/mpc/cheetah/arith:cheetah_dot_test                              PASSED in 54.1s
+//libspu/mpc/cheetah/rlwe:packlwes_test                                  PASSED in 6.4s
+
+Executed 2 out of 2 tests: 2 tests pass.
+There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.

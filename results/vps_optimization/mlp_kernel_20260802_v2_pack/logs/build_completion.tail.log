@@ -1,0 +1,20 @@
+[3,727 / 3,754] Compiling mlir/lib/Dialect/Linalg/Transforms/TilingInterfaceImpl.cpp; 51s linux-sandbox ... (14 actions running)
+[3,729 / 3,754] Compiling mlir/lib/Dialect/Linalg/Transforms/TilingInterfaceImpl.cpp; 52s linux-sandbox ... (14 actions, 13 running)
+[3,730 / 3,754] Compiling mlir/lib/Dialect/Linalg/Transforms/TilingInterfaceImpl.cpp; 53s linux-sandbox ... (14 actions, 13 running)
+[3,732 / 3,754] Compiling mlir/lib/Dialect/Linalg/Transforms/TilingInterfaceImpl.cpp; 55s linux-sandbox ... (14 actions, 13 running)
+[3,735 / 3,754] Compiling mlir/lib/Dialect/Linalg/Transforms/TilingInterfaceImpl.cpp; 56s linux-sandbox ... (14 actions running)
+[3,736 / 3,754] Compiling mlir/lib/Dialect/Linalg/Transforms/TilingInterfaceImpl.cpp; 57s linux-sandbox ... (14 actions, 13 running)
+[3,738 / 3,754] Compiling mlir/lib/Dialect/Linalg/Transforms/TilingInterfaceImpl.cpp; 58s linux-sandbox ... (14 actions, 13 running)
+[3,738 / 3,754] Compiling mlir/lib/Dialect/Linalg/Transforms/TilingInterfaceImpl.cpp; 60s linux-sandbox ... (14 actions running)
+[3,739 / 3,754] Compiling mlir/lib/Dialect/Linalg/Transforms/TilingInterfaceImpl.cpp; 61s linux-sandbox ... (14 actions, 13 running)
+[3,742 / 3,754] Compiling mlir/lib/Dialect/Linalg/Transforms/TilingInterfaceImpl.cpp; 63s linux-sandbox ... (11 actions running)
+[3,746 / 3,754] Compiling mlir/lib/Dialect/Linalg/Transforms/TilingInterfaceImpl.cpp; 65s linux-sandbox ... (7 actions running)
+[3,750 / 3,754] Compiling xla/mlir_hlo/mhlo/transforms/legalize_to_linalg/legalize_to_linalg.cc; 24s linux-sandbox ... (3 actions running)
+[3,752 / 3,754] Compiling xla/mlir_hlo/mhlo/transforms/legalize_to_linalg/legalize_to_linalg.cc; 29s linux-sandbox
+[3,752 / 3,754] Compiling xla/mlir_hlo/mhlo/transforms/legalize_to_linalg/legalize_to_linalg.cc; 40s linux-sandbox
+[3,753 / 3,754] [Prepa] Linking spu/libspu.so
+Target //spu:api up-to-date:
+  bazel-bin/libspu/spu_pb2.py
+INFO: Elapsed time: 1059.927s, Critical Path: 144.42s
+INFO: 3541 processes: 19 internal, 3522 linux-sandbox.
+INFO: Build completed successfully, 3541 total actions

@@ -1,0 +1,84 @@
+{
+  "manifest_type": "transshield_spu_exact_mlp_benchmark_v1",
+  "captured_at_utc": "2026-08-02T03:17:58.385157+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.39",
+  "spu_version": "0.9.3b0",
+  "config": "/opt/transshield-project/results/vps_optimization/mlp_kernel_20260802_v1/configs/intra16.json",
+  "runtime_config": {
+    "cheetah_2pc_config": {
+      "enable_mul_lsb_error": false,
+      "ot_kind": "YACL_Ferret"
+    },
+    "enable_hal_profile": false,
+    "enable_pphlo_profile": false,
+    "experimental_enable_colocated_optimization": true,
+    "field": "FM64",
+    "fxp_exp_iters": 4,
+    "fxp_exp_mode": 0,
+    "fxp_fraction_bits": 16,
+    "protocol": "CHEETAH",
+    "max_concurrency": 16,
+    "experimental_enable_intra_op_par": true
+  },
+  "ownership": {
+    "input": "P1",
+    "model_parameters": "P2",
+    "reveal": "full synthetic final MLP output only"
+  },
+  "graph": "x + (alpha * square(x @ W1.T + b1)) @ W2.T + b2",
+  "shape": {
+    "input": [
+      16,
+      197,
+      384
+    ],
+    "flattened_tokens": 3152,
+    "fc1": [
+      3152,
+      384,
+      1536
+    ],
+    "fc2": [
+      3152,
+      1536,
+      384
+    ]
+  },
+  "seed": 20260802,
+  "interface": "lo",
+  "reference_output_sha256": "f47e1e4b607949e914d1e565b55b554466e568fa209d10626d47fc8d8a8afdea",
+  "repetitions": [
+    {
+      "repeat_index": 0,
+      "elapsed_sec": 47.69524707900018,
+      "loopback_tx_bytes": 2028296368,
+      "loopback_rx_bytes": 2028296368,
+      "output_sha256": "5074d3cd2929476de08aa040141043f5b515de461c5984e64372ac16156e74b9",
+      "output_min": -1.29443359375,
+      "output_max": 1.16461181640625,
+      "output_mean": -0.0015441790455952287,
+      "finite": true,
+      "reference_max_abs_error": 0.00014495849609375,
+      "reference_mean_abs_error": 2.4286149709951133e-05
+    },
+    {
+      "repeat_index": 1,
+      "elapsed_sec": 47.566691734000415,
+      "loopback_tx_bytes": 2028168561,
+      "loopback_rx_bytes": 2028168561,
+      "output_sha256": "784f4d6721653d9023c753f50ebf68cbdd085eca6b9e5a090d9818cde92c14d7",
+      "output_min": -1.2944488525390625,
+      "output_max": 1.164642333984375,
+      "output_mean": -0.001544203027151525,
+      "finite": true,
+      "reference_max_abs_error": 0.00014781951904296875,
+      "reference_mean_abs_error": 2.431661414448172e-05
+    }
+  ],
+  "acceptance": {
+    "unchanged_math_graph": true,
+    "unchanged_field_and_fraction_bits": true,
+    "all_finite": true
+  }
+}

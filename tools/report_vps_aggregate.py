@@ -148,6 +148,347 @@ def finance_acceptance_checks(matrix: dict, finance: dict) -> list[dict]:
     ]
 
 
+def append_gate_check(
+    checks: list[dict],
+    name: str,
+    actual,
+    *,
+    expected=None,
+    minimum=None,
+    maximum=None,
+    passed: bool | None = None,
+) -> None:
+    if passed is None:
+        if minimum is not None:
+            passed = actual is not None and actual >= minimum
+        elif maximum is not None:
+            passed = actual is not None and actual <= maximum
+        else:
+            passed = actual == expected
+    check = {"name": name, "actual": actual, "passed": bool(passed)}
+    if expected is not None:
+        check["expected"] = expected
+    if minimum is not None:
+        check["minimum"] = minimum
+    if maximum is not None:
+        check["maximum"] = maximum
+    checks.append(check)
+
+
+def summary_hostname(summary: dict) -> str | None:
+    network = summary.get("network") or {}
+    return (network.get("before") or {}).get("hostname")
+
+
+def summary_network_interface(summary: dict) -> str | None:
+    network = summary.get("network") or {}
+    return network.get("interface") or (network.get("before") or {}).get("interface")
+
+
+def report_section_accounting(
+    matrix: dict,
+    run_root: Path,
+    change_scope: str,
+) -> tuple[list[dict], list[dict]]:
+    contract = matrix["report_update_contract"]
+    frozen_groups = contract["frozen_when_unaffected"]
+    conditional = contract["rerun_if_change_scope_includes"]
+    sections = sorted({section for group in frozen_groups.values() for section in group})
+    if change_scope == "full":
+        required_reruns = {section for group in conditional.values() for section in group}
+    else:
+        required_reruns = set(conditional.get(change_scope, []))
+
+    accounting = []
+    checks = []
+    evidence_root = run_root / "report_section_evidence"
+    for section in sections:
+        if section not in required_reruns:
+            accounting.append(
+                {
+                    "section": section,
+                    "disposition": "frozen_unaffected",
+                    "basis": "report hash plus dataset and bundle inventory",
+                }
+            )
+            continue
+        evidence_path = evidence_root / f"{section}.json"
+        evidence = read_json(evidence_path) if evidence_path.is_file() else None
+        passed = bool(evidence and evidence.get("passed") is True)
+        accounting.append(
+            {
+                "section": section,
+                "disposition": "rerun" if passed else "missing_required_rerun",
+                "evidence": evidence_file(evidence_path),
+            }
+        )
+        append_gate_check(
+            checks,
+            f"report_section.{section}.rerun_passed",
+            passed,
+            expected=True,
+        )
+    return accounting, checks
+
+
+def report_update_readiness(
+    matrix: dict,
+    payload: dict,
+    run_root: Path,
+    baseline_path: Path,
+    change_scope: str,
+) -> dict:
+    contract = matrix["report_update_contract"]
+    quality = contract["quality_gates"]
+    checks = []
+
+    inventory = payload["data_and_bundle_inventory"]
+    append_gate_check(checks, "inventory.passed", inventory["passed"], expected=True)
+
+    preprocessing = payload["preprocessing_reproduction"]
+    for domain in ("medical", "finance"):
+        append_gate_check(
+            checks,
+            f"preprocessing.{domain}.passed",
+            preprocessing[domain].get("passed"),
+            expected=True,
+        )
+
+    medical_full = payload["medical_full_validation"]["actual"]
+    append_gate_check(checks, "medical524.sample_count", medical_full.get("sample_count"), expected=524)
+    append_gate_check(checks, "medical524.per_sample_count", len(medical_full.get("per_sample") or []), expected=524)
+    append_gate_check(checks, "medical524.finite_logits", medical_full.get("finite_logits"), expected=True)
+    append_gate_check(
+        checks,
+        "medical524.threshold_accuracy",
+        medical_full.get("threshold_accuracy"),
+        minimum=quality["medical_524_minimum_threshold_accuracy"],
+    )
+    append_gate_check(
+        checks,
+        "medical524.auc",
+        medical_full.get("auc"),
+        minimum=quality["medical_524_minimum_auc"],
+    )
+
+    secure = payload["secure_inference"]
+    medical = secure["medical_32"]["actual"]
+    append_gate_check(checks, "medical32.sample_count", medical.get("sample_count"), expected=32)
+    append_gate_check(checks, "medical32.per_sample_count", len(medical.get("per_sample") or []), expected=32)
+    append_gate_check(checks, "medical32.finite_logits", medical.get("finite_logits"), expected=True)
+    append_gate_check(checks, "medical32.finite_probabilities", medical.get("finite_probabilities"), expected=True)
+    append_gate_check(
+        checks,
+        "medical32.elapsed_sec_recorded",
+        medical.get("elapsed_sec"),
+        passed=bool(medical.get("elapsed_sec") and medical["elapsed_sec"] > 0),
+    )
+    medical_network_bytes = (medical.get("network") or {}).get("total_bytes")
+    append_gate_check(
+        checks,
+        "medical32.communication_recorded",
+        medical_network_bytes,
+        passed=bool(medical_network_bytes and medical_network_bytes > 0),
+    )
+    append_gate_check(
+        checks,
+        "medical32.threshold_accuracy",
+        medical.get("threshold_accuracy"),
+        minimum=quality["medical_32_minimum_threshold_accuracy"],
+    )
+    append_gate_check(
+        checks,
+        "medical32.auc",
+        medical.get("auc"),
+        minimum=quality["medical_32_minimum_auc"],
+    )
+
+    finance = secure["finance_8"]["actual"]
+    append_gate_check(checks, "finance8.sample_count", finance.get("sample_count"), expected=8)
+    append_gate_check(checks, "finance8.per_sample_count", len(finance.get("per_sample") or []), expected=8)
+    append_gate_check(checks, "finance8.finite_logits", finance.get("finite_logits"), expected=True)
+    append_gate_check(
+        checks,
+        "finance8.elapsed_sec_recorded",
+        finance.get("elapsed_sec"),
+        passed=bool(finance.get("elapsed_sec") and finance["elapsed_sec"] > 0),
+    )
+    finance_network_bytes = (finance.get("network") or {}).get("total_bytes")
+    append_gate_check(
+        checks,
+        "finance8.communication_recorded",
+        finance_network_bytes,
+        passed=bool(finance_network_bytes and finance_network_bytes > 0),
+    )
+    finance_reference = finance.get("reference_comparison") or {}
+    append_gate_check(
+        checks,
+        "finance8.argmax_match_ratio",
+        finance_reference.get("argmax_match_ratio"),
+        minimum=quality["finance_8_minimum_argmax_match_ratio"],
+    )
+    append_gate_check(
+        checks,
+        "finance8.threshold_match_ratio",
+        finance_reference.get("threshold_match_ratio"),
+        minimum=quality["finance_8_minimum_threshold_match_ratio"],
+    )
+
+    robustness = payload["robustness"]
+    expected_robustness = matrix["robustness"]["expected"]
+    append_gate_check(
+        checks,
+        "robustness.protocol_passed",
+        robustness["protocol_passed"],
+        expected=expected_robustness["protocol_passed"],
+    )
+    append_gate_check(
+        checks,
+        "robustness.guard_passed",
+        robustness["guard_passed"],
+        expected=expected_robustness["guard_passed"],
+    )
+    append_gate_check(
+        checks,
+        "robustness.fd_socket_no_leak",
+        robustness["fd_and_socket_no_leak_count"],
+        expected=expected_robustness["fd_socket_no_leak"],
+    )
+    append_gate_check(
+        checks,
+        "robustness.steady_state_recovered",
+        robustness["steady_state_recovered_count"],
+        expected=expected_robustness["steady_state_recovered"],
+    )
+    append_gate_check(
+        checks,
+        "robustness.guard_inflight_recovered",
+        robustness["guard_inflight_recovered_count"],
+        expected=expected_robustness["guard_inflight_recovered"],
+    )
+    append_gate_check(checks, "code_tests.passed", payload["code_tests"]["passed"], expected=True)
+    append_gate_check(
+        checks,
+        "code_tests.test_count",
+        payload["code_tests"].get("test_count"),
+        minimum=quality["minimum_code_tests"],
+    )
+
+    missing_artifacts = [
+        name
+        for name, evidence in payload["evidence_artifacts"].items()
+        if not evidence["exists"]
+    ]
+    append_gate_check(
+        checks,
+        "evidence_artifacts.complete",
+        missing_artifacts,
+        expected=[],
+    )
+
+    required_privacy = contract["required_privacy_facts"]
+    for domain in ("medical", "finance"):
+        actual_privacy = payload["privacy_boundary"][domain]
+        for key, expected in required_privacy.items():
+            append_gate_check(
+                checks,
+                f"privacy.{domain}.{key}",
+                actual_privacy.get(key),
+                expected=expected,
+            )
+
+    baseline_path = baseline_path.expanduser().resolve()
+    baseline = read_json(baseline_path) if baseline_path.is_file() else None
+    append_gate_check(checks, "same_vps_full_baseline.exists", baseline is not None, expected=True)
+    if baseline is not None:
+        append_gate_check(checks, "same_vps_full_baseline.sample_count", baseline.get("sample_count"), expected=32)
+        append_gate_check(
+            checks,
+            "same_vps_full_baseline.per_sample_count",
+            len(baseline.get("per_sample") or []),
+            expected=32,
+        )
+        append_gate_check(
+            checks,
+            "same_vps_full_baseline.finite_logits",
+            baseline.get("finite_logits"),
+            expected=True,
+        )
+        append_gate_check(
+            checks,
+            "same_vps_full_baseline.dataset_key",
+            baseline.get("dataset_key"),
+            expected=medical.get("dataset_key"),
+        )
+        append_gate_check(
+            checks,
+            "same_vps_full_baseline.sample_list_sha256",
+            baseline.get("sample_list_sha256"),
+            expected=medical.get("sample_list_sha256"),
+        )
+        append_gate_check(
+            checks,
+            "same_vps_full_baseline.hostname",
+            summary_hostname(baseline),
+            expected=summary_hostname(medical),
+        )
+        append_gate_check(
+            checks,
+            "same_vps_full_baseline.network_interface",
+            summary_network_interface(baseline),
+            expected=summary_network_interface(medical),
+        )
+        if change_scope in {"runtime_only", "control_plane", "operator_proxy_harness"}:
+            append_gate_check(
+                checks,
+                "same_vps_full_baseline.threshold",
+                baseline.get("threshold"),
+                expected=medical.get("threshold"),
+            )
+        baseline_elapsed = baseline.get("elapsed_sec")
+        append_gate_check(
+            checks,
+            "medical32.time_improved_vs_same_vps_baseline",
+            medical.get("elapsed_sec"),
+            maximum=baseline_elapsed,
+            passed=bool(
+                baseline_elapsed
+                and medical.get("elapsed_sec")
+                and medical["elapsed_sec"] < baseline_elapsed
+            ),
+        )
+        baseline_bytes = (baseline.get("network") or {}).get("total_bytes")
+        append_gate_check(
+            checks,
+            "medical32.communication_not_worse_vs_same_vps_baseline",
+            medical_network_bytes,
+            maximum=baseline_bytes,
+            passed=bool(
+                baseline_bytes
+                and medical_network_bytes
+                and medical_network_bytes <= baseline_bytes
+            ),
+        )
+
+    section_accounting, section_checks = report_section_accounting(
+        matrix,
+        run_root,
+        change_scope,
+    )
+    checks.extend(section_checks)
+    ready = all(check["passed"] for check in checks)
+    return {
+        "classification": "report_update_ready" if ready else "screening_only",
+        "report_update_ready": ready,
+        "change_scope": change_scope,
+        "same_vps_full_baseline": evidence_file(baseline_path),
+        "mandatory_reruns": contract["mandatory_reruns"],
+        "report_section_accounting": section_accounting,
+        "checks": checks,
+        "failed_checks": [check for check in checks if not check["passed"]],
+    }
+
+
 def build_aggregate(args) -> dict:
     run_root = args.run_root.expanduser().resolve()
     matrix = read_json(args.matrix)
@@ -197,9 +538,11 @@ def build_aggregate(args) -> dict:
         REPO_ROOT / "showcase_api/app.py",
         REPO_ROOT / "tools/showcase_protocol_fuzz.py",
         REPO_ROOT / "tools/showcase_guard_stress.py",
+        REPO_ROOT / "tools/report_vps_test.py",
+        DEFAULT_MATRIX,
         Path(__file__).resolve(),
     ]
-    return {
+    payload = {
         "manifest_type": "transshield_report_vps_regression_aggregate_v1",
         "captured_at_utc": datetime.now(timezone.utc).isoformat(),
         "report": matrix["report"],
@@ -259,6 +602,9 @@ def build_aggregate(args) -> dict:
                 for x in all_robustness
             ),
             "fd_and_socket_observation_count": len(all_robustness),
+            "steady_state_recovered_count": sum(
+                x.get("system_state", {}).get("stable") is True for x in protocol_cases
+            ),
             "guard_inflight_recovered_count": sum(x.get("inflight_recovered") is True for x in guard_checks),
             "truncated_body_transport_note": (
                 "The VPS recorded streaming_body_reader/truncated_body, but the half-closed client received no HTTP "
@@ -285,6 +631,17 @@ def build_aggregate(args) -> dict:
         "evidence_artifacts": {name: evidence_file(run_root / name) for name in artifact_names},
         "source_file_hashes": {str(path.relative_to(REPO_ROOT)): evidence_file(path) for path in source_files},
     }
+    baseline_path = args.medical_baseline_summary
+    if baseline_path is None:
+        baseline_path = run_root / "medical32_spu_baseline_summary.json"
+    payload["report_update_readiness"] = report_update_readiness(
+        matrix,
+        payload,
+        run_root,
+        baseline_path,
+        args.change_scope,
+    )
+    return payload
 
 
 def main() -> None:
@@ -292,6 +649,20 @@ def main() -> None:
     parser.add_argument("--matrix", type=Path, default=DEFAULT_MATRIX)
     parser.add_argument("--run-root", type=Path, required=True)
     parser.add_argument("--vps-smoke-root", type=Path, default=REPO_ROOT / "results" / "vps_smoke")
+    parser.add_argument("--medical-baseline-summary", type=Path)
+    parser.add_argument(
+        "--change-scope",
+        choices=[
+            "runtime_only",
+            "model_graph",
+            "training_or_weights",
+            "operator_proxy_harness",
+            "control_plane",
+            "full",
+        ],
+        default="runtime_only",
+    )
+    parser.add_argument("--require-report-update-ready", action="store_true")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
     payload = build_aggregate(args)
@@ -306,11 +677,16 @@ def main() -> None:
                 "finance_all_gates_passed": payload["secure_inference"]["finance_8"]["all_gates_passed"],
                 "robustness_passed": payload["robustness"]["all_passed"],
                 "code_tests_passed": payload["code_tests"]["passed"],
+                "result_classification": payload["report_update_readiness"]["classification"],
+                "report_update_ready": payload["report_update_readiness"]["report_update_ready"],
+                "failed_report_update_checks": payload["report_update_readiness"]["failed_checks"],
             },
             ensure_ascii=False,
             indent=2,
         )
     )
+    if args.require_report_update_ready and not payload["report_update_readiness"]["report_update_ready"]:
+        raise SystemExit(3)
 
 
 if __name__ == "__main__":

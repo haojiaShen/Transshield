@@ -12,6 +12,10 @@
     "local_machine_role": "source_review_editing_and_result_organization_only",
     "formal_results_are_immutable": true,
     "candidate_results_root": "results/vps_report_tests",
+    "result_classification": {
+      "screening_only": "microbenchmarks, reduced sample sets and partial report scopes; never eligible to update report values",
+      "report_update_ready": "all mandatory reruns, same-VPS full baseline/candidate comparison, quality gates and report-section accounting pass"
+    },
     "do_not_overwrite": [
       "results/final",
       "results/communication",
@@ -195,7 +199,8 @@
       "protocol_passed": 13,
       "guard_passed": 4,
       "fd_socket_no_leak": 17,
-      "steady_state_recovered": 12
+      "steady_state_recovered": 12,
+      "guard_inflight_recovered": 4
     }
   },
   "operator_proxy_benchmarks": {
@@ -211,6 +216,51 @@
     "attention_input_shape": [1, 6, 197, 197],
     "low_level_primitives": ["Beaver additive triple", "binary triple", "B2A RNG", "A2B", "B2A one-bit"],
     "status": "historical frozen evidence; rerun only after the matching legacy benchmark harness is restored on VPS"
+  },
+  "report_update_contract": {
+    "rule": "A candidate may update report values only when every report section is either rerun in the candidate run or explicitly preserved as unaffected frozen evidence. Partial runs remain screening_only.",
+    "mandatory_reruns": [
+      "data_and_bundle_inventory",
+      "medical_524_full_validation",
+      "medical_32_secure_baseline",
+      "medical_32_secure_candidate",
+      "medical_preprocessing_reproduction",
+      "finance_8_secure_candidate",
+      "finance_preprocessing_reproduction",
+      "protocol_fuzz_13",
+      "control_plane_guard_4",
+      "privacy_boundary",
+      "code_tests"
+    ],
+    "frozen_when_unaffected": {
+      "offline_training_and_calibration": ["table_4_2", "table_4_3", "figure_4_1", "table_4_4"],
+      "external_and_plaintext_baselines": ["figure_4_2"],
+      "historical_operator_proxy": ["table_4_6", "table_4_7", "figure_4_5", "figure_4_6"],
+      "model_ablations": ["figure_4_8", "table_4_10"]
+    },
+    "rerun_if_change_scope_includes": {
+      "model_graph": ["figure_4_1", "table_4_4", "figure_4_2", "figure_4_8", "table_4_10"],
+      "training_or_weights": ["table_4_2", "table_4_3", "figure_4_1", "table_4_4", "figure_4_2", "figure_4_8", "table_4_10"],
+      "operator_proxy_harness": ["table_4_6", "table_4_7", "figure_4_5", "figure_4_6"]
+    },
+    "quality_gates": {
+      "medical_524_minimum_threshold_accuracy": 0.927480936050415,
+      "medical_524_minimum_auc": 0.9639150500297546,
+      "medical_32_minimum_threshold_accuracy": 0.9375,
+      "medical_32_minimum_auc": 0.9639,
+      "finance_8_minimum_argmax_match_ratio": 1.0,
+      "finance_8_minimum_threshold_match_ratio": 1.0,
+      "minimum_code_tests": 24,
+      "require_medical_32_time_improvement_vs_same_vps_baseline": true,
+      "require_medical_32_communication_not_worse_vs_same_vps_baseline": true
+    },
+    "required_privacy_facts": {
+      "host_plaintext_pixel_values_materialized": false,
+      "host_private_share_tensors_loaded": false,
+      "model_params_secret_inside_spu": true,
+      "predictor_params_secret_inside_spu": true,
+      "reveal_policy": "final_logits_only"
+    }
   },
   "acceptance": {
     "data_inventory": "all listed files exist; counts, class counts, list hashes and bundle hashes match",

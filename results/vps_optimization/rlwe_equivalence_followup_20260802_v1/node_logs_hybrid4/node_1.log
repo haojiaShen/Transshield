@@ -1,0 +1,51 @@
+[2026-08-02 20:10:05,742] [MainProcess] Starting grpc server at 127.0.0.1:38929
+[2026-08-02 20:10:05,827] [MainProcess] Run : builtin_spu_init at node:1
+I0802 20:10:05.831263 92209     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1204] Server[yacl::link::transport::internal::ReceiverServiceImpl] is serving on port=34905.
+W0802 20:10:05.831278 92209     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1210] Builtin services are disabled according to ServerOptions.has_builtin_services
+I0802 20:10:05.932245 92211 4294971904 external/com_github_brpc_brpc/src/brpc/socket.cpp:2566] Checking Socket{id=0 addr=127.0.0.1:45361} (0x7f178806d7c0)
+I0802 20:10:05.932431 92217 4294971904 external/com_github_brpc_brpc/src/brpc/socket.cpp:2626] Revived Socket{id=0 addr=127.0.0.1:45361} (0x7f178806d7c0) (Connectable)
+[2026-08-02 20:10:06.840] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 20:10:06.841] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 20:10:06,842] [MainProcess] spu-runtime (SPU) initialized
+[2026-08-02 20:10:06,890] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 20:10:06,896] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:10:08,101] [MainProcess] Run : builtin_spu_init at node:1
+[2026-08-02 20:10:08,101] [MainProcess] spu-runtime (SPU) already exist, reuse it
+[2026-08-02 20:10:08,991] [MainProcess] Run : load_share_chunk_from_party_manifest at node:1
+[2026-08-02 20:10:09,599] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:10:09.609] [info] [thread_pool.cc:30] Create a fixed thread pool with size 15
+[2026-08-02 20:10:09,631] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:10:13,888] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 20:10:13,888] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:10:17.479] [info] [cheetah_dot.cc:497] 1@784x768x384 => 1x64x128 Recv 6.35 MiB, Response 8.975 MiB Pack 1063.766 ms (interleave)
+[2026-08-02 20:10:22.328] [info] [cheetah_mul.cc:335] CheetahMul uses 4 modulus for 64 bit input over 64 bit ring
+[2026-08-02 20:10:41.998] [info] [cheetah_dot.cc:497] 1@788x1536x384 => 1x64x128 Recv 12.7 MiB, Response 8.975 MiB Pack 1082.54 ms (interleave)
+[2026-08-02 20:11:00.868] [info] [cheetah_dot.cc:497] 1@788x1536x384 => 1x64x128 Recv 12.701 MiB, Response 8.975 MiB Pack 1070.464 ms (interleave)
+[2026-08-02 20:11:19.823] [info] [cheetah_dot.cc:497] 1@788x1536x384 => 1x64x128 Recv 12.701 MiB, Response 8.975 MiB Pack 1086.193 ms (interleave)
+[2026-08-02 20:11:22.863] [info] [cheetah_dot.cc:497] 1@784x384x384 => 1x64x128 Recv 3.175 MiB, Response 8.975 MiB Pack 1078.893 ms (interleave)
+[2026-08-02 20:11:24.982] [info] [cheetah_dot.cc:497] 1@784x384x192 => 1x128x64 Recv 1.588 MiB, Response 4.609 MiB Pack 1242.754 ms (interleave)
+[2026-08-02 20:11:25.860] [info] [cheetah_dot.cc:497] 1@784x192x96 => 1x64x96 Recv 0.529 MiB, Response 3.154 MiB Pack 391.698 ms (interleave)
+[2026-08-02 20:11:26.044] [info] [cheetah_dot.cc:497] 1@784x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 31.52 ms (interleave)
+[2026-08-02 20:11:56.776] [info] [cheetah_dot.cc:497] 1@516x1536x384 => 1x64x128 Recv 12.7 MiB, Response 6.064 MiB Pack 705.844 ms (interleave)
+[2026-08-02 20:12:09.865] [info] [cheetah_dot.cc:497] 1@516x1536x384 => 1x64x128 Recv 12.7 MiB, Response 6.064 MiB Pack 709.115 ms (interleave)
+[2026-08-02 20:12:23.351] [info] [cheetah_dot.cc:497] 1@516x1536x384 => 1x64x128 Recv 12.7 MiB, Response 6.064 MiB Pack 705.569 ms (interleave)
+[2026-08-02 20:12:25.293] [info] [cheetah_dot.cc:497] 1@512x384x384 => 1x64x128 Recv 3.175 MiB, Response 5.822 MiB Pack 658.299 ms (interleave)
+[2026-08-02 20:12:26.542] [info] [cheetah_dot.cc:497] 1@512x384x192 => 1x128x64 Recv 1.588 MiB, Response 2.911 MiB Pack 679.33 ms (interleave)
+[2026-08-02 20:12:27.084] [info] [cheetah_dot.cc:497] 1@512x192x96 => 1x64x96 Recv 0.529 MiB, Response 1.94 MiB Pack 232.215 ms (interleave)
+[2026-08-02 20:12:27.218] [info] [cheetah_dot.cc:497] 1@512x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 28.423 ms (interleave)
+[2026-08-02 20:13:01.924] [info] [cheetah_dot.cc:497] 1@336x384x384 => 1x64x128 Recv 3.175 MiB, Response 3.881 MiB Pack 442.896 ms (interleave)
+[2026-08-02 20:13:02.740] [info] [cheetah_dot.cc:497] 1@336x384x192 => 1x128x64 Recv 1.588 MiB, Response 1.941 MiB Pack 418.48 ms (interleave)
+[2026-08-02 20:13:03.184] [info] [cheetah_dot.cc:497] 1@336x192x96 => 1x64x96 Recv 0.529 MiB, Response 1.455 MiB Pack 230.021 ms (interleave)
+[2026-08-02 20:13:03.288] [info] [cheetah_dot.cc:497] 1@336x96x2 => 64x64x2 Recv 0.353 MiB, Response 0.243 MiB Pack 25.176 ms (interleave)
+[2026-08-02 20:13:05,797] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 20:13:05,800] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 20:13:05,803] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 20:13:05,805] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 20:13:05,808] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 20:13:05,811] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 20:13:05,813] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 20:13:05,816] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:13:05,818] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 20:13:05,821] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 20:13:05,823] [MainProcess] RunR: builtin_gc at node:1
+[2026-08-02 20:13:05,825] [MainProcess] RunR: builtin_gc at node:1

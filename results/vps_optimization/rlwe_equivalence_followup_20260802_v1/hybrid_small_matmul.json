@@ -1,0 +1,81 @@
+{
+  "manifest_type": "transshield_spu_matmul_benchmark_v1",
+  "captured_at_utc": "2026-08-02T12:07:28.549361+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.39",
+  "spu_version": "0.9.3b0",
+  "config": "/opt/transshield-project/results/vps_optimization/rlwe_equivalence_followup_20260802_v1/configs/combined.json",
+  "runtime_config": {
+    "cheetah_2pc_config": {
+      "enable_mul_lsb_error": false,
+      "ot_kind": "YACL_Ferret"
+    },
+    "enable_hal_profile": false,
+    "enable_pphlo_profile": false,
+    "experimental_enable_colocated_optimization": true,
+    "field": "FM64",
+    "fxp_exp_iters": 4,
+    "fxp_exp_mode": 0,
+    "fxp_fraction_bits": 16,
+    "protocol": "CHEETAH"
+  },
+  "ownership": {
+    "left_matrix": "P1",
+    "right_matrix": "P2",
+    "reveal": "full synthetic final matrix output only"
+  },
+  "shape": {
+    "lhs": [
+      16,
+      384
+    ],
+    "rhs": [
+      384,
+      384
+    ],
+    "matmul": [
+      16,
+      384,
+      384
+    ]
+  },
+  "seed": 20260802,
+  "interface": "lo",
+  "reference_output_sha256": "1ea7c93cc22bea5647f276cb22c0b2cbdbf4d2944114e278873fd740c92acba2",
+  "repetitions": [
+    {
+      "repeat_index": 0,
+      "elapsed_sec": 1.426902952999626,
+      "loopback_tx_bytes": 29617686,
+      "loopback_rx_bytes": 29617686,
+      "output_sha256": "c57814f04e44595940485cb8e7b6619df167be3dcc6c7abcd725161d4b40ff01",
+      "finite": true,
+      "reference_max_abs_error": 0.00016626715660095215,
+      "reference_mean_abs_error": 3.7452980905072764e-05
+    },
+    {
+      "repeat_index": 1,
+      "elapsed_sec": 0.18490986699998757,
+      "loopback_tx_bytes": 1988655,
+      "loopback_rx_bytes": 1988655,
+      "output_sha256": "0c910421a721aebd8453c52053ddb083a0e2d4c642618e6943335e048b1f96dd",
+      "finite": true,
+      "reference_max_abs_error": 0.00016447901725769043,
+      "reference_mean_abs_error": 3.733673656824976e-05
+    },
+    {
+      "repeat_index": 2,
+      "elapsed_sec": 0.1869869270003619,
+      "loopback_tx_bytes": 1989064,
+      "loopback_rx_bytes": 1989064,
+      "output_sha256": "0cdf3abbbed4cc6c6e71124ad04dc670bae5b5839bb953d34ef162b9aeffc45c",
+      "finite": true,
+      "reference_max_abs_error": 0.00017258524894714355,
+      "reference_mean_abs_error": 3.7605437682941556e-05
+    }
+  ],
+  "acceptance": {
+    "runtime_config_matches_expectation": true,
+    "all_finite": true
+  }
+}

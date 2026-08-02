@@ -1,0 +1,36 @@
+[2026-08-02 19:13:21,834] [MainProcess] Starting grpc server at 127.0.0.1:40603
+[2026-08-02 19:13:21,908] [MainProcess] Run : builtin_spu_init at node:0
+I0802 19:13:21.912388 30502     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1204] Server[yacl::link::transport::internal::ReceiverServiceImpl] is serving on port=39825.
+W0802 19:13:21.912403 30502     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1210] Builtin services are disabled according to ServerOptions.has_builtin_services
+[2026-08-02 19:13:21.914] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 19:13:21.915] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 19:13:21,916] [MainProcess] spu-runtime (SPU) initialized
+[2026-08-02 19:13:21,918] [MainProcess] Run : <lambda> at node:0
+[2026-08-02 19:13:21,920] [MainProcess] Run : make_shares at node:0
+[2026-08-02 19:13:21,933] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 19:13:21,962] [MainProcess] Run : builtin_spu_run at node:0
+[2026-08-02 19:13:21,964] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 19:13:21,966] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 19:13:21,967] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 19:13:22,497] [MainProcess] Run : builtin_spu_init at node:0
+[2026-08-02 19:13:22,497] [MainProcess] spu-runtime (SPU) already exist, reuse it
+[2026-08-02 19:13:22,745] [MainProcess] Run : <lambda> at node:0
+[2026-08-02 19:13:22,769] [MainProcess] Run : make_shares at node:0
+[2026-08-02 19:13:22.769] [info] [thread_pool.cc:30] Create a fixed thread pool with size 15
+[2026-08-02 19:13:22,868] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 19:13:22,965] [MainProcess] Run : builtin_spu_run at node:0
+[2026-08-02 19:13:22,966] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 19:13:23.366] [info] [cheetah_dot.cc:310] CheetahDot uses 3@2 modulus 8192 degree for 64 bit ring (packing=enabled)
+[2026-08-02 19:14:05.330] [info] [cheetah_dot.cc:475] 1@6304x384x1536 => 1x16x512 Recv 12.701 MiB, Response 286.721 MiB Pack 19145.508 ms (interleave)
+[2026-08-02 19:14:12.028] [info] [cheetah_mul.cc:335] CheetahMul uses 4 modulus for 64 bit input over 64 bit ring
+[2026-08-02 19:15:04.790] [info] [cheetah_dot.cc:475] 1@6304x1536x384 => 1x64x128 Recv 12.701 MiB, Response 71.801 MiB Pack 11142.908 ms (interleave)
+[2026-08-02 19:15:05,732] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 19:15:05,733] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 19:15:05,964] [MainProcess] Run : make_shares at node:0
+[2026-08-02 19:15:06,035] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 19:15:06,070] [MainProcess] Run : builtin_spu_run at node:0
+[2026-08-02 19:15:06,071] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 19:15:46.598] [info] [cheetah_dot.cc:475] 1@6304x384x1536 => 1x16x512 Recv 12.701 MiB, Response 286.724 MiB Pack 19209.692 ms (interleave)
+[2026-08-02 19:16:40.715] [info] [cheetah_dot.cc:475] 1@6304x1536x384 => 1x64x128 Recv 12.701 MiB, Response 71.802 MiB Pack 11275.231 ms (interleave)
+[2026-08-02 19:16:41,691] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 19:16:41,692] [MainProcess] RunR: builtin_fetch_object at node:0

@@ -1,0 +1,73 @@
+[2026-08-02 20:07:24,783] [MainProcess] Starting grpc server at 127.0.0.1:34457
+[2026-08-02 20:07:24,868] [MainProcess] Run : builtin_spu_init at node:1
+I0802 20:07:24.871915 90914     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1204] Server[yacl::link::transport::internal::ReceiverServiceImpl] is serving on port=45083.
+W0802 20:07:24.871928 90914     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1210] Builtin services are disabled according to ServerOptions.has_builtin_services
+[2026-08-02 20:07:25.878] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 20:07:25.879] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 20:07:25,879] [MainProcess] spu-runtime (SPU) initialized
+[2026-08-02 20:07:25,928] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 20:07:25,934] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:07:26,735] [MainProcess] Run : builtin_spu_init at node:1
+[2026-08-02 20:07:26,735] [MainProcess] spu-runtime (SPU) already exist, reuse it
+[2026-08-02 20:07:26,748] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 20:07:26,756] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:07:26.777] [info] [thread_pool.cc:30] Create a fixed thread pool with size 15
+[2026-08-02 20:07:26,790] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:07:26,842] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 20:07:26,844] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:07:27.294] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.831 ms (interleave)
+[2026-08-02 20:07:28,175] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:07:28,180] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:07:28,184] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:07:28,189] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 20:07:28,189] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:07:28.352] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.199 ms (interleave)
+[2026-08-02 20:07:28,360] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:07:28,366] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:07:28,369] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:07:28,374] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 20:07:28,375] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:07:28.539] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.957 ms (interleave)
+[2026-08-02 20:07:28,548] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:07:29,202] [MainProcess] Run : builtin_spu_init at node:1
+[2026-08-02 20:07:29,202] [MainProcess] spu-runtime (SPU) already exist, reuse it
+[2026-08-02 20:07:29,345] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 20:07:29,348] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 20:07:29,350] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 20:07:29,366] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 20:07:29,369] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 20:07:29,423] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:07:29,444] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:07:29,445] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:07:29,447] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:07:29,448] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:07:29,450] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:07:29,451] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:07:29,461] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:07:29,462] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:07:29,464] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:07:29,500] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 20:07:29,501] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:07:29,534] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:07:29,536] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:07:29,564] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:07:29,575] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:07:49.650] [info] [cheetah_mul.cc:335] CheetahMul uses 4 modulus for 64 bit input over 64 bit ring
+[2026-08-02 20:08:14,734] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:08:14,848] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:08:14,857] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:08:14,859] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:08:14,861] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:08:14,862] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:08:14,863] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:08:14,865] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:08:14,874] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:08:14,875] [MainProcess] Run : make_shares at node:1
+[2026-08-02 20:08:14,877] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 20:08:14,883] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 20:08:14,884] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:08:14,906] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:08:14,934] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:08:14,935] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:08:14,945] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 20:08:54,845] [MainProcess] RunR: builtin_fetch_object at node:1

@@ -1,7 +1,7 @@
 diff --git a/libspu/mpc/cheetah/arith/cheetah_dot.cc b/libspu/mpc/cheetah/arith/cheetah_dot.cc
 --- a/libspu/mpc/cheetah/arith/cheetah_dot.cc
 +++ b/libspu/mpc/cheetah/arith/cheetah_dot.cc
-@@ -408,12 +408,24 @@
+@@ -408,12 +408,34 @@
 -    for (size_t i = 0; i < out_n; i += pack_stride) {
 -      size_t this_batch = std::min(out_n - i, pack_stride);
 -      size_t packed_idx = i / pack_stride;
@@ -11,25 +11,35 @@ diff --git a/libspu/mpc/cheetah/arith/cheetah_dot.cc b/libspu/mpc/cheetah/arith/
 -    }
 -
      num_ct_response = CeilDiv(out_n, pack_stride);
-+    // Each packing group is independent, but the historical in-place layout
-+    // makes the compact output prefix overlap the first input group.  Pack to
-+    // separate storage so groups can run concurrently without a data race,
-+    // then move the compact ciphertexts back after all readers have finished.
-+    std::vector<RLWECt> packed_responses(num_ct_response);
-+    yacl::parallel_for(
-+        0, num_ct_response, [&](int64_t pack_bgn, int64_t pack_end) {
-+          for (int64_t packed_idx = pack_bgn; packed_idx < pack_end;
-+               ++packed_idx) {
-+            size_t input_bgn = packed_idx * pack_stride;
-+            size_t this_batch = std::min(out_n - input_bgn, pack_stride);
-+            pack_helper.PackingWithModulusDrop(
-+                ct_array_to_pack.subspan(input_bgn, this_batch),
-+                packed_responses[packed_idx]);
-+          }
-+        });
-+    for (size_t packed_idx = 0; packed_idx < num_ct_response; ++packed_idx) {
-+      ct_array_to_pack[packed_idx] =
-+          std::move(packed_responses[packed_idx]);
++    if (num_ct_response == 1) {
++      // Keep the original in-place path for a single packing group.  The
++      // helper already parallelizes work inside the group; wrapping it in an
++      // outer parallel_for makes nested YACL parallelism fall back to one
++      // worker and is substantially slower for small matrices.
++      pack_helper.PackingWithModulusDrop(ct_array_to_pack,
++                                         ct_array_to_pack.front());
++    } else {
++      // Each packing group is independent, but the historical in-place
++      // layout makes the compact output prefix overlap the first input
++      // group.  Pack to separate storage so groups can run concurrently
++      // without a data race, then move the compact ciphertexts back after
++      // all readers have finished.
++      std::vector<RLWECt> packed_responses(num_ct_response);
++      yacl::parallel_for(
++          0, num_ct_response, [&](int64_t pack_bgn, int64_t pack_end) {
++            for (int64_t packed_idx = pack_bgn; packed_idx < pack_end;
++                 ++packed_idx) {
++              size_t input_bgn = packed_idx * pack_stride;
++              size_t this_batch = std::min(out_n - input_bgn, pack_stride);
++              pack_helper.PackingWithModulusDrop(
++                  ct_array_to_pack.subspan(input_bgn, this_batch),
++                  packed_responses[packed_idx]);
++            }
++          });
++      for (size_t packed_idx = 0; packed_idx < num_ct_response; ++packed_idx) {
++        ct_array_to_pack[packed_idx] =
++            std::move(packed_responses[packed_idx]);
++      }
 +    }
    } else {
      // Chen Hao et al's PackLWEs

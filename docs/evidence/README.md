@@ -43,6 +43,9 @@
 | SPU LayerNorm 折叠结构化结果 | `results/vps_optimization/layernorm_affine_fusion_20260802_v1/optimization_summary.json` | 微基准、medical4 时间/通信/一致率与不接入判定 |
 | SPU 调度后续结构化结果 | `results/vps_optimization/runtime_scheduler_20260802_v1/optimization_summary.json` | 矩阵拆分、intra/inter-op 调度结果与失败证据 |
 | SPU 0.9.5 同图 MLP 结果 | `results/vps_optimization/spu095_unpadded_20260802_v1/optimization_summary.json` | 与 0.9.3b0 的真实 MLP 热态筛选和停止条件 |
+| SPU 混合 RLWE packing 与公开平方常数说明 | `docs/evidence/spu_hybrid_rlwe_public_alpha.md` | 单/多分组调度、基线概率波动归因、两次完整门槛与回退边界 |
+| SPU 混合 RLWE packing 结构化结果 | `results/vps_optimization/rlwe_equivalence_followup_20260802_v1/optimization_summary.json` | medical4、medical32、矩阵微基准、构建测试、源码哈希和正式口径隔离 |
+| SPU batch32 停止证据 | `results/vps_optimization/batch32_screen_20260802_v1/optimization_summary.json` | 单位样本耗时回退、内存余量和未启动完整图的停止条件 |
 
 ## 说明
 
@@ -51,12 +54,13 @@
 - `docs/evidence/web_demo_control_plane_audit.md` 记录的是上一版正式前端实现的审计快照；该实现路径已移除，仅作为报告证据保留。
 - 当前新增的 `showcase/` 与 `showcase_api/` 是对既有控制面证据的**可运行重建**，不是新增第二套正式结果口径。
 - `tools/showcase_protocol_fuzz.py` 与 `tools/showcase_guard_stress.py` 面向新展示站接口做运行时验收；正式报告中的最终鲁棒性数字仍以 `results/fuzzing/` 与 `results/guard_stress/` 为准。
-- 后续测试只在 VPS 执行，并将 candidate 结果写入 `results/vps_report_tests/`；除非另行审核批准，不回写或覆盖本页列出的正式结果。
+- 后续模型测试只在 VPS 执行：完整报告回归写入 `results/vps_report_tests/`，优化候选写入 `results/vps_optimization/`；除非另行审核批准，不回写或覆盖本页列出的正式结果。
 - `r=0.655` 是显式启用的低延迟候选档，不替换正式 `r=0.7` 展示口径；启用时必须同时切换到其独立校准阈值。
-- MLP RLWE packing 并行只保留为实验补丁；其性能收益已验证，但完整模型精度稳定性门槛未通过，默认 runtime 不应用。
+- 最初的全量外层 MLP RLWE packing 候选曾因完整模型运行间波动被否决；后续未修改 runtime 复跑证明 CHEETAH 基线本身也存在同类概率截断波动。单/多分组混合调度与公开固定平方常数组合已通过两次干净节点完整门槛，接受为 `r=0.655 + batch16` 的显式吞吐档；默认 runtime 和正式展示仍不自动应用。
 - fxp20 复验没有降低模型精度或改变 MLP 图，但 32 样本 AUC 和通信门槛仍未通过，默认 FM64/fxp16 配置不变。
-- 平方激活 α 权重折叠和公开常数路径均减少了时间与通信，但重复 medical32 的 AUC/准确率门槛未全部通过；两个研究开关默认关闭，不替换正式结果。
+- 早期单独评估平方激活 α 权重折叠和公开常数时，重复 medical32 门槛未全部通过；公开常数后来与混合 RLWE packing 组合完成两次完整验收，但仍保持显式吞吐开关，不替换正式结果。
 - odd-even 精确选择网络虽减少 8.80% 比较器，但 medical4 的耗时和通信均回退；它只保留显式研究入口，默认仍为 `unpadded_selection`。
 - `max_concurrency=8` 虽缩短 medical32 耗时，但通信、阈值准确率和 AUC 未同时过门槛；生产 SPU runtime 配置保持不变。
 - LayerNorm 仿射折叠虽减少 medical4 通信，但端到端时间略有回退；开关默认 `none`，未运行 medical32，也未修改正式结果。
 - 后置归一化、额外调度开关和 SPU 0.9.5 同图 MLP 均未通过前置性能筛选，不进入正式运行时。
+- batch32 的真实 MLP 单位样本热态耗时比 batch16 慢 0.63%，节点内存约占 51 GiB，因此未花费完整 medical32。

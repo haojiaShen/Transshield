@@ -1,0 +1,52 @@
+[2026-08-02 19:13:21,827] [MainProcess] Starting grpc server at 127.0.0.1:45987
+[2026-08-02 19:13:21,909] [MainProcess] Run : builtin_spu_init at node:1
+I0802 19:13:21.912884 30503     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1204] Server[yacl::link::transport::internal::ReceiverServiceImpl] is serving on port=43637.
+W0802 19:13:21.912899 30503     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1210] Builtin services are disabled according to ServerOptions.has_builtin_services
+[2026-08-02 19:13:21.914] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 19:13:21.915] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 19:13:21,916] [MainProcess] spu-runtime (SPU) initialized
+[2026-08-02 19:13:21,962] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 19:13:21,968] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 19:13:22,497] [MainProcess] Run : builtin_spu_init at node:1
+[2026-08-02 19:13:22,497] [MainProcess] spu-runtime (SPU) already exist, reuse it
+[2026-08-02 19:13:22,756] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 19:13:22,758] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 19:13:22,759] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 19:13:22,766] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 19:13:22,767] [MainProcess] Run : <lambda> at node:1
+[2026-08-02 19:13:22,870] [MainProcess] Run : make_shares at node:1
+[2026-08-02 19:13:22.881] [info] [thread_pool.cc:30] Create a fixed thread pool with size 15
+[2026-08-02 19:13:22,903] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 19:13:22,905] [MainProcess] Run : make_shares at node:1
+[2026-08-02 19:13:22,906] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 19:13:22,908] [MainProcess] Run : make_shares at node:1
+[2026-08-02 19:13:22,909] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 19:13:22,910] [MainProcess] Run : make_shares at node:1
+[2026-08-02 19:13:22,926] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 19:13:22,928] [MainProcess] Run : make_shares at node:1
+[2026-08-02 19:13:22,929] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 19:13:22,965] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 19:13:22,966] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 19:13:23,018] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 19:13:23,019] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 19:13:23,036] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 19:13:23,069] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 19:14:12.027] [info] [cheetah_mul.cc:335] CheetahMul uses 4 modulus for 64 bit input over 64 bit ring
+[2026-08-02 19:15:05,800] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 19:15:06,037] [MainProcess] Run : make_shares at node:1
+[2026-08-02 19:15:06,046] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 19:15:06,048] [MainProcess] Run : make_shares at node:1
+[2026-08-02 19:15:06,049] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 19:15:06,051] [MainProcess] Run : make_shares at node:1
+[2026-08-02 19:15:06,052] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 19:15:06,053] [MainProcess] Run : make_shares at node:1
+[2026-08-02 19:15:06,061] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 19:15:06,062] [MainProcess] Run : make_shares at node:1
+[2026-08-02 19:15:06,064] [MainProcess] RunR: builtin_fetch_meta at node:1
+[2026-08-02 19:15:06,070] [MainProcess] Run : builtin_spu_run at node:1
+[2026-08-02 19:15:06,071] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 19:15:06,102] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 19:15:06,105] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 19:15:06,106] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 19:15:06,126] [MainProcess] RunR: builtin_fetch_object at node:1
+[2026-08-02 19:16:41,757] [MainProcess] RunR: builtin_fetch_object at node:1

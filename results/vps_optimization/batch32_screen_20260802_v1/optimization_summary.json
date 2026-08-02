@@ -1,0 +1,50 @@
+{
+  "manifest_type": "transshield_spu_batch32_screen_summary_v1",
+  "captured_at_utc": "2026-08-02T12:32:52Z",
+  "status": "rejected_time_and_memory_gate",
+  "formal_results_changed": false,
+  "vps_only_model_testing": true,
+  "profile": {
+    "protocol": "CHEETAH",
+    "field": "FM64",
+    "fxp_fraction_bits": 16,
+    "shape": {
+      "batch_size": 32,
+      "token_count": 197,
+      "embed_dim": 384,
+      "mlp_dim": 1536,
+      "flattened_tokens": 6304
+    }
+  },
+  "baseline_batch16_hot": {
+    "elapsed_sec": 47.65299648099972,
+    "sec_per_sample": 2.9783122800624824,
+    "loopback_tx_bytes": 2028172838,
+    "loopback_tx_bytes_per_sample": 126760802.375
+  },
+  "batch32": {
+    "cold_sec": 103.15571314399995,
+    "hot_sec": 95.90457038299974,
+    "hot_sec_per_sample": 2.997017824468742,
+    "hot_time_per_sample_delta_percent": 0.6273883724780349,
+    "hot_loopback_tx_bytes": 4016432237,
+    "hot_loopback_tx_bytes_per_sample": 125513507.40625,
+    "hot_communication_per_sample_delta_percent": -0.9839756668537585,
+    "maximum_reference_abs_error": 0.00016385316848754883,
+    "observed_node_memory_used_gib_approx": 51.0,
+    "host_memory_gib_approx": 61.4
+  },
+  "decision": {
+    "medical32_run_started": false,
+    "reason": "batch32 made the real MLP hot time per sample 0.63% slower than batch16 and left too little memory headroom for a safe full-model run",
+    "accepted_batch_size": 16
+  },
+  "evidence": {
+    "benchmark": "mlp_batch32.json",
+    "time_log": "logs/mlp_batch32.time.log",
+    "node_logs": [
+      "node_logs/node_0.log",
+      "node_logs/node_1.log"
+    ]
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "manifest_type": "transshield_spu_exact_mlp_benchmark_v4",
+  "captured_at_utc": "2026-08-02T11:16:41.900587+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.39",
+  "spu_version": "0.9.3b0",
+  "config": "/opt/transshield-project/results/vps_optimization/batch_scaling_20260802_v1/2pc.runtime.json",
+  "runtime_config": {
+    "cheetah_2pc_config": {
+      "enable_mul_lsb_error": false,
+      "ot_kind": "YACL_Ferret"
+    },
+    "enable_hal_profile": false,
+    "enable_pphlo_profile": false,
+    "experimental_enable_colocated_optimization": true,
+    "field": "FM64",
+    "fxp_exp_iters": 4,
+    "fxp_exp_mode": 0,
+    "fxp_fraction_bits": 16,
+    "protocol": "CHEETAH"
+  },
+  "ownership": {
+    "input": "P1",
+    "model_parameters": "P2",
+    "reveal": "full synthetic final MLP output only"
+  },
+  "graph": "x + (alpha * square(x @ W1.T + b1)) @ W2.T + b2",
+  "executed_graph": "x + (alpha * square(x @ W1.T + b1)) @ W2.T + b2",
+  "alpha": 1.0,
+  "square_alpha_folded_into_fc2": false,
+  "square_alpha_public_constant": false,
+  "shape": {
+    "input": [
+      32,
+      197,
+      384
+    ],
+    "flattened_tokens": 6304,
+    "fc1": [
+      6304,
+      384,
+      1536
+    ],
+    "fc2": [
+      6304,
+      1536,
+      384
+    ]
+  },
+  "seed": 20260802,
+  "interface": "lo",
+  "expected_runtime_config": {
+    "field": "FM64",
+    "fxp_fraction_bits": 16
+  },
+  "reference_output_sha256": "c2f15e1f3c030f8fc0bb9cde043fbb45cdc8ffdbf27864a6d6412e9ca8751c27",
+  "repetitions": [
+    {
+      "repeat_index": 0,
+      "elapsed_sec": 103.15571314399995,
+      "loopback_tx_bytes": 4077545836,
+      "loopback_rx_bytes": 4077545836,
+      "output_sha256": "fa28924e93420606f8065078329959eb3d921089d08021a84f7f978af83ddbcd",
+      "output_min": -1.3675994873046875,
+      "output_max": 1.2326507568359375,
+      "output_mean": 0.00046430781367234886,
+      "finite": true,
+      "reference_max_abs_error": 0.00016385316848754883,
+      "reference_mean_abs_error": 2.4367685909965076e-05
+    },
+    {
+      "repeat_index": 1,
+      "elapsed_sec": 95.90457038299974,
+      "loopback_tx_bytes": 4016432237,
+      "loopback_rx_bytes": 4016432237,
+      "output_sha256": "70ce990191f7c0895f68e910f4575980010f6d337bc265edf71d0d734e7dad94",
+      "output_min": -1.3675994873046875,
+      "output_max": 1.2326507568359375,
+      "output_mean": 0.00046429113717749715,
+      "finite": true,
+      "reference_max_abs_error": 0.00016048550605773926,
+      "reference_mean_abs_error": 2.436909926473163e-05
+    }
+  ],
+  "acceptance": {
+    "unchanged_math_graph": true,
+    "runtime_config_matches_expectation": true,
+    "all_finite": true
+  }
+}

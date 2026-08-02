@@ -36,3 +36,10 @@ project-scoped runtime optimizations from:
 
 Both optimizations are selectable at the runner layer, so the historical mask
 graph remains available for A/B comparison and rollback.
+
+An additional opt-in SPU 0.9.3b0 source patch is preserved at
+`spu_vendored/patches/cheetah_parallel_rlwe_packing.patch`. It retains the
+upstream internally parallel path for a single response group and parallelizes
+only multiple independent RLWE packing groups with non-overlapping output
+storage. The patch is validated in an isolated runtime and is not applied by
+the repository's default build.

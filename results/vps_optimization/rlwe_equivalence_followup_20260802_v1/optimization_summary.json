@@ -1,0 +1,187 @@
+{
+  "manifest_type": "transshield_spu_hybrid_rlwe_public_alpha_optimization_v1",
+  "captured_at_utc": "2026-08-02T12:32:52Z",
+  "status": "accepted_opt_in_bulk_throughput_profile",
+  "formal_results_changed": false,
+  "showcase_single_request_default_changed": false,
+  "vendored_default_build_changed": false,
+  "vps_only_model_testing": true,
+  "objective": "Reduce CHEETAH matrix packing time and fixed-square communication without changing model width, depth, weights, pruning counts, fixed-point precision, or reveal policy.",
+  "candidate": {
+    "runtime_patch": "../../../spu_vendored/patches/cheetah_parallel_rlwe_packing.patch",
+    "runtime_strategy": "use the original internally parallel packing path for one response group and outer-group parallel packing with non-overlapping output storage for multiple groups",
+    "activation_strategy": "pass the verified fixed architecture constant alpha=0.25 as public with --spu-public-fixed-square-scale",
+    "unchanged_model_weights": true,
+    "unchanged_model_dimensions": true,
+    "unchanged_pruning_schedule": true,
+    "unchanged_protocol": true,
+    "unchanged_field": true,
+    "unchanged_fxp_fraction_bits": true,
+    "unchanged_reveal_policy": true,
+    "runtime_opt_in_required": true
+  },
+  "profile": {
+    "bundle": "artifacts/frozen_bundle_medical_dynamic_mainline",
+    "sample_count": 32,
+    "spu_batch_size": 16,
+    "token_ratio_base_override": 0.655,
+    "token_keep_counts": [128, 84, 55],
+    "static_depth": 10,
+    "params_mode": "secret",
+    "layer_norm_policy": "exact",
+    "attention_policy": "uniform",
+    "activation": "fixed_square",
+    "public_fixed_square_scale": 0.25,
+    "secure_pruning_mode": "compact",
+    "secure_pruning_network": "unpadded_selection",
+    "final_block_cls_only": true,
+    "uniform_attention_value_fusion": true,
+    "input_mode": "party_local_debug_share_load",
+    "reveal_policy": "final_logits_only",
+    "protocol": "CHEETAH",
+    "ot_kind": "YACL_Ferret",
+    "field": "FM64",
+    "fxp_fraction_bits": 16
+  },
+  "accepted_baseline": {
+    "source": "../batch_scaling_20260802_v1/optimization_summary.json",
+    "spu_forward_wall_sec": 1060.9676724210003,
+    "loopback_gib": 49.504402126185596,
+    "threshold_accuracy": 0.9375,
+    "auc": 0.98046875
+  },
+  "unchanged_runtime_repeat": {
+    "spu_forward_wall_sec": 1081.0171025239997,
+    "loopback_gib": 49.552544720470905,
+    "threshold_accuracy": 0.96875,
+    "auc": 0.96484375,
+    "interpretation": "the unmodified CHEETAH runtime itself moved below the historical one-run AUC, confirming that randomized truncation variability cannot be attributed to the packing patch alone",
+    "evidence": "baseline_repeat_summary.json"
+  },
+  "hybrid_kernel_validation": {
+    "single_group_pack_ms": {
+      "old_parallel_observed_range": [727.049, 732.5],
+      "hybrid_observed_range": [115.437, 120.978],
+      "shape": [16, 384, 384],
+      "reason": "single-group calls retain PackingHelper's internal parallelism instead of nesting it inside an outer parallel_for"
+    },
+    "small_matmul_hot_sec": [0.18490986699998757, 0.1869869270003619],
+    "mlp": {
+      "shape": {
+        "fc1": [3152, 384, 1536],
+        "fc2": [3152, 1536, 384]
+      },
+      "baseline_hot_sec": 47.65299648099972,
+      "hybrid_hot_sec": 40.08890078500008,
+      "time_delta_percent": -15.873284482782967,
+      "baseline_hot_tx_bytes": 2028172838,
+      "hybrid_hot_tx_bytes": 2028265473,
+      "maximum_reference_abs_error": 0.00014838576316833496
+    },
+    "evidence": [
+      "hybrid_small_matmul.json",
+      "hybrid_mlp.json",
+      "node_logs_hybrid_micro/node_0.log"
+    ]
+  },
+  "medical4_gate": {
+    "baseline_spu_forward_wall_sec": 195.03517579300023,
+    "hybrid_spu_forward_wall_sec": 178.05068246599967,
+    "time_delta_percent": -8.708425676518472,
+    "baseline_loopback_gib": 6.591340051963925,
+    "hybrid_loopback_gib": 5.510505201295018,
+    "communication_delta_percent": -16.39780139012653,
+    "threshold_accuracy": 1.0,
+    "threshold_match_ratio": 1.0,
+    "probabilities_max_abs_error": 0.018187254667282104,
+    "evidence": "hybrid4_summary.json"
+  },
+  "medical32_validation": {
+    "first_full_candidate_old_parallel": {
+      "spu_forward_wall_sec": 940.6659872639993,
+      "time_delta_percent": -11.338864348476053,
+      "loopback_gib": 40.48546816036105,
+      "communication_delta_percent": -18.21844841764877,
+      "threshold_accuracy": 0.96875,
+      "auc": 0.98828125,
+      "all_original_strict_gates_passed": true,
+      "evidence": "combined32_summary.json"
+    },
+    "final_hybrid": {
+      "spu_forward_wall_sec": 913.3160129280004,
+      "sec_per_sample": 28.541125404000013,
+      "chunks_sec": [463.17544211900076, 449.52404374900016],
+      "time_delta_percent": -13.91669730672157,
+      "time_delta_vs_old_parallel_percent": -2.907511774242888,
+      "loopback_gib": 40.48529539909214,
+      "loopback_gib_per_sample": 1.2651654812216294,
+      "communication_delta_percent": -18.218797399277666,
+      "threshold_accuracy": 0.9375,
+      "auc": 0.984375,
+      "argmax_accuracy": 0.5,
+      "finite_logits": true,
+      "finite_probabilities": true,
+      "all_original_strict_gates_passed": true,
+      "evidence": "hybrid32_summary.json"
+    },
+    "repeat_rule": "two fresh-node complete candidate-family runs passed time, communication, threshold-accuracy, and historical AUC gates; the final hybrid only changes exact packing scheduling relative to the first candidate"
+  },
+  "comparison_to_report": {
+    "report_spu_elapsed_sec": 2849.9446952342987,
+    "final_hybrid_time_delta_percent": -67.95320223388002,
+    "report_dual_total_gib": 84.46598263271153,
+    "final_hybrid_communication_delta_percent": -52.06911215946334,
+    "report_threshold_accuracy": 0.9375,
+    "final_hybrid_threshold_accuracy_delta_points": 0.0
+  },
+  "batch32_screen": {
+    "status": "rejected",
+    "reason": "hot MLP time per sample was 0.63% slower than batch16 and node memory use reached about 51 GiB",
+    "evidence": "../batch32_screen_20260802_v1/optimization_summary.json"
+  },
+  "runtime_isolation": {
+    "baseline_runtime": "/opt/transshield-spu",
+    "old_parallel_runtime": "/opt/transshield-spu-mlp-pack",
+    "hybrid_runtime": "/opt/transshield-spu-mlp-pack-hybrid",
+    "baseline_libspu_sha256": "9adbea0ec7b932d547d8695c89afc1ca7e9f349307585c69caa2f7cb2cdfce44",
+    "old_parallel_libspu_sha256": "67037d89d6a5afdb1fd03d12ee4106671ab4dc503f897a7a3ead4779e4c8ddc8",
+    "hybrid_libspu_sha256": "d8a921562a11cdc45a25f1df830c43d0e069ebab7ca0332f217a06b58a768962",
+    "baseline_runtime_overwritten": false
+  },
+  "verification": {
+    "hybrid_build": "PASS",
+    "hybrid_build_elapsed_sec": 36.037,
+    "native_tests": {
+      "//libspu/mpc/cheetah/arith:cheetah_dot_test": "PASS",
+      "//libspu/mpc/cheetah/rlwe:packlwes_test": "PASS"
+    },
+    "python_tests": "31/31 PASS",
+    "python_tests_elapsed_sec": 31.588,
+    "python_tool_py_compile": "PASS",
+    "logs": [
+      "logs/hybrid_build.stderr.log",
+      "logs/hybrid_native_tests.stdout.log",
+      "test_logs/python_tests.stderr.log",
+      "test_logs/tested_source.sha256"
+    ]
+  },
+  "tested_artifact_sha256": {
+    "cheetah_parallel_rlwe_packing.patch": "b150b3d86e0fe94eca0214302ede2fddbf744ffd0cad949e0235cfaa9cb9ba29",
+    "benchmark_spu_matmul.py": "ebb71db57fa20c41b01b56c4f35ae631460d911cd2b13b86de368a023f13163b",
+    "hybrid32.json": "e7267652a097271fc595006c991ad9a2e4200cf74733d40bfb576520da3f1620",
+    "hybrid32_summary.json": "a55a070e70cdf9786239550376098e9697ab0a23f9698da4457be88c0c7d9cb5"
+  },
+  "decision": {
+    "candidate_accepted": true,
+    "scope": "opt-in batch16 r=0.655 throughput profile",
+    "default_spu_runtime_replaced": false,
+    "formal_showcase_changed": false,
+    "rollback": "omit --spu-public-fixed-square-scale and continue using /opt/transshield-spu; the patch is not applied automatically by the repository",
+    "guardrails": [
+      "Use batch16 only for queued bulk workloads with at least 16 real samples.",
+      "Keep token_ratio_base_override=0.655 paired with threshold 0.688152923150007.",
+      "Build the hybrid patch in an isolated SPU 0.9.3b0 runtime; do not overwrite the baseline runtime.",
+      "Do not replace results/final, results/communication, results/fuzzing, or results/guard_stress with this candidate without a separate formal-report approval."
+    ]
+  }
+}

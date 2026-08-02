@@ -71,6 +71,35 @@ def _abstract_tree(value):
     return {"tree": str(tree), "leaves": abstract_leaves}
 
 
+def _compiler_options_digest(copts) -> str:
+    """Hash compiler options across protobuf (0.9.3) and pybind (0.9.5+) APIs."""
+    serialize = getattr(copts, "SerializeToString", None)
+    if callable(serialize):
+        encoded = serialize()
+    else:
+        public_options = {}
+        for name in dir(copts):
+            if name.startswith("_"):
+                continue
+            value = getattr(copts, name)
+            if callable(value):
+                continue
+            if isinstance(value, (str, int, float, bool)) or value is None:
+                public_options[name] = value
+                continue
+            try:
+                public_options[name] = int(value)
+            except (TypeError, ValueError):
+                public_options[name] = repr(value)
+        encoded = json.dumps(
+            public_options,
+            ensure_ascii=True,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
 def _cache_key(
     kind,
     fn,
@@ -111,7 +140,7 @@ def _cache_key(
         "input_visibility": [int(value) for value in input_vis],
         "static_argnums": list(static_argnums or ()),
         "static_argnames": static_argnames,
-        "compiler_options_sha256": hashlib.sha256(copts.SerializeToString()).hexdigest(),
+        "compiler_options_sha256": _compiler_options_digest(copts),
     }
     encoded = json.dumps(payload, ensure_ascii=True, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()

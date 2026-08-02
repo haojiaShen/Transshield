@@ -1132,6 +1132,7 @@ def run_static_vit_forward_spu(
                     "input_token_count": int(spatial_token_count),
                     "keep_count": keep_count,
                     "threshold_only": bool(threshold_only),
+                    "execution_primitive": "explicit_compare_swap_network",
                     "comparator_count": pruning_network_comparator_count(
                         spatial_token_count,
                         keep_count,
@@ -1590,6 +1591,7 @@ def run_static_vit_forward_spu(
                 "planned_pruning_comparator_count": int(
                     sum(stage["comparator_count"] for stage in planned_pruning_networks)
                 ),
+                "planned_pruning_comparator_count_applicable": True,
                 "total_runtime_sec": float(time.perf_counter() - runtime_started),
             }
         )

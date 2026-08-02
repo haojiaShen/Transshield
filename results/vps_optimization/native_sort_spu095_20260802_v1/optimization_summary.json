@@ -1,0 +1,39 @@
+{
+  "manifest_type": "transshield_vps_spu095_native_sort_rejection_v1",
+  "status": "rejected_performance_regression",
+  "formal_results_changed": false,
+  "environment": {
+    "host": "47.120.31.48",
+    "python": "3.10.20",
+    "spu": "0.9.5",
+    "jax": "0.4.34",
+    "protocol": "CHEETAH",
+    "field": "FM64",
+    "fxp_fraction_bits": 16
+  },
+  "microbenchmark": {
+    "shape": [1, 196, 384],
+    "keep_count": 137,
+    "manual_elapsed_sec": 29.932495643999573,
+    "native_elapsed_sec": 10.476529052000842,
+    "indices_match": true,
+    "tokens_max_abs_error": 0.000015255063772201538
+  },
+  "whole_model_single_warm": {
+    "baseline_spu_forward_wall_sec": 86.64059517500209,
+    "candidate_spu_forward_wall_sec": 89.422324607,
+    "time_delta_percent": 3.210653650727112,
+    "baseline_tx_bytes": 2231101222,
+    "candidate_tx_bytes": 2771442387,
+    "tx_delta_percent": 24.218585856702113,
+    "candidate_compile_cache_hits": 1,
+    "candidate_compile_cache_misses": 0,
+    "finite_logits": true
+  },
+  "decision": "Do not upgrade the formal runtime or run medical32. The isolated pruning microbenchmark gain did not survive the complete graph and communication regressed materially.",
+  "raw_evidence": [
+    "single_native_cold.json",
+    "single_native_cache_seed.json",
+    "single_native_warm.json"
+  ]
+}

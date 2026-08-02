@@ -8,6 +8,7 @@
 - `2pc.template.json`：在线展示模板；默认关闭逐算子 HAL/PPHLO profiling，避免热路径统计与日志开销
 - `2pc_e2e.template.json`：whole-forward E2E 路径使用的模板
 - `2pc_fm32.template.json`：FM32 性能候选模板；与在线 FM64 模板一样默认关闭逐算子 profiling
+- `medical_low_latency_r0655_threshold.json`：低延迟候选档的公开决策阈值；仅与 `token_ratio_base_override=0.655` 配套使用
 
 `tools/start_showcase_spu_demo.py` 不会直接改写上述被仓库跟踪的配置；它会把 `2pc.template.json` 复制到 `logs/showcase_runtime/2pc.runtime.json`，再把自动分配的端口写入这份运行时配置。`logs/` 已被 `.gitignore` 忽略，适合作为本机展示时的临时运行目录。
 
@@ -38,6 +39,19 @@ python tools/start_showcase_spu_demo.py \
 正式 FM64 配置也默认开启 Value 融合；使用
 `--no-uniform-attention-value-fusion` 可关闭。Value 融合改变定点截断顺序，
 切换到其他 field 或 fraction bits 后必须重新检查输出漂移。
+
+需要显式启用已在 VPS 验证的低延迟档时，同时指定 token 保留率和对应阈值：
+
+```bash
+python tools/start_showcase_spu_demo.py \
+  --host 127.0.0.1 --port 7862 --daemon \
+  --token-ratio-base-override 0.655 \
+  --threshold-json configs/transshield_runtime/medical_low_latency_r0655_threshold.json
+```
+
+该档的保留 token 数为 `128/84/55`。不传上述两个参数时仍使用正式
+`r=0.7` 档；低延迟档的性能与精度边界见
+`docs/evidence/spu_low_latency_r0655.md`。不要把 `r=0.655` 与正式档阈值混用。
 
 将 `compact` 换成 `mask` 可复测旧形状图；将模板换成
 `2pc_fm32.template.json` 可做 FM32 候选测试。FM32 会改变定点精度，必须

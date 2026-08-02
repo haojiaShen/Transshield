@@ -1,0 +1,18 @@
+{
+  "manifest_type": "transshield_medical_low_latency_threshold_profile_v1",
+  "status": "validated_opt_in_not_formal_default",
+  "sample_count": 524,
+  "token_ratio_base_override": 0.655,
+  "token_keep_counts": [128, 84, 55],
+  "best_threshold": 0.688152923150007,
+  "best_threshold_accuracy": 0.9198473282442748,
+  "stratified_cross_validation_mean_accuracy": 0.9160805860805862,
+  "calibration_source": "results/vps_optimization/pruning_boundary_20260801_v1/calibration_cross_validation.json",
+  "medical32_vps_validation": {
+    "threshold_accuracy": 0.9375,
+    "auc": 0.9765625,
+    "sec_per_sample": 35.995711758732796,
+    "loopback_gib_per_sample": 1.575216262950562,
+    "evidence": "results/vps_optimization/unpadded_r0655_20260802_v1/medical32_unpadded_r0655_summary.json"
+  }
+}

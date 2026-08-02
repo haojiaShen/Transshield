@@ -216,6 +216,21 @@ def build_parser():
         help="Override the content-addressed SPU compile-cache directory for this launch.",
     )
     parser.add_argument(
+        "--token-ratio-base-override",
+        type=float,
+        default=None,
+        help=(
+            "Override the cumulative pruning base rate for this launch. "
+            "0 preserves the bundle schedule; 0.655 selects the validated opt-in low-latency profile."
+        ),
+    )
+    parser.add_argument(
+        "--threshold-json",
+        type=Path,
+        default=None,
+        help="Override the public post-reveal decision-threshold JSON for this launch.",
+    )
+    parser.add_argument(
         "--final-block-cls-only",
         action=argparse.BooleanOptionalAction,
         default=None,
@@ -252,6 +267,14 @@ def main():
     if args.spu_compile_cache_dir is not None:
         os.environ["TRANSSHIELD_SHOWCASE_SPU_COMPILE_CACHE_DIR"] = str(
             args.spu_compile_cache_dir.expanduser().resolve()
+        )
+    if args.token_ratio_base_override is not None:
+        os.environ["TRANSSHIELD_SHOWCASE_SPU_TOKEN_RATIO_BASE_OVERRIDE"] = str(
+            args.token_ratio_base_override
+        )
+    if args.threshold_json is not None:
+        os.environ["TRANSSHIELD_SHOWCASE_THRESHOLD_JSON"] = str(
+            args.threshold_json.expanduser().resolve()
         )
     if args.final_block_cls_only is not None:
         os.environ["TRANSSHIELD_SHOWCASE_SPU_FINAL_BLOCK_CLS_ONLY"] = (

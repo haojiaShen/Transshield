@@ -9,7 +9,6 @@ from types import SimpleNamespace
 from typing import Optional
 
 import torch
-from PIL import Image
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -211,6 +210,8 @@ def load_frozen_bundle(bundle_dir: Path, device="cpu"):
 
 
 def preprocess_image(image_path, transform, device="cpu"):
+    from PIL import Image
+
     image_path = Path(image_path).expanduser().resolve()
     image = Image.open(image_path).convert("RGB")
     tensor = transform(image).unsqueeze(0).to(device)

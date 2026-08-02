@@ -9,6 +9,45 @@ FULL_SPU_AVAILABLE = (
 )
 
 
+class CompilerOptionsDigestTests(unittest.TestCase):
+    def test_protobuf_and_pybind_style_options_are_deterministic(self):
+        from integrations.transshield_runtime.e2e_secure_vit.spu_compile_cache import (
+            _compiler_options_digest,
+        )
+
+        class ProtobufOptions:
+            def __init__(self, payload):
+                self.payload = payload
+
+            def SerializeToString(self):
+                return self.payload
+
+        class PybindOptions:
+            def __init__(self, enable_pretty_print, xla_pp_kind):
+                self.enable_pretty_print = enable_pretty_print
+                self.xla_pp_kind = xla_pp_kind
+
+            def helper(self):
+                return "ignored"
+
+        self.assertEqual(
+            _compiler_options_digest(ProtobufOptions(b"same")),
+            _compiler_options_digest(ProtobufOptions(b"same")),
+        )
+        self.assertNotEqual(
+            _compiler_options_digest(ProtobufOptions(b"same")),
+            _compiler_options_digest(ProtobufOptions(b"different")),
+        )
+        self.assertEqual(
+            _compiler_options_digest(PybindOptions(True, 2)),
+            _compiler_options_digest(PybindOptions(True, 2)),
+        )
+        self.assertNotEqual(
+            _compiler_options_digest(PybindOptions(True, 2)),
+            _compiler_options_digest(PybindOptions(False, 2)),
+        )
+
+
 @unittest.skipUnless(FULL_SPU_AVAILABLE, "full JAX/SPU runtime is intentionally absent from lightweight CI")
 class SpuCompileCacheTests(unittest.TestCase):
     def test_second_identical_compile_uses_persistent_entry(self):

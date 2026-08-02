@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import sys
 from dataclasses import dataclass
@@ -65,6 +66,7 @@ class RunnerProfile:
     spu_activation_clip_value: float
     spu_secure_pruning_mode: str
     spu_secure_pruning_network: str
+    spu_token_ratio_base_override: float
     spu_final_block_cls_only: bool
     spu_uniform_attention_value_fusion: bool
     spu_compile_cache_dir: Path
@@ -165,8 +167,33 @@ def load_showcase_config() -> ShowcaseConfig:
         os.environ.get("TRANSSHIELD_SHOWCASE_SPU_ATTENTION_POLICY", "uniform").strip()
         or "uniform"
     )
+    spu_token_ratio_base_override = getenv_float(
+        "TRANSSHIELD_SHOWCASE_SPU_TOKEN_RATIO_BASE_OVERRIDE",
+        0.0,
+    )
+    if not 0.0 <= spu_token_ratio_base_override <= 1.0:
+        spu_token_ratio_base_override = 0.0
 
     threshold_payload = load_json(threshold_source_json)
+    threshold_profile_ratio = float(
+        threshold_payload.get("token_ratio_base_override", 0.0)
+    )
+    if not 0.0 <= threshold_profile_ratio <= 1.0:
+        raise ValueError(
+            f"invalid token_ratio_base_override in threshold profile: {threshold_source_json}"
+        )
+    if not math.isclose(
+        spu_token_ratio_base_override,
+        threshold_profile_ratio,
+        rel_tol=0.0,
+        abs_tol=1e-12,
+    ):
+        raise ValueError(
+            "SPU token-ratio override and threshold profile must match: "
+            f"override={spu_token_ratio_base_override}, "
+            f"threshold_profile={threshold_profile_ratio}, "
+            f"source={threshold_source_json}"
+        )
     communication_payload = load_json(communication_json)
 
     return ShowcaseConfig(
@@ -235,6 +262,7 @@ def load_showcase_config() -> ShowcaseConfig:
                 "unpadded_selection",
             ).strip()
             or "unpadded_selection",
+            spu_token_ratio_base_override=spu_token_ratio_base_override,
             spu_final_block_cls_only=getenv_bool(
                 "TRANSSHIELD_SHOWCASE_SPU_FINAL_BLOCK_CLS_ONLY",
                 spu_attention_policy == "uniform",

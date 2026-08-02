@@ -1,0 +1,198 @@
+{
+  "manifest_type": "transshield_vps_unpadded_r0655_summary_v1",
+  "captured_at_utc": "2026-08-02T01:40:53.353326+00:00",
+  "status": "accepted_opt_in_low_latency_profile",
+  "formal_results_changed": false,
+  "showcase_default_changed": false,
+  "vps_only_model_testing": true,
+  "profile": {
+    "token_ratio_base_override": 0.655,
+    "token_keep_counts": [128, 84, 55],
+    "secure_pruning_network": "unpadded_selection",
+    "decision_threshold": 0.688152923150007,
+    "decision_threshold_source": "524-sample plaintext calibration recorded before this medical32 run",
+    "rollback": {
+      "token_ratio_base_override": 0.0,
+      "token_keep_counts": [137, 96, 67]
+    }
+  },
+  "graph": {
+    "public_topology": true,
+    "data_dependent_control_flow": false,
+    "approximate_topk": false,
+    "mainline_comparator_count": 5551,
+    "candidate_comparator_count": 5287,
+    "comparator_delta_percent": -4.75589983786615,
+    "mainline_physical_block_token_positions": 1393,
+    "candidate_physical_block_token_positions": 1318,
+    "stages": [
+      {
+        "block_index": 3,
+        "input_token_count": 196,
+        "keep_count": 128,
+        "threshold_only": false,
+        "comparator_count": 2842
+      },
+      {
+        "block_index": 6,
+        "input_token_count": 128,
+        "keep_count": 84,
+        "threshold_only": false,
+        "comparator_count": 1696
+      },
+      {
+        "block_index": 9,
+        "input_token_count": 84,
+        "keep_count": 55,
+        "threshold_only": true,
+        "comparator_count": 749
+      }
+    ]
+  },
+  "validation": {
+    "unit_tests": {
+      "status": "23/23 PASS on VPS",
+      "wall_sec": 16.435,
+      "suites": [
+        "tests.test_secure_pruning_ops",
+        "tests.test_spu_compile_cache"
+      ]
+    },
+    "post_wiring_validation": {
+      "status": "32/32 PASS on VPS",
+      "wall_sec": 18.10,
+      "suites": [
+        "tests.test_secure_pruning_ops",
+        "tests.test_spu_compile_cache",
+        "tests.test_showcase_runner_profile"
+      ],
+      "showcase_profile_smoke": {
+        "opt_in_ratio": 0.655,
+        "opt_in_threshold": 0.688152923150007,
+        "default_ratio": 0.0,
+        "default_threshold": 0.6619606018066406,
+        "status": "PASS"
+      },
+      "logs": [
+        "test_logs/post_wiring_unittest.stderr.log",
+        "test_logs/post_wiring_unittest.time.log",
+        "test_logs/showcase_profile_smoke.log"
+      ]
+    },
+    "single_warm": {
+      "baseline_json": "../selection_network_20260801_v1/single_unpadded_warm.json",
+      "candidate_json": "single_unpadded_r0655_warm.json",
+      "baseline_spu_forward_wall_sec": 86.64059517500209,
+      "candidate_spu_forward_wall_sec": 73.60406126300006,
+      "time_delta_percent": -15.04668093019216,
+      "baseline_tx_bytes": 2231101222,
+      "candidate_tx_bytes": 2086513208,
+      "tx_delta_percent": -6.480567200370616,
+      "compile_cache_hits": 1,
+      "compile_cache_misses": 0,
+      "finite_logits": true
+    },
+    "medical32_batch8": {
+      "dataset_key": "medical_secure_deployment_batch",
+      "sample_count": 32,
+      "class_counts": {"0": 16, "1": 16},
+      "bundle": "artifacts/frozen_bundle_medical_dynamic_mainline",
+      "static_depth": 10,
+      "params_mode": "secret",
+      "input_mode": "party_local_debug_share_load",
+      "reveal_policy": "final_logits_only",
+      "protocol": "CHEETAH",
+      "ot_kind": "YACL_Ferret",
+      "field": "FM64",
+      "fxp_fraction_bits": 16,
+      "candidate_json": "medical32_unpadded_r0655.json",
+      "candidate_summary_json": "medical32_unpadded_r0655_summary.json",
+      "candidate_pt_sha256": "5020a52f44969577d2505ad7902c473a6dcdf2d1d7f0d8766b651c63a1edeaba",
+      "finite_logits": true,
+      "candidate_spu_forward_wall_sec": 1151.815082211,
+      "candidate_sec_per_sample": 35.99422131909375,
+      "candidate_end_to_end_elapsed_sec": 1151.8627762794495,
+      "candidate_end_to_end_sec_per_sample": 35.995711758732796,
+      "candidate_tx_bytes": 54124018668,
+      "candidate_loopback_tx_gib": 50.40692041441798,
+      "candidate_loopback_tx_gib_per_sample": 1.575216262950562,
+      "candidate_threshold": 0.688152923150007,
+      "candidate_threshold_accuracy": 0.9375,
+      "candidate_auc": 0.9765625,
+      "candidate_argmax_accuracy": 0.5,
+      "compile_cache_hits": 3,
+      "compile_cache_misses": 1,
+      "compile_sec": 3.3683048750000353
+    },
+    "against_current_unpadded_r070": {
+      "baseline_spu_forward_wall_sec": 1463.213834743001,
+      "time_delta_percent": -21.281834899182396,
+      "baseline_tx_bytes": 56947138987,
+      "tx_delta_percent": -4.957440126438076,
+      "baseline_threshold": 0.6619606018066406,
+      "baseline_threshold_accuracy": 0.96875,
+      "threshold_accuracy_delta_points": -3.125,
+      "baseline_auc": 0.984375,
+      "auc_delta": -0.0078125
+    },
+    "against_report_expected": {
+      "report_spu_elapsed_sec": 2849.9446952342987,
+      "time_delta_percent": -59.58465144474295,
+      "report_dual_total_bytes": 90694658258,
+      "communication_delta_percent": -40.32281535916607,
+      "report_threshold_accuracy": 0.9375,
+      "threshold_accuracy_delta_points": 0.0
+    },
+    "calibration_524": {
+      "source": "../pruning_boundary_20260801_v1/calibration_cross_validation.json",
+      "mainline_best_threshold_accuracy": 0.9274809160305344,
+      "candidate_best_threshold_accuracy": 0.9198473282442748,
+      "accuracy_delta_points": -0.7633587786259596,
+      "candidate_five_fold_mean_accuracy": 0.9160805860805862
+    }
+  },
+  "environment": {
+    "host": "47.120.31.48",
+    "architecture": "x86_64",
+    "cpu": "Intel Xeon Platinum",
+    "vcpu": 16,
+    "memory_gib_approx": 61.4,
+    "python": "3.9.25",
+    "spu": "0.9.3b0",
+    "jax": "0.4.30",
+    "jaxlib": "0.4.30",
+    "numpy": "1.26.4",
+    "torch": "1.13.1+cpu",
+    "colocated_optimization": true
+  },
+  "tested_source_sha256": {
+    "secure_pruning_ops.py": "df93b6b1a8508f44e93dd3300f910b2b2ba2b70f440dbfa3c3dfaf01a1ee8830",
+    "spu_static_vit.py": "67b364f051a3bb1ea488f24bce37f1eb42d66947aac903c3e6c08217146d9af7",
+    "spu_compile_cache.py": "67365a5fa5eb1ec5fee4efc384f8c8c54737265fb037f9eafc61cec978f55fe9",
+    "transshield_e2e_secure_vit.py": "7390d583c8d933455237127a060437aba0aba98e0db1f68e0ab77877bf481831",
+    "transshield_stage2_bundle.py": "288d2772cd3f0417df59825d556b97b25ad421d3050ec8129e02736aa7d3e123"
+  },
+  "tested_showcase_wiring_sha256": {
+    "showcase_api/config.py": "17c3fac674bff8039957cdf8dccf488cfc36b4657bae5e8b527b44f8b1f6b928",
+    "showcase_api/runtime.py": "7d0663adafc82feb00515a8a03836596e2351ee47f9f5337f994a4b939be3fd5",
+    "tools/start_showcase_spu_demo.py": "9c94696b8028ef19840712b4077751c6eeac3b7086561f6912ac9cbe3d9caed9",
+    "configs/transshield_runtime/medical_low_latency_r0655_threshold.json": "a8d177c75daebb7cfc0f15fd941b7a0c1e1226294c67e17121143d80ad82e6e6"
+  },
+  "rejected_experiments": [
+    {
+      "name": "spu_0.9.5_native_secret_sort",
+      "reason": "single-sample warm latency and communication both regressed",
+      "evidence": "../native_sort_spu095_20260802_v1/optimization_summary.json"
+    },
+    {
+      "name": "single_mux_plus_complement",
+      "reason": "196x384 pruning microbenchmark improved only 1.97%, too small for an expensive whole-model run"
+    }
+  ],
+  "guardrails": [
+    "This is an opt-in low-latency profile; the formal showcase default remains base_rate=0.7 and threshold=0.6619606018066406.",
+    "Do not rewrite results/final, results/communication, results/fuzzing, or results/guard_stress from this optimization evidence.",
+    "Use threshold 0.688152923150007 with base_rate=0.655; do not mix the low-latency graph with the formal r=0.7 threshold.",
+    "Keep token_ratio_base_override=0 as the one-flag rollback to the formal mainline schedule."
+  ]
+}

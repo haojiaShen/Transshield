@@ -25,6 +25,9 @@
 | 2026-08-01 VPS candidate 总证据 | `results/vps_report_tests/report_regression_20260801_v1/report_regression_aggregate.json` | 524/32/8、同机 A/B、13+4、隐私事实、代码测试与逐门槛判定 |
 | SPU 任意长度选择网络说明 | `docs/evidence/spu_unpadded_selection_network.md` | 精确 Top-K 网络构造、比较器预算、回退路径与 VPS 验证 |
 | SPU 选择网络结构化结果 | `results/vps_optimization/selection_network_20260801_v1/optimization_summary.json` | 单样本、batch=4、medical32 的耗时、通信、精度和环境证据 |
+| SPU 低延迟 r=0.655 档说明 | `docs/evidence/spu_low_latency_r0655.md` | 可选 token 保留率、配套阈值、性能收益、精度代价与回退方式 |
+| SPU 低延迟档结构化结果 | `results/vps_optimization/unpadded_r0655_20260802_v1/optimization_summary.json` | medical32 耗时、通信、精度、源码哈希及 524 样本校准证据 |
+| SPU 0.9.5 原生排序否决证据 | `results/vps_optimization/native_sort_spu095_20260802_v1/optimization_summary.json` | 局部微基准收益与整图性能/通信回退的对照 |
 
 ## 说明
 
@@ -34,3 +37,4 @@
 - 当前新增的 `showcase/` 与 `showcase_api/` 是对既有控制面证据的**可运行重建**，不是新增第二套正式结果口径。
 - `tools/showcase_protocol_fuzz.py` 与 `tools/showcase_guard_stress.py` 面向新展示站接口做运行时验收；正式报告中的最终鲁棒性数字仍以 `results/fuzzing/` 与 `results/guard_stress/` 为准。
 - 后续测试只在 VPS 执行，并将 candidate 结果写入 `results/vps_report_tests/`；除非另行审核批准，不回写或覆盖本页列出的正式结果。
+- `r=0.655` 是显式启用的低延迟候选档，不替换正式 `r=0.7` 展示口径；启用时必须同时切换到其独立校准阈值。

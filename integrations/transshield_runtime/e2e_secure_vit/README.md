@@ -239,6 +239,7 @@ The runner keeps two compatible secure-pruning graph modes:
 - `--spu-secure-pruning-mode mask` keeps the historical 196-spatial-token mask graph for rollback and A/B checks.
 - `--spu-secure-pruning-mode compact` uses a fixed bitonic schedule to move token payloads with their secret scores and then runs later blocks at 137/96/67 spatial tokens. Uniform-attention blocks account for the omitted logical zero-token contribution before averaging.
 - `--spu-secure-pruning-network unpadded_selection` is the validated default. It builds an exact arbitrary-length sorting network over the actual 196/137/96 token counts and backward-slices comparators that cannot affect the required Top-K outputs. The public comparator budget is 5,551 instead of 11,008 for `full_sort`; use `--spu-secure-pruning-network full_sort` for rollback A/B runs.
+- `--token-ratio-base-override 0.655` selects the validated opt-in low-latency schedule with 128/84/55 retained spatial tokens. It must use the separately calibrated public threshold in `configs/transshield_runtime/medical_low_latency_r0655_threshold.json`; omitting the option preserves the formal `r=0.7` schedule.
 - `--spu-final-block-cls-only` is an optional uniform-attention optimization: the final block computes the selected-token value aggregate and the CLS output only. When the last block is also a pruning point, it builds the exact keep mask but skips the final oblivious sort of the 384-dimensional token payload. Omit the flag to restore the previous graph for A/B checks.
 
 Uniform-attention blocks also project their shared mean-V output once and then
@@ -269,6 +270,13 @@ The online `2pc.template.json` disables HAL/PPHLO per-op profiling. Use the
 profile-enabled `2pc.json` or `2pc_e2e.template.json` when collecting operator
 or communication evidence, and compare latency only between runs with the same
 profiling setting.
+
+The `r=0.655` schedule is a latency/accuracy trade-off, not a lossless graph
+rewrite. On the VPS medical32 check it reduced secure-forward latency by 21.28%
+and loopback communication by 4.96% versus the current `r=0.7` mainline, while
+threshold accuracy changed from 96.875% to 93.75%. The full environment,
+calibration and rollback evidence is recorded in
+`docs/evidence/spu_low_latency_r0655.md`.
 
 `run --runtime spu` is experimental. Start with `--max-samples 1
 --spu-batch-size 1 --spu-params-mode public`, then verify with

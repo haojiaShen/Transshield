@@ -1,0 +1,119 @@
+{
+  "manifest_type": "transshield_spu_mlp_parallel_packing_fxp20_experiment_v1",
+  "captured_at_utc": "2026-08-02T05:53:38Z",
+  "status": "rejected_not_promoted_auc_gate",
+  "formal_results_changed": false,
+  "showcase_default_changed": false,
+  "production_runtime_changed": false,
+  "vps_only_model_testing": true,
+  "candidate": {
+    "description": "parallel Cheetah RLWE response packing with higher fixed-point precision",
+    "runtime": "/opt/transshield-spu-mlp-pack",
+    "protocol": "CHEETAH",
+    "field": "FM64",
+    "fxp_fraction_bits": 20,
+    "baseline_fxp_fraction_bits": 16,
+    "candidate_libspu_sha256": "67037d89d6a5afdb1fd03d12ee4106671ab4dc503f897a7a3ead4779e4c8ddc8",
+    "unchanged_model_graph": true,
+    "unchanged_model_weights": true,
+    "unchanged_matrix_dimensions": true,
+    "unchanged_activation": true,
+    "model_precision_reduced": false,
+    "isolated_runtime_only": true
+  },
+  "exact_mlp_microbenchmark": {
+    "shape": {
+      "batch": 16,
+      "tokens": 197,
+      "flattened_tokens": 3152,
+      "fc1": [3152, 384, 1536],
+      "fc2": [3152, 1536, 384]
+    },
+    "graph": "x + (alpha * square(x @ W1.T + b1)) @ W2.T + b2",
+    "baseline_fxp16": {
+      "hot_sec": 47.65299648099972,
+      "hot_reference_max_abs_error": 0.0001538395881652832,
+      "evidence": "../mlp_kernel_20260802_v1/baseline.json"
+    },
+    "parallel_packing_fxp16": {
+      "hot_sec_mean": 40.36183317549967,
+      "maximum_reference_max_abs_error": 0.00014483928680419922,
+      "evidence": "../mlp_kernel_20260802_v2_pack/pack.json"
+    },
+    "parallel_packing_fxp20": {
+      "cold_sec": 46.92045714300002,
+      "hot_sec_runs": [40.77541070100051, 40.60069034600019],
+      "hot_sec_mean": 40.68805052350035,
+      "hot_tx_bytes_runs": [2043885006, 2043842981],
+      "maximum_reference_max_abs_error": 0.000008851289749145508,
+      "maximum_reference_mean_abs_error": 0.0000014997162907093298,
+      "all_finite": true,
+      "runtime_config_matches_expectation": true,
+      "evidence": "mlp_fxp20.json"
+    },
+    "hot_time_delta_vs_baseline_percent": -14.615966406806002,
+    "hot_time_delta_vs_parallel_fxp16_percent": 0.8082322390616792,
+    "max_error_delta_vs_parallel_fxp16_percent": -93.88888888888889,
+    "max_error_improvement_factor_vs_parallel_fxp16": 16.363636363636363,
+    "microbenchmark_gate_passed": true
+  },
+  "medical32_validation": {
+    "profile": {
+      "sample_count": 32,
+      "spu_batch_size": 16,
+      "static_depth": 10,
+      "token_ratio_base_override": 0.655,
+      "secure_pruning_network": "unpadded_selection",
+      "decision_threshold": 0.688152923150007,
+      "params_mode": "secret",
+      "input_mode": "party_local_debug_share_load",
+      "reveal_policy": "final_logits_only"
+    },
+    "accepted_baseline": {
+      "spu_forward_wall_sec": 1060.9676724210003,
+      "loopback_gib": 49.504402126185596,
+      "threshold_accuracy": 0.9375,
+      "auc": 0.98046875,
+      "evidence": "../batch_scaling_20260802_v1/optimization_summary.json"
+    },
+    "candidate_run_1": {
+      "spu_forward_wall_sec": 997.8181259289995,
+      "time_delta_percent": -5.952070749516913,
+      "chunks_sec": [501.5500051509989, 495.6653263699991],
+      "loopback_gib": 49.84840117767453,
+      "communication_delta_percent": 0.694885781292931,
+      "threshold_accuracy": 0.9375,
+      "threshold_match_ratio_vs_accepted_baseline": 1.0,
+      "auc": 0.9609375,
+      "finite_logits": true,
+      "finite_probabilities": true,
+      "evidence": "medical32_fxp20_run1.summary.json"
+    },
+    "time_gate_passed": true,
+    "threshold_accuracy_gate_passed": true,
+    "auc_gate_passed": false,
+    "communication_regressed": true,
+    "repeat_run_performed": false,
+    "repeat_run_reason": "The first run failed the pre-declared AUC gate, so a second expensive medical32 run was not justified.",
+    "overall_gate_passed": false
+  },
+  "decision": {
+    "promote_candidate": false,
+    "reason": "fxp20 greatly reduced local MLP fixed-point error and retained most packing speedup, but the complete medical32 run had lower AUC and slightly higher communication than the accepted baseline.",
+    "default_runtime": "/opt/transshield-spu",
+    "default_fxp_fraction_bits": 16,
+    "formal_result_directories_unchanged": [
+      "results/final",
+      "results/communication",
+      "results/fuzzing",
+      "results/guard_stress"
+    ]
+  },
+  "sha256": {
+    "mlp_fxp20_json": "01c2585a0e3495e94c9a60538267f8f07df5d3e4e4acbf331cd01483b4bbe44c",
+    "medical32_candidate_json": "20e5f4da7fbdb6014ecf19b4828b5afff38cb0a83acf2bb99b351de0f5ecd3f3",
+    "medical32_candidate_pt": "9bd42044eb98ac0cb8bde8a565394263e7b62cdd9a3ecba3566091d372d02ed0",
+    "medical32_summary_json": "1a634075c50e9347d8f472acf0af74bf6d4c72ba8ea1223de4d52eb9ddf7594f",
+    "benchmark_tool": "bdf983fde6748818cfac6faa1777bf840b157938f077df710d2f4f3409717de5"
+  }
+}

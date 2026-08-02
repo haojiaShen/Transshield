@@ -6,8 +6,9 @@ The benchmark keeps the production MLP graph intact:
     y = x + ((x @ W1.T + b1) ** 2 * alpha) @ W2.T + b2
 
 The input belongs to P1 and all model parameters belong to P2.  Only synthetic
-values are used.  This tool is intended for runtime/kernel A/B tests; it does
-not change model width, weights, activation, field, or fixed-point precision.
+values are used.  This tool is intended for runtime/kernel A/B tests; it keeps
+the model width, weights, activation, and arithmetic graph unchanged while the
+runtime field and fixed-point precision are checked against explicit values.
 """
 
 import argparse
@@ -51,6 +52,8 @@ def build_parser():
     parser.add_argument("--repeats", type=int, default=2)
     parser.add_argument("--seed", type=int, default=20260802)
     parser.add_argument("--interface", default="lo")
+    parser.add_argument("--expected-field", default="FM64")
+    parser.add_argument("--expected-fxp-fraction-bits", type=int, default=16)
     return parser
 
 
@@ -64,6 +67,8 @@ def main():
 
     if min(args.batch_size, args.token_count, args.embed_dim, args.mlp_dim, args.repeats) <= 0:
         raise ValueError("all shape dimensions and repeats must be positive")
+    if args.expected_fxp_fraction_bits <= 0:
+        raise ValueError("expected fixed-point fraction bits must be positive")
 
     config_path = Path(args.config).expanduser().resolve()
     config = read_json(config_path)
@@ -131,7 +136,7 @@ def main():
 
     runtime_config = config["devices"]["SPU"]["config"]["runtime_config"]
     payload = {
-        "manifest_type": "transshield_spu_exact_mlp_benchmark_v1",
+        "manifest_type": "transshield_spu_exact_mlp_benchmark_v2",
         "captured_at_utc": datetime.now(timezone.utc).isoformat(),
         "hostname": socket.gethostname(),
         "platform": platform.platform(),
@@ -152,12 +157,19 @@ def main():
         },
         "seed": args.seed,
         "interface": args.interface,
+        "expected_runtime_config": {
+            "field": args.expected_field,
+            "fxp_fraction_bits": args.expected_fxp_fraction_bits,
+        },
         "reference_output_sha256": array_sha256(output_reference),
         "repetitions": repetitions,
         "acceptance": {
             "unchanged_math_graph": True,
-            "unchanged_field_and_fraction_bits": runtime_config.get("field") == "FM64"
-            and int(runtime_config.get("fxp_fraction_bits", 0)) == 16,
+            "runtime_config_matches_expectation": (
+                runtime_config.get("field") == args.expected_field
+                and int(runtime_config.get("fxp_fraction_bits", 0))
+                == args.expected_fxp_fraction_bits
+            ),
             "all_finite": all(item["finite"] for item in repetitions),
         },
     }

@@ -1,0 +1,58 @@
+{
+  "manifest_type": "transshield_spu_runtime_scheduler_followup_v1",
+  "captured_at_utc": "2026-08-02T10:55:00Z",
+  "status": "rejected_no_production_gain",
+  "formal_results_changed": false,
+  "runtime_default_changed": false,
+  "vps_only_model_testing": true,
+  "environment": {
+    "host": "47.120.31.48",
+    "vcpu": 16,
+    "physical_cores": 8,
+    "memory_gib_approx": 61.4,
+    "spu": "0.9.3b0",
+    "jax": "0.4.30",
+    "protocol": "CHEETAH",
+    "field": "FM64",
+    "fxp_fraction_bits": 16
+  },
+  "workload": {
+    "graph": "x + (0.25 * square(x @ W1.T + b1)) @ W2.T + b2",
+    "shape": {
+      "input": [16, 197, 384],
+      "fc1": [3152, 384, 1536],
+      "fc2": [3152, 1536, 384]
+    },
+    "reference": {
+      "source": "../thread_tuning_20260802_v1/optimization_summary.json",
+      "max_concurrency": 8,
+      "hot_mean_sec": 44.20626959149922,
+      "hot_mean_tx_bytes": 2028097235.5
+    }
+  },
+  "experiments": [
+    {
+      "name": "disable_mmul_split",
+      "source": "mlp_no_mmul_split.json",
+      "hot_sec": 44.91517212599865,
+      "time_delta_percent": 1.6036244203599281,
+      "hot_tx_bytes": 2028111474,
+      "status": "rejected_slower"
+    },
+    {
+      "name": "enable_intra_op_parallel",
+      "source": "mlp_intra.json",
+      "hot_sec": 44.25332087900097,
+      "time_delta_percent": 0.10643577921534142,
+      "hot_tx_bytes": 2028154797,
+      "status": "rejected_no_gain"
+    },
+    {
+      "name": "enable_inter_op_parallel_concurrency_2",
+      "source": "setup_inter2.log",
+      "status": "rejected_runtime_failure",
+      "error": "Object::fork reached the base Not implemented path from BlockParallelRunner during warm-up"
+    }
+  ],
+  "decision": "Keep the default scheduler settings. None of the tested runtime flags improved the validated max_concurrency=8 MLP result, and inter-op parallelism could not complete the SPU warm-up."
+}

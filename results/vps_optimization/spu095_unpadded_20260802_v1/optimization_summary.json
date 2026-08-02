@@ -1,0 +1,38 @@
+{
+  "manifest_type": "transshield_spu095_same_graph_mlp_rejection_v1",
+  "captured_at_utc": "2026-08-02T11:00:00Z",
+  "status": "rejected_kernel_regression",
+  "formal_results_changed": false,
+  "runtime_default_changed": false,
+  "vps_only_model_testing": true,
+  "objective": "Compare SPU 0.9.5 and 0.9.3b0 on the same production-shaped MLP graph before spending a whole-model run.",
+  "workload": {
+    "graph": "x + (alpha * square(x @ W1.T + b1)) @ W2.T + b2",
+    "input": [16, 197, 384],
+    "fc1": [3152, 384, 1536],
+    "fc2": [3152, 1536, 384],
+    "protocol": "CHEETAH",
+    "field": "FM64",
+    "fxp_fraction_bits": 16
+  },
+  "baseline": {
+    "source": "../mlp_kernel_20260802_v1/baseline.json",
+    "spu": "0.9.3b0",
+    "hot_sec": 47.65299648099972,
+    "hot_tx_bytes": 2028172838,
+    "reference_max_abs_error": 0.0001538395881652832
+  },
+  "candidate": {
+    "source": "mlp_spu095.json",
+    "spu": "0.9.5",
+    "jax": "0.4.34",
+    "python": "/opt/transshield-spu094/bin/python",
+    "hot_sec": 48.48496582300004,
+    "time_delta_percent": 1.7458909269893352,
+    "hot_tx_bytes": 2028095022,
+    "communication_delta_percent": -0.003836753877284327,
+    "reference_max_abs_error": 0.0001478344202041626,
+    "all_finite": true
+  },
+  "decision": "Do not run medical4 or medical32 and do not upgrade the default runtime. The unchanged MLP kernel was already slower while communication was effectively unchanged."
+}

@@ -1,0 +1,46 @@
+{
+  "out": "/opt/transshield-project/results/vps_optimization/layernorm_affine_fusion_20260802_v1/medical4_backbone.summary.json",
+  "sample_count": 4,
+  "argmax_accuracy": 0.0,
+  "threshold_accuracy": 1.0,
+  "auc": null,
+  "sec_per_sample": 49.2101686000824,
+  "reference_comparison": {
+    "argmax_match_ratio": 1.0,
+    "threshold_match_ratio": 1.0,
+    "logits_max_abs_error": 0.0686798095703125,
+    "logits_mean_abs_error": 0.024784088134765625,
+    "probabilities_max_abs_error": 0.02697160840034485,
+    "probabilities_mean_abs_error": 0.011417914181947708,
+    "reference_argmax_accuracy": 0.0,
+    "reference_threshold_accuracy": 1.0,
+    "reference_auc": null
+  },
+  "network": {
+    "interface": "lo",
+    "before": {
+      "captured_at_utc": "2026-08-02T10:35:03.182017+00:00",
+      "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+      "interface": "lo",
+      "manifest_type": "transshield_vps_network_snapshot_v1",
+      "process": null,
+      "rx_bytes": 8138919222,
+      "tx_bytes": 8138919222
+    },
+    "after": {
+      "captured_at_utc": "2026-08-02T10:38:21.053701+00:00",
+      "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+      "interface": "lo",
+      "manifest_type": "transshield_vps_network_snapshot_v1",
+      "process": null,
+      "rx_bytes": 14710652441,
+      "tx_bytes": 14710652441
+    },
+    "tx_delta_bytes": 6571733219,
+    "rx_delta_bytes": 6571733219,
+    "loopback_total_bytes_rule": "use tx_delta once; loopback tx and rx mirror the same transferred bytes",
+    "total_bytes": 6571733219,
+    "total_gib": 6.120403501205146,
+    "per_sample_gib": 1.5301008753012866
+  }
+}

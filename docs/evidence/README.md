@@ -39,6 +39,10 @@
 | SPU 精确剪枝与线程并发实验说明 | `docs/evidence/spu_odd_even_and_thread_tuning.md` | odd-even 精确选择网络、线程并发扫描、完整门槛和不接入判定 |
 | SPU odd-even 结构化结果 | `results/vps_optimization/odd_even_selection_20260802_v1/optimization_summary.json` | 比较器预算、medical4 耗时/通信、单测和提前终止原因 |
 | SPU 线程并发结构化结果 | `results/vps_optimization/thread_tuning_20260802_v1/optimization_summary.json` | MLP 扫描、medical4/medical32、精度与 AUC 否决证据 |
+| SPU LayerNorm 与运行时后续优化说明 | `docs/evidence/spu_layernorm_and_runtime_followup.md` | LayerNorm 仿射折叠、后置归一化、调度开关和 SPU 0.9.5 同图筛选 |
+| SPU LayerNorm 折叠结构化结果 | `results/vps_optimization/layernorm_affine_fusion_20260802_v1/optimization_summary.json` | 微基准、medical4 时间/通信/一致率与不接入判定 |
+| SPU 调度后续结构化结果 | `results/vps_optimization/runtime_scheduler_20260802_v1/optimization_summary.json` | 矩阵拆分、intra/inter-op 调度结果与失败证据 |
+| SPU 0.9.5 同图 MLP 结果 | `results/vps_optimization/spu095_unpadded_20260802_v1/optimization_summary.json` | 与 0.9.3b0 的真实 MLP 热态筛选和停止条件 |
 
 ## 说明
 
@@ -54,3 +58,5 @@
 - 平方激活 α 权重折叠和公开常数路径均减少了时间与通信，但重复 medical32 的 AUC/准确率门槛未全部通过；两个研究开关默认关闭，不替换正式结果。
 - odd-even 精确选择网络虽减少 8.80% 比较器，但 medical4 的耗时和通信均回退；它只保留显式研究入口，默认仍为 `unpadded_selection`。
 - `max_concurrency=8` 虽缩短 medical32 耗时，但通信、阈值准确率和 AUC 未同时过门槛；生产 SPU runtime 配置保持不变。
+- LayerNorm 仿射折叠虽减少 medical4 通信，但端到端时间略有回退；开关默认 `none`，未运行 medical32，也未修改正式结果。
+- 后置归一化、额外调度开关和 SPU 0.9.5 同图 MLP 均未通过前置性能筛选，不进入正式运行时。

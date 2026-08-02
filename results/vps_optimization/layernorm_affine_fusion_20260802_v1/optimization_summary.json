@@ -1,0 +1,106 @@
+{
+  "manifest_type": "transshield_spu_layernorm_affine_fusion_summary_v1",
+  "captured_at_utc": "2026-08-02T11:05:00Z",
+  "status": "rejected_not_promoted",
+  "formal_results_changed": false,
+  "showcase_default_changed": false,
+  "runtime_default_changed": false,
+  "vps_only_model_testing": true,
+  "objective": "Remove avoidable secret LayerNorm affine operations without changing model dimensions, weights, exact normalization, pruning counts, protocol, fixed-point precision, or reveal policy.",
+  "identity": "linear(normalized * gamma + beta, W, b) = linear(normalized, W * gamma, b + W @ beta) over real arithmetic",
+  "fixed_point_risk": "The rewrite changes FM64/fxp16 truncation order, so it is opt-in and requires full accuracy validation before promotion.",
+  "environment": {
+    "host": "47.120.31.48",
+    "vcpu": 16,
+    "physical_cores": 8,
+    "memory_gib_approx": 61.4,
+    "spu": "0.9.3b0",
+    "jax": "0.4.30",
+    "protocol": "CHEETAH",
+    "field": "FM64",
+    "fxp_fraction_bits": 16
+  },
+  "microbenchmark": {
+    "shape": {
+      "input": [16, 197, 384],
+      "linear": [3152, 384, 1536]
+    },
+    "baseline": {
+      "source": "layernorm_linear_baseline.json",
+      "hot_sec": 21.740217177999966,
+      "hot_tx_bytes": 534530699,
+      "reference_max_abs_error": 0.0036073923110961914
+    },
+    "affine_folded": {
+      "source": "layernorm_linear_fused.json",
+      "hot_sec": 19.388011715999994,
+      "time_delta_percent": -10.819604251149284,
+      "hot_tx_bytes": 266402439,
+      "communication_delta_percent": -50.16143329122431,
+      "reference_max_abs_error": 0.0036519765853881836
+    }
+  },
+  "medical4_screen": {
+    "baseline": {
+      "source": "../square_alpha_fusion_20260802_v1/medical4_baseline.summary.json",
+      "spu_forward_wall_sec": 195.03517579300023,
+      "loopback_gib": 6.591340051963925,
+      "threshold_accuracy": 1.0,
+      "decision_threshold": 0.688152923150007
+    },
+    "all": {
+      "source": "medical4_all.summary.json",
+      "spu_forward_wall_sec": 196.72595715522766,
+      "time_delta_percent": 0.8669109843149059,
+      "loopback_gib": 6.036765840835869,
+      "communication_delta_percent": -8.413679263336105,
+      "threshold_accuracy": 1.0,
+      "threshold_match_ratio": 1.0,
+      "probabilities_max_abs_error": 0.033950239419937134,
+      "status": "rejected_time_regression"
+    },
+    "backbone": {
+      "source": "medical4_backbone.summary.json",
+      "spu_forward_wall_sec": 196.8406744003296,
+      "time_delta_percent": 0.9257297305413248,
+      "loopback_gib": 6.120403501205146,
+      "communication_delta_percent": -7.144777041482797,
+      "threshold_accuracy": 1.0,
+      "threshold_match_ratio": 1.0,
+      "probabilities_max_abs_error": 0.02697160840034485,
+      "status": "rejected_time_regression"
+    }
+  },
+  "post_linear_normalization_rejection": {
+    "description": "Move the per-token inverse-standard-deviation multiplication after dimension-reducing linears.",
+    "predictor_384_to_192": {
+      "baseline_hot_sec": 1.7405705319999925,
+      "candidate_hot_sec": 1.8655158300000494,
+      "time_delta_percent": 7.178410509828015,
+      "baseline_tx_bytes": 12295850,
+      "candidate_tx_bytes": 34445090,
+      "communication_delta_percent": 180.13589951081056
+    },
+    "head_384_to_2": {
+      "baseline_hot_sec": 0.041544491999957245,
+      "candidate_hot_sec": 0.049258456999950795,
+      "time_delta_percent": 18.56796082619445,
+      "baseline_tx_bytes": 527490,
+      "candidate_tx_bytes": 1677410,
+      "communication_delta_percent": 217.99844546816053
+    },
+    "decision": "Reject. CHEETAH's post-matmul fixed-point truncation cost outweighed the apparent reduction in elementwise multiplication count."
+  },
+  "verification": {
+    "vps_py_compile": "PASS",
+    "vps_unittest": "31/31 PASS",
+    "local_model_tests_run": false,
+    "formal_result_directories_modified": false
+  },
+  "decision": {
+    "promote_candidate": false,
+    "reason": "Both end-to-end candidates reduced communication but missed the primary time-reduction gate. A medical32 run was therefore not justified.",
+    "code_policy": "Keep the real-valued-equivalent affine folding as an explicit default-off research switch. The accepted runtime and formal result files remain unchanged.",
+    "rollback": "Use --spu-layer-norm-affine-fusion none, which is the parser and showcase default."
+  }
+}

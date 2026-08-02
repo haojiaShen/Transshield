@@ -1,0 +1,34 @@
+{
+  "allow_cheetah_mul_lsb_error": false,
+  "cheetah_disable_matmul_pack": false,
+  "cheetah_mixed_compare_mode": 0,
+  "config_path": "/opt/transshield-project/results/vps_optimization/runtime_scheduler_20260802_v1/configs/fxp16_c8_inter2.json",
+  "disable_colocated_optimization": false,
+  "disable_matmul_pack": false,
+  "enable_mul_lsb_error": false,
+  "mixed_compare_mode": 0,
+  "node_processes": [
+    {
+      "log_path": "/opt/transshield-project/results/vps_optimization/runtime_scheduler_20260802_v1/node_logs_inter2/node_0.log",
+      "node_id": "node:0",
+      "pid": 513472
+    },
+    {
+      "log_path": "/opt/transshield-project/results/vps_optimization/runtime_scheduler_20260802_v1/node_logs_inter2/node_1.log",
+      "node_id": "node:1",
+      "pid": 513511
+    }
+  ],
+  "nodes": {
+    "node:0": "127.0.0.1:41637",
+    "node:1": "127.0.0.1:39157"
+  },
+  "remove_unsupported_cheetah_fields": false,
+  "spu_internal_addrs": [
+    "127.0.0.1:35339",
+    "127.0.0.1:46363"
+  ],
+  "template_path": "/opt/transshield-project/results/vps_optimization/runtime_scheduler_20260802_v1/configs/fxp16_c8_inter2.json",
+  "warmup_attempt": 2,
+  "warmup_error": "SPU runtime warmup did not succeed before timeout: ('remote exception', Exception('Traceback (most recent call last):\\n  File \"/opt/transshield-spu/lib/python3.9/site-packages/spu/utils/distributed_impl.py\", line 326, in Run\\n    ret_objs = fn(self, *args, **kwargs)\\n  File \"/opt/transshield-spu/lib/python3.9/site-packages/spu/utils/distributed_impl.py\", line 589, in builtin_spu_run\\n    rt.run(spu_exec)\\n  File \"/opt/transshield-spu/lib/python3.9/site-packages/spu/api.py\", line 44, in run\\n    return self._vm.Run(executable.SerializeToString())\\nRuntimeError: what: \\n\\t[libspu/core/object.cc:20] Not implemented, the sub class should override this\\nstacktrace: \\n#0 spu::Object::fork()+0x7b72329f9b28\\n#1 spu::SPUContext::fork()+0x7b72329f828b\\n#2 spu::device::BlockParallelRunner::run()+0x7b72322dcd03\\n#3 spu::device::runBlockParallel()+0x7b72322de06d\\n#4 spu::device::runRegion()+0x7b72322de4de\\n#5 spu::device::executeImpl()+0x7b7231bd7374\\n#6 spu::RuntimeWrapper::Run()+0x7b7230f7ba2b\\n#7 pybind11::cpp_function::initialize<>()::{lambda()#3}::_FUN()+0x7b7230f4d365\\n#8 pybind11::cpp_function::dispatcher()+0x7b7230f413fb\\n#9 cfunction_call+0x5948257a06b2\\n\\n\\n'))"
+}

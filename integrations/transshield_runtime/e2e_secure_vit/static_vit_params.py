@@ -72,6 +72,104 @@ def fold_input_scale_into_linear_weight(weight, scale):
     return np.asarray(np.asarray(weight, dtype=np.float32) * scale, dtype=np.float32)
 
 
+def fold_layer_norm_affine_into_linear(
+    norm_weight,
+    norm_bias,
+    linear_weight,
+    linear_bias,
+):
+    """Fold LayerNorm's affine transform into its following linear layer.
+
+    For ``linear(normalized * gamma + beta, W, b)``, the real-valued
+    equivalent is ``linear(normalized, W * gamma, b + W @ beta)``.  For a
+    decomposed linear, scale the input columns of the down matrix and propagate
+    beta through both matrices.  The returned LayerNorm affine parameters are
+    value-shaped ones and zeros; the secure graph uses metadata to skip the
+    affine multiplication and addition entirely.
+    """
+    import numpy as np
+
+    gamma = np.asarray(norm_weight, dtype=np.float32)
+    beta = np.asarray(norm_bias, dtype=np.float32)
+    if gamma.ndim != 1 or beta.shape != gamma.shape:
+        raise ValueError(
+            "LayerNorm affine parameters must be matching vectors, got "
+            f"gamma={gamma.shape} beta={beta.shape}"
+        )
+
+    if isinstance(linear_weight, tuple):
+        if len(linear_weight) != 2:
+            raise ValueError("decomposed linear weight must contain down and up matrices")
+        down_weight = np.asarray(linear_weight[0], dtype=np.float32)
+        up_weight = np.asarray(linear_weight[1], dtype=np.float32)
+        if down_weight.ndim != 2 or up_weight.ndim != 2:
+            raise ValueError("decomposed linear weights must be matrices")
+        if down_weight.shape[1] != gamma.size or up_weight.shape[1] != down_weight.shape[0]:
+            raise ValueError(
+                "decomposed linear dimensions do not match LayerNorm width: "
+                f"down={down_weight.shape} up={up_weight.shape} gamma={gamma.shape}"
+            )
+        beta_projection = up_weight @ (down_weight @ beta)
+        fused_weight = (
+            np.asarray(down_weight * gamma[None, :], dtype=np.float32),
+            up_weight,
+        )
+    else:
+        weight = np.asarray(linear_weight, dtype=np.float32)
+        if weight.ndim != 2 or weight.shape[1] != gamma.size:
+            raise ValueError(
+                "linear dimensions do not match LayerNorm width: "
+                f"weight={weight.shape} gamma={gamma.shape}"
+            )
+        beta_projection = weight @ beta
+        fused_weight = np.asarray(weight * gamma[None, :], dtype=np.float32)
+
+    if linear_bias is None:
+        fused_bias = np.asarray(beta_projection, dtype=np.float32)
+    else:
+        bias = np.asarray(linear_bias, dtype=np.float32)
+        if bias.size == 1:
+            fused_bias = np.asarray(
+                beta_projection + bias.reshape(-1)[0],
+                dtype=np.float32,
+            )
+        elif bias.shape != beta_projection.shape:
+            raise ValueError(
+                "linear bias does not match projected LayerNorm bias: "
+                f"bias={bias.shape} projected={beta_projection.shape}"
+            )
+        else:
+            fused_bias = np.asarray(bias + beta_projection, dtype=np.float32)
+
+    return (
+        np.ones_like(gamma, dtype=np.float32),
+        np.zeros_like(beta, dtype=np.float32),
+        fused_weight,
+        fused_bias,
+    )
+
+
+def fold_block_layer_norm_affines(block_params):
+    """Fold a ViT block's norm1→QKV and norm2→FC1 affine transforms."""
+    values = list(block_params)
+    values[0], values[1], values[2], values[3] = fold_layer_norm_affine_into_linear(
+        values[0], values[1], values[2], values[3]
+    )
+    values[6], values[7], values[8], values[9] = fold_layer_norm_affine_into_linear(
+        values[6], values[7], values[8], values[9]
+    )
+    return tuple(values)
+
+
+def fold_predictor_layer_norm_affine(stage_params):
+    """Fold PredictorLG's input LayerNorm affine into its first linear."""
+    values = list(stage_params)
+    values[0], values[1], values[2], values[3] = fold_layer_norm_affine_into_linear(
+        values[0], values[1], values[2], values[3]
+    )
+    return tuple(values)
+
+
 def fold_predictor_square_activation_scales(stage_params):
     """Fold PredictorLG's three square scales into their following linears."""
     import numpy as np
@@ -198,6 +296,7 @@ def load_static_vit_spu_params(
     activation_override: str = "bundle",
     token_ratio_base_override: float = 0.0,
     fold_square_activation_scale: bool = False,
+    fold_layer_norm_affine: bool = False,
     *,
     preloaded_args_snapshot=None,
     preloaded_state_dict=None,
@@ -228,6 +327,7 @@ def load_static_vit_spu_params(
     base_activation_kind = resolve_static_activation_kind(args_snapshot)
     activation_kind = resolve_spu_activation_kind(base_activation_kind, activation_override)
     fold_square_activation_scale = bool(fold_square_activation_scale)
+    fold_layer_norm_affine = bool(fold_layer_norm_affine)
     if fold_square_activation_scale and activation_kind not in {
         "fixed_square",
         "learnable_square",
@@ -286,47 +386,66 @@ def load_static_vit_spu_params(
             if fold_square_activation_scale:
                 fc2_weight = fold_input_scale_into_linear_weight(fc2_weight, act_alpha)
                 act_alpha = np.asarray(1.0, dtype=np.float32)
-            block_params.append(
-                (
-                    required(f"{prefix}.norm1.weight"),
-                    required(f"{prefix}.norm1.bias"),
-                    _decomp_w(f"{prefix}.attn.qkv"),
-                    _decomp_b(f"{prefix}.attn.qkv"),
-                    _decomp_w(f"{prefix}.attn.proj"),
-                    _decomp_b(f"{prefix}.attn.proj"),
-                    required(f"{prefix}.norm2.weight"),
-                    required(f"{prefix}.norm2.bias"),
-                    _decomp_w(f"{prefix}.mlp.fc1"),
-                    _decomp_b(f"{prefix}.mlp.fc1"),
-                    act_alpha,
-                    act_beta,
-                    fc2_weight,
-                    _decomp_b(f"{prefix}.mlp.fc2"),
-                )
+            block_param = (
+                required(f"{prefix}.norm1.weight"),
+                required(f"{prefix}.norm1.bias"),
+                _decomp_w(f"{prefix}.attn.qkv"),
+                _decomp_b(f"{prefix}.attn.qkv"),
+                _decomp_w(f"{prefix}.attn.proj"),
+                _decomp_b(f"{prefix}.attn.proj"),
+                required(f"{prefix}.norm2.weight"),
+                required(f"{prefix}.norm2.bias"),
+                _decomp_w(f"{prefix}.mlp.fc1"),
+                _decomp_b(f"{prefix}.mlp.fc1"),
+                act_alpha,
+                act_beta,
+                fc2_weight,
+                _decomp_b(f"{prefix}.mlp.fc2"),
             )
+            if fold_layer_norm_affine:
+                block_param = fold_block_layer_norm_affines(block_param)
+            block_params.append(block_param)
         else:
             fc2_weight = required(f"{prefix}.mlp.fc2.weight")
             if fold_square_activation_scale:
                 fc2_weight = fold_input_scale_into_linear_weight(fc2_weight, act_alpha)
                 act_alpha = np.asarray(1.0, dtype=np.float32)
-            block_params.append(
-                (
-                    required(f"{prefix}.norm1.weight"),
-                    required(f"{prefix}.norm1.bias"),
-                    required(f"{prefix}.attn.qkv.weight"),
-                    required(f"{prefix}.attn.qkv.bias"),
-                    required(f"{prefix}.attn.proj.weight"),
-                    required(f"{prefix}.attn.proj.bias"),
-                    required(f"{prefix}.norm2.weight"),
-                    required(f"{prefix}.norm2.bias"),
-                    required(f"{prefix}.mlp.fc1.weight"),
-                    required(f"{prefix}.mlp.fc1.bias"),
-                    act_alpha,
-                    act_beta,
-                    fc2_weight,
-                    required(f"{prefix}.mlp.fc2.bias"),
-                )
+            block_param = (
+                required(f"{prefix}.norm1.weight"),
+                required(f"{prefix}.norm1.bias"),
+                required(f"{prefix}.attn.qkv.weight"),
+                required(f"{prefix}.attn.qkv.bias"),
+                required(f"{prefix}.attn.proj.weight"),
+                required(f"{prefix}.attn.proj.bias"),
+                required(f"{prefix}.norm2.weight"),
+                required(f"{prefix}.norm2.bias"),
+                required(f"{prefix}.mlp.fc1.weight"),
+                required(f"{prefix}.mlp.fc1.bias"),
+                act_alpha,
+                act_beta,
+                fc2_weight,
+                required(f"{prefix}.mlp.fc2.bias"),
             )
+            if fold_layer_norm_affine:
+                block_param = fold_block_layer_norm_affines(block_param)
+            block_params.append(block_param)
+
+    final_norm_weight = required("norm.weight")
+    final_norm_bias = required("norm.bias")
+    head_weight = required("head.weight")
+    head_bias = required("head.bias")
+    if fold_layer_norm_affine:
+        (
+            final_norm_weight,
+            final_norm_bias,
+            head_weight,
+            head_bias,
+        ) = fold_layer_norm_affine_into_linear(
+            final_norm_weight,
+            final_norm_bias,
+            head_weight,
+            head_bias,
+        )
 
     params = (
         required("patch_embed.proj.weight"),
@@ -334,10 +453,10 @@ def load_static_vit_spu_params(
         required("cls_token"),
         required("pos_embed"),
         tuple(block_params),
-        required("norm.weight"),
-        required("norm.bias"),
-        required("head.weight"),
-        required("head.bias"),
+        final_norm_weight,
+        final_norm_bias,
+        head_weight,
+        head_bias,
     )
     metadata = {
         "state_dict_path": str(state_dict_path),
@@ -345,6 +464,7 @@ def load_static_vit_spu_params(
         "activation_kind": activation_kind,
         "activation_override": str(activation_override),
         "square_activation_scale_fused": fold_square_activation_scale,
+        "layer_norm_affine_fused": fold_layer_norm_affine,
         "full_depth": full_depth,
         "depth": depth,
         "static_depth_limit": int(static_depth_limit),
@@ -403,6 +523,7 @@ def load_static_vit_spu_predictor_params(
     pruning_loc,
     *,
     fold_square_activation_scale: bool = False,
+    fold_layer_norm_affine: bool = False,
 ):
     """Extract PredictorLG weights as numpy tuples for SPU secure pruning.
 
@@ -432,6 +553,8 @@ def load_static_vit_spu_predictor_params(
         )
         if fold_square_activation_scale:
             stage_params = fold_predictor_square_activation_scales(stage_params)
+        if fold_layer_norm_affine:
+            stage_params = fold_predictor_layer_norm_affine(stage_params)
         predictor_params.append(stage_params)
     return tuple(predictor_params)
 
@@ -444,6 +567,8 @@ def load_static_vit_spu_params_with_predictor(
     token_ratio_base_override: float = 0.0,
     fold_square_activation_scale: bool = False,
     fold_predictor_square_activation_scale: bool = False,
+    fold_layer_norm_affine: bool = False,
+    fold_predictor_layer_norm_affine: bool = False,
 ):
     """Load SPU params including PredictorLG weights for secure in-SPU pruning.
 
@@ -470,6 +595,7 @@ def load_static_vit_spu_params_with_predictor(
         bundle_dir, static_depth_limit, attention_policy, activation_override,
         token_ratio_base_override=token_ratio_base_override,
         fold_square_activation_scale=fold_square_activation_scale,
+        fold_layer_norm_affine=fold_layer_norm_affine,
         preloaded_args_snapshot=args_snapshot,
         preloaded_state_dict=state_dict,
     )
@@ -480,6 +606,7 @@ def load_static_vit_spu_params_with_predictor(
         state_dict,
         pruning_loc,
         fold_square_activation_scale=fold_predictor_square_activation_scale,
+        fold_layer_norm_affine=fold_predictor_layer_norm_affine,
     )
 
     # Compute token keep counts (use metadata which respects token_ratio_base_override)
@@ -494,6 +621,9 @@ def load_static_vit_spu_params_with_predictor(
     metadata["has_predictor_params"] = True
     metadata["predictor_square_activation_scale_fused"] = bool(
         fold_predictor_square_activation_scale
+    )
+    metadata["predictor_layer_norm_affine_fused"] = bool(
+        fold_predictor_layer_norm_affine
     )
     metadata["token_keep_counts"] = list(token_keep_counts)
     metadata["eval_pruning_mode"] = str(args_snapshot.get("eval_pruning_mode", "topk_argsort"))

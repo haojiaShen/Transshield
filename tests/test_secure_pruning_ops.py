@@ -28,6 +28,7 @@ class SecurePruningScheduleTests(unittest.TestCase):
         self.assertEqual(args.spu_secure_pruning_network, "unpadded_selection")
         self.assertEqual(args.spu_square_activation_scale_fusion, "none")
         self.assertFalse(args.spu_public_fixed_square_scale)
+        self.assertEqual(args.spu_layer_norm_affine_fusion, "none")
 
         fused_args = build_parser().parse_args(
             [
@@ -61,6 +62,23 @@ class SecurePruningScheduleTests(unittest.TestCase):
             ]
         )
         self.assertTrue(public_args.spu_public_fixed_square_scale)
+
+        norm_fused_args = build_parser().parse_args(
+            [
+                "run",
+                "--runtime",
+                "cpu",
+                "--input-pt",
+                "input.pt",
+                "--output-pt",
+                "output.pt",
+                "--output-json",
+                "output.json",
+                "--spu-layer-norm-affine-fusion",
+                "all",
+            ]
+        )
+        self.assertEqual(norm_fused_args.spu_layer_norm_affine_fusion, "all")
 
     def test_runtime_pruning_ratio_override_is_cumulative_and_validated(self):
         from integrations.transshield_runtime.e2e_secure_vit.cpu_static_vit import (

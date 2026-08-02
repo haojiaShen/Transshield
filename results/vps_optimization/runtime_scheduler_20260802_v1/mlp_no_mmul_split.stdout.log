@@ -1,0 +1,93 @@
+[2026-08-02 17:38:46.493] [info] [thread_pool.cc:30] Create a fixed thread pool with size 15
+{
+  "manifest_type": "transshield_spu_exact_mlp_benchmark_v4",
+  "captured_at_utc": "2026-08-02T09:39:31.449773+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.39",
+  "spu_version": "0.9.3b0",
+  "config": "/opt/transshield-project/results/vps_optimization/runtime_scheduler_20260802_v1/configs/fxp16_c8_no_mmul_split.json",
+  "runtime_config": {
+    "cheetah_2pc_config": {
+      "enable_mul_lsb_error": false,
+      "ot_kind": "YACL_Ferret"
+    },
+    "enable_hal_profile": false,
+    "enable_pphlo_profile": false,
+    "experimental_disable_mmul_split": true,
+    "experimental_enable_colocated_optimization": true,
+    "field": "FM64",
+    "fxp_exp_iters": 4,
+    "fxp_exp_mode": 0,
+    "fxp_fraction_bits": 16,
+    "max_concurrency": 8,
+    "protocol": "CHEETAH"
+  },
+  "ownership": {
+    "input": "P1",
+    "model_parameters": "P2",
+    "reveal": "full synthetic final MLP output only"
+  },
+  "graph": "x + (alpha * square(x @ W1.T + b1)) @ W2.T + b2",
+  "executed_graph": "x + (alpha * square(x @ W1.T + b1)) @ W2.T + b2",
+  "alpha": 0.25,
+  "square_alpha_folded_into_fc2": false,
+  "square_alpha_public_constant": false,
+  "shape": {
+    "input": [
+      16,
+      197,
+      384
+    ],
+    "flattened_tokens": 3152,
+    "fc1": [
+      3152,
+      384,
+      1536
+    ],
+    "fc2": [
+      3152,
+      1536,
+      384
+    ]
+  },
+  "seed": 20260802,
+  "interface": "lo",
+  "expected_runtime_config": {
+    "field": "FM64",
+    "fxp_fraction_bits": 16
+  },
+  "reference_output_sha256": "1a465550f022d865da442afd75302e2bff9989824a3082665531a6193a7e2ddb",
+  "repetitions": [
+    {
+      "repeat_index": 0,
+      "elapsed_sec": 49.14033437699982,
+      "loopback_tx_bytes": 2068436724,
+      "loopback_rx_bytes": 2068436724,
+      "output_sha256": "1753162f21562986586e0a30b5012d3877bfa990e72ab1b4d98a04f78ef9c687",
+      "output_min": -1.3063201904296875,
+      "output_max": 1.1667022705078125,
+      "output_mean": -0.0016089401906356215,
+      "finite": true,
+      "reference_max_abs_error": 9.141862392425537e-05,
+      "reference_mean_abs_error": 1.7196416592923924e-05
+    },
+    {
+      "repeat_index": 1,
+      "elapsed_sec": 44.91517212599865,
+      "loopback_tx_bytes": 2028111474,
+      "loopback_rx_bytes": 2028111474,
+      "output_sha256": "0649a2b3a558841e114a09388b6b0c8a4e83dc7a9a2f88b957ed8e875bd5a7f9",
+      "output_min": -1.30633544921875,
+      "output_max": 1.1667022705078125,
+      "output_mean": -0.0016089313430711627,
+      "finite": true,
+      "reference_max_abs_error": 9.490549564361572e-05,
+      "reference_mean_abs_error": 1.7205866242875345e-05
+    }
+  ],
+  "acceptance": {
+    "unchanged_math_graph": true,
+    "runtime_config_matches_expectation": true,
+    "all_finite": true
+  }
+}

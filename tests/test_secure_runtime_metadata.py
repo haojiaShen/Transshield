@@ -81,6 +81,85 @@ class SecureRuntimeMetadataTest(unittest.TestCase):
         np.testing.assert_array_equal(fused[8], np.full((2, 2), 0.5, dtype=np.float32))
         np.testing.assert_array_equal(fused[11], np.full((2, 2), 0.125, dtype=np.float32))
 
+    def test_layer_norm_affine_fusion_preserves_regular_linear(self):
+        import numpy as np
+
+        from integrations.transshield_runtime.e2e_secure_vit.static_vit_params import (
+            fold_layer_norm_affine_into_linear,
+        )
+
+        rng = np.random.default_rng(20260802)
+        normalized = rng.normal(size=(7, 5)).astype(np.float32)
+        gamma = rng.normal(size=(5,)).astype(np.float32)
+        beta = rng.normal(size=(5,)).astype(np.float32)
+        weight = rng.normal(size=(11, 5)).astype(np.float32)
+        bias = rng.normal(size=(11,)).astype(np.float32)
+
+        one, zero, fused_weight, fused_bias = fold_layer_norm_affine_into_linear(
+            gamma,
+            beta,
+            weight,
+            bias,
+        )
+        original = (normalized * gamma + beta) @ weight.T + bias
+        fused = normalized @ fused_weight.T + fused_bias
+        np.testing.assert_array_equal(one, np.ones_like(gamma))
+        np.testing.assert_array_equal(zero, np.zeros_like(beta))
+        np.testing.assert_allclose(fused, original, rtol=2e-6, atol=2e-6)
+
+    def test_layer_norm_affine_fusion_preserves_decomposed_linear(self):
+        import numpy as np
+
+        from integrations.transshield_runtime.e2e_secure_vit.static_vit_params import (
+            fold_layer_norm_affine_into_linear,
+        )
+
+        rng = np.random.default_rng(20260803)
+        normalized = rng.normal(size=(7, 5)).astype(np.float32)
+        gamma = rng.normal(size=(5,)).astype(np.float32)
+        beta = rng.normal(size=(5,)).astype(np.float32)
+        down = rng.normal(size=(3, 5)).astype(np.float32)
+        up = rng.normal(size=(11, 3)).astype(np.float32)
+        bias = rng.normal(size=(11,)).astype(np.float32)
+
+        _, _, fused_weight, fused_bias = fold_layer_norm_affine_into_linear(
+            gamma,
+            beta,
+            (down, up),
+            bias,
+        )
+        fused_down, fused_up = fused_weight
+        original = ((normalized * gamma + beta) @ down.T) @ up.T + bias
+        fused = (normalized @ fused_down.T) @ fused_up.T + fused_bias
+        np.testing.assert_allclose(fused, original, rtol=2e-6, atol=2e-6)
+
+    def test_layer_norm_affine_fusion_expands_decomposed_scalar_bias(self):
+        import numpy as np
+
+        from integrations.transshield_runtime.e2e_secure_vit.static_vit_params import (
+            fold_layer_norm_affine_into_linear,
+        )
+
+        rng = np.random.default_rng(20260804)
+        normalized = rng.normal(size=(7, 5)).astype(np.float32)
+        gamma = rng.normal(size=(5,)).astype(np.float32)
+        beta = rng.normal(size=(5,)).astype(np.float32)
+        down = rng.normal(size=(3, 5)).astype(np.float32)
+        up = rng.normal(size=(11, 3)).astype(np.float32)
+        scalar_bias = np.zeros((1,), dtype=np.float32)
+
+        _, _, fused_weight, fused_bias = fold_layer_norm_affine_into_linear(
+            gamma,
+            beta,
+            (down, up),
+            scalar_bias,
+        )
+        fused_down, fused_up = fused_weight
+        original = ((normalized * gamma + beta) @ down.T) @ up.T + scalar_bias
+        fused = (normalized @ fused_down.T) @ fused_up.T + fused_bias
+        self.assertEqual(fused_bias.shape, (11,))
+        np.testing.assert_allclose(fused, original, rtol=2e-6, atol=2e-6)
+
     def test_secret_params_does_not_claim_no_host_materialization(self):
         runner_source = (
             REPO_ROOT

@@ -1,0 +1,71 @@
+[2026-08-02 18:42:20.166] [info] [thread_pool.cc:30] Create a fixed thread pool with size 15
+{
+  "manifest_type": "transshield_spu_layernorm_linear_benchmark_v1",
+  "captured_at_utc": "2026-08-02T10:42:22.038908+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.39",
+  "spu_version": "0.9.3b0",
+  "config": "/opt/transshield-project/results/vps_optimization/layernorm_affine_fusion_20260802_v1/configs/fxp16_default.json",
+  "runtime_config": {
+    "cheetah_2pc_config": {
+      "enable_mul_lsb_error": false,
+      "ot_kind": "YACL_Ferret"
+    },
+    "enable_hal_profile": false,
+    "enable_pphlo_profile": false,
+    "experimental_enable_colocated_optimization": true,
+    "field": "FM64",
+    "fxp_exp_iters": 4,
+    "fxp_exp_mode": 0,
+    "fxp_fraction_bits": 16,
+    "protocol": "CHEETAH"
+  },
+  "fold_layer_norm_affine": true,
+  "post_linear_normalization": true,
+  "ownership": {
+    "input": "P1",
+    "model_parameters": "P2",
+    "reveal": "full synthetic final linear output only"
+  },
+  "shape": {
+    "input": [
+      4,
+      196,
+      384
+    ],
+    "linear": [
+      784,
+      384,
+      192
+    ]
+  },
+  "epsilon": 1e-06,
+  "seed": 20260802,
+  "reference_output_sha256": "0e4ea607900b498cd91472c19bb9544c9bdd9fa0b2cd16ece220fc83e92073ad",
+  "repetitions": [
+    {
+      "repeat_index": 0,
+      "elapsed_sec": 1.9898379669998576,
+      "loopback_tx_bytes": 34770418,
+      "loopback_rx_bytes": 34770418,
+      "output_sha256": "26feecae7a46bca8e16d4796d73272fa311aa77738dd98651b4bbf2152015c9f",
+      "finite": true,
+      "reference_max_abs_error": 0.0034160614013671875,
+      "reference_mean_abs_error": 0.0005127491313032806
+    },
+    {
+      "repeat_index": 1,
+      "elapsed_sec": 1.8655158300000494,
+      "loopback_tx_bytes": 34445090,
+      "loopback_rx_bytes": 34445090,
+      "output_sha256": "642f487a69e5d18801e0e7728fd49581b79be7e58d16dd95e56fea00a798a3d8",
+      "finite": true,
+      "reference_max_abs_error": 0.0033092498779296875,
+      "reference_mean_abs_error": 0.0005130413919687271
+    }
+  ],
+  "acceptance": {
+    "real_valued_graph_equivalent": true,
+    "all_finite": true
+  }
+}

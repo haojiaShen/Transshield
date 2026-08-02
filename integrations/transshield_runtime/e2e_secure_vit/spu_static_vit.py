@@ -69,6 +69,10 @@ def run_static_vit_forward_spu(
     predictor_square_activation_scale_fused = bool(
         metadata.get("predictor_square_activation_scale_fused", False)
     )
+    layer_norm_affine_fused = bool(metadata.get("layer_norm_affine_fused", False))
+    predictor_layer_norm_affine_fused = bool(
+        metadata.get("predictor_layer_norm_affine_fused", False)
+    )
     public_fixed_square_scale = metadata.get("public_fixed_square_scale")
     if public_fixed_square_scale is not None:
         public_fixed_square_scale = float(public_fixed_square_scale)
@@ -236,21 +240,23 @@ def run_static_vit_forward_spu(
             total = partial if total is None else total + partial
         return total
 
-    def layer_norm(x, weight, bias, calibration=None):
+    def layer_norm(x, weight, bias, calibration=None, apply_affine=True):
         if layer_norm_policy == "affine":
-            return x * weight + bias
+            return x * weight + bias if apply_affine else x
         if layer_norm_policy == "public_calibrated":
             if calibration is None:
                 raise ValueError("missing public calibration stats for layer_norm")
             mean, variance = calibration
             inverse_std = 1.0 / jnp.sqrt(variance + layer_norm_eps)
-            return (x - mean) * inverse_std * weight + bias
-        feature_dim = int(x.shape[-1])
-        mean = feature_sum(x) / feature_dim
-        centered = x - mean
-        variance = feature_sum(centered * centered) / feature_dim
-        inverse_std = 1.0 / jnp.sqrt(variance + layer_norm_eps)
-        return centered * inverse_std * weight + bias
+            normalized = (x - mean) * inverse_std
+        else:
+            feature_dim = int(x.shape[-1])
+            mean = feature_sum(x) / feature_dim
+            centered = x - mean
+            variance = feature_sum(centered * centered) / feature_dim
+            inverse_std = 1.0 / jnp.sqrt(variance + layer_norm_eps)
+            normalized = centered * inverse_std
+        return normalized * weight + bias if apply_affine else normalized
 
     def patch_embed(pixel_values, patch_weight, patch_bias):
         batch, channels, height, width = pixel_values.shape
@@ -410,7 +416,13 @@ def run_static_vit_forward_spu(
         residual = x[:, :1] if output_cls_only else x
         norm1_calibration = None if block_calibration is None else block_calibration[:2]
         norm2_calibration = None if block_calibration is None else block_calibration[2:]
-        norm1_out = layer_norm(x, norm1_weight, norm1_bias, norm1_calibration)
+        norm1_out = layer_norm(
+            x,
+            norm1_weight,
+            norm1_bias,
+            norm1_calibration,
+            apply_affine=not layer_norm_affine_fused,
+        )
         batch, token_count, channels = norm1_out.shape
         logical_token_count = token_count if logical_token_count is None else int(logical_token_count)
         if logical_token_count < int(token_count):
@@ -425,6 +437,7 @@ def run_static_vit_forward_spu(
                     norm1_weight,
                     norm1_bias,
                     norm1_calibration,
+                    apply_affine=not layer_norm_affine_fused,
                 )
             if uniform_attention_value_fusion:
                 # mean(linear(x)) == linear(mean(x)): aggregate the secret
@@ -512,7 +525,13 @@ def run_static_vit_forward_spu(
         x = residual + projected_attn_out
 
         residual = x
-        norm2_out = layer_norm(x, norm2_weight, norm2_bias, norm2_calibration)
+        norm2_out = layer_norm(
+            x,
+            norm2_weight,
+            norm2_bias,
+            norm2_calibration,
+            apply_affine=not layer_norm_affine_fused,
+        )
         if _use_decomposed:
             mlp_hidden = activate(decomposed_linear(norm2_out, fc1_weight[0], fc1_weight[1], fc1_bias), act_alpha, act_beta)
         else:
@@ -560,7 +579,13 @@ def run_static_vit_forward_spu(
             else:
                 x = block_forward(x, block_param, block_calibration)
         final_calibration = None if layer_norm_calibration is None else layer_norm_calibration["final_norm"]
-        x = layer_norm(x, norm_weight, norm_bias, final_calibration)
+        x = layer_norm(
+            x,
+            norm_weight,
+            norm_bias,
+            final_calibration,
+            apply_affine=not layer_norm_affine_fused,
+        )
         cls_features = x[:, 0]
         logits = linear(cls_features, head_weight, head_bias)
         if probe_payload is None:
@@ -606,7 +631,13 @@ def run_static_vit_forward_spu(
                 x = block_forward(x, block_param, block_calibration)
                 x = apply_spatial_mask(x, prev_decision)
         final_calibration = None if layer_norm_calibration is None else layer_norm_calibration["final_norm"]
-        x = layer_norm(x, norm_weight, norm_bias, final_calibration)
+        x = layer_norm(
+            x,
+            norm_weight,
+            norm_bias,
+            final_calibration,
+            apply_affine=not layer_norm_affine_fused,
+        )
         cls_features = x[:, 0]
         return linear(cls_features, head_weight, head_bias)
 
@@ -634,7 +665,13 @@ def run_static_vit_forward_spu(
             block_calibration = None if not block_calibrations else block_calibrations[block_index]
             x = block_forward(x, block_param, block_calibration)
         final_calibration = None if layer_norm_calibration is None else layer_norm_calibration["final_norm"]
-        x = layer_norm(x, norm_weight, norm_bias, final_calibration)
+        x = layer_norm(
+            x,
+            norm_weight,
+            norm_bias,
+            final_calibration,
+            apply_affine=not layer_norm_affine_fused,
+        )
         cls_features = x[:, 0]
         return linear(cls_features, head_weight, head_bias)
 
@@ -654,7 +691,13 @@ def run_static_vit_forward_spu(
             block_calibration = None if not block_calibrations else block_calibrations[block_index]
             x = block_forward(x, block_param, block_calibration)
         final_calibration = None if layer_norm_calibration is None else layer_norm_calibration["final_norm"]
-        x = layer_norm(x, norm_weight, norm_bias, final_calibration)
+        x = layer_norm(
+            x,
+            norm_weight,
+            norm_bias,
+            final_calibration,
+            apply_affine=not layer_norm_affine_fused,
+        )
         cls_features = x[:, 0]
         return linear(cls_features, head_weight, head_bias)
 
@@ -706,13 +749,25 @@ def run_static_vit_forward_spu(
 
     def norm_head_fn(x, head_params):
         norm_weight, norm_bias, head_weight, head_bias, final_calibration = head_params
-        x = layer_norm(x, norm_weight, norm_bias, final_calibration)
+        x = layer_norm(
+            x,
+            norm_weight,
+            norm_bias,
+            final_calibration,
+            apply_affine=not layer_norm_affine_fused,
+        )
         cls_features = x[:, 0]
         return linear(cls_features, head_weight, head_bias)
 
     def norm_head_split_fn(x, final_head_params, final_calibration):
         norm_weight, norm_bias, head_weight, head_bias = final_head_params
-        x = layer_norm(x, norm_weight, norm_bias, final_calibration)
+        x = layer_norm(
+            x,
+            norm_weight,
+            norm_bias,
+            final_calibration,
+            apply_affine=not layer_norm_affine_fused,
+        )
         cls_features = x[:, 0]
         return linear(cls_features, head_weight, head_bias)
 
@@ -741,7 +796,12 @@ def run_static_vit_forward_spu(
         ) = stage_predictor_params
 
         # in_conv: LayerNorm -> Linear -> fixed_square(alpha*x)
-        x = layer_norm(spatial_x, in_norm_w, in_norm_b)
+        x = layer_norm(
+            spatial_x,
+            in_norm_w,
+            in_norm_b,
+            apply_affine=not predictor_layer_norm_affine_fused,
+        )
         x = linear(x, in_lin_w, in_lin_b)
         x = (
             x * x
@@ -894,7 +954,13 @@ def run_static_vit_forward_spu(
                     x = apply_spatial_mask(x, prev_decision)
 
         final_calibration = None if layer_norm_calibration is None else layer_norm_calibration["final_norm"]
-        x = layer_norm(x, norm_weight, norm_bias, final_calibration)
+        x = layer_norm(
+            x,
+            norm_weight,
+            norm_bias,
+            final_calibration,
+            apply_affine=not layer_norm_affine_fused,
+        )
         cls_features = x[:, 0]
         return linear(cls_features, head_weight, head_bias)
 
@@ -992,7 +1058,13 @@ def run_static_vit_forward_spu(
             )
 
         final_calibration = None if layer_norm_calibration is None else layer_norm_calibration["final_norm"]
-        x = layer_norm(x, norm_weight, norm_bias, final_calibration)
+        x = layer_norm(
+            x,
+            norm_weight,
+            norm_bias,
+            final_calibration,
+            apply_affine=not layer_norm_affine_fused,
+        )
         cls_features = x[:, 0]
         return linear(cls_features, head_weight, head_bias)
 

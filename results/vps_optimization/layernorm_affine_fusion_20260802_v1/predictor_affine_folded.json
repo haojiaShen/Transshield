@@ -1,0 +1,70 @@
+{
+  "manifest_type": "transshield_spu_layernorm_linear_benchmark_v1",
+  "captured_at_utc": "2026-08-02T10:42:17.615917+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.39",
+  "spu_version": "0.9.3b0",
+  "config": "/opt/transshield-project/results/vps_optimization/layernorm_affine_fusion_20260802_v1/configs/fxp16_default.json",
+  "runtime_config": {
+    "cheetah_2pc_config": {
+      "enable_mul_lsb_error": false,
+      "ot_kind": "YACL_Ferret"
+    },
+    "enable_hal_profile": false,
+    "enable_pphlo_profile": false,
+    "experimental_enable_colocated_optimization": true,
+    "field": "FM64",
+    "fxp_exp_iters": 4,
+    "fxp_exp_mode": 0,
+    "fxp_fraction_bits": 16,
+    "protocol": "CHEETAH"
+  },
+  "fold_layer_norm_affine": true,
+  "post_linear_normalization": false,
+  "ownership": {
+    "input": "P1",
+    "model_parameters": "P2",
+    "reveal": "full synthetic final linear output only"
+  },
+  "shape": {
+    "input": [
+      4,
+      196,
+      384
+    ],
+    "linear": [
+      784,
+      384,
+      192
+    ]
+  },
+  "epsilon": 1e-06,
+  "seed": 20260802,
+  "reference_output_sha256": "0e4ea607900b498cd91472c19bb9544c9bdd9fa0b2cd16ece220fc83e92073ad",
+  "repetitions": [
+    {
+      "repeat_index": 0,
+      "elapsed_sec": 6.92931623000004,
+      "loopback_tx_bytes": 73160742,
+      "loopback_rx_bytes": 73160742,
+      "output_sha256": "18869eaa3df29737b2f3abb8459e927586987e00f3805bd79cc577beb5f837d8",
+      "finite": true,
+      "reference_max_abs_error": 0.0034008026123046875,
+      "reference_mean_abs_error": 0.0005109613994136453
+    },
+    {
+      "repeat_index": 1,
+      "elapsed_sec": 1.7405705319999925,
+      "loopback_tx_bytes": 12295850,
+      "loopback_rx_bytes": 12295850,
+      "output_sha256": "2b0dc1fb0d1611dc5be888b960ca282bfbdd09978918c6151b66022699742ee7",
+      "finite": true,
+      "reference_max_abs_error": 0.0034160614013671875,
+      "reference_mean_abs_error": 0.0005109635530970991
+    }
+  ],
+  "acceptance": {
+    "real_valued_graph_equivalent": true,
+    "all_finite": true
+  }
+}

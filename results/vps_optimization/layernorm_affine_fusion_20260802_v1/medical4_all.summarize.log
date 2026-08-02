@@ -1,0 +1,46 @@
+{
+  "out": "/opt/transshield-project/results/vps_optimization/layernorm_affine_fusion_20260802_v1/medical4_all.summary.json",
+  "sample_count": 4,
+  "argmax_accuracy": 0.0,
+  "threshold_accuracy": 0.0,
+  "auc": null,
+  "sec_per_sample": 49.181489288806915,
+  "reference_comparison": {
+    "argmax_match_ratio": 1.0,
+    "threshold_match_ratio": 1.0,
+    "logits_max_abs_error": 0.0860137939453125,
+    "logits_mean_abs_error": 0.04151153564453125,
+    "probabilities_max_abs_error": 0.033950239419937134,
+    "probabilities_mean_abs_error": 0.019115321338176727,
+    "reference_argmax_accuracy": 0.0,
+    "reference_threshold_accuracy": 0.0,
+    "reference_auc": null
+  },
+  "network": {
+    "interface": "lo",
+    "before": {
+      "captured_at_utc": "2026-08-02T10:27:27.279269+00:00",
+      "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+      "interface": "lo",
+      "manifest_type": "transshield_vps_network_snapshot_v1",
+      "process": null,
+      "rx_bytes": 1656966390,
+      "tx_bytes": 1656966390
+    },
+    "after": {
+      "captured_at_utc": "2026-08-02T10:30:45.051828+00:00",
+      "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+      "interface": "lo",
+      "manifest_type": "transshield_vps_network_snapshot_v1",
+      "process": null,
+      "rx_bytes": 8138894355,
+      "tx_bytes": 8138894355
+    },
+    "tx_delta_bytes": 6481927965,
+    "rx_delta_bytes": 6481927965,
+    "loopback_total_bytes_rule": "use tx_delta once; loopback tx and rx mirror the same transferred bytes",
+    "total_bytes": 6481927965,
+    "total_gib": 6.036765840835869,
+    "per_sample_gib": 1.5091914602089673
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "manifest_type": "transshield_spu_layernorm_linear_benchmark_v1",
+  "captured_at_utc": "2026-08-02T10:42:47.565766+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.39",
+  "spu_version": "0.9.3b0",
+  "config": "/opt/transshield-project/results/vps_optimization/layernorm_affine_fusion_20260802_v1/configs/fxp16_default.json",
+  "runtime_config": {
+    "cheetah_2pc_config": {
+      "enable_mul_lsb_error": false,
+      "ot_kind": "YACL_Ferret"
+    },
+    "enable_hal_profile": false,
+    "enable_pphlo_profile": false,
+    "experimental_enable_colocated_optimization": true,
+    "field": "FM64",
+    "fxp_exp_iters": 4,
+    "fxp_exp_mode": 0,
+    "fxp_fraction_bits": 16,
+    "protocol": "CHEETAH"
+  },
+  "fold_layer_norm_affine": true,
+  "post_linear_normalization": false,
+  "ownership": {
+    "input": "P1",
+    "model_parameters": "P2",
+    "reveal": "full synthetic final linear output only"
+  },
+  "shape": {
+    "input": [
+      16,
+      1,
+      384
+    ],
+    "linear": [
+      16,
+      384,
+      2
+    ]
+  },
+  "epsilon": 1e-06,
+  "seed": 20260802,
+  "reference_output_sha256": "038b26e178295778a6e1bce839d090ca21348d797395748b628c4cc0be6d0614",
+  "repetitions": [
+    {
+      "repeat_index": 0,
+      "elapsed_sec": 0.21349030800001856,
+      "loopback_tx_bytes": 2842040,
+      "loopback_rx_bytes": 2842040,
+      "output_sha256": "016665763c47e047459190230aad0e2328dfb78aabb4a0500bc0f8d4fe115040",
+      "finite": true,
+      "reference_max_abs_error": 0.0019861459732055664,
+      "reference_mean_abs_error": 0.0005206089117564261
+    },
+    {
+      "repeat_index": 1,
+      "elapsed_sec": 0.04284085399990545,
+      "loopback_tx_bytes": 527661,
+      "loopback_rx_bytes": 527661,
+      "output_sha256": "48995914d08d680ea8e9bad0654d883cb7709957acd29fb93bf2720d73a352ea",
+      "finite": true,
+      "reference_max_abs_error": 0.0019556283950805664,
+      "reference_mean_abs_error": 0.0005229930975474417
+    },
+    {
+      "repeat_index": 2,
+      "elapsed_sec": 0.041544491999957245,
+      "loopback_tx_bytes": 527490,
+      "loopback_rx_bytes": 527490,
+      "output_sha256": "4710809db5a91d372162f699c0df8434ef3ed6622f2610cdd292b66ce105f0a6",
+      "finite": true,
+      "reference_max_abs_error": 0.0019708871841430664,
+      "reference_mean_abs_error": 0.0005249004461802542
+    }
+  ],
+  "acceptance": {
+    "real_valued_graph_equivalent": true,
+    "all_finite": true
+  }
+}

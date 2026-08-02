@@ -312,6 +312,8 @@ def load_static_vit_spu_params(
     attention_policy: str = "smoothed",
     activation_override: str = "bundle",
     token_ratio_base_override: float = 0.0,
+    fold_square_activation_scale: bool = False,
+    fold_layer_norm_affine: bool = False,
 ):
     return load_static_vit_spu_params_impl(
         bundle_dir,
@@ -319,6 +321,8 @@ def load_static_vit_spu_params(
         attention_policy=attention_policy,
         activation_override=activation_override,
         token_ratio_base_override=token_ratio_base_override,
+        fold_square_activation_scale=fold_square_activation_scale,
+        fold_layer_norm_affine=fold_layer_norm_affine,
     )
 
 
@@ -354,6 +358,9 @@ def command_run(args):
     square_activation_scale_fusion = str(args.spu_square_activation_scale_fusion)
     fold_mlp_square_activation_scale = square_activation_scale_fusion in {"mlp", "all"}
     fold_predictor_square_activation_scale = square_activation_scale_fusion == "all"
+    layer_norm_affine_fusion = str(args.spu_layer_norm_affine_fusion)
+    fold_backbone_layer_norm_affine = layer_norm_affine_fusion in {"backbone", "all"}
+    fold_predictor_layer_norm_affine = layer_norm_affine_fusion == "all"
     public_fixed_square_scale = bool(args.spu_public_fixed_square_scale)
     if public_fixed_square_scale and square_activation_scale_fusion != "none":
         raise ValueError(
@@ -536,6 +543,10 @@ def command_run(args):
                 fold_predictor_square_activation_scale=(
                     fold_predictor_square_activation_scale
                 ),
+                fold_layer_norm_affine=fold_backbone_layer_norm_affine,
+                fold_predictor_layer_norm_affine=(
+                    fold_predictor_layer_norm_affine
+                ),
             )
             forward_scope = spu_metadata.get("forward_scope", forward_scope)
         else:
@@ -546,6 +557,7 @@ def command_run(args):
                 activation_override=args.spu_activation_override,
                 token_ratio_base_override=getattr(args, 'spu_token_ratio_base_override', 0.0),
                 fold_square_activation_scale=fold_mlp_square_activation_scale,
+                fold_layer_norm_affine=fold_backbone_layer_norm_affine,
             )
         if public_fixed_square_scale:
             if str(spu_metadata.get("activation_kind")) != "fixed_square":
@@ -799,6 +811,7 @@ def command_run(args):
             ),
             "spu_square_activation_scale_fusion": square_activation_scale_fusion,
             "spu_public_fixed_square_scale": public_fixed_square_scale,
+            "spu_layer_norm_affine_fusion": layer_norm_affine_fusion,
             "spu_compile_cache_dir": args.spu_compile_cache_dir or None,
             "spu_token_ratio_base_override": float(getattr(args, "spu_token_ratio_base_override", 0.0)),
             "static_forward_metadata": spu_metadata,
@@ -908,6 +921,7 @@ def command_run(args):
             ),
             "spu_square_activation_scale_fusion": square_activation_scale_fusion,
             "spu_public_fixed_square_scale": public_fixed_square_scale,
+            "spu_layer_norm_affine_fusion": layer_norm_affine_fusion,
             "spu_compile_cache_dir": args.spu_compile_cache_dir or None,
             "spu_token_ratio_base_override": float(getattr(args, "spu_token_ratio_base_override", 0.0)),
             "runtime_pruning_keep_mask_pt": (
@@ -1961,6 +1975,17 @@ def build_parser():
         help=(
             "Keep fixed_square in its original position but compile its shared architecture "
             "scale as a public constant. The runner rejects non-fixed or non-uniform scales."
+        ),
+    )
+    run_parser.add_argument(
+        "--spu-layer-norm-affine-fusion",
+        choices=["none", "backbone", "all"],
+        default="none",
+        help=(
+            "Fold each LayerNorm gamma/beta into its following secret linear layer. "
+            "backbone covers transformer blocks and the final head; all also covers "
+            "PredictorLG. The real-valued function is unchanged, but fixed-point "
+            "operation order changes, so this remains an explicit research option."
         ),
     )
     run_parser.add_argument(

@@ -63,6 +63,30 @@ def run_static_vit_forward_spu(
     attention_policy = str(metadata.get("attention_policy", "smoothed"))
     attention_policy_eps = float(metadata["attention_policy_eps"])
     activation_kind = str(metadata["activation_kind"])
+    square_activation_scale_fused = bool(
+        metadata.get("square_activation_scale_fused", False)
+    )
+    predictor_square_activation_scale_fused = bool(
+        metadata.get("predictor_square_activation_scale_fused", False)
+    )
+    public_fixed_square_scale = metadata.get("public_fixed_square_scale")
+    if public_fixed_square_scale is not None:
+        public_fixed_square_scale = float(public_fixed_square_scale)
+        if activation_kind != "fixed_square":
+            raise ValueError(
+                "public fixed-square scale requires activation_kind=fixed_square"
+            )
+        if square_activation_scale_fused or predictor_square_activation_scale_fused:
+            raise ValueError(
+                "public fixed-square scale and weight folding are mutually exclusive"
+            )
+    if square_activation_scale_fused and activation_kind not in {
+        "fixed_square",
+        "learnable_square",
+    }:
+        raise ValueError(
+            "square activation scale fusion requires fixed_square or learnable_square"
+        )
     use_mask_pruning = bool(metadata.get("use_mask_pruning", False))
     pruning_loc, token_keep_counts = normalize_pruning_schedule(
         metadata.get("pruning_loc", ()),
@@ -284,6 +308,10 @@ def run_static_vit_forward_spu(
         if activation_kind == "gelu":
             return gelu_exact(x)
         if activation_kind in {"fixed_square", "learnable_square"}:
+            if square_activation_scale_fused:
+                return x * x
+            if public_fixed_square_scale is not None:
+                return public_fixed_square_scale * (x * x)
             return alpha * (x * x)
         if activation_kind in {"learnable_quadratic", "learnable_quadratic_gelu_init"}:
             return alpha * (x * x) + beta * x
@@ -714,7 +742,15 @@ def run_static_vit_forward_spu(
         # in_conv: LayerNorm -> Linear -> fixed_square(alpha*x)
         x = layer_norm(spatial_x, in_norm_w, in_norm_b)
         x = linear(x, in_lin_w, in_lin_b)
-        x = in_act_alpha * (x * x)
+        x = (
+            x * x
+            if predictor_square_activation_scale_fused
+            else (
+                public_fixed_square_scale * (x * x)
+                if public_fixed_square_scale is not None
+                else in_act_alpha * (x * x)
+            )
+        )
 
         feat_dim = int(x.shape[-1])  # 384
         half = feat_dim // 2          # 192
@@ -739,9 +775,25 @@ def run_static_vit_forward_spu(
 
         # out_conv: Linear -> square -> Linear -> square
         x = linear(x, out0_w, out0_b)
-        x = out0_alpha * (x * x)
+        x = (
+            x * x
+            if predictor_square_activation_scale_fused
+            else (
+                public_fixed_square_scale * (x * x)
+                if public_fixed_square_scale is not None
+                else out0_alpha * (x * x)
+            )
+        )
         x = linear(x, out1_w, out1_b)
-        x = out1_alpha * (x * x)
+        x = (
+            x * x
+            if predictor_square_activation_scale_fused
+            else (
+                public_fixed_square_scale * (x * x)
+                if public_fixed_square_scale is not None
+                else out1_alpha * (x * x)
+            )
+        )
 
         # out_proj: Linear -> clamp.  For the default no-recycling path, ranking
         # keep log-probability is exactly equivalent to ranking logit0-logit1,
@@ -1581,6 +1633,11 @@ def run_static_vit_forward_spu(
                 "secure_pruning_network": secure_pruning_network,
                 "uniform_attention_projection_fused": attention_policy == "uniform",
                 "uniform_attention_value_fused": uniform_attention_value_fusion,
+                "square_activation_scale_fused": square_activation_scale_fused,
+                "predictor_square_activation_scale_fused": (
+                    predictor_square_activation_scale_fused
+                ),
+                "public_fixed_square_scale": public_fixed_square_scale,
                 "final_block_cls_only": final_block_cls_only,
                 "logical_block_token_positions": int(
                     logical_token_count * int(metadata["depth"])

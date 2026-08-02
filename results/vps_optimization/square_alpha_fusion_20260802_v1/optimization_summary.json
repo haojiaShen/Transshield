@@ -1,0 +1,236 @@
+{
+  "manifest_type": "transshield_spu_square_scale_optimization_summary_v1",
+  "captured_at_utc": "2026-08-02T08:10:03.218871+00:00",
+  "status": "rejected_not_promoted",
+  "formal_results_changed": false,
+  "showcase_default_changed": false,
+  "runtime_default_changed": false,
+  "vps_only_model_testing": true,
+  "objective": "Remove avoidable fixed-square scale MPC work without changing model width, depth, weights, pruning counts, protocol, field, fixed-point precision, or reveal policy.",
+  "baseline": {
+    "source": "results/vps_optimization/batch_scaling_20260802_v1/optimization_summary.json",
+    "workload": "medical_secure_deployment_batch",
+    "sample_count": 32,
+    "spu_batch_size": 16,
+    "spu_forward_wall_sec": 1060.9676724210003,
+    "loopback_gib": 49.504402126185596,
+    "threshold_accuracy": 0.9375,
+    "auc": 0.98046875,
+    "decision_threshold": 0.688152923150007
+  },
+  "acceptance_gate": {
+    "spu_forward_wall_sec": "strictly below 1060.9676724210003",
+    "loopback_gib": "no greater than 49.504402126185596",
+    "threshold_accuracy": "at least 0.9375 on every full run",
+    "auc": "at least 0.98046875 on every full run",
+    "repeat_rule": "A full candidate is promoted only after repeated fresh-node runs pass every gate."
+  },
+  "profile": {
+    "bundle": "artifacts/frozen_bundle_medical_dynamic_mainline",
+    "sample_list": "archive/old_runs/artifacts/server_pipeline_run/medical_dynamic_prepare_final/e2e_secure_poc/smoke32_balanced_evenly_spaced.txt",
+    "sample_count": 32,
+    "spu_batch_size": 16,
+    "token_ratio_base_override": 0.655,
+    "token_keep_counts": [128, 84, 55],
+    "static_depth": 10,
+    "params_mode": "secret",
+    "layer_norm_policy": "exact",
+    "attention_policy": "uniform",
+    "activation": "fixed_square",
+    "fixed_square_scale": 0.25,
+    "secure_pruning_mode": "compact",
+    "secure_pruning_network": "unpadded_selection",
+    "final_block_cls_only": true,
+    "uniform_attention_value_fusion": true,
+    "input_mode": "party_local_debug_share_load",
+    "reveal_policy": "final_logits_only",
+    "protocol": "CHEETAH",
+    "ot_kind": "YACL_Ferret",
+    "field": "FM64",
+    "fxp_fraction_bits": 16
+  },
+  "hypotheses": {
+    "weight_folding": {
+      "identity_over_real_arithmetic": "linear(alpha * square(x), W, b) = linear(square(x), alpha * W, b)",
+      "implementation": "Fold alpha into the following regular or decomposed linear weight on the model host and remove the secret scalar multiply.",
+      "fixed_point_risk": "The transform changes truncation order, so real-arithmetic equivalence does not guarantee FM64/fxp16 output identity."
+    },
+    "public_architecture_constant": {
+      "identity": "Keep alpha * square(x) at the original graph location and compile the common fixed alpha as a public scalar.",
+      "validation": "All 10 executed MLP scales and all 9 PredictorLG scales were verified as exactly 0.25 before graph construction.",
+      "privacy_scope": "Only the fixed activation architecture constant is public. Inputs, learned weights, predictor weights, intermediate values, and final reveal policy are unchanged."
+    }
+  },
+  "mlp_microbenchmark": {
+    "shape": {
+      "batch_size": 16,
+      "token_count": 197,
+      "embed_dim": 384,
+      "mlp_dim": 1536
+    },
+    "baseline_secret_alpha": {
+      "hot_mean_sec": 48.03741472599904,
+      "hot_mean_tx_bytes": 2028133734,
+      "hot_max_reference_abs_error": 0.00009535253047943115
+    },
+    "weight_folding": {
+      "hot_mean_sec": 43.69579913600137,
+      "time_delta_percent": -9.037987607705045,
+      "hot_mean_tx_bytes": 1339178967.5,
+      "communication_delta_percent": -33.96988842255509,
+      "hot_max_reference_abs_error": 0.0000812038779258728
+    },
+    "public_architecture_constant": {
+      "hot_mean_sec": 44.64813581550152,
+      "time_delta_percent": -7.055498156654883,
+      "hot_mean_tx_bytes": 1349491179,
+      "communication_delta_percent": -33.46143026089028,
+      "hot_max_reference_abs_error": 0.00008499622344970703
+    }
+  },
+  "medical4_screen": {
+    "baseline": {
+      "spu_forward_wall_sec": 195.03517579300023,
+      "loopback_gib": 6.591340051963925,
+      "threshold_accuracy": 1.0
+    },
+    "weight_folding_all": {
+      "spu_forward_wall_sec": 185.39610711299974,
+      "time_delta_percent": -4.942220622925408,
+      "loopback_gib": 5.435292839072645,
+      "communication_delta_percent": -17.538879860201263,
+      "threshold_accuracy": 1.0,
+      "threshold_match_ratio": 1.0,
+      "probabilities_max_abs_error": 0.006255060434341431
+    },
+    "weight_folding_mlp_only": {
+      "spu_forward_wall_sec": 192.3027500740027,
+      "time_delta_percent": -1.4009912354977394,
+      "loopback_gib": 5.640117115341127,
+      "communication_delta_percent": -14.431404374886958,
+      "threshold_accuracy": 1.0,
+      "threshold_match_ratio": 1.0,
+      "probabilities_max_abs_error": 0.01661616563796997
+    },
+    "public_architecture_constant": {
+      "spu_forward_wall_sec": 194.19118660000095,
+      "time_delta_percent": -0.43273690992801095,
+      "loopback_gib": 5.5104520339518785,
+      "communication_delta_percent": -16.398608014314032,
+      "threshold_accuracy": 1.0,
+      "threshold_match_ratio": 1.0,
+      "probabilities_max_abs_error": 0.02170923352241516
+    }
+  },
+  "medical32_validation": {
+    "weight_folding_all_run1": {
+      "spu_forward_wall_sec": 1021.4209189270005,
+      "time_delta_percent": -3.7274230423778087,
+      "loopback_gib": 40.345953463576734,
+      "communication_delta_percent": -18.50027122691874,
+      "threshold_accuracy": 0.96875,
+      "auc": 0.98046875,
+      "passed_gate": true
+    },
+    "weight_folding_all_repeat2": {
+      "spu_forward_wall_sec": 1009.0577103899996,
+      "time_delta_percent": -4.892699691079983,
+      "loopback_gib": 40.34610148426145,
+      "communication_delta_percent": -18.499972221823512,
+      "threshold_accuracy": 0.96875,
+      "auc": 0.9765625,
+      "passed_gate": false,
+      "failed_gate": "auc"
+    },
+    "weight_folding_mlp_only_run1": {
+      "spu_forward_wall_sec": 1021.1436967910013,
+      "time_delta_percent": -3.7535522207877925,
+      "loopback_gib": 41.512207818217576,
+      "communication_delta_percent": -16.144411334563948,
+      "threshold_accuracy": 0.90625,
+      "auc": 0.9765625,
+      "passed_gate": false,
+      "failed_gate": "threshold_accuracy_and_auc"
+    },
+    "public_architecture_constant_run1": {
+      "spu_forward_wall_sec": 1026.4601208429995,
+      "time_delta_percent": -3.2524602280537662,
+      "loopback_gib": 40.484745842404664,
+      "communication_delta_percent": -18.21990751608318,
+      "threshold_accuracy": 0.96875,
+      "auc": 0.9765625,
+      "passed_gate": false,
+      "failed_gate": "auc"
+    }
+  },
+  "secure_pruning_audit": {
+    "current_network": "exact unpadded output-sliced bitonic network",
+    "stages": [
+      {
+        "input_tokens": 196,
+        "keep_count": 128,
+        "current_topk_comparators": 2842,
+        "threshold_only_comparators": 2521
+      },
+      {
+        "input_tokens": 128,
+        "keep_count": 84,
+        "current_topk_comparators": 1696,
+        "threshold_only_comparators": 1471
+      },
+      {
+        "input_tokens": 84,
+        "keep_count": 55,
+        "current_topk_comparators": 749,
+        "threshold_only_comparators": 749,
+        "note": "The final CLS-only stage already uses threshold-only selection."
+      }
+    ],
+    "decision": "Do not replace the first two top-k payload networks with threshold-only selection until an exact lower-cost oblivious compaction is available; threshold selection alone cannot physically shorten secret token payloads."
+  },
+  "resource_hygiene": {
+    "fresh_nodes_per_full_run": true,
+    "observed_failed_trial": "One pre-validation attempt reused nodes after multiple micro and medical4 jobs and was killed by the host OOM killer.",
+    "failed_trial_peak_process_rss_kib": 32929644,
+    "interpretation": "The failed trial produced no model result and is excluded from candidate metrics. All reported medical32 results used freshly restarted SPU nodes."
+  },
+  "environment": {
+    "host": "47.120.31.48",
+    "architecture": "x86_64",
+    "cpu": "Intel Xeon Platinum",
+    "vcpu": 16,
+    "memory_gib_approx": 61.4,
+    "python": "3.9.25",
+    "spu": "0.9.3b0",
+    "jax": "0.4.30",
+    "jaxlib": "0.4.30",
+    "colocated_optimization": true
+  },
+  "verification": {
+    "vps_py_compile": "PASS",
+    "vps_unittest": "26/26 PASS",
+    "vps_unittest_elapsed_sec": 16.835,
+    "test_logs": [
+      "test_logs/unittest.exit_code",
+      "test_logs/unittest.stdout.log",
+      "test_logs/unittest.stderr.log",
+      "test_logs/unittest.time.log",
+      "test_logs/tested_source.sha256"
+    ],
+    "local_model_tests_run": false,
+    "formal_result_directories_modified": false
+  },
+  "tested_source_sha256": {
+    "static_vit_params.py": "cd7a3329ff149a1e6ed096d2b05b2b2e55a09e40cd8a0583b2238ae306ba19f2",
+    "spu_static_vit.py": "b1798412707cf4a23835053758276670bae99199df0b20e8a372caef7c2a9f4c",
+    "transshield_e2e_secure_vit.py": "2632468a83030c589b4439a3433a5dda8a96a9908d460fffca575b0c8d9c1b42",
+    "benchmark_spu_mlp.py": "10eb8f8a86087239d546493bfe4cac55912e14cb0ae924344286b38877d15628",
+    "medical4_sample_list.txt": "a7815621704de56573b7a4bcdeff23d0694d73cd7caf783e2c13e99ec55e99c7"
+  },
+  "verdict": {
+    "weight_folding": "Rejected: repeat full validation failed the AUC gate, and MLP-only folding also failed threshold accuracy.",
+    "public_architecture_constant": "Rejected for promotion: communication and time improved, but the first full validation missed the strict AUC gate.",
+    "code_policy": "Both research paths remain explicit opt-in flags with safe defaults disabled; neither changes the formal showcase or accepted runtime profile.",
+    "next_target": "An exact lower-cost top-k plus oblivious payload compaction design, or an upstream truncation/kernel change with repeated full-model stability evidence."
+  }
+}

@@ -21,6 +21,97 @@ def softplus_scalar(value):
     return np.asarray(np.logaddexp(float(value), 0.0), dtype=np.float32)
 
 
+def resolve_uniform_fixed_square_scale(params, predictor_params=None):
+    """Return the common fixed-square scale after validating every activation.
+
+    Publishing this value is only safe as a graph optimization when it is an
+    architecture constant shared by all executed MLP and PredictorLG square
+    activations.  Keep the validation next to parameter loading so a different
+    bundle cannot silently inherit the optimization.
+    """
+    import math
+
+    values = [float(block_params[10]) for block_params in params[4]]
+    if predictor_params is not None:
+        for stage_params in predictor_params:
+            values.extend(float(stage_params[index]) for index in (4, 7, 10))
+    if not values:
+        raise ValueError("public fixed-square scale requires at least one activation")
+    scale = values[0]
+    if not math.isfinite(scale):
+        raise ValueError(f"fixed-square scale must be finite, got {scale}")
+    if any(value != scale for value in values[1:]):
+        raise ValueError(
+            "public fixed-square scale requires one identical architecture constant; "
+            f"observed={values}"
+        )
+    return scale
+
+
+def fold_input_scale_into_linear_weight(weight, scale):
+    """Fold a scalar input multiplier into the following linear weight.
+
+    For a regular linear layer, ``linear(scale * x, weight, bias)`` equals
+    ``linear(x, scale * weight, bias)`` over real arithmetic.  For a
+    decomposed linear layer, scaling the first (down) matrix has the same
+    effect and leaves the second matrix and bias unchanged.
+    """
+    import numpy as np
+
+    scale = np.asarray(scale, dtype=np.float32)
+    if scale.size != 1:
+        raise ValueError(f"linear input scale must be scalar, got shape={scale.shape}")
+    if isinstance(weight, tuple):
+        if len(weight) != 2:
+            raise ValueError("decomposed linear weight must contain down and up matrices")
+        down_weight, up_weight = weight
+        return (
+            np.asarray(np.asarray(down_weight, dtype=np.float32) * scale, dtype=np.float32),
+            up_weight,
+        )
+    return np.asarray(np.asarray(weight, dtype=np.float32) * scale, dtype=np.float32)
+
+
+def fold_predictor_square_activation_scales(stage_params):
+    """Fold PredictorLG's three square scales into their following linears."""
+    import numpy as np
+
+    (
+        in_norm_w,
+        in_norm_b,
+        in_lin_w,
+        in_lin_b,
+        in_act_alpha,
+        out0_w,
+        out0_b,
+        out0_alpha,
+        out1_w,
+        out1_b,
+        out1_alpha,
+        out_proj_w,
+        out_proj_b,
+    ) = stage_params
+    out0_w = fold_input_scale_into_linear_weight(out0_w, in_act_alpha)
+    out1_w = fold_input_scale_into_linear_weight(out1_w, out0_alpha)
+    out_proj_w = fold_input_scale_into_linear_weight(out_proj_w, out1_alpha)
+    one = np.asarray(1.0, dtype=np.float32)
+    return (
+        in_norm_w,
+        in_norm_b,
+        in_lin_w,
+        in_lin_b,
+        one,
+        out0_w,
+        out0_b,
+        one,
+        out1_w,
+        out1_b,
+        one,
+        out_proj_w,
+        out_proj_b,
+    )
+
+
 def resolve_block_activation_params(state_dict, block_index: int, activation_kind: str):
     import numpy as np
 
@@ -106,10 +197,12 @@ def load_static_vit_spu_params(
     attention_policy: str = "smoothed",
     activation_override: str = "bundle",
     token_ratio_base_override: float = 0.0,
+    fold_square_activation_scale: bool = False,
     *,
     preloaded_args_snapshot=None,
     preloaded_state_dict=None,
 ):
+    import numpy as np
     import torch
 
     from tools.transshield_stage2_bundle import load_json as load_stage2_json
@@ -134,6 +227,14 @@ def load_static_vit_spu_params(
     )
     base_activation_kind = resolve_static_activation_kind(args_snapshot)
     activation_kind = resolve_spu_activation_kind(base_activation_kind, activation_override)
+    fold_square_activation_scale = bool(fold_square_activation_scale)
+    if fold_square_activation_scale and activation_kind not in {
+        "fixed_square",
+        "learnable_square",
+    }:
+        raise ValueError(
+            "square activation scale fusion requires fixed_square or learnable_square"
+        )
     bundle_base_rate = float(args_snapshot["base_rate"])
     if token_ratio_base_override > 0.0:
         base_rate = token_ratio_base_override
@@ -181,6 +282,10 @@ def load_static_vit_spu_params(
                 bk = f"{layer_prefix}.1.bias"
                 return required(bk) if bk in state_dict else numpy_from_torch_tensor(torch.zeros(1))
 
+            fc2_weight = _decomp_w(f"{prefix}.mlp.fc2")
+            if fold_square_activation_scale:
+                fc2_weight = fold_input_scale_into_linear_weight(fc2_weight, act_alpha)
+                act_alpha = np.asarray(1.0, dtype=np.float32)
             block_params.append(
                 (
                     required(f"{prefix}.norm1.weight"),
@@ -195,11 +300,15 @@ def load_static_vit_spu_params(
                     _decomp_b(f"{prefix}.mlp.fc1"),
                     act_alpha,
                     act_beta,
-                    _decomp_w(f"{prefix}.mlp.fc2"),
+                    fc2_weight,
                     _decomp_b(f"{prefix}.mlp.fc2"),
                 )
             )
         else:
+            fc2_weight = required(f"{prefix}.mlp.fc2.weight")
+            if fold_square_activation_scale:
+                fc2_weight = fold_input_scale_into_linear_weight(fc2_weight, act_alpha)
+                act_alpha = np.asarray(1.0, dtype=np.float32)
             block_params.append(
                 (
                     required(f"{prefix}.norm1.weight"),
@@ -214,7 +323,7 @@ def load_static_vit_spu_params(
                     required(f"{prefix}.mlp.fc1.bias"),
                     act_alpha,
                     act_beta,
-                    required(f"{prefix}.mlp.fc2.weight"),
+                    fc2_weight,
                     required(f"{prefix}.mlp.fc2.bias"),
                 )
             )
@@ -235,6 +344,7 @@ def load_static_vit_spu_params(
         "base_activation_kind": base_activation_kind,
         "activation_kind": activation_kind,
         "activation_override": str(activation_override),
+        "square_activation_scale_fused": fold_square_activation_scale,
         "full_depth": full_depth,
         "depth": depth,
         "static_depth_limit": int(static_depth_limit),
@@ -288,7 +398,12 @@ def resolve_predictor_activation_alpha(state_dict, predictor_index: int, sub_mod
     return np.asarray(float(value.detach().cpu().item()), dtype=np.float32)
 
 
-def load_static_vit_spu_predictor_params(state_dict, pruning_loc):
+def load_static_vit_spu_predictor_params(
+    state_dict,
+    pruning_loc,
+    *,
+    fold_square_activation_scale: bool = False,
+):
     """Extract PredictorLG weights as numpy tuples for SPU secure pruning.
 
     Returns a tuple of predictor stages, each stage being:
@@ -300,7 +415,7 @@ def load_static_vit_spu_predictor_params(state_dict, pruning_loc):
     predictor_params = []
     for stage_index, _ in enumerate(pruning_loc):
         prefix = f"score_predictor.{stage_index}"
-        predictor_params.append((
+        stage_params = (
             numpy_from_torch_tensor(state_dict[f"{prefix}.in_conv.0.weight"]),    # LayerNorm weight [384]
             numpy_from_torch_tensor(state_dict[f"{prefix}.in_conv.0.bias"]),      # LayerNorm bias [384]
             numpy_from_torch_tensor(state_dict[f"{prefix}.in_conv.1.weight"]),    # Linear weight [384, 384]
@@ -314,7 +429,10 @@ def load_static_vit_spu_predictor_params(state_dict, pruning_loc):
             resolve_predictor_activation_alpha(state_dict, stage_index, "out_conv.3"),  # square alpha scalar
             numpy_from_torch_tensor(state_dict[f"{prefix}.out_proj.weight"]),     # Linear weight [2, 96]
             numpy_from_torch_tensor(state_dict[f"{prefix}.out_proj.bias"]),       # Linear bias [2]
-        ))
+        )
+        if fold_square_activation_scale:
+            stage_params = fold_predictor_square_activation_scales(stage_params)
+        predictor_params.append(stage_params)
     return tuple(predictor_params)
 
 
@@ -324,6 +442,8 @@ def load_static_vit_spu_params_with_predictor(
     attention_policy: str = "smoothed",
     activation_override: str = "bundle",
     token_ratio_base_override: float = 0.0,
+    fold_square_activation_scale: bool = False,
+    fold_predictor_square_activation_scale: bool = False,
 ):
     """Load SPU params including PredictorLG weights for secure in-SPU pruning.
 
@@ -349,13 +469,18 @@ def load_static_vit_spu_params_with_predictor(
     params, metadata = load_static_vit_spu_params(
         bundle_dir, static_depth_limit, attention_policy, activation_override,
         token_ratio_base_override=token_ratio_base_override,
+        fold_square_activation_scale=fold_square_activation_scale,
         preloaded_args_snapshot=args_snapshot,
         preloaded_state_dict=state_dict,
     )
 
     # Extract predictor params
     pruning_loc = metadata["pruning_loc"]
-    predictor_params = load_static_vit_spu_predictor_params(state_dict, pruning_loc)
+    predictor_params = load_static_vit_spu_predictor_params(
+        state_dict,
+        pruning_loc,
+        fold_square_activation_scale=fold_predictor_square_activation_scale,
+    )
 
     # Compute token keep counts (use metadata which respects token_ratio_base_override)
     base_rate = float(metadata.get("base_rate", args_snapshot["base_rate"]))
@@ -367,6 +492,9 @@ def load_static_vit_spu_params_with_predictor(
     # Update metadata
     metadata["forward_scope"] = SECURE_PRUNING_FORWARD_SCOPE
     metadata["has_predictor_params"] = True
+    metadata["predictor_square_activation_scale_fused"] = bool(
+        fold_predictor_square_activation_scale
+    )
     metadata["token_keep_counts"] = list(token_keep_counts)
     metadata["eval_pruning_mode"] = str(args_snapshot.get("eval_pruning_mode", "topk_argsort"))
     metadata["eval_tie_policy"] = str(args_snapshot.get("eval_tie_policy", "lowest_index"))

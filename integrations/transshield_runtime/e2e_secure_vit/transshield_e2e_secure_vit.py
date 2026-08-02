@@ -64,6 +64,7 @@ from integrations.transshield_runtime.e2e_secure_vit.static_vit_params import ( 
     STATIC_FORWARD_SCOPE,
     load_static_vit_spu_params as load_static_vit_spu_params_impl,
     normalize_depth_limit as normalize_depth_limit_impl,
+    resolve_uniform_fixed_square_scale,
 )
 
 
@@ -350,6 +351,15 @@ def command_run(args):
     command_started = time.perf_counter()
     helpers = load_runtime_helpers()
     runtime = args.runtime
+    square_activation_scale_fusion = str(args.spu_square_activation_scale_fusion)
+    fold_mlp_square_activation_scale = square_activation_scale_fusion in {"mlp", "all"}
+    fold_predictor_square_activation_scale = square_activation_scale_fusion == "all"
+    public_fixed_square_scale = bool(args.spu_public_fixed_square_scale)
+    if public_fixed_square_scale and square_activation_scale_fusion != "none":
+        raise ValueError(
+            "--spu-public-fixed-square-scale and square activation weight folding "
+            "are mutually exclusive"
+        )
 
     bundle_dir = helpers["resolve_bundle_dir"](args.bundle_dir)
     input_pt = Path(args.input_pt).expanduser().resolve() if args.input_pt else None
@@ -522,6 +532,10 @@ def command_run(args):
                 attention_policy=args.spu_attention_policy,
                 activation_override=args.spu_activation_override,
                 token_ratio_base_override=getattr(args, 'spu_token_ratio_base_override', 0.0),
+                fold_square_activation_scale=fold_mlp_square_activation_scale,
+                fold_predictor_square_activation_scale=(
+                    fold_predictor_square_activation_scale
+                ),
             )
             forward_scope = spu_metadata.get("forward_scope", forward_scope)
         else:
@@ -531,6 +545,15 @@ def command_run(args):
                 attention_policy=args.spu_attention_policy,
                 activation_override=args.spu_activation_override,
                 token_ratio_base_override=getattr(args, 'spu_token_ratio_base_override', 0.0),
+                fold_square_activation_scale=fold_mlp_square_activation_scale,
+            )
+        if public_fixed_square_scale:
+            if str(spu_metadata.get("activation_kind")) != "fixed_square":
+                raise ValueError(
+                    "--spu-public-fixed-square-scale requires fixed_square activation"
+                )
+            spu_metadata["public_fixed_square_scale"] = (
+                resolve_uniform_fixed_square_scale(params, predictor_params_np)
             )
         layer_norm_calibration = None
         if args.spu_layer_norm_policy == "public_calibrated":
@@ -774,6 +797,8 @@ def command_run(args):
             "spu_uniform_attention_value_fusion": bool(
                 args.spu_uniform_attention_value_fusion
             ),
+            "spu_square_activation_scale_fusion": square_activation_scale_fusion,
+            "spu_public_fixed_square_scale": public_fixed_square_scale,
             "spu_compile_cache_dir": args.spu_compile_cache_dir or None,
             "spu_token_ratio_base_override": float(getattr(args, "spu_token_ratio_base_override", 0.0)),
             "static_forward_metadata": spu_metadata,
@@ -881,6 +906,8 @@ def command_run(args):
             "spu_uniform_attention_value_fusion": bool(
                 args.spu_uniform_attention_value_fusion
             ),
+            "spu_square_activation_scale_fusion": square_activation_scale_fusion,
+            "spu_public_fixed_square_scale": public_fixed_square_scale,
             "spu_compile_cache_dir": args.spu_compile_cache_dir or None,
             "spu_token_ratio_base_override": float(getattr(args, "spu_token_ratio_base_override", 0.0)),
             "runtime_pruning_keep_mask_pt": (
@@ -1903,6 +1930,31 @@ def build_parser():
             "For uniform attention, average normalized tokens before the V projection. "
             "This is exact over real arithmetic but changes fixed-point truncation order, "
             "so it must be accuracy-validated for the selected runtime field."
+        ),
+    )
+    run_parser.add_argument(
+        "--spu-square-activation-scale-fusion",
+        choices=["none", "mlp", "all"],
+        default="none",
+        help=(
+            "Fold square activation alpha into following secret linear weights. mlp limits "
+            "fusion to transformer MLPs; all also folds PredictorLG activations. Both preserve "
+            "the real-valued function while removing secret multiplies and truncations."
+        ),
+    )
+    run_parser.add_argument(
+        "--spu-fold-square-activation-scale",
+        dest="spu_square_activation_scale_fusion",
+        action="store_const",
+        const="all",
+        help=argparse.SUPPRESS,
+    )
+    run_parser.add_argument(
+        "--spu-public-fixed-square-scale",
+        action="store_true",
+        help=(
+            "Keep fixed_square in its original position but compile its shared architecture "
+            "scale as a public constant. The runner rejects non-fixed or non-uniform scales."
         ),
     )
     run_parser.add_argument(

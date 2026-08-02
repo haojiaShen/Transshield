@@ -1,0 +1,22 @@
+{
+  "allow_cheetah_mul_lsb_error": false,
+  "cheetah_disable_matmul_pack": false,
+  "cheetah_mixed_compare_mode": 0,
+  "config_path": "/opt/transshield-project/results/vps_optimization/thread_tuning_20260802_v1/configs/fxp16_c8.json",
+  "disable_colocated_optimization": false,
+  "disable_matmul_pack": false,
+  "enable_mul_lsb_error": false,
+  "mixed_compare_mode": 0,
+  "node_processes": [],
+  "nodes": {
+    "node:0": "127.0.0.1:45463",
+    "node:1": "127.0.0.1:41253"
+  },
+  "remove_unsupported_cheetah_fields": false,
+  "spu_internal_addrs": [
+    "127.0.0.1:44565",
+    "127.0.0.1:43479"
+  ],
+  "template_path": "/opt/transshield-project/configs/openbumblebee/2pc.template.json"
+}
+SPU nodes started and warmed up; state=/opt/transshield-project/results/vps_optimization/thread_tuning_20260802_v1/spu_runtime_state_c8.json

@@ -107,6 +107,7 @@ def run_static_vit_forward_spu(
         "full_sort",
         "selection",
         "unpadded_selection",
+        "odd_even_selection",
     }:
         raise ValueError(f"unsupported secure_pruning_network: {secure_pruning_network}")
     final_block_cls_only = bool(final_block_cls_only)

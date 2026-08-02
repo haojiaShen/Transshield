@@ -1,0 +1,148 @@
+{
+  "manifest_type": "transshield_spu_thread_tuning_summary_v1",
+  "captured_at_utc": "2026-08-02T09:24:16+00:00",
+  "status": "rejected_at_medical32_strict_gate",
+  "formal_results_changed": false,
+  "default_runtime_changed": false,
+  "vps_only_model_testing": true,
+  "environment": {
+    "host": "47.120.31.48",
+    "vcpu": 16,
+    "physical_cores": 8,
+    "memory_gib_approx": 61.4,
+    "spu": "0.9.3b0",
+    "jax": "0.4.30",
+    "protocol": "CHEETAH",
+    "field": "FM64",
+    "fxp_fraction_bits": 16
+  },
+  "candidate": {
+    "runtime_option": "max_concurrency",
+    "tested_values": [
+      7,
+      8,
+      9,
+      10
+    ],
+    "local_microbenchmark_winner": 8,
+    "production_default_changed": false
+  },
+  "mlp_microbenchmark": {
+    "graph": "x + (0.25 * square(x @ W1.T + b1)) @ W2.T + b2",
+    "shape": {
+      "input": [
+        16,
+        197,
+        384
+      ],
+      "fc1": [
+        3152,
+        384,
+        1536
+      ],
+      "fc2": [
+        3152,
+        1536,
+        384
+      ]
+    },
+    "metric": "mean elapsed time of repetitions 1 and 2; repetition 0 treated as cold",
+    "default_baseline": {
+      "source": "../square_alpha_fusion_20260802_v1/optimization_summary.json",
+      "hot_mean_sec": 48.03741472599904,
+      "hot_mean_tx_bytes": 2028133734
+    },
+    "sweep": [
+      {
+        "max_concurrency": 7,
+        "source": "mlp_alpha025_c7.json",
+        "hot_mean_sec": 50.60267223750088,
+        "time_delta_percent": 5.3401239973754455
+      },
+      {
+        "max_concurrency": 8,
+        "source": "mlp_alpha025_c8.json",
+        "hot_mean_sec": 44.20626959149922,
+        "time_delta_percent": -7.975335800963301,
+        "hot_mean_tx_bytes": 2028097235.5,
+        "all_finite": true,
+        "reference_max_abs_error_did_not_increase": true
+      },
+      {
+        "max_concurrency": 9,
+        "source": "mlp_alpha025_c9.json",
+        "hot_mean_sec": 54.76925848499923,
+        "time_delta_percent": 14.013751150843557
+      },
+      {
+        "max_concurrency": 10,
+        "source": "mlp_alpha025_c10.json",
+        "hot_mean_sec": 55.09873770749982,
+        "time_delta_percent": 14.699631572135829
+      }
+    ]
+  },
+  "medical4_screen": {
+    "baseline": {
+      "source": "../square_alpha_fusion_20260802_v1/medical4_baseline.summary.json",
+      "spu_forward_wall_sec": 195.03517579300023,
+      "loopback_gib": 6.591340051963925,
+      "threshold_accuracy": 1.0
+    },
+    "max_concurrency_8": {
+      "source": "medical4_c8.summary.json",
+      "spu_forward_wall_sec": 187.3523519870032,
+      "loopback_gib": 6.620785439386964,
+      "threshold_accuracy": 1.0,
+      "time_delta_percent": -3.9391990571747804,
+      "communication_delta_percent": 0.4467283919643128
+    }
+  },
+  "medical32_validation": {
+    "baseline": {
+      "source": "../batch_scaling_20260802_v1/optimization_summary.json",
+      "spu_forward_wall_sec": 1060.9676724210003,
+      "loopback_gib": 49.504402126185596,
+      "threshold_accuracy": 0.9375,
+      "auc": 0.98046875
+    },
+    "max_concurrency_8_run1": {
+      "source": "medical32_c8_run1.summary.json",
+      "spu_forward_wall_sec": 1028.992535942998,
+      "chunk_wall_sec": [
+        518.5692764470004,
+        509.77074256999913
+      ],
+      "loopback_gib": 49.534866835922,
+      "threshold_accuracy": 0.90625,
+      "auc": 0.96484375,
+      "argmax_accuracy": 0.5,
+      "argmax_match_ratio": 1.0,
+      "threshold_match_ratio": 0.96875,
+      "probabilities_max_abs_error": 0.0283677875995636,
+      "time_delta_percent": -3.0137710421504926,
+      "communication_delta_percent": 0.061539395342569136,
+      "threshold_accuracy_delta_points": -3.125,
+      "auc_delta": -0.015625
+    }
+  },
+  "acceptance_gate": {
+    "require_time_reduction": true,
+    "require_no_communication_regression": true,
+    "minimum_threshold_accuracy": 0.9375,
+    "minimum_auc": 0.98046875,
+    "time_pass": true,
+    "communication_pass": false,
+    "threshold_accuracy_pass": false,
+    "auc_pass": false,
+    "overall_pass": false,
+    "repeat_full_run_executed": false,
+    "repeat_skip_reason": "The first medical32 run failed communication, threshold-accuracy, and AUC gates."
+  },
+  "interpretation": [
+    "max_concurrency=8 reduced local MLP and full-graph wall time on this 8-core SMT host.",
+    "The mathematical graph and model settings were unchanged.",
+    "The first full run did not preserve the accepted accuracy and AUC; fixed-point run-to-run drift is visible, so the timing win cannot be promoted safely.",
+    "The production/default SPU runtime configuration remains unchanged."
+  ]
+}

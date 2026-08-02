@@ -1,0 +1,110 @@
+{
+  "manifest_type": "transshield_spu_odd_even_selection_summary_v1",
+  "captured_at_utc": "2026-08-02T09:24:16+00:00",
+  "status": "rejected_at_medical4_performance_screen",
+  "formal_results_changed": false,
+  "default_runtime_changed": false,
+  "vps_only_model_testing": true,
+  "candidate": {
+    "secure_pruning_network": "odd_even_selection",
+    "semantics": "exact_topk_with_lowest_index_tie_break",
+    "availability": "explicit_opt_in_research_candidate",
+    "default_secure_pruning_network": "unpadded_selection"
+  },
+  "profile": {
+    "workload": "medical_secure_deployment_batch",
+    "sample_count": 4,
+    "spu_batch_size": 4,
+    "token_ratio_base_override": 0.655,
+    "token_keep_counts": [
+      128,
+      84,
+      55
+    ],
+    "static_depth": 10,
+    "params_mode": "secret",
+    "input_mode": "party_local_debug_share_load",
+    "reveal_policy": "final_logits_only",
+    "protocol": "CHEETAH",
+    "ot_kind": "YACL_Ferret",
+    "field": "FM64",
+    "fxp_fraction_bits": 16
+  },
+  "comparator_budget": {
+    "baseline_unpadded_selection": {
+      "per_stage": [
+        2842,
+        1696,
+        749
+      ],
+      "total": 5287
+    },
+    "candidate_odd_even_selection": {
+      "per_stage": [
+        2692,
+        1392,
+        738
+      ],
+      "total": 4822
+    },
+    "delta_count": -465,
+    "delta_percent": -8.795157934556464
+  },
+  "medical4_screen": {
+    "baseline": {
+      "source": "../square_alpha_fusion_20260802_v1/medical4_baseline.summary.json",
+      "secure_pruning_network": "unpadded_selection",
+      "spu_forward_wall_sec": 195.03517579300023,
+      "loopback_gib": 6.591340051963925,
+      "threshold_accuracy": 1.0
+    },
+    "candidate": {
+      "source": "medical4_odd_even.summary.json",
+      "secure_pruning_ops_sha256_recorded_by_run": "16e03162a7ee2792ed72b91842e1e7569254ec8e1d72d8b14e53347d72a079dc",
+      "secure_pruning_network": "odd_even_selection",
+      "spu_forward_wall_sec": 199.08772016500006,
+      "loopback_gib": 6.626898181624711,
+      "threshold_accuracy": 1.0,
+      "argmax_match_ratio": 1.0,
+      "threshold_match_ratio": 1.0,
+      "probabilities_max_abs_error": 0.028377681970596313
+    },
+    "candidate_vs_baseline": {
+      "time_delta_percent": 2.077853061901491,
+      "communication_delta_percent": 0.5394673826635721,
+      "threshold_accuracy_delta_points": 0.0
+    }
+  },
+  "acceptance_gate": {
+    "require_time_reduction": true,
+    "require_no_communication_regression": true,
+    "require_no_accuracy_regression": true,
+    "time_pass": false,
+    "communication_pass": false,
+    "accuracy_pass": true,
+    "overall_pass": false,
+    "medical32_executed": false,
+    "medical32_skip_reason": "The medical4 performance screen already failed time and communication gates."
+  },
+  "validation": {
+    "py_compile": "PASS",
+    "unit_tests": "28/28 PASS on VPS",
+    "unit_test_wall_sec_reported_by_unittest": 30.545,
+    "logs": [
+      "test_logs/py_compile.stderr.log",
+      "test_logs/unittest.stderr.log"
+    ]
+  },
+  "final_validation_source_sha256": {
+    "secure_pruning_ops.py": "33735bc99725f31d804fb138aee67bf7485d895e6e6dbc892ca9fa81b0ef307b",
+    "spu_static_vit.py": "0a35c844075cd976d8fc79c0750424e0d543ff6cea4f83fb9dbc1bb3ef096983",
+    "transshield_e2e_secure_vit.py": "febebb20ef44eccdd41c497b74123a10af6e31aa111f92e3d7e01474504e3780",
+    "start_showcase_spu_demo.py": "c11a382f8bd415e85b71b819a62670d9abc74ae25d583304485eab02b91600cf",
+    "test_secure_pruning_ops.py": "7a0a49a196e1cea5d7e8ad4f91d6849a32319d5305ebf519d1c6c9c02e7c60c0"
+  },
+  "decision": [
+    "Keep odd_even_selection only as an explicit research candidate.",
+    "Do not change the default unpadded_selection path.",
+    "Do not publish candidate measurements as formal report or showcase results."
+  ]
+}

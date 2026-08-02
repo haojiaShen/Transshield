@@ -205,7 +205,12 @@ def build_parser():
     )
     parser.add_argument(
         "--secure-pruning-network",
-        choices=["full_sort", "selection", "unpadded_selection"],
+        choices=[
+            "full_sort",
+            "selection",
+            "unpadded_selection",
+            "odd_even_selection",
+        ],
         default="",
         help="Override TRANSSHIELD_SHOWCASE_SPU_SECURE_PRUNING_NETWORK for this launch.",
     )

@@ -1,0 +1,4 @@
+/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00003.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00035.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00069.png
+/data/wyb/pneumoniamnist_imagefolder_subset/val/0/00118.png

@@ -1907,12 +1907,18 @@ def build_parser():
     )
     run_parser.add_argument(
         "--spu-secure-pruning-network",
-        choices=["full_sort", "selection", "unpadded_selection"],
+        choices=[
+            "full_sort",
+            "selection",
+            "unpadded_selection",
+            "odd_even_selection",
+        ],
         default="unpadded_selection",
         help=(
             "full_sort keeps the rollback bitonic sorting graph; selection removes public "
             "comparators outside the exact Top-K output dependency cone; unpadded_selection "
-            "also builds the network over the actual token count instead of padding to a power of two."
+            "also builds the network over the actual token count instead of padding to a power of two; "
+            "odd_even_selection is the explicit lower-comparator odd-even candidate."
         ),
     )
     run_parser.add_argument(

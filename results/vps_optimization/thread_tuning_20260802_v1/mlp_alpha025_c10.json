@@ -1,0 +1,104 @@
+{
+  "manifest_type": "transshield_spu_exact_mlp_benchmark_v4",
+  "captured_at_utc": "2026-08-02T08:45:08.777099+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.39",
+  "spu_version": "0.9.3b0",
+  "config": "/opt/transshield-project/results/vps_optimization/thread_tuning_20260802_v1/configs/fxp16_c10.json",
+  "runtime_config": {
+    "cheetah_2pc_config": {
+      "enable_mul_lsb_error": false,
+      "ot_kind": "YACL_Ferret"
+    },
+    "enable_hal_profile": false,
+    "enable_pphlo_profile": false,
+    "experimental_enable_colocated_optimization": true,
+    "field": "FM64",
+    "fxp_exp_iters": 4,
+    "fxp_exp_mode": 0,
+    "fxp_fraction_bits": 16,
+    "max_concurrency": 10,
+    "protocol": "CHEETAH"
+  },
+  "ownership": {
+    "input": "P1",
+    "model_parameters": "P2",
+    "reveal": "full synthetic final MLP output only"
+  },
+  "graph": "x + (alpha * square(x @ W1.T + b1)) @ W2.T + b2",
+  "executed_graph": "x + (alpha * square(x @ W1.T + b1)) @ W2.T + b2",
+  "alpha": 0.25,
+  "square_alpha_folded_into_fc2": false,
+  "square_alpha_public_constant": false,
+  "shape": {
+    "input": [
+      16,
+      197,
+      384
+    ],
+    "flattened_tokens": 3152,
+    "fc1": [
+      3152,
+      384,
+      1536
+    ],
+    "fc2": [
+      3152,
+      1536,
+      384
+    ]
+  },
+  "seed": 20260802,
+  "interface": "lo",
+  "expected_runtime_config": {
+    "field": "FM64",
+    "fxp_fraction_bits": 16
+  },
+  "reference_output_sha256": "1a465550f022d865da442afd75302e2bff9989824a3082665531a6193a7e2ddb",
+  "repetitions": [
+    {
+      "repeat_index": 0,
+      "elapsed_sec": 59.86165856400112,
+      "loopback_tx_bytes": 2073802826,
+      "loopback_rx_bytes": 2073802826,
+      "output_sha256": "eca41a846725b91a0f32c40c63159bfcc4b8e824b382dbc8819d136ae30508f1",
+      "output_min": -1.306304931640625,
+      "output_max": 1.166717529296875,
+      "output_mean": -0.0016089306445792317,
+      "finite": true,
+      "reference_max_abs_error": 0.00010042637586593628,
+      "reference_mean_abs_error": 1.720687396300491e-05
+    },
+    {
+      "repeat_index": 1,
+      "elapsed_sec": 55.15828211800181,
+      "loopback_tx_bytes": 2028020390,
+      "loopback_rx_bytes": 2028020390,
+      "output_sha256": "6a153f38baa000f1000a67239e1c423ee252a434fe1a3dfff8cca684e0904ae1",
+      "output_min": -1.3063201904296875,
+      "output_max": 1.1667022705078125,
+      "output_mean": -0.0016089366981759667,
+      "finite": true,
+      "reference_max_abs_error": 9.366869926452637e-05,
+      "reference_mean_abs_error": 1.7196160115418024e-05
+    },
+    {
+      "repeat_index": 2,
+      "elapsed_sec": 55.03919329699784,
+      "loopback_tx_bytes": 2028151730,
+      "loopback_rx_bytes": 2028151730,
+      "output_sha256": "3abb98cc1a9a668d54d50e1e490dd8d9f158319ea0407c4d992f116af27e88bb",
+      "output_min": -1.3063201904296875,
+      "output_max": 1.1667022705078125,
+      "output_mean": -0.0016089455457404256,
+      "finite": true,
+      "reference_max_abs_error": 9.836256504058838e-05,
+      "reference_mean_abs_error": 1.7205727999680676e-05
+    }
+  ],
+  "acceptance": {
+    "unchanged_math_graph": true,
+    "runtime_config_matches_expectation": true,
+    "all_finite": true
+  }
+}

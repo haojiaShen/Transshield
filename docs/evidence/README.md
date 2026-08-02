@@ -36,6 +36,9 @@
 | SPU MLP fxp20 复验结果 | `results/vps_optimization/mlp_kernel_fxp20_20260802_v1/optimization_summary.json` | 局部误差改善、medical32 耗时/通信/AUC 与不接入判定 |
 | SPU 平方激活常数实验说明 | `docs/evidence/spu_square_scale_optimization.md` | 权重折叠、公开架构常数、定点截断风险和安全剪枝后续审查 |
 | SPU 平方激活常数结构化结果 | `results/vps_optimization/square_alpha_fusion_20260802_v1/optimization_summary.json` | MLP、medical4、medical32 的耗时/通信/精度和不接入判定 |
+| SPU 精确剪枝与线程并发实验说明 | `docs/evidence/spu_odd_even_and_thread_tuning.md` | odd-even 精确选择网络、线程并发扫描、完整门槛和不接入判定 |
+| SPU odd-even 结构化结果 | `results/vps_optimization/odd_even_selection_20260802_v1/optimization_summary.json` | 比较器预算、medical4 耗时/通信、单测和提前终止原因 |
+| SPU 线程并发结构化结果 | `results/vps_optimization/thread_tuning_20260802_v1/optimization_summary.json` | MLP 扫描、medical4/medical32、精度与 AUC 否决证据 |
 
 ## 说明
 
@@ -49,3 +52,5 @@
 - MLP RLWE packing 并行只保留为实验补丁；其性能收益已验证，但完整模型精度稳定性门槛未通过，默认 runtime 不应用。
 - fxp20 复验没有降低模型精度或改变 MLP 图，但 32 样本 AUC 和通信门槛仍未通过，默认 FM64/fxp16 配置不变。
 - 平方激活 α 权重折叠和公开常数路径均减少了时间与通信，但重复 medical32 的 AUC/准确率门槛未全部通过；两个研究开关默认关闭，不替换正式结果。
+- odd-even 精确选择网络虽减少 8.80% 比较器，但 medical4 的耗时和通信均回退；它只保留显式研究入口，默认仍为 `unpadded_selection`。
+- `max_concurrency=8` 虽缩短 medical32 耗时，但通信、阈值准确率和 AUC 未同时过门槛；生产 SPU runtime 配置保持不变。

@@ -168,6 +168,31 @@ class SecurePruningScheduleTests(unittest.TestCase):
         self.assertEqual(actual_total, 5551)
         self.assertLess(actual_total, 11008 // 2 + 100)
 
+    def test_odd_even_candidate_reduces_low_latency_comparator_count(self):
+        from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
+            pruning_network_comparator_count,
+        )
+
+        stages = ((196, 128, False), (128, 84, False), (84, 55, True))
+        bitonic_total = 0
+        odd_even_total = 0
+        for token_count, keep_count, threshold_only in stages:
+            bitonic_total += pruning_network_comparator_count(
+                token_count,
+                keep_count,
+                pruning_network="unpadded_selection",
+                threshold_only=threshold_only,
+            )
+            odd_even_total += pruning_network_comparator_count(
+                token_count,
+                keep_count,
+                pruning_network="odd_even_selection",
+                threshold_only=threshold_only,
+            )
+        self.assertEqual(bitonic_total, 5287)
+        self.assertEqual(odd_even_total, 4822)
+        self.assertLess(odd_even_total, bitonic_total)
+
     def test_static_loader_trims_stages_outside_prefix_depth(self):
         from integrations.transshield_runtime.e2e_secure_vit.static_vit_params import (
             pruning_schedule_for_depth,
@@ -271,6 +296,27 @@ class SecurePruningOpsTests(unittest.TestCase):
             expected = np.sort(values, axis=1)[:, ::-1][:, outputs]
             np.testing.assert_array_equal(actual, expected)
 
+    def test_unpadded_odd_even_selection_matches_reference(self):
+        import jax.numpy as jnp
+        import numpy as np
+
+        from integrations.transshield_runtime.e2e_secure_vit.secure_pruning_ops import (
+            odd_even_unpadded_select_desc,
+        )
+
+        rng = np.random.default_rng(20260805)
+        for token_count, outputs in (
+            (196, (0, 31, 127, 195)),
+            (128, (0, 47, 83, 127)),
+            (84, (0, 27, 54, 83)),
+        ):
+            values = rng.integers(-4, 5, size=(3, token_count)).astype(np.float32)
+            actual = np.asarray(
+                odd_even_unpadded_select_desc(jnp.asarray(values), outputs)
+            )
+            expected = np.sort(values, axis=1)[:, ::-1][:, outputs]
+            np.testing.assert_array_equal(actual, expected)
+
     def test_exact_topk_mask_uses_lowest_index_for_boundary_ties(self):
         import jax.numpy as jnp
         import numpy as np
@@ -337,6 +383,16 @@ class SecurePruningOpsTests(unittest.TestCase):
             )
         )
         np.testing.assert_array_equal(unpadded, full_sort)
+
+        odd_even = np.asarray(
+            exact_topk_keep_mask(
+                score,
+                active,
+                67,
+                pruning_network="odd_even_selection",
+            )
+        )
+        np.testing.assert_array_equal(odd_even, full_sort)
 
     def test_compact_topk_moves_matching_token_payload(self):
         import jax.numpy as jnp
@@ -428,6 +484,18 @@ class SecurePruningOpsTests(unittest.TestCase):
         )
         np.testing.assert_array_equal(np.asarray(unpadded_indices), np.asarray(full_indices))
         np.testing.assert_array_equal(np.asarray(unpadded_tokens), np.asarray(full_tokens))
+
+        odd_even_tokens, odd_even_indices = compact_topk_tokens(
+            score,
+            tokens,
+            indices,
+            96,
+            fxp_fraction_bits=16,
+            original_token_count=196,
+            pruning_network="odd_even_selection",
+        )
+        np.testing.assert_array_equal(np.asarray(odd_even_indices), np.asarray(full_indices))
+        np.testing.assert_array_equal(np.asarray(odd_even_tokens), np.asarray(full_tokens))
 
     def test_packed_topk_key_preserves_score_then_original_index_order(self):
         import jax.numpy as jnp

@@ -192,6 +192,246 @@ def _bitonic_unpadded_selection_schedule(token_count: int, output_indices):
     return _slice_network_schedule(token_count, full_layers, output_indices)
 
 
+@lru_cache(maxsize=None)
+def _odd_even_merge_sequence(start: int, count: int, stride: int):
+    """Return Batcher odd-even merge comparators for a power-of-two range."""
+    start = int(start)
+    count = int(count)
+    stride = int(stride)
+    doubled_stride = stride * 2
+    if doubled_stride < count:
+        pairs = list(_odd_even_merge_sequence(start, count, doubled_stride))
+        pairs.extend(
+            _odd_even_merge_sequence(start + stride, count, doubled_stride)
+        )
+        pairs.extend(
+            (index, index + stride)
+            for index in range(
+                start + stride,
+                start + count - stride,
+                doubled_stride,
+            )
+        )
+        return tuple(pairs)
+    return ((start, start + stride),)
+
+
+@lru_cache(maxsize=None)
+def _odd_even_sort_sequence(start: int, count: int):
+    """Return a descending odd-even merge-sort comparator sequence."""
+    start = int(start)
+    count = int(count)
+    if count <= 1:
+        return ()
+    half = count // 2
+    return (
+        _odd_even_sort_sequence(start, half)
+        + _odd_even_sort_sequence(start + half, half)
+        + _odd_even_merge_sequence(start, count, 1)
+    )
+
+
+@lru_cache(maxsize=None)
+def _odd_even_padded_layers(token_count: int):
+    """Layerize an odd-even sorting sequence at the earliest safe wire depth."""
+    token_count = int(token_count)
+    if token_count <= 0 or token_count & (token_count - 1):
+        raise ValueError(
+            f"odd-even token_count must be a positive power of two, got {token_count}"
+        )
+    wire_depth = [-1] * token_count
+    layers = []
+    for left, right in _odd_even_sort_sequence(0, token_count):
+        depth = max(wire_depth[left], wire_depth[right]) + 1
+        while len(layers) <= depth:
+            layers.append([])
+        layers[depth].append((left, right))
+        wire_depth[left] = depth
+        wire_depth[right] = depth
+    return tuple(tuple(layer) for layer in layers)
+
+
+@lru_cache(maxsize=None)
+def _odd_even_unpadded_full_schedule(token_count: int):
+    """Remove public ``-inf`` padding wires from an odd-even sorting network.
+
+    Real values always beat the conceptual padding sentinel in descending
+    comparisons.  Those comparisons therefore become public routes instead of
+    secret compare-and-swaps.  ``restore`` records the resulting compact wire
+    permutation for each layer.
+    """
+    token_count = int(token_count)
+    if token_count <= 0:
+        raise ValueError(f"odd-even token_count must be positive, got {token_count}")
+    padded_count = _next_power_of_two(token_count)
+    slots = list(range(token_count)) + [None] * (padded_count - token_count)
+    schedule = []
+
+    for padded_pairs in _odd_even_padded_layers(padded_count):
+        output_descriptors = [None] * padded_count
+        compared_positions = set()
+        left = []
+        right = []
+        for padded_left, padded_right in padded_pairs:
+            compared_positions.add(padded_left)
+            compared_positions.add(padded_right)
+            left_source = slots[padded_left]
+            right_source = slots[padded_right]
+            if left_source is not None and right_source is not None:
+                pair_offset = len(left)
+                left.append(left_source)
+                right.append(right_source)
+                output_descriptors[padded_left] = ("pair_high", pair_offset)
+                output_descriptors[padded_right] = ("pair_low", pair_offset)
+            elif left_source is not None:
+                output_descriptors[padded_left] = ("pass", left_source)
+            elif right_source is not None:
+                output_descriptors[padded_left] = ("pass", right_source)
+
+        for padded_index, source in enumerate(slots):
+            if padded_index not in compared_positions and source is not None:
+                output_descriptors[padded_index] = ("pass", source)
+
+        compared_inputs = frozenset(left + right)
+        untouched = tuple(
+            index for index in range(token_count) if index not in compared_inputs
+        )
+        untouched_offset = {source: offset for offset, source in enumerate(untouched)}
+        pair_count = len(left)
+        restore = []
+        next_slots = [None] * padded_count
+        compact_output_index = 0
+        for padded_index, descriptor in enumerate(output_descriptors):
+            if descriptor is None:
+                continue
+            kind, offset = descriptor
+            if kind == "pair_high":
+                restore.append(offset)
+            elif kind == "pair_low":
+                restore.append(pair_count + offset)
+            else:
+                restore.append(2 * pair_count + untouched_offset[offset])
+            next_slots[padded_index] = compact_output_index
+            compact_output_index += 1
+        if compact_output_index != token_count:
+            raise AssertionError(
+                f"odd-even public routing lost wires: {compact_output_index} vs {token_count}"
+            )
+        schedule.append(
+            (
+                tuple(left),
+                tuple(right),
+                tuple(restore),
+                (True,) * pair_count,
+                untouched,
+            )
+        )
+        slots = next_slots
+    return tuple(schedule)
+
+
+def _slice_routed_network_schedule(token_count: int, full_layers, output_indices):
+    """Backward-slice a network whose public routes may permute compact wires."""
+    token_count = int(token_count)
+    outputs = tuple(int(index) for index in output_indices)
+    if not outputs:
+        raise ValueError("odd-even selection requires at least one output index")
+    if any(index < 0 or index >= token_count for index in outputs):
+        raise ValueError(
+            f"odd-even output indices must be within [0, {token_count}), got {outputs}"
+        )
+
+    needed = set(outputs)
+    selected_offsets_by_layer = []
+    for left, right, restore, _, untouched in reversed(full_layers):
+        pair_count = len(left)
+        selected_offsets = set()
+        upstream_needed = set()
+        for output_index in needed:
+            producer = restore[output_index]
+            if producer < pair_count:
+                selected_offsets.add(producer)
+            elif producer < 2 * pair_count:
+                selected_offsets.add(producer - pair_count)
+            else:
+                upstream_needed.add(untouched[producer - 2 * pair_count])
+        for offset in selected_offsets:
+            upstream_needed.add(left[offset])
+            upstream_needed.add(right[offset])
+        selected_offsets_by_layer.append(tuple(sorted(selected_offsets)))
+        needed = upstream_needed
+    selected_offsets_by_layer.reverse()
+
+    sliced_layers = []
+    for (left, right, restore, descending, untouched), selected_offsets in zip(
+        full_layers,
+        selected_offsets_by_layer,
+    ):
+        pair_count = len(left)
+        selected_offset_map = {
+            old_offset: new_offset
+            for new_offset, old_offset in enumerate(selected_offsets)
+        }
+        sliced_left = tuple(left[offset] for offset in selected_offsets)
+        sliced_right = tuple(right[offset] for offset in selected_offsets)
+        sliced_descending = tuple(descending[offset] for offset in selected_offsets)
+        compared_inputs = frozenset(sliced_left + sliced_right)
+        sliced_untouched = tuple(
+            index for index in range(token_count) if index not in compared_inputs
+        )
+        untouched_offset = {
+            source: offset for offset, source in enumerate(sliced_untouched)
+        }
+        sliced_pair_count = len(selected_offsets)
+        sliced_restore = []
+        for producer in restore:
+            if producer < pair_count:
+                old_offset = producer
+                if old_offset in selected_offset_map:
+                    sliced_restore.append(selected_offset_map[old_offset])
+                else:
+                    source = left[old_offset]
+                    sliced_restore.append(
+                        2 * sliced_pair_count + untouched_offset[source]
+                    )
+            elif producer < 2 * pair_count:
+                old_offset = producer - pair_count
+                if old_offset in selected_offset_map:
+                    sliced_restore.append(
+                        sliced_pair_count + selected_offset_map[old_offset]
+                    )
+                else:
+                    source = right[old_offset]
+                    sliced_restore.append(
+                        2 * sliced_pair_count + untouched_offset[source]
+                    )
+            else:
+                source = untouched[producer - 2 * pair_count]
+                sliced_restore.append(
+                    2 * sliced_pair_count + untouched_offset[source]
+                )
+        if sorted(sliced_restore) != list(range(token_count)):
+            raise AssertionError("sliced odd-even layer is not a wire permutation")
+        sliced_layers.append(
+            (
+                sliced_left,
+                sliced_right,
+                tuple(sliced_restore),
+                sliced_descending,
+                sliced_untouched,
+            )
+        )
+    return tuple(sliced_layers)
+
+
+@lru_cache(maxsize=None)
+def _odd_even_unpadded_selection_schedule(token_count: int, output_indices):
+    """Return an exact output-sliced odd-even network over actual wires."""
+    token_count = int(token_count)
+    full_layers = _odd_even_unpadded_full_schedule(token_count)
+    return _slice_routed_network_schedule(token_count, full_layers, output_indices)
+
+
 def _apply_bitonic_value_schedule(values, schedule):
     """Apply a public bitonic schedule to a ``[batch, token]`` value tensor."""
     import jax.numpy as jnp
@@ -272,6 +512,17 @@ def bitonic_unpadded_select_desc(values, output_indices):
     return selected[:, outputs]
 
 
+def odd_even_unpadded_select_desc(values, output_indices):
+    """Select exact sorted outputs with an unpadded odd-even network."""
+    outputs = tuple(int(index) for index in output_indices)
+    token_count = int(values.shape[1])
+    selected = _apply_bitonic_value_schedule(
+        values,
+        _odd_even_unpadded_selection_schedule(token_count, outputs),
+    )
+    return selected[:, outputs]
+
+
 def pruning_network_comparator_count(
     token_count: int,
     keep_count: int,
@@ -286,7 +537,9 @@ def pruning_network_comparator_count(
     if keep_count <= 0 or keep_count > token_count:
         raise ValueError(f"keep_count must be within [1, {token_count}], got {keep_count}")
     outputs = (keep_count - 1,) if threshold_only else tuple(range(keep_count))
-    if pruning_network == "unpadded_selection":
+    if pruning_network == "odd_even_selection":
+        schedule = _odd_even_unpadded_selection_schedule(token_count, outputs)
+    elif pruning_network == "unpadded_selection":
         schedule = _bitonic_unpadded_selection_schedule(token_count, outputs)
     else:
         padded_count = _next_power_of_two(token_count)
@@ -321,13 +574,21 @@ def exact_topk_keep_mask(
     if keep_count <= 0 or keep_count > token_count:
         raise ValueError(f"keep_count must be within [1, {token_count}], got {keep_count}")
     pruning_network = str(pruning_network)
-    if pruning_network not in {"full_sort", "selection", "unpadded_selection"}:
+    if pruning_network not in {
+        "full_sort",
+        "selection",
+        "unpadded_selection",
+        "odd_even_selection",
+    }:
         raise ValueError(f"unsupported pruning_network: {pruning_network}")
 
     active = jnp.asarray(active_mask).squeeze(-1) > 0
     masked_score = jnp.where(active, score, jnp.asarray(-1.0e6, dtype=score.dtype))
     padded_count = _next_power_of_two(token_count)
-    if pruning_network != "unpadded_selection" and padded_count > token_count:
+    if (
+        pruning_network not in {"unpadded_selection", "odd_even_selection"}
+        and padded_count > token_count
+    ):
         padding = jnp.full(
             (int(score.shape[0]), padded_count - token_count),
             -1.0e6,
@@ -335,7 +596,9 @@ def exact_topk_keep_mask(
         )
         masked_score = jnp.concatenate([masked_score, padding], axis=1)
 
-    if pruning_network == "unpadded_selection":
+    if pruning_network == "odd_even_selection":
+        threshold = odd_even_unpadded_select_desc(masked_score, (keep_count - 1,))
+    elif pruning_network == "unpadded_selection":
         threshold = bitonic_unpadded_select_desc(masked_score, (keep_count - 1,))
     elif pruning_network == "selection":
         threshold = bitonic_select_desc(masked_score, (keep_count - 1,))
@@ -419,7 +682,12 @@ def compact_topk_tokens(
     if keep_count <= 0 or keep_count > token_count:
         raise ValueError(f"keep_count must be within [1, {token_count}], got {keep_count}")
     pruning_network = str(pruning_network)
-    if pruning_network not in {"full_sort", "selection", "unpadded_selection"}:
+    if pruning_network not in {
+        "full_sort",
+        "selection",
+        "unpadded_selection",
+        "odd_even_selection",
+    }:
         raise ValueError(f"unsupported pruning_network: {pruning_network}")
     if tuple(spatial_tokens.shape[:2]) != tuple(score.shape):
         raise ValueError(
@@ -438,7 +706,10 @@ def compact_topk_tokens(
     )
 
     padded_count = _next_power_of_two(token_count)
-    if pruning_network != "unpadded_selection" and padded_count > token_count:
+    if (
+        pruning_network not in {"unpadded_selection", "odd_even_selection"}
+        and padded_count > token_count
+    ):
         pad_width = padded_count - token_count
         packed_key = jnp.concatenate(
             [
@@ -472,7 +743,12 @@ def compact_topk_tokens(
     keys = packed_key
     tokens = spatial_tokens
     indices = original_indices
-    if pruning_network == "unpadded_selection":
+    if pruning_network == "odd_even_selection":
+        schedule = _odd_even_unpadded_selection_schedule(
+            token_count,
+            tuple(range(keep_count)),
+        )
+    elif pruning_network == "unpadded_selection":
         schedule = _bitonic_unpadded_selection_schedule(
             token_count,
             tuple(range(keep_count)),

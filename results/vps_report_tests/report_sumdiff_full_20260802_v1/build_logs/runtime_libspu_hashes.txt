@@ -1,0 +1,2 @@
+d8a921562a11cdc45a25f1df830c43d0e069ebab7ca0332f217a06b58a768962  /opt/transshield-spu-mlp-pack-hybrid/lib/python3.9/site-packages/spu/libspu.so
+c5ad21a2cd9b97182863aa2dfad18024fd581595b1cba226947e52ccee8fe122  /opt/transshield-spu-pack-sumdiff/lib/python3.9/site-packages/spu/libspu.so

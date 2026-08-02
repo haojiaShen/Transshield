@@ -195,3 +195,27 @@ bitonic 网络由“每个 pair 的左右位置各做一次秘密比较”改为
 `results/vps_optimization/pairwise_bitonic_20260801_v1/optimization_summary.json`，
 32 张逐样本 logits、概率、预测、CPU 误差和网络快照见同目录
 `medical32_pairwise_bitonic_summary.json`。本改动不覆盖正式展示数字。
+
+## 9. 2026-08-02 完整 report-ready 回归
+
+在后续优化中，RLWE packing 的常见蝶形路径由“复制 `E` 后分别原地计算和/差”
+改为“和分支原地写回、差分支单独输出”，减少一次整密文复制。补丁只应用于隔离
+SPU runtime，完整结果位于
+`results/vps_report_tests/report_sumdiff_full_20260802_v1/`。
+
+本轮重新执行了 524/32/8 全部固定样本、同机 medical32 baseline/candidate、13+4
+黑盒验证、50 项 Python 测试与 2 项 SPU 原生测试。聚合门禁结果为
+`report_update_ready=true`，无失败项。
+
+| 项目 | 完整结果 | 判定 |
+|---|---:|---|
+| 医疗 524 阈值精度 / AUC | 92.7481% / 0.96391507 | 与正式口径一致 |
+| medical32 同机 baseline | 970.085 s；42.574750 GiB | `r=0.7`、batch16 |
+| medical32 candidate | 964.208 s；42.574552 GiB | 时间 -0.61%；通信基本不变 |
+| medical32 阈值精度 / AUC | 93.75% / 0.96484375 | 通过 |
+| finance8 | 377.855 s；15.454028 GiB；8/8 | 通过 |
+| 13+4 / Python / SPU 原生测试 | 17/17；50/50；2/2 | 通过 |
+
+medical32 两个 chunk 均略快，但合计只减少 5.878 秒，仍属于边际改善。该底层
+补丁保留为研究候选，不作为主要性能突破，也不自动替换默认 runtime。完整说明见
+`docs/evidence/spu_packing_sumdiff_full_regression.md`；本轮仍未改写任何正式结果目录。

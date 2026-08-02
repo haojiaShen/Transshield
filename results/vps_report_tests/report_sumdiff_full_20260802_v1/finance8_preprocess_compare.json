@@ -1,0 +1,20 @@
+{
+  "current_pt": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance8_plain.pt",
+  "current_pt_sha256": "9fee28d8f7f7aae745fcdc7feefa9409354409fa86408ee25693febd8bf57832",
+  "dtype": "torch.float32",
+  "exact_tensor_equal": true,
+  "frozen_pt": "/opt/transshield-project/archive/old_runs/artifacts/server_pipeline_run/finance_dynamic_static_prepare_final/e2e_secure_poc/plaintext_same_images_pixel_values.pt",
+  "frozen_pt_sha256": "1852f8092a14cc5807501176a192c32f23fac16ad0230dc961d3d0d9fce5d590",
+  "manifest_type": "transshield_report_vps_preprocessing_compare_v1",
+  "max_abs_error": 0.0,
+  "mean_abs_error": 0.0,
+  "passed": true,
+  "sample_ids_equal": true,
+  "shape": [
+    8,
+    3,
+    224,
+    224
+  ],
+  "targets_equal": true
+}

@@ -1,0 +1,23 @@
+	Command being timed: "/opt/transshield-spu-pack-sumdiff/bin/python /opt/transshield-project/integrations/transshield_runtime/e2e_secure_vit/transshield_e2e_secure_vit.py run --runtime spu --bundle-dir /opt/transshield-project/artifacts/frozen_bundle_medical_dynamic_mainline --input-share-public-manifest-json /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_public.json --input-p1-share-manifest-json /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_party_manifests/p1_share_manifest.json --input-p2-share-manifest-json /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_party_manifests/p2_share_manifest.json --party-local-share-load --redact-private-input-paths --output-pt /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_spu_latest.pt --output-json /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_spu_latest.json --config /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/configs/active.runtime.json --device cpu --max-samples 32 --static-depth-limit 10 --spu-batch-size 16 --spu-params-mode secret --spu-layer-norm-policy exact --spu-attention-policy uniform --spu-activation-override fixed_square --spu-activation-clip-value 0 --spu-secure-pruning-mode compact --spu-secure-pruning-network unpadded_selection --spu-final-block-cls-only --spu-uniform-attention-value-fusion --spu-public-fixed-square-scale --spu-compile-cache-dir /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_spu_latest.compile_cache"
+	User time (seconds): 8.71
+	System time (seconds): 1.97
+	Percent of CPU this job got: 1%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 16:05.20
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 654076
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 173543
+	Voluntary context switches: 92556
+	Involuntary context switches: 975
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 3088
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

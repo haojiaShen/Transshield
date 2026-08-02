@@ -1,0 +1,12 @@
+{
+  "out": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/report_regression_aggregate.json",
+  "inventory_passed": true,
+  "medical_primary_accuracy_gate_passed": true,
+  "medical_all_diagnostic_gates_passed": true,
+  "finance_all_gates_passed": true,
+  "robustness_passed": true,
+  "code_tests_passed": true,
+  "result_classification": "report_update_ready",
+  "report_update_ready": true,
+  "failed_report_update_checks": []
+}

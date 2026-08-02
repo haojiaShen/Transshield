@@ -1,0 +1,2 @@
+f9fc02bf4cb07863ad941dc2f8225f4c76ca7e94e2aacdb53ec3d87532908375  tools/run_report_vps_full.sh
+b149338ef816772c5c76f6cd269231cd1ce778b7e87ede1d071e4458f96333c2  spu_vendored/patches/cheetah_packing_sumdiff.patch

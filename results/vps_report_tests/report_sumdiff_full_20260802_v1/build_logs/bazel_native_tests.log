@@ -1,0 +1,46 @@
+Loading: 
+Loading: 
+Loading: 0 packages loaded
+INFO: Build options --action_env, --copt, and --host_copt have changed, discarding analysis cache.
+Analyzing: 2 targets (0 packages loaded, 0 targets configured)
+INFO: Analyzed 2 targets (115 packages loaded, 12043 targets configured).
+INFO: Found 2 test targets...
+[66 / 1,114] [Prepa] BazelWorkspaceStatusAction stable-status.txt
+[1,184 / 1,187] Compiling libspu/mpc/cheetah/rlwe/packlwes.cc; 1s linux-sandbox
+[1,185 / 1,187] [Prepa] Linking libspu/mpc/cheetah/rlwe/packlwes_test
+[1,187 / 1,189] Testing //libspu/mpc/cheetah/rlwe:packlwes_test; 1s linux-sandbox ... (2 actions running)
+[1,187 / 1,189] 1 / 2 tests; Testing //libspu/mpc/cheetah/rlwe:packlwes_test; 6s linux-sandbox ... (2 actions running)
+[1,188 / 1,189] 1 / 2 tests; Testing //libspu/mpc/cheetah/arith:cheetah_dot_test; 8s linux-sandbox
+[1,188 / 1,189] 1 / 2 tests; Testing //libspu/mpc/cheetah/arith:cheetah_dot_test; 18s linux-sandbox
+[1,188 / 1,189] 2 / 2 tests; Testing //libspu/mpc/cheetah/arith:cheetah_dot_test; 40s linux-sandbox
+INFO: Elapsed time: 47.328s, Critical Path: 46.16s
+INFO: 6 processes: 1 internal, 5 linux-sandbox.
+INFO: Build completed successfully, 6 total actions
+//libspu/mpc/cheetah/arith:cheetah_dot_test                              PASSED in 40.3s
+//libspu/mpc/cheetah/rlwe:packlwes_test                                  PASSED in 6.4s
+
+Executed 2 out of 2 tests: 2 tests pass.
+There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.
+	Command being timed: "bazel test //libspu/mpc/cheetah/rlwe:packlwes_test //libspu/mpc/cheetah/arith:cheetah_dot_test -c opt --config=avx --jobs=14 --repository_cache=/opt/spu-bazel-repo-cache --action_env=CC=/usr/bin/gcc-11 --action_env=CXX=/usr/bin/g++-11 --verbose_failures"
+	User time (seconds): 0.00
+	System time (seconds): 0.00
+	Percent of CPU this job got: 0%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:47.34
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 10112
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 375
+	Voluntary context switches: 254
+	Involuntary context switches: 2
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 16
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

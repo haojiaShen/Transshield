@@ -1,0 +1,23 @@
+	Command being timed: "/opt/transshield-spu-pack-sumdiff/bin/python /opt/transshield-project/integrations/transshield_runtime/e2e_secure_vit/transshield_e2e_secure_vit.py run --runtime cpu --bundle-dir /opt/transshield-project/artifacts/frozen_bundle_medical_dynamic_mainline --input-pt /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical524_plain.pt --output-pt /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical524_cpu_depth10.pt --output-json /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical524_cpu_depth10.json --device cpu --cpu-forward-mode runtime_pruning_reference --cpu-batch-size 32 --static-depth-limit 10"
+	User time (seconds): 45.85
+	System time (seconds): 10.44
+	Percent of CPU this job got: 698%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:08.06
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1289656
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 5319781
+	Voluntary context switches: 117
+	Involuntary context switches: 268
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 432
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

@@ -1,0 +1,14 @@
+{"audit_nonce": "ca812411-1477-457b-a8e0-c329e1a027a6", "error_code": "duplicate_nonce", "interception_layer": "replay_guard", "ip": "127.0.0.1", "payload_fingerprint": "7bc62f2221bdff0863783ffbe9ad9b8d4c9bd9e2b7298918ff1999ef6651d116", "ts": 1785680342.709152}
+{"audit_nonce": "ca812411-1477-457b-a8e0-c329e1a027a6", "error_code": "duplicate_nonce", "interception_layer": "replay_guard", "ip": "127.0.0.1", "payload_fingerprint": "7bc62f2221bdff0863783ffbe9ad9b8d4c9bd9e2b7298918ff1999ef6651d116", "ts": 1785680342.7447298}
+{"audit_nonce": "ca812411-1477-457b-a8e0-c329e1a027a6", "error_code": "duplicate_nonce", "interception_layer": "replay_guard", "ip": "127.0.0.1", "payload_fingerprint": "7bc62f2221bdff0863783ffbe9ad9b8d4c9bd9e2b7298918ff1999ef6651d116", "ts": 1785680342.78027}
+{"audit_nonce": "a68486f7-7eea-4ddf-8a48-84d6d63db62c", "error_code": "duplicate_payload", "interception_layer": "replay_guard", "ip": "127.0.0.1", "payload_fingerprint": "27c65f4fb169a56f184532e2a80c9c11ad9412d937545a15a0544e815e8cafd5", "ts": 1785680346.1245487}
+{"audit_nonce": "081afea9-7700-4b4f-a96c-fec163eb0ddd", "error_code": "busy_retry_later", "interception_layer": "inflight_guard", "ip": "127.0.0.1", "payload_fingerprint": "c11dbce735bff9c92d4f98ec8aab6376a4701eb08248a4fb044eea4c59cb77f0", "ts": 1785680346.7838407}
+{"audit_nonce": "35933bce-77aa-4d06-98c8-ca74d589e2c4", "error_code": "busy_retry_later", "interception_layer": "inflight_guard", "ip": "127.0.0.1", "payload_fingerprint": "66710cb5f299a2af0598d175749c0315fbf116a084fa83395bc006ee4f1395df", "ts": 1785680346.8202415}
+{"audit_nonce": "fbdbff89-b87a-4213-a1e6-67ce18d7c388", "error_code": "busy_retry_later", "interception_layer": "inflight_guard", "ip": "127.0.0.1", "payload_fingerprint": "bf1c262c590ce075f48cfe507d1a15659c7dbbbcf44403bee260866d875d8e6a", "ts": 1785680346.8550704}
+{"error_code": "rate_limited_ip", "interception_layer": "ip_rate_limit_guard", "ip": "127.0.0.1", "ts": 1785680350.183966}
+{"error_code": "rate_limited_ip", "interception_layer": "ip_rate_limit_guard", "ip": "127.0.0.1", "ts": 1785680350.1847708}
+{"error_code": "rate_limited_ip", "interception_layer": "ip_rate_limit_guard", "ip": "127.0.0.1", "ts": 1785680350.1855185}
+{"error_code": "rate_limited_ip", "interception_layer": "ip_rate_limit_guard", "ip": "127.0.0.1", "ts": 1785680350.1862566}
+{"error_code": "rate_limited_ip", "interception_layer": "ip_rate_limit_guard", "ip": "127.0.0.1", "ts": 1785680350.1869981}
+{"error_code": "rate_limited_ip", "interception_layer": "ip_rate_limit_guard", "ip": "127.0.0.1", "ts": 1785680350.1877127}
+{"error_code": "rate_limited_ip", "interception_layer": "ip_rate_limit_guard", "ip": "127.0.0.1", "ts": 1785680350.188447}

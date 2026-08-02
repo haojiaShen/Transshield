@@ -43,3 +43,11 @@ upstream internally parallel path for a single response group and parallelizes
 only multiple independent RLWE packing groups with non-overlapping output
 storage. The patch is validated in an isolated runtime and is not applied by
 the repository's default build.
+
+`spu_vendored/patches/cheetah_packing_sumdiff.patch` is a second optional
+source-level patch for the same isolated runtime. It computes the two RLWE
+packing butterfly branches as an in-place sum plus a separate difference,
+removing one full ciphertext copy from the common non-empty path without
+changing the ring expression. Its report-scale same-VPS A/B result is a
+marginal 0.61% latency reduction, so it remains an explicit research patch and
+is not applied by the default build.

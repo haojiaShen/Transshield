@@ -1,0 +1,2 @@
+b149338ef816772c5c76f6cd269231cd1ce778b7e87ede1d071e4458f96333c2  /tmp/cheetah_packing_sumdiff.patch
+7b9dd63247535f535ed0ab0ea4bc59affb5272f22546274f30173ff8d3d92241  libspu/mpc/cheetah/rlwe/packlwes.cc

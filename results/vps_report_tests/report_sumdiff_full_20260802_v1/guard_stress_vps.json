@@ -1,0 +1,1695 @@
+{
+  "base_url": "http://127.0.0.1:17866",
+  "server_pid": 193570,
+  "passed": true,
+  "checks": [
+    {
+      "name": "duplicate_nonce_concurrent",
+      "passed": true,
+      "interception_layer": "replay_guard_nonce_cache",
+      "fallback_layer": "payload_fingerprint_guard",
+      "summary": "One request should pass; concurrent requests with the same nonce should be rejected as duplicate_nonce.",
+      "details": {
+        "results": [
+          {
+            "status": 409,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": {
+                "client_status": "pass",
+                "status": "pass",
+                "integrity_status": "consistent",
+                "integrity_reasons": [],
+                "client_quality_summary": {
+                  "mean_luma": 0.50046772,
+                  "std_luma": 0.09543563,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32264259,
+                  "laplacian_variance": 0.00063271
+                },
+                "server_quality_summary": {
+                  "mean_luma": 0.5004677176475525,
+                  "std_luma": 0.09543563425540924,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32264259457588196,
+                  "laplacian_variance": 0.0006327109877020121
+                },
+                "client_vs_server_drift": {
+                  "mean_luma": {
+                    "client": 0.50046772,
+                    "server": 0.5004677176475525,
+                    "abs_diff": 2.352447459053053e-09,
+                    "within_tolerance": true
+                  },
+                  "std_luma": {
+                    "client": 0.09543563,
+                    "server": 0.09543563425540924,
+                    "abs_diff": 4.255409247200248e-09,
+                    "within_tolerance": true
+                  },
+                  "overexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "underexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "effective_luma_ratio": {
+                    "client": 1.0,
+                    "server": 1.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "dynamic_range_p95_p05": {
+                    "client": 0.32264259,
+                    "server": 0.32264259457588196,
+                    "abs_diff": 4.575881951129901e-09,
+                    "within_tolerance": true
+                  },
+                  "laplacian_variance": {
+                    "client": 0.00063271,
+                    "server": 0.0006327109877020121,
+                    "abs_diff": 9.877020120839172e-10,
+                    "within_tolerance": true
+                  }
+                },
+                "blocking_reasons": [],
+                "warning_reasons": []
+              },
+              "audit": {
+                "audit_nonce": "ca812411-1477-457b-a8e0-c329e1a027a6",
+                "client_source_image_sha256": "a152511b81e81bc2b4d3eac01517d96322d29cba4623564bdbf96ae027148bfa",
+                "client_normalized_tensor_sha256": "80f6ff9bb5372193739bcd526dd1a9cd377efb9d942b262301e89a2123566635",
+                "client_audit_chain_sha256": "ef9c84d17e38111c888e4bdb4fddccc09e4043bea184886efa5974350112c2a4",
+                "server_audit_chain_sha256": "ef9c84d17e38111c888e4bdb4fddccc09e4043bea184886efa5974350112c2a4",
+                "audit_chain_consistent": true,
+                "server_share0_sha256": "d82837a45e5f3e5cd95b44e2f25aa71a62370c200f71a9c1746bba8a93b25467",
+                "server_share1_sha256": "124daed55f73860306c5f7697cd42a4f4b0dd9ca8e6107b0e8b3d4bc0582eca5",
+                "server_payload_fingerprint": "7bc62f2221bdff0863783ffbe9ad9b8d4c9bd9e2b7298918ff1999ef6651d116",
+                "demo_boundary": {
+                  "browser_generated_shares": true,
+                  "server_received_plain_image": false,
+                  "server_received_plain_pixel_values": false,
+                  "server_reconstructed_normalized_tensor_for_dqa": true,
+                  "server_received_share0_and_share1_in_single_process": true
+                }
+              },
+              "control_plane_metrics": {
+                "client": {
+                  "decode_ms": 1.25,
+                  "preprocess_ms": 4.75,
+                  "dqa_ms": 1.1,
+                  "hash_ms": 2.85,
+                  "share_build_ms": 3.65,
+                  "total_ms": 13.6
+                },
+                "server_pre_spu_checks_ms": 76.349,
+                "request_size_bytes": 1206606
+              },
+              "error_code": "duplicate_nonce",
+              "interception_layer": "replay_guard",
+              "detail": "检测到重复或饱和的控制面请求。"
+            },
+            "error_code": "duplicate_nonce"
+          },
+          {
+            "status": 409,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": {
+                "client_status": "pass",
+                "status": "pass",
+                "integrity_status": "consistent",
+                "integrity_reasons": [],
+                "client_quality_summary": {
+                  "mean_luma": 0.50046772,
+                  "std_luma": 0.09543563,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32264259,
+                  "laplacian_variance": 0.00063271
+                },
+                "server_quality_summary": {
+                  "mean_luma": 0.5004677176475525,
+                  "std_luma": 0.09543563425540924,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32264259457588196,
+                  "laplacian_variance": 0.0006327109877020121
+                },
+                "client_vs_server_drift": {
+                  "mean_luma": {
+                    "client": 0.50046772,
+                    "server": 0.5004677176475525,
+                    "abs_diff": 2.352447459053053e-09,
+                    "within_tolerance": true
+                  },
+                  "std_luma": {
+                    "client": 0.09543563,
+                    "server": 0.09543563425540924,
+                    "abs_diff": 4.255409247200248e-09,
+                    "within_tolerance": true
+                  },
+                  "overexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "underexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "effective_luma_ratio": {
+                    "client": 1.0,
+                    "server": 1.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "dynamic_range_p95_p05": {
+                    "client": 0.32264259,
+                    "server": 0.32264259457588196,
+                    "abs_diff": 4.575881951129901e-09,
+                    "within_tolerance": true
+                  },
+                  "laplacian_variance": {
+                    "client": 0.00063271,
+                    "server": 0.0006327109877020121,
+                    "abs_diff": 9.877020120839172e-10,
+                    "within_tolerance": true
+                  }
+                },
+                "blocking_reasons": [],
+                "warning_reasons": []
+              },
+              "audit": {
+                "audit_nonce": "ca812411-1477-457b-a8e0-c329e1a027a6",
+                "client_source_image_sha256": "a152511b81e81bc2b4d3eac01517d96322d29cba4623564bdbf96ae027148bfa",
+                "client_normalized_tensor_sha256": "80f6ff9bb5372193739bcd526dd1a9cd377efb9d942b262301e89a2123566635",
+                "client_audit_chain_sha256": "ef9c84d17e38111c888e4bdb4fddccc09e4043bea184886efa5974350112c2a4",
+                "server_audit_chain_sha256": "ef9c84d17e38111c888e4bdb4fddccc09e4043bea184886efa5974350112c2a4",
+                "audit_chain_consistent": true,
+                "server_share0_sha256": "d82837a45e5f3e5cd95b44e2f25aa71a62370c200f71a9c1746bba8a93b25467",
+                "server_share1_sha256": "124daed55f73860306c5f7697cd42a4f4b0dd9ca8e6107b0e8b3d4bc0582eca5",
+                "server_payload_fingerprint": "7bc62f2221bdff0863783ffbe9ad9b8d4c9bd9e2b7298918ff1999ef6651d116",
+                "demo_boundary": {
+                  "browser_generated_shares": true,
+                  "server_received_plain_image": false,
+                  "server_received_plain_pixel_values": false,
+                  "server_reconstructed_normalized_tensor_for_dqa": true,
+                  "server_received_share0_and_share1_in_single_process": true
+                }
+              },
+              "control_plane_metrics": {
+                "client": {
+                  "decode_ms": 1.25,
+                  "preprocess_ms": 4.75,
+                  "dqa_ms": 1.1,
+                  "hash_ms": 2.85,
+                  "share_build_ms": 3.65,
+                  "total_ms": 13.6
+                },
+                "server_pre_spu_checks_ms": 40.911,
+                "request_size_bytes": 1206606
+              },
+              "error_code": "duplicate_nonce",
+              "interception_layer": "replay_guard",
+              "detail": "检测到重复或饱和的控制面请求。"
+            },
+            "error_code": "duplicate_nonce"
+          },
+          {
+            "status": 409,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": {
+                "client_status": "pass",
+                "status": "pass",
+                "integrity_status": "consistent",
+                "integrity_reasons": [],
+                "client_quality_summary": {
+                  "mean_luma": 0.50046772,
+                  "std_luma": 0.09543563,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32264259,
+                  "laplacian_variance": 0.00063271
+                },
+                "server_quality_summary": {
+                  "mean_luma": 0.5004677176475525,
+                  "std_luma": 0.09543563425540924,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32264259457588196,
+                  "laplacian_variance": 0.0006327109877020121
+                },
+                "client_vs_server_drift": {
+                  "mean_luma": {
+                    "client": 0.50046772,
+                    "server": 0.5004677176475525,
+                    "abs_diff": 2.352447459053053e-09,
+                    "within_tolerance": true
+                  },
+                  "std_luma": {
+                    "client": 0.09543563,
+                    "server": 0.09543563425540924,
+                    "abs_diff": 4.255409247200248e-09,
+                    "within_tolerance": true
+                  },
+                  "overexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "underexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "effective_luma_ratio": {
+                    "client": 1.0,
+                    "server": 1.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "dynamic_range_p95_p05": {
+                    "client": 0.32264259,
+                    "server": 0.32264259457588196,
+                    "abs_diff": 4.575881951129901e-09,
+                    "within_tolerance": true
+                  },
+                  "laplacian_variance": {
+                    "client": 0.00063271,
+                    "server": 0.0006327109877020121,
+                    "abs_diff": 9.877020120839172e-10,
+                    "within_tolerance": true
+                  }
+                },
+                "blocking_reasons": [],
+                "warning_reasons": []
+              },
+              "audit": {
+                "audit_nonce": "ca812411-1477-457b-a8e0-c329e1a027a6",
+                "client_source_image_sha256": "a152511b81e81bc2b4d3eac01517d96322d29cba4623564bdbf96ae027148bfa",
+                "client_normalized_tensor_sha256": "80f6ff9bb5372193739bcd526dd1a9cd377efb9d942b262301e89a2123566635",
+                "client_audit_chain_sha256": "ef9c84d17e38111c888e4bdb4fddccc09e4043bea184886efa5974350112c2a4",
+                "server_audit_chain_sha256": "ef9c84d17e38111c888e4bdb4fddccc09e4043bea184886efa5974350112c2a4",
+                "audit_chain_consistent": true,
+                "server_share0_sha256": "d82837a45e5f3e5cd95b44e2f25aa71a62370c200f71a9c1746bba8a93b25467",
+                "server_share1_sha256": "124daed55f73860306c5f7697cd42a4f4b0dd9ca8e6107b0e8b3d4bc0582eca5",
+                "server_payload_fingerprint": "7bc62f2221bdff0863783ffbe9ad9b8d4c9bd9e2b7298918ff1999ef6651d116",
+                "demo_boundary": {
+                  "browser_generated_shares": true,
+                  "server_received_plain_image": false,
+                  "server_received_plain_pixel_values": false,
+                  "server_reconstructed_normalized_tensor_for_dqa": true,
+                  "server_received_share0_and_share1_in_single_process": true
+                }
+              },
+              "control_plane_metrics": {
+                "client": {
+                  "decode_ms": 1.25,
+                  "preprocess_ms": 4.75,
+                  "dqa_ms": 1.1,
+                  "hash_ms": 2.85,
+                  "share_build_ms": 3.65,
+                  "total_ms": 13.6
+                },
+                "server_pre_spu_checks_ms": 111.058,
+                "request_size_bytes": 1206606
+              },
+              "error_code": "duplicate_nonce",
+              "interception_layer": "replay_guard",
+              "detail": "检测到重复或饱和的控制面请求。"
+            },
+            "error_code": "duplicate_nonce"
+          },
+          {
+            "status": 200,
+            "json": {
+              "status": "completed",
+              "result": {
+                "live_mode": "mock",
+                "prediction": {
+                  "argmax_index": 1,
+                  "argmax_label": "肺炎",
+                  "threshold_index": 1,
+                  "threshold_label": "肺炎",
+                  "prob_class_0": 0.28759999999999997,
+                  "prob_class_1": 0.7124,
+                  "decision_threshold": 0.6619606018066406
+                },
+                "logits": [
+                  0.3128,
+                  0.9074
+                ],
+                "probabilities": [
+                  0.28759999999999997,
+                  0.7124
+                ],
+                "runtime": {
+                  "actual_elapsed_sec": 1.5,
+                  "formal_reference_sec_per_sample": 89.06077172607183,
+                  "formal_reference_dual_total_gib": 84.46598263271153
+                },
+                "artifacts": {
+                  "candidate_json": null,
+                  "candidate_pt": null,
+                  "run_dir": null
+                },
+                "formal_metrics": {
+                  "threshold_accuracy": 0.927480936050415,
+                  "auc": 0.9639150500297546,
+                  "sec_per_sample": 89.06077172607183,
+                  "dual_total_gib": 84.46598263271153
+                },
+                "boundary_note": "当前 live demo 为单协调服务原型：浏览器本地生成 share0/share1，服务端短暂接收两份 share 后进入单通道 SPU 运行。正式生产边界应拆分为独立 P1/P2 服务，并维持 final logits only 的 reveal 策略。",
+                "limitation_note": "请求进入 SPU 后，当前 demo 原型不能保证中途断连即终止任务。"
+              },
+              "quality_assurance": {
+                "client_status": "pass",
+                "status": "pass",
+                "integrity_status": "consistent",
+                "integrity_reasons": [],
+                "client_quality_summary": {
+                  "mean_luma": 0.50046772,
+                  "std_luma": 0.09543563,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32264259,
+                  "laplacian_variance": 0.00063271
+                },
+                "server_quality_summary": {
+                  "mean_luma": 0.5004677176475525,
+                  "std_luma": 0.09543563425540924,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32264259457588196,
+                  "laplacian_variance": 0.0006327109877020121
+                },
+                "client_vs_server_drift": {
+                  "mean_luma": {
+                    "client": 0.50046772,
+                    "server": 0.5004677176475525,
+                    "abs_diff": 2.352447459053053e-09,
+                    "within_tolerance": true
+                  },
+                  "std_luma": {
+                    "client": 0.09543563,
+                    "server": 0.09543563425540924,
+                    "abs_diff": 4.255409247200248e-09,
+                    "within_tolerance": true
+                  },
+                  "overexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "underexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "effective_luma_ratio": {
+                    "client": 1.0,
+                    "server": 1.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "dynamic_range_p95_p05": {
+                    "client": 0.32264259,
+                    "server": 0.32264259457588196,
+                    "abs_diff": 4.575881951129901e-09,
+                    "within_tolerance": true
+                  },
+                  "laplacian_variance": {
+                    "client": 0.00063271,
+                    "server": 0.0006327109877020121,
+                    "abs_diff": 9.877020120839172e-10,
+                    "within_tolerance": true
+                  }
+                },
+                "blocking_reasons": [],
+                "warning_reasons": []
+              },
+              "audit": {
+                "audit_nonce": "ca812411-1477-457b-a8e0-c329e1a027a6",
+                "client_source_image_sha256": "a152511b81e81bc2b4d3eac01517d96322d29cba4623564bdbf96ae027148bfa",
+                "client_normalized_tensor_sha256": "80f6ff9bb5372193739bcd526dd1a9cd377efb9d942b262301e89a2123566635",
+                "client_audit_chain_sha256": "ef9c84d17e38111c888e4bdb4fddccc09e4043bea184886efa5974350112c2a4",
+                "server_audit_chain_sha256": "ef9c84d17e38111c888e4bdb4fddccc09e4043bea184886efa5974350112c2a4",
+                "audit_chain_consistent": true,
+                "server_share0_sha256": "d82837a45e5f3e5cd95b44e2f25aa71a62370c200f71a9c1746bba8a93b25467",
+                "server_share1_sha256": "124daed55f73860306c5f7697cd42a4f4b0dd9ca8e6107b0e8b3d4bc0582eca5",
+                "server_payload_fingerprint": "7bc62f2221bdff0863783ffbe9ad9b8d4c9bd9e2b7298918ff1999ef6651d116",
+                "demo_boundary": {
+                  "browser_generated_shares": true,
+                  "server_received_plain_image": false,
+                  "server_received_plain_pixel_values": false,
+                  "server_reconstructed_normalized_tensor_for_dqa": true,
+                  "server_received_share0_and_share1_in_single_process": true
+                }
+              },
+              "control_plane_metrics": {
+                "client": {
+                  "decode_ms": 1.25,
+                  "preprocess_ms": 4.75,
+                  "dqa_ms": 1.1,
+                  "hash_ms": 2.85,
+                  "share_build_ms": 3.65,
+                  "total_ms": 13.6
+                },
+                "server_pre_spu_checks_ms": 40.49,
+                "request_size_bytes": 1206606,
+                "server_total_ms": 1543.024
+              }
+            },
+            "error_code": null
+          }
+        ],
+        "success": 1,
+        "duplicate_nonce": 3
+      },
+      "system_state": {
+        "available": true,
+        "stable": false,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+9480 KiB；ΔThr=+1",
+        "before": {
+          "available": true,
+          "pid": 193570,
+          "timestamp": 1785680342.59298,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 60144,
+          "vmhwm_kib": 60144,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193570,
+          "timestamp": 1785680344.520587,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 69624,
+          "vmhwm_kib": 80936,
+          "thread_count": 17
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 9480,
+          "thread_count": 1
+        }
+      },
+      "guard_state_after": {
+        "global_inflight": 0,
+        "global_inflight_limit": 1,
+        "per_ip_inflight_limit": 1,
+        "replay_nonce_cache_size": 1,
+        "replay_payload_cache_size": 1,
+        "replay_nonce_capacity": 4096,
+        "replay_payload_capacity": 4096,
+        "tracked_ip_count": 1
+      },
+      "inflight_recovered": true
+    },
+    {
+      "name": "duplicate_payload_different_nonce",
+      "passed": true,
+      "interception_layer": "replay_guard_payload_cache",
+      "fallback_layer": "ip_inflight_limit",
+      "summary": "Same share payload with a fresh nonce should still be rejected as duplicate_payload.",
+      "details": {
+        "first": {
+          "status": 200,
+          "json": {
+            "status": "completed",
+            "result": {
+              "live_mode": "mock",
+              "prediction": {
+                "argmax_index": 1,
+                "argmax_label": "肺炎",
+                "threshold_index": 1,
+                "threshold_label": "肺炎",
+                "prob_class_0": 0.28759999999999997,
+                "prob_class_1": 0.7124,
+                "decision_threshold": 0.6619606018066406
+              },
+              "logits": [
+                0.3128,
+                0.9074
+              ],
+              "probabilities": [
+                0.28759999999999997,
+                0.7124
+              ],
+              "runtime": {
+                "actual_elapsed_sec": 1.5,
+                "formal_reference_sec_per_sample": 89.06077172607183,
+                "formal_reference_dual_total_gib": 84.46598263271153
+              },
+              "artifacts": {
+                "candidate_json": null,
+                "candidate_pt": null,
+                "run_dir": null
+              },
+              "formal_metrics": {
+                "threshold_accuracy": 0.927480936050415,
+                "auc": 0.9639150500297546,
+                "sec_per_sample": 89.06077172607183,
+                "dual_total_gib": 84.46598263271153
+              },
+              "boundary_note": "当前 live demo 为单协调服务原型：浏览器本地生成 share0/share1，服务端短暂接收两份 share 后进入单通道 SPU 运行。正式生产边界应拆分为独立 P1/P2 服务，并维持 final logits only 的 reveal 策略。",
+              "limitation_note": "请求进入 SPU 后，当前 demo 原型不能保证中途断连即终止任务。"
+            },
+            "quality_assurance": {
+              "client_status": "pass",
+              "status": "pass",
+              "integrity_status": "consistent",
+              "integrity_reasons": [],
+              "client_quality_summary": {
+                "mean_luma": 0.5005002,
+                "std_luma": 0.09544505,
+                "overexposed_ratio": 0.0,
+                "underexposed_ratio": 0.0,
+                "effective_luma_ratio": 1.0,
+                "dynamic_range_p95_p05": 0.32279507,
+                "laplacian_variance": 0.00063428
+              },
+              "server_quality_summary": {
+                "mean_luma": 0.5005002021789551,
+                "std_luma": 0.09544505178928375,
+                "overexposed_ratio": 0.0,
+                "underexposed_ratio": 0.0,
+                "effective_luma_ratio": 1.0,
+                "dynamic_range_p95_p05": 0.322795070707798,
+                "laplacian_variance": 0.0006342806736938655
+              },
+              "client_vs_server_drift": {
+                "mean_luma": {
+                  "client": 0.5005002,
+                  "server": 0.5005002021789551,
+                  "abs_diff": 2.178955127440929e-09,
+                  "within_tolerance": true
+                },
+                "std_luma": {
+                  "client": 0.09544505,
+                  "server": 0.09544505178928375,
+                  "abs_diff": 1.789283748943049e-09,
+                  "within_tolerance": true
+                },
+                "overexposed_ratio": {
+                  "client": 0.0,
+                  "server": 0.0,
+                  "abs_diff": 0.0,
+                  "within_tolerance": true
+                },
+                "underexposed_ratio": {
+                  "client": 0.0,
+                  "server": 0.0,
+                  "abs_diff": 0.0,
+                  "within_tolerance": true
+                },
+                "effective_luma_ratio": {
+                  "client": 1.0,
+                  "server": 1.0,
+                  "abs_diff": 0.0,
+                  "within_tolerance": true
+                },
+                "dynamic_range_p95_p05": {
+                  "client": 0.32279507,
+                  "server": 0.322795070707798,
+                  "abs_diff": 7.077979868874706e-10,
+                  "within_tolerance": true
+                },
+                "laplacian_variance": {
+                  "client": 0.00063428,
+                  "server": 0.0006342806736938655,
+                  "abs_diff": 6.736938655592731e-10,
+                  "within_tolerance": true
+                }
+              },
+              "blocking_reasons": [],
+              "warning_reasons": []
+            },
+            "audit": {
+              "audit_nonce": "e948c53c-b647-4a37-a7cc-a748cdbe2e57",
+              "client_source_image_sha256": "836fd8c0a16eafa3783253389f933185262a66bab8cc2196e330b486246936d6",
+              "client_normalized_tensor_sha256": "3839b296c7cae12ceaca9b760b03a59e0670c8facab1c4a68963b491e2d8ad8c",
+              "client_audit_chain_sha256": "f026bb1b1f0c9f703d4fa299a3ece65c38bfb5759baea3eb96fe13b54b985bf5",
+              "server_audit_chain_sha256": "f026bb1b1f0c9f703d4fa299a3ece65c38bfb5759baea3eb96fe13b54b985bf5",
+              "audit_chain_consistent": true,
+              "server_share0_sha256": "1b79a064c1cddba7dbd31d14c1fd0884a4f77c036b860c907b3635feb9d9b035",
+              "server_share1_sha256": "f2a34a574224d612ee19c0b731ee55d4c4033ccbad139970cc3dd0a4a75348c1",
+              "server_payload_fingerprint": "27c65f4fb169a56f184532e2a80c9c11ad9412d937545a15a0544e815e8cafd5",
+              "demo_boundary": {
+                "browser_generated_shares": true,
+                "server_received_plain_image": false,
+                "server_received_plain_pixel_values": false,
+                "server_reconstructed_normalized_tensor_for_dqa": true,
+                "server_received_share0_and_share1_in_single_process": true
+              }
+            },
+            "control_plane_metrics": {
+              "client": {
+                "decode_ms": 1.25,
+                "preprocess_ms": 4.75,
+                "dqa_ms": 1.1,
+                "hash_ms": 2.85,
+                "share_build_ms": 3.65,
+                "total_ms": 13.6
+              },
+              "server_pre_spu_checks_ms": 35.735,
+              "request_size_bytes": 1206605,
+              "server_total_ms": 1537.619
+            }
+          },
+          "error_code": null
+        },
+        "second": {
+          "status": 409,
+          "json": {
+            "status": "rejected",
+            "result": null,
+            "quality_assurance": {
+              "client_status": "pass",
+              "status": "pass",
+              "integrity_status": "consistent",
+              "integrity_reasons": [],
+              "client_quality_summary": {
+                "mean_luma": 0.5005002,
+                "std_luma": 0.09544505,
+                "overexposed_ratio": 0.0,
+                "underexposed_ratio": 0.0,
+                "effective_luma_ratio": 1.0,
+                "dynamic_range_p95_p05": 0.32279507,
+                "laplacian_variance": 0.00063428
+              },
+              "server_quality_summary": {
+                "mean_luma": 0.5005002021789551,
+                "std_luma": 0.09544505178928375,
+                "overexposed_ratio": 0.0,
+                "underexposed_ratio": 0.0,
+                "effective_luma_ratio": 1.0,
+                "dynamic_range_p95_p05": 0.322795070707798,
+                "laplacian_variance": 0.0006342806736938655
+              },
+              "client_vs_server_drift": {
+                "mean_luma": {
+                  "client": 0.5005002,
+                  "server": 0.5005002021789551,
+                  "abs_diff": 2.178955127440929e-09,
+                  "within_tolerance": true
+                },
+                "std_luma": {
+                  "client": 0.09544505,
+                  "server": 0.09544505178928375,
+                  "abs_diff": 1.789283748943049e-09,
+                  "within_tolerance": true
+                },
+                "overexposed_ratio": {
+                  "client": 0.0,
+                  "server": 0.0,
+                  "abs_diff": 0.0,
+                  "within_tolerance": true
+                },
+                "underexposed_ratio": {
+                  "client": 0.0,
+                  "server": 0.0,
+                  "abs_diff": 0.0,
+                  "within_tolerance": true
+                },
+                "effective_luma_ratio": {
+                  "client": 1.0,
+                  "server": 1.0,
+                  "abs_diff": 0.0,
+                  "within_tolerance": true
+                },
+                "dynamic_range_p95_p05": {
+                  "client": 0.32279507,
+                  "server": 0.322795070707798,
+                  "abs_diff": 7.077979868874706e-10,
+                  "within_tolerance": true
+                },
+                "laplacian_variance": {
+                  "client": 0.00063428,
+                  "server": 0.0006342806736938655,
+                  "abs_diff": 6.736938655592731e-10,
+                  "within_tolerance": true
+                }
+              },
+              "blocking_reasons": [],
+              "warning_reasons": []
+            },
+            "audit": {
+              "audit_nonce": "a68486f7-7eea-4ddf-8a48-84d6d63db62c",
+              "client_source_image_sha256": "836fd8c0a16eafa3783253389f933185262a66bab8cc2196e330b486246936d6",
+              "client_normalized_tensor_sha256": "3839b296c7cae12ceaca9b760b03a59e0670c8facab1c4a68963b491e2d8ad8c",
+              "client_audit_chain_sha256": "1a8a6bba54d953a91f9dc74b62a476f97a6899dabcdd51b86408daace42a407b",
+              "server_audit_chain_sha256": "1a8a6bba54d953a91f9dc74b62a476f97a6899dabcdd51b86408daace42a407b",
+              "audit_chain_consistent": true,
+              "server_share0_sha256": "1b79a064c1cddba7dbd31d14c1fd0884a4f77c036b860c907b3635feb9d9b035",
+              "server_share1_sha256": "f2a34a574224d612ee19c0b731ee55d4c4033ccbad139970cc3dd0a4a75348c1",
+              "server_payload_fingerprint": "27c65f4fb169a56f184532e2a80c9c11ad9412d937545a15a0544e815e8cafd5",
+              "demo_boundary": {
+                "browser_generated_shares": true,
+                "server_received_plain_image": false,
+                "server_received_plain_pixel_values": false,
+                "server_reconstructed_normalized_tensor_for_dqa": true,
+                "server_received_share0_and_share1_in_single_process": true
+              }
+            },
+            "control_plane_metrics": {
+              "client": {
+                "decode_ms": 1.25,
+                "preprocess_ms": 4.75,
+                "dqa_ms": 1.1,
+                "hash_ms": 2.85,
+                "share_build_ms": 3.65,
+                "total_ms": 13.6
+              },
+              "server_pre_spu_checks_ms": 36.559,
+              "request_size_bytes": 1206605
+            },
+            "error_code": "duplicate_payload",
+            "interception_layer": "replay_guard",
+            "detail": "检测到重复或饱和的控制面请求。"
+          },
+          "error_code": "duplicate_payload"
+        }
+      },
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=-960 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193570,
+          "timestamp": 1785680344.522667,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 69624,
+          "vmhwm_kib": 80936,
+          "thread_count": 17
+        },
+        "after": {
+          "available": true,
+          "pid": 193570,
+          "timestamp": 1785680346.475943,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 68664,
+          "vmhwm_kib": 80936,
+          "thread_count": 17
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": -960,
+          "thread_count": 0
+        }
+      },
+      "guard_state_after": {
+        "global_inflight": 0,
+        "global_inflight_limit": 1,
+        "per_ip_inflight_limit": 1,
+        "replay_nonce_cache_size": 2,
+        "replay_payload_cache_size": 2,
+        "replay_nonce_capacity": 4096,
+        "replay_payload_capacity": 4096,
+        "tracked_ip_count": 1
+      },
+      "inflight_recovered": true
+    },
+    {
+      "name": "inflight_limit",
+      "passed": true,
+      "interception_layer": "per_ip_inflight_guard",
+      "fallback_layer": "global_inflight_guard",
+      "summary": "With single-channel limits, only one request should enter at a time and a busy request must remain retryable after the active request finishes.",
+      "details": {
+        "results": [
+          {
+            "status": 200,
+            "json": {
+              "status": "completed",
+              "result": {
+                "live_mode": "mock",
+                "prediction": {
+                  "argmax_index": 1,
+                  "argmax_label": "肺炎",
+                  "threshold_index": 1,
+                  "threshold_label": "肺炎",
+                  "prob_class_0": 0.28759999999999997,
+                  "prob_class_1": 0.7124,
+                  "decision_threshold": 0.6619606018066406
+                },
+                "logits": [
+                  0.3128,
+                  0.9074
+                ],
+                "probabilities": [
+                  0.28759999999999997,
+                  0.7124
+                ],
+                "runtime": {
+                  "actual_elapsed_sec": 1.5,
+                  "formal_reference_sec_per_sample": 89.06077172607183,
+                  "formal_reference_dual_total_gib": 84.46598263271153
+                },
+                "artifacts": {
+                  "candidate_json": null,
+                  "candidate_pt": null,
+                  "run_dir": null
+                },
+                "formal_metrics": {
+                  "threshold_accuracy": 0.927480936050415,
+                  "auc": 0.9639150500297546,
+                  "sec_per_sample": 89.06077172607183,
+                  "dual_total_gib": 84.46598263271153
+                },
+                "boundary_note": "当前 live demo 为单协调服务原型：浏览器本地生成 share0/share1，服务端短暂接收两份 share 后进入单通道 SPU 运行。正式生产边界应拆分为独立 P1/P2 服务，并维持 final logits only 的 reveal 策略。",
+                "limitation_note": "请求进入 SPU 后，当前 demo 原型不能保证中途断连即终止任务。"
+              },
+              "quality_assurance": {
+                "client_status": "pass",
+                "status": "pass",
+                "integrity_status": "consistent",
+                "integrity_reasons": [],
+                "client_quality_summary": {
+                  "mean_luma": 0.50048238,
+                  "std_luma": 0.09543633,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.322843,
+                  "laplacian_variance": 0.00063178
+                },
+                "server_quality_summary": {
+                  "mean_luma": 0.5004823803901672,
+                  "std_luma": 0.09543632715940475,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.322843000292778,
+                  "laplacian_variance": 0.0006317777442745864
+                },
+                "client_vs_server_drift": {
+                  "mean_luma": {
+                    "client": 0.50048238,
+                    "server": 0.5004823803901672,
+                    "abs_diff": 3.9016723185625324e-10,
+                    "within_tolerance": true
+                  },
+                  "std_luma": {
+                    "client": 0.09543633,
+                    "server": 0.09543632715940475,
+                    "abs_diff": 2.8405952451349137e-09,
+                    "within_tolerance": true
+                  },
+                  "overexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "underexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "effective_luma_ratio": {
+                    "client": 1.0,
+                    "server": 1.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "dynamic_range_p95_p05": {
+                    "client": 0.322843,
+                    "server": 0.322843000292778,
+                    "abs_diff": 2.9277802404692466e-10,
+                    "within_tolerance": true
+                  },
+                  "laplacian_variance": {
+                    "client": 0.00063178,
+                    "server": 0.0006317777442745864,
+                    "abs_diff": 2.2557254135326804e-09,
+                    "within_tolerance": true
+                  }
+                },
+                "blocking_reasons": [],
+                "warning_reasons": []
+              },
+              "audit": {
+                "audit_nonce": "a2658356-0b20-43f0-9361-2faee7503d96",
+                "client_source_image_sha256": "c618b7e8a57ed0aeb6c4ec01448d4e57ff612445747786daf6bb93f9fcfa1012",
+                "client_normalized_tensor_sha256": "4047cc05cb522ee28b3be045911746279f972610d9a5bbd285465d92e097cd4b",
+                "client_audit_chain_sha256": "61fcb3c92f8c4cbc34ffc07374d7f1aff0b1297f46bb3d6127445dcb734e755b",
+                "server_audit_chain_sha256": "61fcb3c92f8c4cbc34ffc07374d7f1aff0b1297f46bb3d6127445dcb734e755b",
+                "audit_chain_consistent": true,
+                "server_share0_sha256": "eebe1e3700821442dbd35f50be1742a3f608386c9f7ea68c2f86eadf6d2d23e5",
+                "server_share1_sha256": "c34ba58ee3781e0318ee0839ae42638456bde07259a6fb1e32311c9c23ab7998",
+                "server_payload_fingerprint": "eec142126579556cd23d684a39aac88c12a27a4aee6628b06e9a1083c424299a",
+                "demo_boundary": {
+                  "browser_generated_shares": true,
+                  "server_received_plain_image": false,
+                  "server_received_plain_pixel_values": false,
+                  "server_reconstructed_normalized_tensor_for_dqa": true,
+                  "server_received_share0_and_share1_in_single_process": true
+                }
+              },
+              "control_plane_metrics": {
+                "client": {
+                  "decode_ms": 1.25,
+                  "preprocess_ms": 4.75,
+                  "dqa_ms": 1.1,
+                  "hash_ms": 2.85,
+                  "share_build_ms": 3.65,
+                  "total_ms": 13.6
+                },
+                "server_pre_spu_checks_ms": 36.497,
+                "request_size_bytes": 1206604,
+                "server_total_ms": 1538.469
+              }
+            },
+            "error_code": null
+          },
+          {
+            "status": 429,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": {
+                "client_status": "pass",
+                "status": "pass",
+                "integrity_status": "consistent",
+                "integrity_reasons": [],
+                "client_quality_summary": {
+                  "mean_luma": 0.50047624,
+                  "std_luma": 0.09542489,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32300711,
+                  "laplacian_variance": 0.00063199
+                },
+                "server_quality_summary": {
+                  "mean_luma": 0.5004762411117554,
+                  "std_luma": 0.09542489051818848,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32300711423158646,
+                  "laplacian_variance": 0.000631993287242949
+                },
+                "client_vs_server_drift": {
+                  "mean_luma": {
+                    "client": 0.50047624,
+                    "server": 0.5004762411117554,
+                    "abs_diff": 1.1117553544437442e-09,
+                    "within_tolerance": true
+                  },
+                  "std_luma": {
+                    "client": 0.09542489,
+                    "server": 0.09542489051818848,
+                    "abs_diff": 5.181884782379242e-10,
+                    "within_tolerance": true
+                  },
+                  "overexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "underexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "effective_luma_ratio": {
+                    "client": 1.0,
+                    "server": 1.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "dynamic_range_p95_p05": {
+                    "client": 0.32300711,
+                    "server": 0.32300711423158646,
+                    "abs_diff": 4.2315864701159e-09,
+                    "within_tolerance": true
+                  },
+                  "laplacian_variance": {
+                    "client": 0.00063199,
+                    "server": 0.000631993287242949,
+                    "abs_diff": 3.287242948983235e-09,
+                    "within_tolerance": true
+                  }
+                },
+                "blocking_reasons": [],
+                "warning_reasons": []
+              },
+              "audit": {
+                "audit_nonce": "081afea9-7700-4b4f-a96c-fec163eb0ddd",
+                "client_source_image_sha256": "7d46ddbe18cdb375b79c4c58b7b123173663f462f24fa57caa2932e654e3334e",
+                "client_normalized_tensor_sha256": "b298942b8663a4e965edce125d869602d3b2069111a45d3675b938a636765d80",
+                "client_audit_chain_sha256": "79886eae37a07edb5f19a0b8898e25baa7e8866510dabf0dc1c34d1de64fe6dc",
+                "server_audit_chain_sha256": "79886eae37a07edb5f19a0b8898e25baa7e8866510dabf0dc1c34d1de64fe6dc",
+                "audit_chain_consistent": true,
+                "server_share0_sha256": "625f67e21264e558c310544384840818756e96b2c1a1ee8b19106a0cf3e9aa05",
+                "server_share1_sha256": "4fda7503fda9337a9b93f38c9ecc93d3e13595b9a32aace34dfd17e4d24edf4d",
+                "server_payload_fingerprint": "c11dbce735bff9c92d4f98ec8aab6376a4701eb08248a4fb044eea4c59cb77f0",
+                "demo_boundary": {
+                  "browser_generated_shares": true,
+                  "server_received_plain_image": false,
+                  "server_received_plain_pixel_values": false,
+                  "server_reconstructed_normalized_tensor_for_dqa": true,
+                  "server_received_share0_and_share1_in_single_process": true
+                }
+              },
+              "control_plane_metrics": {
+                "client": {
+                  "decode_ms": 1.25,
+                  "preprocess_ms": 4.75,
+                  "dqa_ms": 1.1,
+                  "hash_ms": 2.85,
+                  "share_build_ms": 3.65,
+                  "total_ms": 13.6
+                },
+                "server_pre_spu_checks_ms": 39.856,
+                "request_size_bytes": 1206606
+              },
+              "error_code": "busy_retry_later",
+              "interception_layer": "inflight_guard",
+              "detail": "当前演示环境繁忙，请稍后重试。"
+            },
+            "error_code": "busy_retry_later"
+          },
+          {
+            "status": 429,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": {
+                "client_status": "pass",
+                "status": "pass",
+                "integrity_status": "consistent",
+                "integrity_reasons": [],
+                "client_quality_summary": {
+                  "mean_luma": 0.50048113,
+                  "std_luma": 0.09537733,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32243437,
+                  "laplacian_variance": 0.00063687
+                },
+                "server_quality_summary": {
+                  "mean_luma": 0.500481128692627,
+                  "std_luma": 0.09537733346223831,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32243436574935913,
+                  "laplacian_variance": 0.0006368689937517047
+                },
+                "client_vs_server_drift": {
+                  "mean_luma": {
+                    "client": 0.50048113,
+                    "server": 0.500481128692627,
+                    "abs_diff": 1.307373098669018e-09,
+                    "within_tolerance": true
+                  },
+                  "std_luma": {
+                    "client": 0.09537733,
+                    "server": 0.09537733346223831,
+                    "abs_diff": 3.4622383154880865e-09,
+                    "within_tolerance": true
+                  },
+                  "overexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "underexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "effective_luma_ratio": {
+                    "client": 1.0,
+                    "server": 1.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "dynamic_range_p95_p05": {
+                    "client": 0.32243437,
+                    "server": 0.32243436574935913,
+                    "abs_diff": 4.250640894820634e-09,
+                    "within_tolerance": true
+                  },
+                  "laplacian_variance": {
+                    "client": 0.00063687,
+                    "server": 0.0006368689937517047,
+                    "abs_diff": 1.0062482952996957e-09,
+                    "within_tolerance": true
+                  }
+                },
+                "blocking_reasons": [],
+                "warning_reasons": []
+              },
+              "audit": {
+                "audit_nonce": "35933bce-77aa-4d06-98c8-ca74d589e2c4",
+                "client_source_image_sha256": "db185bad742124e9e88f8a6d4cb74cd1d13807f11e390fb3edd7f7796062cbea",
+                "client_normalized_tensor_sha256": "e647efd30b272e73766737bfe88a0ed79cf4bebf63f398274c50fe9677314974",
+                "client_audit_chain_sha256": "ce47d026d7f8d55b70dff7a47a67263c433676e4dfae42a903f476d586adc7fe",
+                "server_audit_chain_sha256": "ce47d026d7f8d55b70dff7a47a67263c433676e4dfae42a903f476d586adc7fe",
+                "audit_chain_consistent": true,
+                "server_share0_sha256": "26df179565df98208df7b41238163a3ecf134230cf16bc0ebe672d43a67c3401",
+                "server_share1_sha256": "bcbeb8646f503e65c6030e73bcb5702e3a21114c6412f2f40765904bbf284e4f",
+                "server_payload_fingerprint": "66710cb5f299a2af0598d175749c0315fbf116a084fa83395bc006ee4f1395df",
+                "demo_boundary": {
+                  "browser_generated_shares": true,
+                  "server_received_plain_image": false,
+                  "server_received_plain_pixel_values": false,
+                  "server_reconstructed_normalized_tensor_for_dqa": true,
+                  "server_received_share0_and_share1_in_single_process": true
+                }
+              },
+              "control_plane_metrics": {
+                "client": {
+                  "decode_ms": 1.25,
+                  "preprocess_ms": 4.75,
+                  "dqa_ms": 1.1,
+                  "hash_ms": 2.85,
+                  "share_build_ms": 3.65,
+                  "total_ms": 13.6
+                },
+                "server_pre_spu_checks_ms": 75.33,
+                "request_size_bytes": 1206606
+              },
+              "error_code": "busy_retry_later",
+              "interception_layer": "inflight_guard",
+              "detail": "当前演示环境繁忙，请稍后重试。"
+            },
+            "error_code": "busy_retry_later"
+          },
+          {
+            "status": 429,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": {
+                "client_status": "pass",
+                "status": "pass",
+                "integrity_status": "consistent",
+                "integrity_reasons": [],
+                "client_quality_summary": {
+                  "mean_luma": 0.50048512,
+                  "std_luma": 0.09540277,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32327191,
+                  "laplacian_variance": 0.00063898
+                },
+                "server_quality_summary": {
+                  "mean_luma": 0.5004851222038269,
+                  "std_luma": 0.09540276974439621,
+                  "overexposed_ratio": 0.0,
+                  "underexposed_ratio": 0.0,
+                  "effective_luma_ratio": 1.0,
+                  "dynamic_range_p95_p05": 0.32327190786600113,
+                  "laplacian_variance": 0.0006389793707057834
+                },
+                "client_vs_server_drift": {
+                  "mean_luma": {
+                    "client": 0.50048512,
+                    "server": 0.5004851222038269,
+                    "abs_diff": 2.203826898750094e-09,
+                    "within_tolerance": true
+                  },
+                  "std_luma": {
+                    "client": 0.09540277,
+                    "server": 0.09540276974439621,
+                    "abs_diff": 2.556037881351614e-10,
+                    "within_tolerance": true
+                  },
+                  "overexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "underexposed_ratio": {
+                    "client": 0.0,
+                    "server": 0.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "effective_luma_ratio": {
+                    "client": 1.0,
+                    "server": 1.0,
+                    "abs_diff": 0.0,
+                    "within_tolerance": true
+                  },
+                  "dynamic_range_p95_p05": {
+                    "client": 0.32327191,
+                    "server": 0.32327190786600113,
+                    "abs_diff": 2.1339988665047827e-09,
+                    "within_tolerance": true
+                  },
+                  "laplacian_variance": {
+                    "client": 0.00063898,
+                    "server": 0.0006389793707057834,
+                    "abs_diff": 6.292942166712459e-10,
+                    "within_tolerance": true
+                  }
+                },
+                "blocking_reasons": [],
+                "warning_reasons": []
+              },
+              "audit": {
+                "audit_nonce": "fbdbff89-b87a-4213-a1e6-67ce18d7c388",
+                "client_source_image_sha256": "c1cfded4ef6e0bfcf8cfd3059a35b8a6fcfd441fa4b2a809ebb32e95eb5e8170",
+                "client_normalized_tensor_sha256": "e997f7b0c8dbab74cde049a0a5f4cdf9a1e13047a6c8d7b2c3b35fd143d20da9",
+                "client_audit_chain_sha256": "478c55f6d1b468f73df24e8e738f3013ed94a503298f6cd00feef7d722e715e6",
+                "server_audit_chain_sha256": "478c55f6d1b468f73df24e8e738f3013ed94a503298f6cd00feef7d722e715e6",
+                "audit_chain_consistent": true,
+                "server_share0_sha256": "a3851b56c3b5c403c749ae4423ea0c13f1d367ecc7f32401e5517ca865956263",
+                "server_share1_sha256": "df4bb568b846ec39dfd08090d67ee40feefffbc510da41cd9334f3d199d96b41",
+                "server_payload_fingerprint": "bf1c262c590ce075f48cfe507d1a15659c7dbbbcf44403bee260866d875d8e6a",
+                "demo_boundary": {
+                  "browser_generated_shares": true,
+                  "server_received_plain_image": false,
+                  "server_received_plain_pixel_values": false,
+                  "server_reconstructed_normalized_tensor_for_dqa": true,
+                  "server_received_share0_and_share1_in_single_process": true
+                }
+              },
+              "control_plane_metrics": {
+                "client": {
+                  "decode_ms": 1.25,
+                  "preprocess_ms": 4.75,
+                  "dqa_ms": 1.1,
+                  "hash_ms": 2.85,
+                  "share_build_ms": 3.65,
+                  "total_ms": 13.6
+                },
+                "server_pre_spu_checks_ms": 109.401,
+                "request_size_bytes": 1206606
+              },
+              "error_code": "busy_retry_later",
+              "interception_layer": "inflight_guard",
+              "detail": "当前演示环境繁忙，请稍后重试。"
+            },
+            "error_code": "busy_retry_later"
+          }
+        ],
+        "success": 1,
+        "busy_retry_later": 3,
+        "retry_after_busy": {
+          "status": 200,
+          "json": {
+            "status": "completed",
+            "result": {
+              "live_mode": "mock",
+              "prediction": {
+                "argmax_index": 1,
+                "argmax_label": "肺炎",
+                "threshold_index": 1,
+                "threshold_label": "肺炎",
+                "prob_class_0": 0.28759999999999997,
+                "prob_class_1": 0.7124,
+                "decision_threshold": 0.6619606018066406
+              },
+              "logits": [
+                0.3128,
+                0.9074
+              ],
+              "probabilities": [
+                0.28759999999999997,
+                0.7124
+              ],
+              "runtime": {
+                "actual_elapsed_sec": 1.5,
+                "formal_reference_sec_per_sample": 89.06077172607183,
+                "formal_reference_dual_total_gib": 84.46598263271153
+              },
+              "artifacts": {
+                "candidate_json": null,
+                "candidate_pt": null,
+                "run_dir": null
+              },
+              "formal_metrics": {
+                "threshold_accuracy": 0.927480936050415,
+                "auc": 0.9639150500297546,
+                "sec_per_sample": 89.06077172607183,
+                "dual_total_gib": 84.46598263271153
+              },
+              "boundary_note": "当前 live demo 为单协调服务原型：浏览器本地生成 share0/share1，服务端短暂接收两份 share 后进入单通道 SPU 运行。正式生产边界应拆分为独立 P1/P2 服务，并维持 final logits only 的 reveal 策略。",
+              "limitation_note": "请求进入 SPU 后，当前 demo 原型不能保证中途断连即终止任务。"
+            },
+            "quality_assurance": {
+              "client_status": "pass",
+              "status": "pass",
+              "integrity_status": "consistent",
+              "integrity_reasons": [],
+              "client_quality_summary": {
+                "mean_luma": 0.50047624,
+                "std_luma": 0.09542489,
+                "overexposed_ratio": 0.0,
+                "underexposed_ratio": 0.0,
+                "effective_luma_ratio": 1.0,
+                "dynamic_range_p95_p05": 0.32300711,
+                "laplacian_variance": 0.00063199
+              },
+              "server_quality_summary": {
+                "mean_luma": 0.5004762411117554,
+                "std_luma": 0.09542489051818848,
+                "overexposed_ratio": 0.0,
+                "underexposed_ratio": 0.0,
+                "effective_luma_ratio": 1.0,
+                "dynamic_range_p95_p05": 0.32300711423158646,
+                "laplacian_variance": 0.000631993287242949
+              },
+              "client_vs_server_drift": {
+                "mean_luma": {
+                  "client": 0.50047624,
+                  "server": 0.5004762411117554,
+                  "abs_diff": 1.1117553544437442e-09,
+                  "within_tolerance": true
+                },
+                "std_luma": {
+                  "client": 0.09542489,
+                  "server": 0.09542489051818848,
+                  "abs_diff": 5.181884782379242e-10,
+                  "within_tolerance": true
+                },
+                "overexposed_ratio": {
+                  "client": 0.0,
+                  "server": 0.0,
+                  "abs_diff": 0.0,
+                  "within_tolerance": true
+                },
+                "underexposed_ratio": {
+                  "client": 0.0,
+                  "server": 0.0,
+                  "abs_diff": 0.0,
+                  "within_tolerance": true
+                },
+                "effective_luma_ratio": {
+                  "client": 1.0,
+                  "server": 1.0,
+                  "abs_diff": 0.0,
+                  "within_tolerance": true
+                },
+                "dynamic_range_p95_p05": {
+                  "client": 0.32300711,
+                  "server": 0.32300711423158646,
+                  "abs_diff": 4.2315864701159e-09,
+                  "within_tolerance": true
+                },
+                "laplacian_variance": {
+                  "client": 0.00063199,
+                  "server": 0.000631993287242949,
+                  "abs_diff": 3.287242948983235e-09,
+                  "within_tolerance": true
+                }
+              },
+              "blocking_reasons": [],
+              "warning_reasons": []
+            },
+            "audit": {
+              "audit_nonce": "081afea9-7700-4b4f-a96c-fec163eb0ddd",
+              "client_source_image_sha256": "7d46ddbe18cdb375b79c4c58b7b123173663f462f24fa57caa2932e654e3334e",
+              "client_normalized_tensor_sha256": "b298942b8663a4e965edce125d869602d3b2069111a45d3675b938a636765d80",
+              "client_audit_chain_sha256": "79886eae37a07edb5f19a0b8898e25baa7e8866510dabf0dc1c34d1de64fe6dc",
+              "server_audit_chain_sha256": "79886eae37a07edb5f19a0b8898e25baa7e8866510dabf0dc1c34d1de64fe6dc",
+              "audit_chain_consistent": true,
+              "server_share0_sha256": "625f67e21264e558c310544384840818756e96b2c1a1ee8b19106a0cf3e9aa05",
+              "server_share1_sha256": "4fda7503fda9337a9b93f38c9ecc93d3e13595b9a32aace34dfd17e4d24edf4d",
+              "server_payload_fingerprint": "c11dbce735bff9c92d4f98ec8aab6376a4701eb08248a4fb044eea4c59cb77f0",
+              "demo_boundary": {
+                "browser_generated_shares": true,
+                "server_received_plain_image": false,
+                "server_received_plain_pixel_values": false,
+                "server_reconstructed_normalized_tensor_for_dqa": true,
+                "server_received_share0_and_share1_in_single_process": true
+              }
+            },
+            "control_plane_metrics": {
+              "client": {
+                "decode_ms": 1.25,
+                "preprocess_ms": 4.75,
+                "dqa_ms": 1.1,
+                "hash_ms": 2.85,
+                "share_build_ms": 3.65,
+                "total_ms": 13.6
+              },
+              "server_pre_spu_checks_ms": 35.318,
+              "request_size_bytes": 1206606,
+              "server_total_ms": 1537.244
+            }
+          },
+          "error_code": null
+        }
+      },
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=-228 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193570,
+          "timestamp": 1785680346.477993,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 68664,
+          "vmhwm_kib": 80936,
+          "thread_count": 17
+        },
+        "after": {
+          "available": true,
+          "pid": 193570,
+          "timestamp": 1785680350.180424,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 68436,
+          "vmhwm_kib": 80936,
+          "thread_count": 17
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": -228,
+          "thread_count": 0
+        }
+      },
+      "guard_state_after": {
+        "global_inflight": 0,
+        "global_inflight_limit": 1,
+        "per_ip_inflight_limit": 1,
+        "replay_nonce_cache_size": 4,
+        "replay_payload_cache_size": 4,
+        "replay_nonce_capacity": 4096,
+        "replay_payload_capacity": 4096,
+        "tracked_ip_count": 1
+      },
+      "inflight_recovered": true
+    },
+    {
+      "name": "ip_window_rate_limit",
+      "passed": true,
+      "interception_layer": "ip_sliding_window_guard",
+      "fallback_layer": "not_applicable",
+      "summary": "After a short burst from the same IP, the endpoint should return rate_limited_ip before payload parsing.",
+      "details": {
+        "results": [
+          {
+            "status": 400,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": null,
+              "audit": null,
+              "control_plane_metrics": null,
+              "error_code": "invalid_content_length",
+              "interception_layer": "http_request_body_gate",
+              "detail": "请求体为空或 Content-Length 非法。"
+            },
+            "error_code": "invalid_content_length"
+          },
+          {
+            "status": 429,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": null,
+              "audit": null,
+              "control_plane_metrics": null,
+              "error_code": "rate_limited_ip",
+              "interception_layer": "ip_rate_limit_guard",
+              "detail": "当前来源请求过于频繁，请稍后再试。"
+            },
+            "error_code": "rate_limited_ip"
+          },
+          {
+            "status": 429,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": null,
+              "audit": null,
+              "control_plane_metrics": null,
+              "error_code": "rate_limited_ip",
+              "interception_layer": "ip_rate_limit_guard",
+              "detail": "当前来源请求过于频繁，请稍后再试。"
+            },
+            "error_code": "rate_limited_ip"
+          },
+          {
+            "status": 429,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": null,
+              "audit": null,
+              "control_plane_metrics": null,
+              "error_code": "rate_limited_ip",
+              "interception_layer": "ip_rate_limit_guard",
+              "detail": "当前来源请求过于频繁，请稍后再试。"
+            },
+            "error_code": "rate_limited_ip"
+          },
+          {
+            "status": 429,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": null,
+              "audit": null,
+              "control_plane_metrics": null,
+              "error_code": "rate_limited_ip",
+              "interception_layer": "ip_rate_limit_guard",
+              "detail": "当前来源请求过于频繁，请稍后再试。"
+            },
+            "error_code": "rate_limited_ip"
+          },
+          {
+            "status": 429,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": null,
+              "audit": null,
+              "control_plane_metrics": null,
+              "error_code": "rate_limited_ip",
+              "interception_layer": "ip_rate_limit_guard",
+              "detail": "当前来源请求过于频繁，请稍后再试。"
+            },
+            "error_code": "rate_limited_ip"
+          },
+          {
+            "status": 429,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": null,
+              "audit": null,
+              "control_plane_metrics": null,
+              "error_code": "rate_limited_ip",
+              "interception_layer": "ip_rate_limit_guard",
+              "detail": "当前来源请求过于频繁，请稍后再试。"
+            },
+            "error_code": "rate_limited_ip"
+          },
+          {
+            "status": 429,
+            "json": {
+              "status": "rejected",
+              "result": null,
+              "quality_assurance": null,
+              "audit": null,
+              "control_plane_metrics": null,
+              "error_code": "rate_limited_ip",
+              "interception_layer": "ip_rate_limit_guard",
+              "detail": "当前来源请求过于频繁，请稍后再试。"
+            },
+            "error_code": "rate_limited_ip"
+          }
+        ],
+        "rate_limited_ip": 7
+      },
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+0 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193570,
+          "timestamp": 1785680350.18249,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 68436,
+          "vmhwm_kib": 80936,
+          "thread_count": 17
+        },
+        "after": {
+          "available": true,
+          "pid": 193570,
+          "timestamp": 1785680350.539155,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 68436,
+          "vmhwm_kib": 80936,
+          "thread_count": 17
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 0,
+          "thread_count": 0
+        }
+      },
+      "guard_state_after": {
+        "global_inflight": 0,
+        "global_inflight_limit": 1,
+        "per_ip_inflight_limit": 1,
+        "replay_nonce_cache_size": 4,
+        "replay_payload_cache_size": 4,
+        "replay_nonce_capacity": 4096,
+        "replay_payload_capacity": 4096,
+        "tracked_ip_count": 1
+      },
+      "inflight_recovered": true
+    }
+  ]
+}

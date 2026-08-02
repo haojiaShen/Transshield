@@ -45,6 +45,8 @@
 | SPU 0.9.5 同图 MLP 结果 | `results/vps_optimization/spu095_unpadded_20260802_v1/optimization_summary.json` | 与 0.9.3b0 的真实 MLP 热态筛选和停止条件 |
 | SPU 混合 RLWE packing 与公开平方常数说明 | `docs/evidence/spu_hybrid_rlwe_public_alpha.md` | 单/多分组调度、基线概率波动归因、两次完整门槛与回退边界 |
 | SPU 混合 RLWE packing 结构化结果 | `results/vps_optimization/rlwe_equivalence_followup_20260802_v1/optimization_summary.json` | medical4、medical32、矩阵微基准、构建测试、源码哈希和正式口径隔离 |
+| SPU packing sum/difference 完整回归 | `docs/evidence/spu_packing_sumdiff_full_regression.md` | 正式 r=0.7 下的 524/32/8、同机完整 A/B、13+4、代码测试与边际收益判定 |
+| 2026-08-02 report-ready 总证据 | `results/vps_report_tests/report_sumdiff_full_20260802_v1/report_regression_aggregate.json` | `report_update_ready` 门禁、逐样本结果、通信量、隐私事实与报告区段核算 |
 | SPU batch32 停止证据 | `results/vps_optimization/batch32_screen_20260802_v1/optimization_summary.json` | 单位样本耗时回退、内存余量和未启动完整图的停止条件 |
 
 ## 说明
@@ -64,3 +66,4 @@
 - LayerNorm 仿射折叠虽减少 medical4 通信，但端到端时间略有回退；开关默认 `none`，未运行 medical32，也未修改正式结果。
 - 后置归一化、额外调度开关和 SPU 0.9.5 同图 MLP 均未通过前置性能筛选，不进入正式运行时。
 - batch32 的真实 MLP 单位样本热态耗时比 batch16 慢 0.63%，节点内存约占 51 GiB，因此未花费完整 medical32。
+- sum/difference 蝶形改写在正式 `r=0.7 + batch16` 的同机 medical32 A/B 中两批均略快，但总收益只有 0.61%，通信基本不变；它通过完整报告门禁，但只按边际研究补丁保留，不作为主要性能突破。

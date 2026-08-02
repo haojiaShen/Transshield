@@ -1,0 +1,3 @@
+90bc61d1db37e63f439db2547a82100494826066a7fb135b4c39293b93658c73  /opt/transshield-project/spu_vendored/patches/cheetah_packing_sumdiff.patch
+7b9dd63247535f535ed0ab0ea4bc59affb5272f22546274f30173ff8d3d92241  /opt/spu-mlp-pack-opt/libspu/mpc/cheetah/rlwe/packlwes.cc
+a1411c5489c5599f89b23fe84cdcb01232995b87

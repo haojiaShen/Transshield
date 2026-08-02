@@ -1,0 +1,49 @@
+{
+  "bundle_dir": "/opt/transshield-project/artifacts/frozen_bundle_finance_boundary_stress",
+  "crop_pct": 0.875,
+  "imagenet_default_mean_and_std": true,
+  "input_size": 224,
+  "manifest_type": "transshield_e2e_client_pixel_values_v0",
+  "output_pt": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance8_plain.pt",
+  "pixel_values_dtype": "torch.float32",
+  "pixel_values_shape": [
+    8,
+    3,
+    224,
+    224
+  ],
+  "sample_count": 8,
+  "sample_ids": [
+    "sample_000000",
+    "sample_000001",
+    "sample_000002",
+    "sample_000003",
+    "sample_000004",
+    "sample_000005",
+    "sample_000006",
+    "sample_000007"
+  ],
+  "selection_mode": "explicit_paths",
+  "source_paths": [
+    "/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/fraud/sample_000000.png",
+    "/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/fraud/sample_000033.png",
+    "/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/fraud/sample_000066.png",
+    "/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/fraud/sample_000099.png",
+    "/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/normal/sample_000000.png",
+    "/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/normal/sample_000033.png",
+    "/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/normal/sample_000066.png",
+    "/opt/transshield-project/data/finance_boundary_stress_imagefolder/val/normal/sample_000099.png"
+  ],
+  "source_paths_included": true,
+  "targets": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1
+  ],
+  "targets_included": true
+}

@@ -1,0 +1,527 @@
+{
+  "base_url": "http://127.0.0.1:17865",
+  "server_pid": 193529,
+  "passed": true,
+  "cases": [
+    {
+      "name": "transfer_encoding_chunked_blocked",
+      "passed": true,
+      "status": 400,
+      "error_code": "transfer_encoding_not_supported",
+      "interception_layer": "http_request_body_gate",
+      "fallback_layer": "not_applicable",
+      "details": "Transfer-Encoding: chunked must be rejected before body parsing.",
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+4 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680338.830722,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 60044,
+          "vmhwm_kib": 60044,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680339.034475,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 60048,
+          "vmhwm_kib": 60048,
+          "thread_count": 16
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 4,
+          "thread_count": 0
+        }
+      }
+    },
+    {
+      "name": "oversized_content_length_best_effort_413",
+      "passed": true,
+      "status": 413,
+      "error_code": "payload_too_large",
+      "interception_layer": "content_length_header_gate",
+      "fallback_layer": "tcp_force_close_allowed",
+      "details": "Oversized declared body must be rejected before the server drains it.",
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+0 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680339.034925,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 60048,
+          "vmhwm_kib": 60048,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680339.236589,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 60048,
+          "vmhwm_kib": 60048,
+          "thread_count": 16
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 0,
+          "thread_count": 0
+        }
+      }
+    },
+    {
+      "name": "duplicate_field_blocked",
+      "passed": true,
+      "status": 400,
+      "error_code": "malformed_multipart_precheck_failed",
+      "interception_layer": "raw_multipart_precheck",
+      "fallback_layer": "mime_tree_validation",
+      "details": "Duplicate multipart field must be rejected before JSON parsing.",
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+684 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680339.25073,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 60048,
+          "vmhwm_kib": 60048,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680339.455252,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 60732,
+          "vmhwm_kib": 62716,
+          "thread_count": 16
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 684,
+          "thread_count": 0
+        }
+      }
+    },
+    {
+      "name": "boundary_fanout_blocked",
+      "passed": true,
+      "status": 400,
+      "error_code": "malformed_multipart_precheck_failed",
+      "interception_layer": "raw_multipart_precheck",
+      "fallback_layer": "mime_tree_validation",
+      "details": "Multipart boundary fanout must be rejected before MIME expansion becomes expensive.",
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+0 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680339.455628,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 60732,
+          "vmhwm_kib": 62716,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680339.657461,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 60732,
+          "vmhwm_kib": 62716,
+          "thread_count": 16
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 0,
+          "thread_count": 0
+        }
+      }
+    },
+    {
+      "name": "nested_multipart_blocked",
+      "passed": true,
+      "status": 400,
+      "error_code": "malformed_multipart_precheck_failed",
+      "interception_layer": "raw_multipart_precheck",
+      "fallback_layer": "mime_tree_validation",
+      "details": "Nested multipart payloads must be rejected.",
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+704 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680339.667302,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 60732,
+          "vmhwm_kib": 62716,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680339.870108,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 61436,
+          "vmhwm_kib": 62716,
+          "thread_count": 16
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 704,
+          "thread_count": 0
+        }
+      }
+    },
+    {
+      "name": "oversized_json_part_blocked",
+      "passed": true,
+      "status": 400,
+      "error_code": "invalid_control_plane_payload",
+      "interception_layer": "json_bytes_gate",
+      "fallback_layer": "strict_json_decoder",
+      "details": "Per-field JSON byte limits must reject oversized JSON before decoding.",
+      "system_state": {
+        "available": true,
+        "stable": false,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+5448 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680339.879748,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 61436,
+          "vmhwm_kib": 62716,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680340.112051,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 66884,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 5448,
+          "thread_count": 0
+        }
+      }
+    },
+    {
+      "name": "unexpected_field_set_blocked",
+      "passed": true,
+      "status": 400,
+      "error_code": "malformed_multipart_precheck_failed",
+      "interception_layer": "raw_multipart_precheck",
+      "fallback_layer": "exact_field_set_gate",
+      "details": "Unexpected multipart field set must be rejected.",
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+0 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680340.121596,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 66884,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680340.324663,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 66884,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 0,
+          "thread_count": 0
+        }
+      }
+    },
+    {
+      "name": "boundary_param_whitespace_rejected",
+      "passed": true,
+      "status": 400,
+      "error_code": "malformed_multipart_precheck_failed",
+      "interception_layer": "content_type_boundary_parser",
+      "fallback_layer": "raw_multipart_precheck",
+      "details": "Non-canonical boundary parameter formatting must be rejected.",
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+0 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680340.325002,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 66884,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680340.526734,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 66884,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 0,
+          "thread_count": 0
+        }
+      }
+    },
+    {
+      "name": "malformed_part_header_blocked",
+      "passed": true,
+      "status": 400,
+      "error_code": "malformed_multipart_precheck_failed",
+      "interception_layer": "multipart_header_parser",
+      "fallback_layer": "mime_tree_validation",
+      "details": "Malformed multipart part headers must be rejected.",
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+0 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680340.527049,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 66884,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680340.728715,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 66884,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 0,
+          "thread_count": 0
+        }
+      }
+    },
+    {
+      "name": "multipart_header_null_byte_blocked",
+      "passed": true,
+      "status": 400,
+      "error_code": "malformed_multipart_precheck_failed",
+      "interception_layer": "multipart_header_parser",
+      "fallback_layer": "mime_tree_validation",
+      "details": "Control characters inside multipart headers must be rejected.",
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+0 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680340.729024,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 66884,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680340.930699,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 66884,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 0,
+          "thread_count": 0
+        }
+      }
+    },
+    {
+      "name": "non_empty_epilogue_blocked",
+      "passed": true,
+      "status": 400,
+      "error_code": "malformed_multipart_precheck_failed",
+      "interception_layer": "raw_multipart_precheck",
+      "fallback_layer": "mime_tree_validation",
+      "details": "Bytes after the closing multipart boundary must be rejected.",
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+0 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680340.931016,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 66884,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680341.132717,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 66884,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 0,
+          "thread_count": 0
+        }
+      }
+    },
+    {
+      "name": "utf16_json_charset_blocked",
+      "passed": true,
+      "status": 400,
+      "error_code": "invalid_control_plane_payload",
+      "interception_layer": "strict_utf8_json_decoder",
+      "fallback_layer": "json_numeric_hooks",
+      "details": "Non-UTF-8 JSON text must be rejected before semantic validation.",
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=-2820 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680341.142278,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 66884,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680341.372485,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 64064,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": -2820,
+          "thread_count": 0
+        }
+      }
+    },
+    {
+      "name": "truncated_body_blocked",
+      "passed": true,
+      "status": null,
+      "error_code": null,
+      "interception_layer": "streaming_body_reader",
+      "fallback_layer": "tcp_disconnect_no_response",
+      "details": "Early disconnect must be rejected before multipart parsing. Depending on the ASGI server, the client may receive HTTP 400/truncated_body or no response after its own TCP half-close; the server rejection audit must be checked for streaming_body_reader/truncated_body.",
+      "system_state": {
+        "available": true,
+        "stable": true,
+        "summary": "ΔFD=+0；ΔSock=+0；ΔRSS=+0 KiB；ΔThr=+0",
+        "before": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680341.37285,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 64064,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "after": {
+          "available": true,
+          "pid": 193529,
+          "timestamp": 1785680341.724232,
+          "fd_count": 8,
+          "socket_fd_count": 3,
+          "rss_kib": 64064,
+          "vmhwm_kib": 75136,
+          "thread_count": 16
+        },
+        "delta": {
+          "fd_count": 0,
+          "socket_fd_count": 0,
+          "rss_kib": 0,
+          "thread_count": 0
+        }
+      }
+    }
+  ]
+}

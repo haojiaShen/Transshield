@@ -1,0 +1,661 @@
+{
+  "backend": "jax_spu_secure_pruning_compact_forward_backend_v1",
+  "bundle_dir": "/opt/transshield-project/artifacts/frozen_bundle_medical_dynamic_mainline",
+  "cls_features": null,
+  "cpu_batch_size": null,
+  "cpu_forward_mode": null,
+  "driver_private_share_manifest_paths_recorded": false,
+  "effective_static_depth": 10,
+  "elapsed_sec": 964.207540512085,
+  "finite_logits": true,
+  "forward_scope": "student_patch_embed_blocks_head_with_secure_internal_pruning_predictor_path",
+  "host_model_params_materialized": true,
+  "host_plaintext_pixel_values_materialized": false,
+  "host_private_share_tensors_loaded": false,
+  "include_intermediates": false,
+  "input_mode": "party_local_debug_share_load",
+  "input_p1_share_manifest_json": "[redacted:p1_share_manifest]",
+  "input_p2_share_manifest_json": "[redacted:p2_share_manifest]",
+  "input_pt": null,
+  "input_share_manifest_json": null,
+  "input_share_public_manifest_json": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_public.json",
+  "input_source": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_public.json",
+  "logits": {
+    "dtype": "torch.float32",
+    "max": 0.79937744140625,
+    "mean": 0.14713478088378906,
+    "min": -0.5719146728515625,
+    "shape": [
+      32,
+      2
+    ],
+    "std": 0.43521443009376526
+  },
+  "manifest_type": "transshield_e2e_static_whole_forward_candidate_summary_v0",
+  "max_samples": 32,
+  "output_calibration": null,
+  "output_pt": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_spu_latest.pt",
+  "performance": {
+    "command_setup_and_input_load_sec": 0.0015063159989949781,
+    "model_parameter_load_sec": 0.04739457000141556,
+    "spu_forward_wall_sec": 964.1597791249987,
+    "spu_runtime": {
+      "chunks": [
+        {
+          "end_index": 16,
+          "final_reveal_sec": 0.0024934539997047978,
+          "secure_submit_and_execute_sec": 488.11302703599904,
+          "start_index": 0,
+          "total_sec": 488.11552048999874
+        },
+        {
+          "end_index": 32,
+          "final_reveal_sec": 0.0021871850003662985,
+          "secure_submit_and_execute_sec": 475.3935467279989,
+          "start_index": 16,
+          "total_sec": 475.3957339129993
+        }
+      ],
+      "compile_cache": {
+        "cache_dir": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_spu_latest.compile_cache",
+        "cache_read_sec": 0.0016145800000231247,
+        "cache_write_sec": 0.0014325459997053258,
+        "compile_sec": 3.979914789999384,
+        "enabled": true,
+        "errors": 0,
+        "hits": 1,
+        "misses": 1,
+        "namespace": "{\"cache_namespace_format\":2,\"graph_options\":{\"activation_clip_value\":0.0,\"block_chunk_size\":0,\"final_block_cls_only\":true,\"has_external_keep_masks\":false,\"has_secure_predictor\":true,\"layer_norm_calibration_sha256\":null,\"layer_norm_chunk_size\":0,\"layer_norm_policy\":\"exact\",\"metadata\":{\"activation_kind\":\"fixed_square\",\"activation_override\":\"fixed_square\",\"attention_policy\":\"uniform\",\"attention_policy_eps\":1e-06,\"base_activation_kind\":\"fixed_square\",\"base_rate\":0.7,\"bundle_base_rate\":0.7,\"depth\":10,\"embed_dim\":384,\"eval_pruning_mode\":\"topk_argsort\",\"eval_tie_policy\":\"lowest_index\",\"forward_scope\":\"student_patch_embed_blocks_head_with_secure_internal_pruning_predictor_path\",\"full_depth\":12,\"has_predictor_params\":true,\"head_dim\":64,\"layer_norm_affine_fused\":false,\"layer_norm_eps\":1e-06,\"num_heads\":6,\"patch_size\":16,\"predictor_layer_norm_affine_fused\":false,\"predictor_square_activation_scale_fused\":false,\"pruning_loc\":[3,6,9],\"public_fixed_square_scale\":0.25,\"secure_pruning_note\":\"PredictorLG + kth_threshold + tie_resolution execute inside SPU (jax_spu_secure_pruning_forward_backend_v0), but the current runner host first loads the plaintext model bundle before secret SPU injection.\",\"square_activation_scale_fused\":false,\"state_dict_path\":\"/opt/transshield-project/artifacts/frozen_bundle_medical_dynamic_mainline/modified_plaintext_model_state_dict.pth\",\"static_depth_limit\":10,\"token_keep_counts\":[137,96,67],\"token_ratio\":[0.7,0.48999999999999994,0.3429999999999999],\"unsupported_currently_bypassed\":[\"intermediate feature reveal\"],\"use_mask_pruning\":false},\"params_mode\":\"secret\",\"probe_block_index\":null,\"pruning_metadata\":{\"pruning_loc\":[3,6,9],\"token_keep_counts\":[137,96,67]},\"secure_pruning_mode\":\"compact\",\"secure_pruning_network\":\"unpadded_selection\",\"token_recycle_scale\":0.0,\"uniform_attention_value_fusion\":true},\"runtime_config\":{\"cheetah_2pc_config\":{\"enable_mul_lsb_error\":false,\"ot_kind\":\"YACL_Ferret\"},\"enable_hal_profile\":false,\"enable_pphlo_profile\":false,\"experimental_enable_colocated_optimization\":true,\"field\":\"FM64\",\"fxp_exp_iters\":4,\"fxp_exp_mode\":0,\"fxp_fraction_bits\":16,\"protocol\":\"CHEETAH\"},\"secure_pruning_ops_sha256\":\"33735bc99725f31d804fb138aee67bf7485d895e6e6dbc892ca9fa81b0ef307b\",\"spu_static_vit_sha256\":\"7c36d04ffc1119de8d363d25ee2e994967cec194c104b552dc038d7f4d91a8d5\"}"
+      },
+      "final_block_cls_only": true,
+      "initial_parameter_placement_sec": 0.29298412800017104,
+      "logical_block_token_positions": 1970,
+      "planned_block_token_counts": [
+        197,
+        197,
+        197,
+        138,
+        138,
+        138,
+        97,
+        97,
+        97,
+        97
+      ],
+      "planned_physical_block_token_positions": 1393,
+      "planned_pruning_comparator_count": 5551,
+      "planned_pruning_comparator_count_applicable": true,
+      "planned_pruning_networks": [
+        {
+          "block_index": 3,
+          "comparator_count": 2921,
+          "execution_primitive": "explicit_compare_swap_network",
+          "input_token_count": 196,
+          "keep_count": 137,
+          "stage_index": 0,
+          "threshold_only": false
+        },
+        {
+          "block_index": 6,
+          "comparator_count": 1799,
+          "execution_primitive": "explicit_compare_swap_network",
+          "input_token_count": 137,
+          "keep_count": 96,
+          "stage_index": 1,
+          "threshold_only": false
+        },
+        {
+          "block_index": 9,
+          "comparator_count": 831,
+          "execution_primitive": "explicit_compare_swap_network",
+          "input_token_count": 96,
+          "keep_count": 67,
+          "stage_index": 2,
+          "threshold_only": true
+        }
+      ],
+      "predictor_square_activation_scale_fused": false,
+      "public_fixed_square_scale": 0.25,
+      "runtime_init_sec": 0.009891428000628366,
+      "secure_pruning_mode": "compact",
+      "secure_pruning_network": "unpadded_selection",
+      "square_activation_scale_fused": false,
+      "total_runtime_sec": 963.8266717869992,
+      "uniform_attention_projection_fused": true,
+      "uniform_attention_value_fused": true
+    }
+  },
+  "prediction_preview": {
+    "argmax_predictions": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "logits": [
+      [
+        0.1166839599609375,
+        0.2594757080078125
+      ],
+      [
+        0.06304931640625,
+        0.3056488037109375
+      ],
+      [
+        -0.0418701171875,
+        0.376251220703125
+      ],
+      [
+        -0.07464599609375,
+        0.39910888671875
+      ],
+      [
+        -0.108734130859375,
+        0.4227752685546875
+      ],
+      [
+        0.0045318603515625,
+        0.3297119140625
+      ],
+      [
+        -0.1110382080078125,
+        0.427398681640625
+      ],
+      [
+        0.1417694091796875,
+        0.2462005615234375
+      ],
+      [
+        -0.0711212158203125,
+        0.394317626953125
+      ],
+      [
+        -0.1345062255859375,
+        0.442535400390625
+      ],
+      [
+        0.077423095703125,
+        0.29364013671875
+      ],
+      [
+        -0.1062469482421875,
+        0.4180145263671875
+      ],
+      [
+        -0.143951416015625,
+        0.4782867431640625
+      ],
+      [
+        -0.130218505859375,
+        0.4595794677734375
+      ],
+      [
+        -0.216064453125,
+        0.5021514892578125
+      ],
+      [
+        0.047119140625,
+        0.3119964599609375
+      ],
+      [
+        -0.5528106689453125,
+        0.7794036865234375
+      ],
+      [
+        -0.5719146728515625,
+        0.79937744140625
+      ],
+      [
+        -0.3034515380859375,
+        0.5500030517578125
+      ],
+      [
+        -0.38006591796875,
+        0.6394500732421875
+      ],
+      [
+        -0.2379302978515625,
+        0.5339508056640625
+      ],
+      [
+        -0.536834716796875,
+        0.7799530029296875
+      ],
+      [
+        -0.547607421875,
+        0.7929534912109375
+      ],
+      [
+        -0.5281829833984375,
+        0.755096435546875
+      ],
+      [
+        -0.555908203125,
+        0.7965240478515625
+      ],
+      [
+        -0.0516510009765625,
+        0.3821258544921875
+      ],
+      [
+        -0.455413818359375,
+        0.6929473876953125
+      ],
+      [
+        -0.224853515625,
+        0.5201873779296875
+      ],
+      [
+        -0.49847412109375,
+        0.725372314453125
+      ],
+      [
+        -0.5003509521484375,
+        0.7325286865234375
+      ],
+      [
+        -0.5683746337890625,
+        0.79888916015625
+      ],
+      [
+        -0.3185272216796875,
+        0.5909423828125
+      ]
+    ],
+    "probabilities": [
+      [
+        0.46436262130737305,
+        0.5356374382972717
+      ],
+      [
+        0.4396458864212036,
+        0.5603541731834412
+      ],
+      [
+        0.3969663977622986,
+        0.6030336618423462
+      ],
+      [
+        0.38372790813446045,
+        0.6162720918655396
+      ],
+      [
+        0.3701649010181427,
+        0.6298350691795349
+      ],
+      [
+        0.41941383481025696,
+        0.5805861353874207
+      ],
+      [
+        0.36855125427246094,
+        0.6314486861228943
+      ],
+      [
+        0.4739159047603607,
+        0.5260840654373169
+      ],
+      [
+        0.3856963515281677,
+        0.6143035888671875
+      ],
+      [
+        0.3596135973930359,
+        0.6403863430023193
+      ],
+      [
+        0.4461553394794464,
+        0.5538446307182312
+      ],
+      [
+        0.37185630202293396,
+        0.6281437277793884
+      ],
+      [
+        0.34927260875701904,
+        0.6507274508476257
+      ],
+      [
+        0.356681227684021,
+        0.643318772315979
+      ],
+      [
+        0.3277859687805176,
+        0.6722140312194824
+      ],
+      [
+        0.4341650903224945,
+        0.5658348202705383
+      ],
+      [
+        0.20879331231117249,
+        0.7912066578865051
+      ],
+      [
+        0.20241117477416992,
+        0.7975888252258301
+      ],
+      [
+        0.29870864748954773,
+        0.7012912631034851
+      ],
+      [
+        0.2651216983795166,
+        0.7348783016204834
+      ],
+      [
+        0.3160723149776459,
+        0.6839276552200317
+      ],
+      [
+        0.21135324239730835,
+        0.7886468172073364
+      ],
+      [
+        0.207417830824852,
+        0.7925821542739868
+      ],
+      [
+        0.21699249744415283,
+        0.7830074429512024
+      ],
+      [
+        0.20547300577163696,
+        0.794526994228363
+      ],
+      [
+        0.3932248055934906,
+        0.606775164604187
+      ],
+      [
+        0.2407885640859604,
+        0.7592114806175232
+      ],
+      [
+        0.3219028115272522,
+        0.6780971884727478
+      ],
+      [
+        0.2272602617740631,
+        0.7727397680282593
+      ],
+      [
+        0.22567781805992126,
+        0.7743222117424011
+      ],
+      [
+        0.2030622810125351,
+        0.7969377040863037
+      ],
+      [
+        0.2871083915233612,
+        0.7128915786743164
+      ]
+    ],
+    "threshold_predictions": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "privacy_note": "This candidate runs the configured whole-forward SPU/JAX function and reveals final logits only. In party-local share-load mode, the driver does not materialize plaintext pixel_values or private share tensors; P1/P2 device functions load their own share files before SPU recomposition. It is still a debug bridge until P1/P2 are launched as independent party processes.",
+  "private_input_paths_redacted": true,
+  "probabilities": {
+    "dtype": "torch.float32",
+    "max": 0.7975888252258301,
+    "mean": 0.5,
+    "min": 0.20241117477416992,
+    "shape": [
+      32,
+      2
+    ],
+    "std": 0.19619695842266083
+  },
+  "raw_logits_before_output_calibration": null,
+  "reveal_policy": "final_logits_only",
+  "runtime": "spu",
+  "runtime_pruning_keep_mask_pt": null,
+  "runtime_pruning_keep_mask_stage_count": null,
+  "sample_count": 32,
+  "spu": {
+    "config": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/configs/active.runtime.json",
+    "driver_private_share_manifest_paths_recorded": false,
+    "host_model_params_materialized": true,
+    "host_plaintext_pixel_values_materialized": false,
+    "host_private_share_tensors_loaded": false,
+    "input_mode": "party_local_debug_share_load",
+    "model_params_loaded_from_bundle_on_runner_host": true,
+    "model_params_secret_inside_spu": true,
+    "party_manifest_types": [
+      "transshield_e2e_debug_float_additive_share_party_manifest_v0",
+      "transshield_e2e_debug_float_additive_share_party_manifest_v0"
+    ],
+    "performance": {
+      "command_setup_and_input_load_sec": 0.0015063159989949781,
+      "model_parameter_load_sec": 0.04739457000141556,
+      "spu_forward_wall_sec": 964.1597791249987,
+      "spu_runtime": {
+        "chunks": [
+          {
+            "end_index": 16,
+            "final_reveal_sec": 0.0024934539997047978,
+            "secure_submit_and_execute_sec": 488.11302703599904,
+            "start_index": 0,
+            "total_sec": 488.11552048999874
+          },
+          {
+            "end_index": 32,
+            "final_reveal_sec": 0.0021871850003662985,
+            "secure_submit_and_execute_sec": 475.3935467279989,
+            "start_index": 16,
+            "total_sec": 475.3957339129993
+          }
+        ],
+        "compile_cache": {
+          "cache_dir": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_spu_latest.compile_cache",
+          "cache_read_sec": 0.0016145800000231247,
+          "cache_write_sec": 0.0014325459997053258,
+          "compile_sec": 3.979914789999384,
+          "enabled": true,
+          "errors": 0,
+          "hits": 1,
+          "misses": 1,
+          "namespace": "{\"cache_namespace_format\":2,\"graph_options\":{\"activation_clip_value\":0.0,\"block_chunk_size\":0,\"final_block_cls_only\":true,\"has_external_keep_masks\":false,\"has_secure_predictor\":true,\"layer_norm_calibration_sha256\":null,\"layer_norm_chunk_size\":0,\"layer_norm_policy\":\"exact\",\"metadata\":{\"activation_kind\":\"fixed_square\",\"activation_override\":\"fixed_square\",\"attention_policy\":\"uniform\",\"attention_policy_eps\":1e-06,\"base_activation_kind\":\"fixed_square\",\"base_rate\":0.7,\"bundle_base_rate\":0.7,\"depth\":10,\"embed_dim\":384,\"eval_pruning_mode\":\"topk_argsort\",\"eval_tie_policy\":\"lowest_index\",\"forward_scope\":\"student_patch_embed_blocks_head_with_secure_internal_pruning_predictor_path\",\"full_depth\":12,\"has_predictor_params\":true,\"head_dim\":64,\"layer_norm_affine_fused\":false,\"layer_norm_eps\":1e-06,\"num_heads\":6,\"patch_size\":16,\"predictor_layer_norm_affine_fused\":false,\"predictor_square_activation_scale_fused\":false,\"pruning_loc\":[3,6,9],\"public_fixed_square_scale\":0.25,\"secure_pruning_note\":\"PredictorLG + kth_threshold + tie_resolution execute inside SPU (jax_spu_secure_pruning_forward_backend_v0), but the current runner host first loads the plaintext model bundle before secret SPU injection.\",\"square_activation_scale_fused\":false,\"state_dict_path\":\"/opt/transshield-project/artifacts/frozen_bundle_medical_dynamic_mainline/modified_plaintext_model_state_dict.pth\",\"static_depth_limit\":10,\"token_keep_counts\":[137,96,67],\"token_ratio\":[0.7,0.48999999999999994,0.3429999999999999],\"unsupported_currently_bypassed\":[\"intermediate feature reveal\"],\"use_mask_pruning\":false},\"params_mode\":\"secret\",\"probe_block_index\":null,\"pruning_metadata\":{\"pruning_loc\":[3,6,9],\"token_keep_counts\":[137,96,67]},\"secure_pruning_mode\":\"compact\",\"secure_pruning_network\":\"unpadded_selection\",\"token_recycle_scale\":0.0,\"uniform_attention_value_fusion\":true},\"runtime_config\":{\"cheetah_2pc_config\":{\"enable_mul_lsb_error\":false,\"ot_kind\":\"YACL_Ferret\"},\"enable_hal_profile\":false,\"enable_pphlo_profile\":false,\"experimental_enable_colocated_optimization\":true,\"field\":\"FM64\",\"fxp_exp_iters\":4,\"fxp_exp_mode\":0,\"fxp_fraction_bits\":16,\"protocol\":\"CHEETAH\"},\"secure_pruning_ops_sha256\":\"33735bc99725f31d804fb138aee67bf7485d895e6e6dbc892ca9fa81b0ef307b\",\"spu_static_vit_sha256\":\"7c36d04ffc1119de8d363d25ee2e994967cec194c104b552dc038d7f4d91a8d5\"}"
+        },
+        "final_block_cls_only": true,
+        "initial_parameter_placement_sec": 0.29298412800017104,
+        "logical_block_token_positions": 1970,
+        "planned_block_token_counts": [
+          197,
+          197,
+          197,
+          138,
+          138,
+          138,
+          97,
+          97,
+          97,
+          97
+        ],
+        "planned_physical_block_token_positions": 1393,
+        "planned_pruning_comparator_count": 5551,
+        "planned_pruning_comparator_count_applicable": true,
+        "planned_pruning_networks": [
+          {
+            "block_index": 3,
+            "comparator_count": 2921,
+            "execution_primitive": "explicit_compare_swap_network",
+            "input_token_count": 196,
+            "keep_count": 137,
+            "stage_index": 0,
+            "threshold_only": false
+          },
+          {
+            "block_index": 6,
+            "comparator_count": 1799,
+            "execution_primitive": "explicit_compare_swap_network",
+            "input_token_count": 137,
+            "keep_count": 96,
+            "stage_index": 1,
+            "threshold_only": false
+          },
+          {
+            "block_index": 9,
+            "comparator_count": 831,
+            "execution_primitive": "explicit_compare_swap_network",
+            "input_token_count": 96,
+            "keep_count": 67,
+            "stage_index": 2,
+            "threshold_only": true
+          }
+        ],
+        "predictor_square_activation_scale_fused": false,
+        "public_fixed_square_scale": 0.25,
+        "runtime_init_sec": 0.009891428000628366,
+        "secure_pruning_mode": "compact",
+        "secure_pruning_network": "unpadded_selection",
+        "square_activation_scale_fused": false,
+        "total_runtime_sec": 963.8266717869992,
+        "uniform_attention_projection_fused": true,
+        "uniform_attention_value_fused": true
+      }
+    },
+    "predictor_params_secret_inside_spu": true,
+    "private_input_paths_redacted": true,
+    "reveal_policy": "final_logits_only",
+    "runtime_pruning_keep_mask_pt": null,
+    "share_manifest_type": "transshield_e2e_debug_float_additive_share_public_manifest_v0",
+    "share_semantics": "debug_float_additive_share_not_production_mpc_share",
+    "spu_activation_clip_value": 0.0,
+    "spu_batch_size": 16,
+    "spu_block_chunk_size": 0,
+    "spu_compile_cache_dir": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_spu_latest.compile_cache",
+    "spu_final_block_cls_only": true,
+    "spu_forward_graph_mode": "secure_pruning_compact_monolithic",
+    "spu_layer_norm_affine_fusion": "none",
+    "spu_layer_norm_calibration_json": null,
+    "spu_layer_norm_chunk_size": 0,
+    "spu_layer_norm_policy": "exact",
+    "spu_params_mode": "secret",
+    "spu_public_fixed_square_scale": true,
+    "spu_secure_pruning_mode": "compact",
+    "spu_secure_pruning_network": "unpadded_selection",
+    "spu_square_activation_scale_fusion": "none",
+    "spu_token_ratio_base_override": 0.0,
+    "spu_token_recycle_scale": 0.0,
+    "spu_uniform_attention_value_fusion": true,
+    "static_forward_metadata": {
+      "activation_kind": "fixed_square",
+      "activation_override": "fixed_square",
+      "attention_policy": "uniform",
+      "attention_policy_eps": 1e-06,
+      "base_activation_kind": "fixed_square",
+      "base_rate": 0.7,
+      "bundle_base_rate": 0.7,
+      "depth": 10,
+      "embed_dim": 384,
+      "eval_pruning_mode": "topk_argsort",
+      "eval_tie_policy": "lowest_index",
+      "forward_scope": "student_patch_embed_blocks_head_with_secure_internal_pruning_predictor_path",
+      "full_depth": 12,
+      "has_predictor_params": true,
+      "head_dim": 64,
+      "layer_norm_affine_fused": false,
+      "layer_norm_eps": 1e-06,
+      "num_heads": 6,
+      "patch_size": 16,
+      "predictor_layer_norm_affine_fused": false,
+      "predictor_square_activation_scale_fused": false,
+      "pruning_loc": [
+        3,
+        6,
+        9
+      ],
+      "public_fixed_square_scale": 0.25,
+      "secure_pruning_note": "PredictorLG + kth_threshold + tie_resolution execute inside SPU (jax_spu_secure_pruning_forward_backend_v0), but the current runner host first loads the plaintext model bundle before secret SPU injection.",
+      "square_activation_scale_fused": false,
+      "state_dict_path": "/opt/transshield-project/artifacts/frozen_bundle_medical_dynamic_mainline/modified_plaintext_model_state_dict.pth",
+      "static_depth_limit": 10,
+      "token_keep_counts": [
+        137,
+        96,
+        67
+      ],
+      "token_ratio": [
+        0.7,
+        0.48999999999999994,
+        0.3429999999999999
+      ],
+      "unsupported_currently_bypassed": [
+        "intermediate feature reveal"
+      ],
+      "use_mask_pruning": false
+    }
+  },
+  "spu_forward_graph_mode": "secure_pruning_compact_monolithic",
+  "spu_params_mode": "secret",
+  "spu_secure_pruning_mode": "compact",
+  "spu_secure_pruning_network": "unpadded_selection",
+  "spu_token_recycle_scale": 0.0,
+  "static_depth_limit": 10,
+  "threshold": 0.3577311038970947,
+  "token_features": null,
+  "token_ratio_base_override": 0.0
+}

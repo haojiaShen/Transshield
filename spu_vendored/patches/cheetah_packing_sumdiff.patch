@@ -1,0 +1,38 @@
+diff --git a/libspu/mpc/cheetah/rlwe/packlwes.cc b/libspu/mpc/cheetah/rlwe/packlwes.cc
+index f2c7272..1ee09fb 100644
+--- a/libspu/mpc/cheetah/rlwe/packlwes.cc
++++ b/libspu/mpc/cheetah/rlwe/packlwes.cc
+@@ -154,13 +154,24 @@ void PackingHelper::doPackingRLWEs(absl::Span<RLWECt> rlwes,
+         if (!is_even_empty) {
+-          seal::Ciphertext tmp = ct_even;
+           if (!is_odd_empty) {
+-            // E - X^k*O
+-            // E + X^k*O
+-            CATCH_SEAL_ERROR(evaluator.sub_inplace(ct_even, ct_odd));
+-            CATCH_SEAL_ERROR(evaluator.add_inplace(tmp, ct_odd));
++            // Compute both butterfly branches directly.  The historical
++            // implementation copied E into tmp, then rewrote E as E-O and
++            // tmp as E+O.  Writing the difference to a fresh ciphertext and
++            // the sum in place removes one full ciphertext copy from the
++            // common non-empty path while preserving the exact ring result:
++            //   E' = (E + X^k O) + Auto(E - X^k O, k').
++            RLWECt difference;
++            CATCH_SEAL_ERROR(
++                evaluator.sub(ct_even, ct_odd, difference));
++            CATCH_SEAL_ERROR(evaluator.add_inplace(ct_even, ct_odd));
++            CATCH_SEAL_ERROR(evaluator.apply_galois_inplace(
++                difference, poly_degree / h + 1, galois_keys_));
++            CATCH_SEAL_ERROR(evaluator.add_inplace(ct_even, difference));
++          } else {
++            // The zero-padding branch still needs the original E alongside
++            // Auto(E), so retain the copy only for this uncommon case.
++            RLWECt original = ct_even;
++            CATCH_SEAL_ERROR(evaluator.apply_galois_inplace(
++                ct_even, poly_degree / h + 1, galois_keys_));
++            CATCH_SEAL_ERROR(evaluator.add_inplace(ct_even, original));
+           }
+-
+-          CATCH_SEAL_ERROR(evaluator.apply_galois_inplace(
+-              ct_even, poly_degree / h + 1, galois_keys_));
+-          CATCH_SEAL_ERROR(evaluator.add_inplace(ct_even, tmp));
+         } else {

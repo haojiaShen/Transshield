@@ -1,0 +1,1222 @@
+[2026-08-02 21:56:23,772] [MainProcess] Starting grpc server at 127.0.0.1:38719
+[2026-08-02 21:56:23,850] [MainProcess] Run : builtin_spu_init at node:0
+I0802 21:56:23.853442 155490     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1204] Server[yacl::link::transport::internal::ReceiverServiceImpl] is serving on port=41345.
+W0802 21:56:23.853469 155490     0 external/com_github_brpc_brpc/src/brpc/server.cpp:1210] Builtin services are disabled according to ServerOptions.has_builtin_services
+[2026-08-02 21:56:24.860] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 21:56:24.861] [warning] [openssl_factory.cc:83] Yacl has been configured to use Yacl's entropy source, but unable to find one. Fallback to use openssl's default entropy srouce
+[2026-08-02 21:56:24,862] [MainProcess] spu-runtime (SPU) initialized
+[2026-08-02 21:56:24,864] [MainProcess] Run : <lambda> at node:0
+[2026-08-02 21:56:24,866] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:24,879] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:24,909] [MainProcess] Run : builtin_spu_run at node:0
+[2026-08-02 21:56:24,911] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:24,913] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:24,914] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:26,119] [MainProcess] Run : builtin_spu_init at node:0
+[2026-08-02 21:56:26,119] [MainProcess] spu-runtime (SPU) already exist, reuse it
+[2026-08-02 21:56:26,397] [MainProcess] Run : identity at node:0
+[2026-08-02 21:56:26,414] [MainProcess] Run : identity at node:0
+[2026-08-02 21:56:26,428] [MainProcess] Run : load_share_chunk_from_party_manifest at node:0
+[2026-08-02 21:56:27,592] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27.593] [info] [thread_pool.cc:30] Create a fixed thread pool with size 15
+[2026-08-02 21:56:27,682] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,792] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,798] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,800] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,802] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,803] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,804] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,806] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,810] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,812] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,813] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,815] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,816] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,817] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,828] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,830] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,831] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,833] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,836] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,838] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,839] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,840] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,841] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,843] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,844] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,846] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,864] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,866] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,867] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,869] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,870] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,871] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,872] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,874] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,886] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,887] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,888] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,890] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,891] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,893] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,894] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,895] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,902] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,903] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,904] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,906] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,909] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,911] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,912] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,913] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,914] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,916] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,917] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,919] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,937] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,938] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,939] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,941] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,942] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,943] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,945] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,946] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,957] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,959] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,960] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,962] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,963] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,964] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,965] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,967] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,974] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,975] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,976] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,978] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,981] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,983] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,984] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,985] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,986] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,988] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:27,989] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:27,991] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,005] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,006] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,008] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,009] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,010] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,012] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,013] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,014] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,026] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,028] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,029] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,030] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,031] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,033] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,034] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,036] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,042] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,044] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,045] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,047] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,050] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,051] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,053] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,054] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,055] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,057] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,058] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,059] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,077] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,079] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,080] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,081] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,082] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,084] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,085] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,087] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,098] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,100] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,101] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,103] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,104] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,105] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,106] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,108] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,115] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,116] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,117] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,119] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,122] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,124] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,125] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,127] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,128] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,129] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,130] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,132] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,150] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,152] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,153] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,155] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,156] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,157] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,158] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,160] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,171] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,173] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,174] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,176] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,177] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,178] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,179] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,181] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,187] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,189] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,190] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,192] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,195] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,196] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,198] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,199] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,200] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,202] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,203] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,204] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,220] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,222] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,223] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,224] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,226] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,227] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,228] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,230] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,244] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,246] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,247] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,248] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,249] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,251] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,252] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,253] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,260] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,262] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,263] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,264] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,267] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,269] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,270] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,271] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,272] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,274] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,275] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,277] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,291] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,293] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,294] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,295] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,296] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,298] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,299] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,301] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,313] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,314] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,316] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,317] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,318] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,320] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,321] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,323] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,329] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,331] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,332] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,333] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,337] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,338] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,339] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,341] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,342] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,343] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,344] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,346] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,362] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,363] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,365] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,366] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,367] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,369] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,370] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,372] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,386] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,388] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,389] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,391] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,392] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,393] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,394] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,396] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,402] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,404] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,405] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,407] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,410] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,411] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,412] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,414] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,415] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,416] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,418] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,419] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,433] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,435] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,436] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,437] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,438] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,440] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,441] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,443] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,454] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,456] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,457] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,459] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,460] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,461] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,462] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,464] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,471] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,473] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,474] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,476] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,479] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,480] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,481] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,483] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,484] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,486] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,487] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,488] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,505] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,507] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,508] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,510] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,511] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,512] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,513] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,515] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,527] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,529] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,531] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,532] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,533] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,535] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,536] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,538] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,539] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,540] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,541] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,543] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,544] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,545] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,546] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,548] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,551] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,553] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,554] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,556] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,557] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,558] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,560] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,562] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,563] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,564] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,565] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,567] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,568] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,570] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,571] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,572] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,573] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,575] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,576] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,578] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,579] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,580] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,581] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,583] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,584] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,585] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,588] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,590] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,591] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,593] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,594] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,595] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,597] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,599] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,600] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,602] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,603] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,604] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,606] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,607] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,608] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,610] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,611] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,612] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,613] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,615] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,616] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,618] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,619] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,620] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,621] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,623] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,626] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,628] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,629] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,630] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,631] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,633] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,635] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,637] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,638] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,639] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,640] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,642] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,643] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,645] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,646] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,647] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,648] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,650] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,651] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:28,653] [MainProcess] Run : make_shares at node:0
+[2026-08-02 21:56:28,654] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 21:56:32,654] [MainProcess] Run : builtin_spu_run at node:0
+[2026-08-02 21:56:32,705] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,882] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,948] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,950] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,951] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,953] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,954] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,955] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,962] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,963] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,966] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,967] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,968] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,969] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,977] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,978] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,979] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,980] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,987] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,988] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,990] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,991] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,996] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:32,997] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,000] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,001] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,002] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,003] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,013] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,014] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,015] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,016] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,026] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,027] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,028] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,029] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,037] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,039] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,041] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,042] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,043] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,044] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,061] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,062] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,063] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,064] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,074] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,076] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,077] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,077] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,083] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,084] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,087] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,088] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,089] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,090] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,101] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,102] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,103] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,104] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,113] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,114] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,115] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,116] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,120] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,121] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,124] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,125] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,126] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,127] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,138] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,139] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,140] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,141] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,149] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,150] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,151] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,152] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,157] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,158] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,161] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,162] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,163] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,164] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,176] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,177] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,178] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,178] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,188] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,189] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,190] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,191] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,196] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,197] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,199] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,200] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,201] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,202] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,213] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,214] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,214] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,215] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,224] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,225] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,226] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,227] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,233] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,234] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,237] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,238] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,239] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,239] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,251] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,252] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,253] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,254] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,262] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,263] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,264] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,265] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,271] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,272] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,274] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,275] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,276] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,276] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,288] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,289] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,290] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,291] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,300] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,301] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,302] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,303] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,309] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,310] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,312] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,313] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,314] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,315] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,327] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,328] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,329] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,330] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,339] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,340] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,341] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,342] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,343] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,343] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,344] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,345] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,348] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,348] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,349] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,351] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,352] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,353] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,354] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,355] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,355] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,356] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,357] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,358] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,359] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,361] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,362] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,363] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,365] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,366] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,367] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,368] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,369] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,369] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,370] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,371] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,372] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,373] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,375] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,376] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,376] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,378] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,379] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,379] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,380] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,381] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,382] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33,383] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 21:56:33.903] [info] [cheetah_dot.cc:310] CheetahDot uses 3@2 modulus 8192 degree for 64 bit ring (packing=enabled)
+[2026-08-02 21:56:48.671] [info] [cheetah_mul.cc:335] CheetahMul uses 4 modulus for 64 bit input over 64 bit ring
+[2026-08-02 21:56:54.156] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.632 ms (interleave)
+[2026-08-02 21:56:54.321] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.04 ms (interleave)
+[2026-08-02 21:57:40.727] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.197 ms (interleave)
+[2026-08-02 21:57:40.889] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.28 ms (interleave)
+[2026-08-02 21:58:26.622] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.745 ms (interleave)
+[2026-08-02 21:58:26.790] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.692 ms (interleave)
+[2026-08-02 22:00:34.256] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.588 ms (interleave)
+[2026-08-02 22:00:34.424] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 121.36 ms (interleave)
+[2026-08-02 22:01:07.114] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 117.44 ms (interleave)
+[2026-08-02 22:01:07.283] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 121.5 ms (interleave)
+[2026-08-02 22:01:39.411] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 117.359 ms (interleave)
+[2026-08-02 22:01:39.580] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.272 ms (interleave)
+[2026-08-02 22:03:08.020] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.952 ms (interleave)
+[2026-08-02 22:03:08.182] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.461 ms (interleave)
+[2026-08-02 22:03:31.805] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 120.166 ms (interleave)
+[2026-08-02 22:03:31.971] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.209 ms (interleave)
+[2026-08-02 22:03:55.208] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.308 ms (interleave)
+[2026-08-02 22:03:55.374] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.776 ms (interleave)
+[2026-08-02 22:04:32.853] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 115.991 ms (interleave)
+[2026-08-02 22:04:33.018] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.521 ms (interleave)
+[2026-08-02 22:04:34.041] [info] [cheetah_dot.cc:497] 1@16x384x1536 => 16x256x2 Recv 0.353 MiB, Response 0.728 MiB Pack 793.323 ms (interleave)
+[2026-08-02 22:04:34.445] [info] [cheetah_dot.cc:497] 1@16x1536x384 => 16x512x1 Recv 0.529 MiB, Response 0.243 MiB Pack 225.668 ms (interleave)
+[2026-08-02 22:04:34.514] [info] [cheetah_dot.cc:497] 1@16x384x2 => 16x384x1 Recv 0.176 MiB, Response 0.243 MiB Pack 0 ms (none)
+[2026-08-02 22:04:34,519] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,523] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:04:34,526] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:04:34,529] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:04:34,531] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:04:34,534] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:04:34,536] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:04:34,539] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:04:34,541] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:34,543] [MainProcess] Run : load_share_chunk_from_party_manifest at node:0
+[2026-08-02 22:04:34,554] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,625] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,661] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,667] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,669] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,670] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,672] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,673] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,674] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,678] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,680] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,681] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,682] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,684] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,685] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,692] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,694] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,695] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,697] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,700] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,701] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,702] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,704] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,705] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,707] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,708] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,709] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,718] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,720] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,721] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,723] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,724] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,725] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,726] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,728] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,736] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,738] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,739] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,741] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,742] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,743] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,745] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,746] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,753] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,755] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,756] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,757] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,761] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,762] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,763] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,765] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,766] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,768] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,769] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,770] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,779] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,781] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,782] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,784] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,785] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,787] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,788] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,789] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,799] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,800] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,802] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,803] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,804] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,806] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,807] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,809] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,815] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,817] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,818] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,819] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,823] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,825] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,826] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,827] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,828] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,830] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,831] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,832] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,847] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,849] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,850] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,852] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,853] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,854] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,855] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,857] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,869] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,870] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,871] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,873] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,874] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,876] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,877] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,878] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,886] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,888] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,889] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,890] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,894] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,895] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,896] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,898] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,899] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,901] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,902] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,903] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,920] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,922] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,923] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,924] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,925] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,927] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,928] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,930] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,941] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,943] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,944] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,946] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,947] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,948] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,949] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,951] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,960] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,962] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,963] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,964] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,968] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,969] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,971] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,972] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,973] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,975] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,976] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,977] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,990] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,991] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,993] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,994] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,996] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:34,997] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:34,998] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,000] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,012] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,014] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,015] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,016] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,017] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,019] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,020] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,022] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,031] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,033] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,034] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,036] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,039] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,040] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,042] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,043] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,044] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,046] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,047] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,048] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,065] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,067] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,068] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,069] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,071] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,072] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,073] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,075] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,089] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,091] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,092] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,094] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,095] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,097] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,098] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,099] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,106] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,108] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,109] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,111] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,114] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,115] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,116] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,118] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,119] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,120] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,121] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,123] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,139] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,141] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,142] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,144] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,145] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,147] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,148] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,149] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,164] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,166] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,167] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,169] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,170] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,171] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,173] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,174] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,181] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,183] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,184] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,185] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,189] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,191] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,192] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,193] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,195] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,196] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,197] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,199] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,215] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,217] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,218] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,219] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,220] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,222] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,223] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,225] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,239] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,241] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,242] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,244] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,245] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,247] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,248] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,250] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,256] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,257] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,258] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,260] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,263] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,265] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,266] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,268] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,269] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,270] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,271] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,273] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,287] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,289] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,290] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,292] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,293] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,294] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,295] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,297] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,309] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,310] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,311] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,313] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,314] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,316] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,317] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,318] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,324] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,326] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,327] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,329] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,332] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,333] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,335] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,336] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,337] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,339] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,340] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,341] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,357] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,359] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,360] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,361] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,363] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,364] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,365] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,367] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,381] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,383] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,384] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,386] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,387] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,389] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,390] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,391] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,392] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,394] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,395] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,397] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,398] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,399] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,400] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,402] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,405] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,407] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,408] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,410] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,411] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,412] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,415] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,416] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,417] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,419] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,420] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,422] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,423] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,425] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,426] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,427] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,428] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,430] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,431] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,433] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,434] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,435] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,436] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,438] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,439] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,441] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,444] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,445] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,446] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,448] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,449] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,451] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,453] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,454] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,455] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,457] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,458] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,459] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,461] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,462] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,463] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,465] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,466] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,467] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,468] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,470] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,471] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,473] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,474] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,475] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,476] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,478] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,481] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,482] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,484] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,485] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,486] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,488] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,490] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,491] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,493] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,494] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,495] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,497] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,498] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,500] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,501] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,502] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,503] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,505] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,506] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,508] [MainProcess] Run : make_shares at node:0
+[2026-08-02 22:04:35,509] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:04:35,554] [MainProcess] Run : builtin_spu_run at node:0
+[2026-08-02 22:04:35,587] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,637] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,641] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,745] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,779] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,782] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,783] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,784] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,790] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,791] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,794] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,795] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,796] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,797] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,806] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,808] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,809] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,810] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,818] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,819] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,820] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,821] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,827] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,828] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,831] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,832] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,833] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,834] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,842] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,844] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,844] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,845] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,853] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,854] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,855] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,857] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,865] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,867] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,870] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,871] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,872] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,873] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,883] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,885] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,886] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,887] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,895] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,896] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,897] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,899] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,905] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,906] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,909] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,910] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,911] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,912] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,919] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,920] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,921] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,922] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,931] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,932] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,933] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,934] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,940] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,941] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,944] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,945] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,946] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,947] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,956] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,957] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,958] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,959] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,967] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,968] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,969] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,970] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,976] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,977] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,980] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,981] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,981] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,982] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,990] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,991] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,992] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:35,993] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,000] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,001] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,002] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,003] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,009] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,010] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,013] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,014] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,015] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,015] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,023] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,024] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,025] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,026] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,034] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,035] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,036] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,037] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,044] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,045] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,048] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,049] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,049] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,050] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,058] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,059] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,060] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,061] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,068] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,069] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,070] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,071] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,077] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,078] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,080] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,081] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,082] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,083] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,091] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,092] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,093] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,094] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,101] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,102] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,103] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,104] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,110] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,111] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,114] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,115] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,116] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,117] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,125] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,126] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,126] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,127] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,136] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,137] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,138] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,139] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,140] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,140] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,141] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,142] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,145] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,146] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,147] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,149] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,150] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,150] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,152] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,153] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,154] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,155] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,155] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,156] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,157] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,160] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,161] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,162] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,164] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,165] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,165] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,167] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,167] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,168] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,169] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,170] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,171] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,172] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,174] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,175] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,176] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,178] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,178] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,179] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,180] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,181] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,182] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:36,183] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:04:50.744] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.366 ms (interleave)
+[2026-08-02 22:04:50.909] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.392 ms (interleave)
+[2026-08-02 22:05:37.002] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.011 ms (interleave)
+[2026-08-02 22:05:37.166] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.282 ms (interleave)
+[2026-08-02 22:06:23.682] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.484 ms (interleave)
+[2026-08-02 22:06:23.849] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.511 ms (interleave)
+[2026-08-02 22:08:29.989] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.735 ms (interleave)
+[2026-08-02 22:08:30.154] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.223 ms (interleave)
+[2026-08-02 22:09:02.634] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.982 ms (interleave)
+[2026-08-02 22:09:02.796] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.732 ms (interleave)
+[2026-08-02 22:09:35.138] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 120.103 ms (interleave)
+[2026-08-02 22:09:35.301] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.258 ms (interleave)
+[2026-08-02 22:11:01.983] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 115.948 ms (interleave)
+[2026-08-02 22:11:02.150] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.935 ms (interleave)
+[2026-08-02 22:11:25.416] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 119.935 ms (interleave)
+[2026-08-02 22:11:25.577] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.267 ms (interleave)
+[2026-08-02 22:11:48.581] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 120.071 ms (interleave)
+[2026-08-02 22:11:48.743] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.301 ms (interleave)
+[2026-08-02 22:12:28.269] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 116.963 ms (interleave)
+[2026-08-02 22:12:28.438] [info] [cheetah_dot.cc:497] 1@16x384x384 => 16x256x2 Recv 0.353 MiB, Response 0.243 MiB Pack 123.825 ms (interleave)
+[2026-08-02 22:12:29.436] [info] [cheetah_dot.cc:497] 1@16x384x1536 => 16x256x2 Recv 0.353 MiB, Response 0.728 MiB Pack 777.749 ms (interleave)
+[2026-08-02 22:12:29.836] [info] [cheetah_dot.cc:497] 1@16x1536x384 => 16x512x1 Recv 0.529 MiB, Response 0.243 MiB Pack 228.636 ms (interleave)
+[2026-08-02 22:12:29.906] [info] [cheetah_dot.cc:497] 1@16x384x2 => 16x384x1 Recv 0.176 MiB, Response 0.243 MiB Pack 0 ms (none)
+[2026-08-02 22:12:29,912] [MainProcess] RunR: builtin_fetch_meta at node:0
+[2026-08-02 22:12:29,915] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:12:29,919] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:12:29,921] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:12:29,925] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:12:29,927] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:12:29,930] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:12:29,933] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:12:29,935] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:12:29,937] [MainProcess] RunR: builtin_fetch_object at node:0
+[2026-08-02 22:12:29,940] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:12:29,943] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:12:29,945] [MainProcess] RunR: builtin_gc at node:0
+[2026-08-02 22:12:29,947] [MainProcess] RunR: builtin_gc at node:0

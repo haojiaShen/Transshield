@@ -1,0 +1,23 @@
+	Command being timed: "/opt/transshield-spu-pack-sumdiff/bin/python tools/showcase_guard_stress.py --base-url http://127.0.0.1:17866 --timeout 15 --server-pid 193570 --window-reset-sec 0 --out /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/guard_stress_vps.json"
+	User time (seconds): 1.03
+	System time (seconds): 0.90
+	Percent of CPU this job got: 23%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:08.11
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 73064
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 25337
+	Voluntary context switches: 480
+	Involuntary context switches: 168
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 288
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

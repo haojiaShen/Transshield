@@ -19,6 +19,7 @@
 | `tools/transshield_e2e_secure_infer.py` | E2E share / pixel package 工具 | bundle、图像、manifest | 中间 `.pt/.json` 与推理结果 | 运行依赖 |
 | `tools/report_vps_test.py` | 按最终报告的 524/32/8 固定样本口径生成 VPS-only 数据清单、环境、逐样本推理与通信证据 | `configs/report_vps_test_matrix.json`、正式样本清单、VPS 数据根目录和 candidate/reference | `results/vps_report_tests/<run>/` 下的详细 JSON | 验收工具 |
 | `tools/report_vps_aggregate.py` | 汇总同 VPS A/B、524/32/8、13+4、隐私边界与代码测试，并给出逐门槛判定 | VPS candidate run 目录、报告测试矩阵 | `report_regression_aggregate.json` | 验收工具 |
+| `tools/run_report_vps_full.sh` | 在已明确确认的 VPS 上串行执行完整报告回归，包含同机 medical32 baseline/candidate A/B | `TRANSSHIELD_VPS_EXECUTION_ACK=1`、`RUN_ROOT`、baseline/candidate SPU Python | 524/32/8、13+4、代码测试、网络快照与 `report_update_ready` 聚合证据 | 验收工具 |
 | `tools/transshield_stage2_bundle.py` | bundle 加载与阈值解析 | bundle 目录 | 运行时模型 / 阈值对象 | 运行依赖 |
 
 ## 当前精简原则
@@ -28,7 +29,7 @@
 - `tools/start_showcase_spu_demo.py` 是当前推荐的展示站启动入口；它会先启动 SPU 节点，再启动 `showcase_api`
 - `tools/transshield_spu_runtime_setup.py render-deployment` 生成医院/算力方/协调方部署包；医院/AI 各自用 `start-party` 启动本方节点，也可用 `start_split_gateway.sh` 启动最小三方网关框架，协调方可用 `warmup` 验证最小 SPU runtime；真两方迁移说明见 `docs/party_split_2pc.md`
 - `tools/split_gateway_smoke.py --keep-state` 可在没有真实医院/AI 系统时先验证医院图片入口、AI P2 share 接收、模型 manifest、协调方 mock run 以及常见拒绝路径
-- 正式报告规模的回归只在 VPS 执行，使用 `tools/report_vps_test.py` 和 `docs/evidence/vps_report_regression.md`；新结果不得覆盖既有正式 JSON
+- 正式报告规模的回归只在 VPS 执行，使用 `tools/run_report_vps_full.sh`、`tools/report_vps_test.py` 和 `docs/evidence/vps_report_regression.md`；新结果不得覆盖既有正式 JSON
 - 图件生成链已移除，当前仓库不再提供图件重建脚本
 - 报告源码重建链和旧快照机制已移除，当前仓只保留正式 `docx` 成品
 - 已删除的历史 `web_demo/` wrapper、重复报告 wrapper 和 `__pycache__` 不再进入最终提交面

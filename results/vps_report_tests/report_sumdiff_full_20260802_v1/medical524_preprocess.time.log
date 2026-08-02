@@ -1,0 +1,23 @@
+	Command being timed: "/opt/transshield-spu-pack-sumdiff/bin/python tools/transshield_e2e_secure_infer.py client-preprocess --bundle-dir /opt/transshield-project/artifacts/frozen_bundle_medical_dynamic_mainline --image-list /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/lists/medical_full_validation.txt --include-source-paths --include-targets --output-pt /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical524_plain.pt --output-json /opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical524_plain.json"
+	User time (seconds): 7.84
+	System time (seconds): 1.51
+	Percent of CPU this job got: 410%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:02.27
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1084240
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1
+	Minor (reclaiming a frame) page faults: 267682
+	Voluntary context switches: 101
+	Involuntary context switches: 148
+	Swaps: 0
+	File system inputs: 920
+	File system outputs: 616488
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

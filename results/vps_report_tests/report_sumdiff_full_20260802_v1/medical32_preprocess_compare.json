@@ -1,0 +1,20 @@
+{
+  "current_pt": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_plain.pt",
+  "current_pt_sha256": "95d005321a2036de04479bdb32e2df40942531acfb07d60fe1008efe9c315ddb",
+  "dtype": "torch.float32",
+  "exact_tensor_equal": true,
+  "frozen_pt": "/opt/transshield-project/archive/old_runs/artifacts/server_pipeline_run/medical_dynamic_prepare_final/e2e_secure_poc/plaintext_same_images_pixel_values.pt",
+  "frozen_pt_sha256": "026dc8a0d3ff7b432ae5b62a2ccedac05f37f76ff5afb1dc700e670e089a0977",
+  "manifest_type": "transshield_report_vps_preprocessing_compare_v1",
+  "max_abs_error": 0.0,
+  "mean_abs_error": 0.0,
+  "passed": true,
+  "sample_ids_equal": true,
+  "shape": [
+    32,
+    3,
+    224,
+    224
+  ],
+  "targets_equal": true
+}

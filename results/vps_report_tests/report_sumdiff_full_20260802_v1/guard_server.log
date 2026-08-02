@@ -1,0 +1,33 @@
+INFO:     Started server process [193570]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:17866 (Press CTRL+C to quit)
+INFO:     127.0.0.1:38762 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38776 - "GET /api/medical/config HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38800 - "POST /api/medical/live-run HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:38802 - "POST /api/medical/live-run HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:38806 - "POST /api/medical/live-run HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:38788 - "POST /api/medical/live-run HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36100 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36114 - "POST /api/medical/live-run HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36116 - "POST /api/medical/live-run HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:36118 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36134 - "POST /api/medical/live-run HTTP/1.1" 429 Too Many Requests
+INFO:     127.0.0.1:36140 - "POST /api/medical/live-run HTTP/1.1" 429 Too Many Requests
+INFO:     127.0.0.1:36142 - "POST /api/medical/live-run HTTP/1.1" 429 Too Many Requests
+INFO:     127.0.0.1:36132 - "POST /api/medical/live-run HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36148 - "POST /api/medical/live-run HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36152 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36164 - "POST /api/medical/live-run HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:36180 - "POST /api/medical/live-run HTTP/1.1" 429 Too Many Requests
+INFO:     127.0.0.1:36194 - "POST /api/medical/live-run HTTP/1.1" 429 Too Many Requests
+INFO:     127.0.0.1:36196 - "POST /api/medical/live-run HTTP/1.1" 429 Too Many Requests
+INFO:     127.0.0.1:36198 - "POST /api/medical/live-run HTTP/1.1" 429 Too Many Requests
+INFO:     127.0.0.1:36208 - "POST /api/medical/live-run HTTP/1.1" 429 Too Many Requests
+INFO:     127.0.0.1:36220 - "POST /api/medical/live-run HTTP/1.1" 429 Too Many Requests
+INFO:     127.0.0.1:36222 - "POST /api/medical/live-run HTTP/1.1" 429 Too Many Requests
+INFO:     127.0.0.1:36226 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [193570]

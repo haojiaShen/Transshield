@@ -1,0 +1,484 @@
+inventory
+[2026-08-02T21:39:04+08:00] inventory
+{
+  "out": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/inventory.json",
+  "passed": true,
+  "checks": [
+    {
+      "name": "medical_full_validation.sample_count",
+      "actual": 524,
+      "expected": 524,
+      "passed": true
+    },
+    {
+      "name": "medical_full_validation.class_counts",
+      "actual": {
+        "0": 135,
+        "1": 389
+      },
+      "expected": {
+        "0": 135,
+        "1": 389
+      },
+      "passed": true
+    },
+    {
+      "name": "medical_full_validation.missing_count",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "name": "medical_full_validation.duplicate_count",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "name": "medical_secure_deployment_batch.sample_count",
+      "actual": 32,
+      "expected": 32,
+      "passed": true
+    },
+    {
+      "name": "medical_secure_deployment_batch.class_counts",
+      "actual": {
+        "0": 16,
+        "1": 16
+      },
+      "expected": {
+        "0": 16,
+        "1": 16
+      },
+      "passed": true
+    },
+    {
+      "name": "medical_secure_deployment_batch.missing_count",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "name": "medical_secure_deployment_batch.duplicate_count",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "name": "medical_secure_deployment_batch.list_file_sha256",
+      "actual": "40ec5149fccedb44a9de4dc7442020a9addefb4385633aabb7a4b4e40248b14f",
+      "expected": "40ec5149fccedb44a9de4dc7442020a9addefb4385633aabb7a4b4e40248b14f",
+      "passed": true
+    },
+    {
+      "name": "finance_boundary_stress.sample_count",
+      "actual": 8,
+      "expected": 8,
+      "passed": true
+    },
+    {
+      "name": "finance_boundary_stress.class_counts",
+      "actual": {
+        "fraud": 4,
+        "normal": 4
+      },
+      "expected": {
+        "fraud": 4,
+        "normal": 4
+      },
+      "passed": true
+    },
+    {
+      "name": "finance_boundary_stress.missing_count",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "name": "finance_boundary_stress.duplicate_count",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "name": "finance_boundary_stress.list_file_sha256",
+      "actual": "cb2ba8293f7a8b73a439011b56e43817ffcac5564140762f0ded451560c57484",
+      "expected": "cb2ba8293f7a8b73a439011b56e43817ffcac5564140762f0ded451560c57484",
+      "passed": true
+    },
+    {
+      "name": "bundle.medical.sha256",
+      "actual": "bf835ddcaa119aa0cb8fac5515799afd956ab8918f4d51c954445584f92ae30d",
+      "expected": "bf835ddcaa119aa0cb8fac5515799afd956ab8918f4d51c954445584f92ae30d",
+      "passed": true
+    },
+    {
+      "name": "bundle.finance.sha256",
+      "actual": "9ee74c5f36f89d0165b0a4f9f23b3a42d031995ac5e42092f44b6f3d2f623777",
+      "expected": "9ee74c5f36f89d0165b0a4f9f23b3a42d031995ac5e42092f44b6f3d2f623777",
+      "passed": true
+    }
+  ]
+}
+preprocessing
+[2026-08-02T21:39:05+08:00] preprocessing
+## diff vit pruning method
+## diff vit pruning method
+{
+  "manifest_type": "transshield_report_vps_preprocessing_compare_v1",
+  "current_pt": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_plain.pt",
+  "current_pt_sha256": "95d005321a2036de04479bdb32e2df40942531acfb07d60fe1008efe9c315ddb",
+  "frozen_pt": "/opt/transshield-project/archive/old_runs/artifacts/server_pipeline_run/medical_dynamic_prepare_final/e2e_secure_poc/plaintext_same_images_pixel_values.pt",
+  "frozen_pt_sha256": "026dc8a0d3ff7b432ae5b62a2ccedac05f37f76ff5afb1dc700e670e089a0977",
+  "shape": [
+    32,
+    3,
+    224,
+    224
+  ],
+  "dtype": "torch.float32",
+  "exact_tensor_equal": true,
+  "max_abs_error": 0.0,
+  "mean_abs_error": 0.0,
+  "targets_equal": true,
+  "sample_ids_equal": true,
+  "passed": true
+}
+{
+  "manifest_type": "transshield_report_vps_preprocessing_compare_v1",
+  "current_pt": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance8_plain.pt",
+  "current_pt_sha256": "9fee28d8f7f7aae745fcdc7feefa9409354409fa86408ee25693febd8bf57832",
+  "frozen_pt": "/opt/transshield-project/archive/old_runs/artifacts/server_pipeline_run/finance_dynamic_static_prepare_final/e2e_secure_poc/plaintext_same_images_pixel_values.pt",
+  "frozen_pt_sha256": "1852f8092a14cc5807501176a192c32f23fac16ad0230dc961d3d0d9fce5d590",
+  "shape": [
+    8,
+    3,
+    224,
+    224
+  ],
+  "dtype": "torch.float32",
+  "exact_tensor_equal": true,
+  "max_abs_error": 0.0,
+  "mean_abs_error": 0.0,
+  "targets_equal": true,
+  "sample_ids_equal": true,
+  "passed": true
+}
+cpu_references
+[2026-08-02T21:39:15+08:00] cpu_references
+{
+  "out": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical524_cpu_depth10_summary.json",
+  "sample_count": 524,
+  "argmax_accuracy": 0.7423664331436157,
+  "threshold_accuracy": 0.927480936050415,
+  "auc": 0.9639150718842235,
+  "sec_per_sample": 0.013390255338363065,
+  "reference_comparison": null,
+  "network": null
+}
+{
+  "out": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_cpu_depth10_summary.json",
+  "sample_count": 32,
+  "argmax_accuracy": 0.5,
+  "threshold_accuracy": 0.875,
+  "auc": 0.95703125,
+  "sec_per_sample": 0.028794825077056885,
+  "reference_comparison": null,
+  "network": null
+}
+{
+  "out": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance8_cpu_depth12_summary.json",
+  "sample_count": 8,
+  "argmax_accuracy": 1.0,
+  "threshold_accuracy": 1.0,
+  "auc": 1.0,
+  "sec_per_sample": 0.08050510287284851,
+  "reference_comparison": null,
+  "network": null
+}
+code_tests
+[2026-08-02T21:39:29+08:00] code_tests
+medical32_same_vps_baseline
+[2026-08-02T21:40:03+08:00] medical32_same_vps_baseline
+{
+  "allow_cheetah_mul_lsb_error": false,
+  "cheetah_disable_matmul_pack": false,
+  "cheetah_mixed_compare_mode": 0,
+  "config_path": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/configs/active.runtime.json",
+  "disable_colocated_optimization": false,
+  "disable_matmul_pack": false,
+  "enable_mul_lsb_error": false,
+  "mixed_compare_mode": 0,
+  "node_processes": [],
+  "nodes": {
+    "node:0": "127.0.0.1:40763",
+    "node:1": "127.0.0.1:46513"
+  },
+  "remove_unsupported_cheetah_fields": false,
+  "spu_internal_addrs": [
+    "127.0.0.1:40229",
+    "127.0.0.1:44795"
+  ],
+  "template_path": "/opt/transshield-project/configs/openbumblebee/2pc.template.json"
+}
+SPU nodes started and warmed up; state=/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical_baseline.runtime_state.json
+{
+  "manifest_type": "transshield_vps_network_snapshot_v1",
+  "captured_at_utc": "2026-08-02T13:40:06.829088+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "interface": "lo",
+  "tx_bytes": 183316523697,
+  "rx_bytes": 183316523697,
+  "process": null
+}
+{
+  "manifest_type": "transshield_vps_network_snapshot_v1",
+  "captured_at_utc": "2026-08-02T13:56:17.961112+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "interface": "lo",
+  "tx_bytes": 229030813629,
+  "rx_bytes": 229030813629,
+  "process": null
+}
+{
+  "out": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_spu_baseline_summary.json",
+  "sample_count": 32,
+  "argmax_accuracy": 0.5,
+  "threshold_accuracy": 0.9375,
+  "auc": 0.984375,
+  "sec_per_sample": 30.315168723464012,
+  "reference_comparison": {
+    "argmax_match_ratio": 1.0,
+    "threshold_match_ratio": 0.9375,
+    "logits_max_abs_error": 0.19414427876472473,
+    "logits_mean_abs_error": 0.05354310944676399,
+    "probabilities_max_abs_error": 0.0784727931022644,
+    "probabilities_mean_abs_error": 0.02213875576853752,
+    "reference_argmax_accuracy": 0.5,
+    "reference_threshold_accuracy": 0.875,
+    "reference_auc": 0.95703125
+  },
+  "network": {
+    "interface": "lo",
+    "before": {
+      "captured_at_utc": "2026-08-02T13:40:06.829088+00:00",
+      "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+      "interface": "lo",
+      "manifest_type": "transshield_vps_network_snapshot_v1",
+      "process": null,
+      "rx_bytes": 183316523697,
+      "tx_bytes": 183316523697
+    },
+    "after": {
+      "captured_at_utc": "2026-08-02T13:56:17.961112+00:00",
+      "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+      "interface": "lo",
+      "manifest_type": "transshield_vps_network_snapshot_v1",
+      "process": null,
+      "rx_bytes": 229030813629,
+      "tx_bytes": 229030813629
+    },
+    "tx_delta_bytes": 45714289932,
+    "rx_delta_bytes": 45714289932,
+    "loopback_total_bytes_rule": "use tx_delta once; loopback tx and rx mirror the same transferred bytes",
+    "total_bytes": 45714289932,
+    "total_gib": 42.57475019618869,
+    "per_sample_gib": 1.3304609436308965
+  }
+}
+medical32_candidate
+[2026-08-02T21:56:20+08:00] medical32_candidate
+{
+  "allow_cheetah_mul_lsb_error": false,
+  "cheetah_disable_matmul_pack": false,
+  "cheetah_mixed_compare_mode": 0,
+  "config_path": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/configs/active.runtime.json",
+  "disable_colocated_optimization": false,
+  "disable_matmul_pack": false,
+  "enable_mul_lsb_error": false,
+  "mixed_compare_mode": 0,
+  "node_processes": [],
+  "nodes": {
+    "node:0": "127.0.0.1:38719",
+    "node:1": "127.0.0.1:38661"
+  },
+  "remove_unsupported_cheetah_fields": false,
+  "spu_internal_addrs": [
+    "127.0.0.1:41345",
+    "127.0.0.1:45845"
+  ],
+  "template_path": "/opt/transshield-project/configs/openbumblebee/2pc.template.json"
+}
+SPU nodes started and warmed up; state=/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical_candidate.runtime_state.json
+{
+  "manifest_type": "transshield_vps_network_snapshot_v1",
+  "captured_at_utc": "2026-08-02T13:56:25.046181+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "interface": "lo",
+  "tx_bytes": 229030839260,
+  "rx_bytes": 229030839260,
+  "process": null
+}
+{
+  "manifest_type": "transshield_vps_network_snapshot_v1",
+  "captured_at_utc": "2026-08-02T14:12:30.305173+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "interface": "lo",
+  "tx_bytes": 274744916758,
+  "rx_bytes": 274744916758,
+  "process": null
+}
+{
+  "out": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_spu_latest_summary.json",
+  "sample_count": 32,
+  "argmax_accuracy": 0.5,
+  "threshold_accuracy": 0.9375,
+  "auc": 0.96484375,
+  "sec_per_sample": 30.131485641002655,
+  "reference_comparison": {
+    "argmax_match_ratio": 1.0,
+    "threshold_match_ratio": 0.9375,
+    "logits_max_abs_error": 0.21052289009094238,
+    "logits_mean_abs_error": 0.05389799922704697,
+    "probabilities_max_abs_error": 0.0760912299156189,
+    "probabilities_mean_abs_error": 0.022179223597049713,
+    "reference_argmax_accuracy": 0.5,
+    "reference_threshold_accuracy": 0.875,
+    "reference_auc": 0.95703125
+  },
+  "network": {
+    "interface": "lo",
+    "before": {
+      "captured_at_utc": "2026-08-02T13:56:25.046181+00:00",
+      "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+      "interface": "lo",
+      "manifest_type": "transshield_vps_network_snapshot_v1",
+      "process": null,
+      "rx_bytes": 229030839260,
+      "tx_bytes": 229030839260
+    },
+    "after": {
+      "captured_at_utc": "2026-08-02T14:12:30.305173+00:00",
+      "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+      "interface": "lo",
+      "manifest_type": "transshield_vps_network_snapshot_v1",
+      "process": null,
+      "rx_bytes": 274744916758,
+      "tx_bytes": 274744916758
+    },
+    "tx_delta_bytes": 45714077498,
+    "rx_delta_bytes": 45714077498,
+    "loopback_total_bytes_rule": "use tx_delta once; loopback tx and rx mirror the same transferred bytes",
+    "total_bytes": 45714077498,
+    "total_gib": 42.57455235160887,
+    "per_sample_gib": 1.3304547609877773
+  }
+}
+finance8_candidate
+[2026-08-02T22:12:33+08:00] finance8_candidate
+{
+  "allow_cheetah_mul_lsb_error": false,
+  "cheetah_disable_matmul_pack": false,
+  "cheetah_mixed_compare_mode": 0,
+  "config_path": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/configs/active.runtime.json",
+  "disable_colocated_optimization": false,
+  "disable_matmul_pack": false,
+  "enable_mul_lsb_error": false,
+  "mixed_compare_mode": 0,
+  "node_processes": [],
+  "nodes": {
+    "node:0": "127.0.0.1:46423",
+    "node:1": "127.0.0.1:40235"
+  },
+  "remove_unsupported_cheetah_fields": false,
+  "spu_internal_addrs": [
+    "127.0.0.1:44729",
+    "127.0.0.1:41999"
+  ],
+  "template_path": "/opt/transshield-project/configs/openbumblebee/2pc.template.json"
+}
+SPU nodes started and warmed up; state=/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance_candidate.runtime_state.json
+{
+  "manifest_type": "transshield_vps_network_snapshot_v1",
+  "captured_at_utc": "2026-08-02T14:12:36.390258+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "interface": "lo",
+  "tx_bytes": 274744941391,
+  "rx_bytes": 274744941391,
+  "process": null
+}
+{
+  "manifest_type": "transshield_vps_network_snapshot_v1",
+  "captured_at_utc": "2026-08-02T14:18:55.286395+00:00",
+  "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+  "interface": "lo",
+  "tx_bytes": 291338577142,
+  "rx_bytes": 291338577142,
+  "process": null
+}
+{
+  "out": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance8_spu_latest_summary.json",
+  "sample_count": 8,
+  "argmax_accuracy": 1.0,
+  "threshold_accuracy": 1.0,
+  "auc": 1.0,
+  "sec_per_sample": 47.23186469078064,
+  "reference_comparison": {
+    "argmax_match_ratio": 1.0,
+    "threshold_match_ratio": 1.0,
+    "logits_max_abs_error": 0.05529379844665527,
+    "logits_mean_abs_error": 0.01665039174258709,
+    "probabilities_max_abs_error": 0.02266588807106018,
+    "probabilities_mean_abs_error": 0.00753217376768589,
+    "reference_argmax_accuracy": 1.0,
+    "reference_threshold_accuracy": 1.0,
+    "reference_auc": 1.0
+  },
+  "network": {
+    "interface": "lo",
+    "before": {
+      "captured_at_utc": "2026-08-02T14:12:36.390258+00:00",
+      "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+      "interface": "lo",
+      "manifest_type": "transshield_vps_network_snapshot_v1",
+      "process": null,
+      "rx_bytes": 274744941391,
+      "tx_bytes": 274744941391
+    },
+    "after": {
+      "captured_at_utc": "2026-08-02T14:18:55.286395+00:00",
+      "hostname": "iZf8zfv7si2cw0znv3smdwZ",
+      "interface": "lo",
+      "manifest_type": "transshield_vps_network_snapshot_v1",
+      "process": null,
+      "rx_bytes": 291338577142,
+      "tx_bytes": 291338577142
+    },
+    "tx_delta_bytes": 16593635751,
+    "rx_delta_bytes": 16593635751,
+    "loopback_total_bytes_rule": "use tx_delta once; loopback tx and rx mirror the same transferred bytes",
+    "total_bytes": 16593635751,
+    "total_gib": 15.45402756985277,
+    "per_sample_gib": 1.9317534462315962
+  }
+}
+protocol_fuzz_13
+[2026-08-02T22:18:58+08:00] protocol_fuzz_13
+guard_stress_4
+[2026-08-02T22:19:01+08:00] guard_stress_4
+aggregate
+[2026-08-02T22:19:10+08:00] aggregate
+{
+  "out": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/report_regression_aggregate.json",
+  "inventory_passed": true,
+  "medical_primary_accuracy_gate_passed": true,
+  "medical_all_diagnostic_gates_passed": true,
+  "finance_all_gates_passed": true,
+  "robustness_passed": true,
+  "code_tests_passed": true,
+  "result_classification": "report_update_ready",
+  "report_update_ready": true,
+  "failed_report_update_checks": []
+}
+complete
+[2026-08-02T22:19:10+08:00] complete

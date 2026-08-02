@@ -1,0 +1,399 @@
+{
+  "argmax_accuracy": 1.0,
+  "auc": 1.0,
+  "candidate_json": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance8_cpu_depth12.json",
+  "candidate_pt": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance8_cpu_depth12.pt",
+  "candidate_pt_sha256": "0e3f5e5a28396b41a553a969e905eec192b6dc4df49cc2407dc5b8247ac723ac",
+  "captured_at_utc": "2026-08-02T13:39:29.033395+00:00",
+  "class1_probability": {
+    "max": 0.6834483742713928,
+    "mean": 0.503618597984314,
+    "min": 0.3163098692893982
+  },
+  "class_counts": {
+    "0": 4,
+    "1": 4
+  },
+  "dataset_key": "finance_boundary_stress",
+  "elapsed_sec": 0.6440408229827881,
+  "finite_logits": true,
+  "finite_probabilities": true,
+  "manifest_type": "transshield_report_vps_inference_summary_v1",
+  "network": null,
+  "per_sample": [
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 0,
+      "index": 0,
+      "logits": [
+        0.6125752925872803,
+        -0.15820716321468353
+      ],
+      "probabilities": [
+        0.6836901307106018,
+        0.3163098692893982
+      ],
+      "reference": null,
+      "relative_path": "fraud/sample_000000.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 0,
+      "index": 1,
+      "logits": [
+        0.5756436586380005,
+        -0.10681382566690445
+      ],
+      "probabilities": [
+        0.6642869710922241,
+        0.3357130289077759
+      ],
+      "reference": null,
+      "relative_path": "fraud/sample_000033.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 0,
+      "index": 2,
+      "logits": [
+        0.5326472520828247,
+        -0.08043380081653595
+      ],
+      "probabilities": [
+        0.6486433148384094,
+        0.35135671496391296
+      ],
+      "reference": null,
+      "relative_path": "fraud/sample_000066.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 0,
+      "index": 3,
+      "logits": [
+        0.4593201279640198,
+        0.0064774686470627785
+      ],
+      "probabilities": [
+        0.6113148331642151,
+        0.38868507742881775
+      ],
+      "reference": null,
+      "relative_path": "fraud/sample_000099.png",
+      "target": 0,
+      "threshold_correct": true,
+      "threshold_prediction": 0
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 4,
+      "logits": [
+        -0.15037506818771362,
+        0.5163357257843018
+      ],
+      "probabilities": [
+        0.33923372626304626,
+        0.6607662439346313
+      ],
+      "reference": null,
+      "relative_path": "normal/sample_000000.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 5,
+      "logits": [
+        -0.15853995084762573,
+        0.5243611931800842
+      ],
+      "probabilities": [
+        0.3356141149997711,
+        0.6643859148025513
+      ],
+      "reference": null,
+      "relative_path": "normal/sample_000033.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 6,
+      "logits": [
+        -0.07593293488025665,
+        0.44892725348472595
+      ],
+      "probabilities": [
+        0.3717164993286133,
+        0.6282835602760315
+      ],
+      "reference": null,
+      "relative_path": "normal/sample_000066.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    },
+    {
+      "argmax_correct": true,
+      "argmax_prediction": 1,
+      "index": 7,
+      "logits": [
+        -0.2028948813676834,
+        0.566770076751709
+      ],
+      "probabilities": [
+        0.3165515661239624,
+        0.6834483742713928
+      ],
+      "reference": null,
+      "relative_path": "normal/sample_000099.png",
+      "target": 1,
+      "threshold_correct": true,
+      "threshold_prediction": 1
+    }
+  ],
+  "prediction_counts": {
+    "argmax": {
+      "0": 4,
+      "1": 4
+    },
+    "threshold": {
+      "0": 4,
+      "1": 4
+    }
+  },
+  "privacy_facts": {
+    "host_plaintext_pixel_values_materialized": null,
+    "host_private_share_tensors_loaded": null,
+    "input_mode": null,
+    "model_params_secret_inside_spu": null,
+    "predictor_params_secret_inside_spu": null,
+    "reveal_policy": null,
+    "runner_host_model_params_materialized": null
+  },
+  "reference_comparison": null,
+  "reference_pt": null,
+  "report_scope": {
+    "base_rate": 0.9,
+    "class_counts": {
+      "fraud": 4,
+      "normal": 4
+    },
+    "dataset": "finance fraud v3 image-encoded frozen boundary-stress subset",
+    "frozen_preprocessed_pt": "archive/old_runs/artifacts/server_pipeline_run/finance_dynamic_static_prepare_final/e2e_secure_poc/plaintext_same_images_pixel_values.pt",
+    "frozen_preprocessed_pt_sha256": "1852f8092a14cc5807501176a192c32f23fac16ad0230dc961d3d0d9fce5d590",
+    "historical_token_keep_counts": [
+      176,
+      158,
+      142
+    ],
+    "list_file": "archive/old_runs/artifacts/server_pipeline_run/finance_dynamic_static_prepare_final/e2e_secure_poc/finance_smoke8_balanced_evenly_spaced.txt",
+    "list_file_sha256": "cb2ba8293f7a8b73a439011b56e43817ffcac5564140762f0ded451560c57484",
+    "parameter_retention_ratio": 0.6839,
+    "purpose": "extreme-distribution stability boundary; not a second formal application mainline",
+    "report_expected": {
+      "argmax_match_ratio": 1.0,
+      "dual_total_bytes": 27168265566,
+      "dual_total_gib": 25.30241903476417,
+      "elapsed_sec": 849.2608470916748,
+      "per_sample_gib": 3.1628023793455213,
+      "sec_per_sample": 106.15760588645935,
+      "threshold_match_ratio": 1.0
+    },
+    "report_table": "4-1, 4-8",
+    "sample_count": 8,
+    "selection": "indices 000000, 000033, 000066 and 000099 from each class",
+    "spu_batch_size": 8,
+    "static_depth_limit": 12,
+    "token_ratios": [
+      0.9,
+      0.81,
+      0.729
+    ]
+  },
+  "runtime_metadata": {
+    "backend": "cpu_plaintext_runtime_pruning_whole_forward_reference_backend",
+    "bundle_dir": "/opt/transshield-project/artifacts/frozen_bundle_finance_boundary_stress",
+    "cls_features": {
+      "dtype": "torch.float32",
+      "max": 3.0274124145507812,
+      "mean": -0.026127249002456665,
+      "min": -2.7536981105804443,
+      "shape": [
+        8,
+        384
+      ],
+      "std": 0.8777925372123718
+    },
+    "cpu_batch_size": 8,
+    "cpu_forward_mode": "runtime_pruning_reference",
+    "effective_static_depth": 12,
+    "elapsed_sec": 0.6440408229827881,
+    "finite_logits": true,
+    "forward_scope": "student_patch_embed_blocks_head_with_runtime_pruning_predictor_path",
+    "include_intermediates": false,
+    "input_p1_share_manifest_json": null,
+    "input_p2_share_manifest_json": null,
+    "input_pt": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance8_plain.pt",
+    "input_share_manifest_json": null,
+    "input_share_public_manifest_json": null,
+    "input_source": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance8_plain.pt",
+    "logits": {
+      "dtype": "torch.float32",
+      "max": 0.6125752925872803,
+      "mean": 0.20686626434326172,
+      "min": -0.2028948813676834,
+      "shape": [
+        8,
+        2
+      ],
+      "std": 0.32773417234420776
+    },
+    "manifest_type": "transshield_e2e_static_whole_forward_candidate_summary_v0",
+    "max_samples": 0,
+    "output_calibration": null,
+    "output_pt": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance8_cpu_depth12.pt",
+    "prediction_preview": {
+      "argmax_predictions": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "logits": [
+        [
+          0.6125752925872803,
+          -0.15820716321468353
+        ],
+        [
+          0.5756436586380005,
+          -0.10681382566690445
+        ],
+        [
+          0.5326472520828247,
+          -0.08043380081653595
+        ],
+        [
+          0.4593201279640198,
+          0.0064774686470627785
+        ],
+        [
+          -0.15037506818771362,
+          0.5163357257843018
+        ],
+        [
+          -0.15853995084762573,
+          0.5243611931800842
+        ],
+        [
+          -0.07593293488025665,
+          0.44892725348472595
+        ],
+        [
+          -0.2028948813676834,
+          0.566770076751709
+        ]
+      ],
+      "probabilities": [
+        [
+          0.6836901307106018,
+          0.3163098692893982
+        ],
+        [
+          0.6642869710922241,
+          0.3357130289077759
+        ],
+        [
+          0.6486433148384094,
+          0.35135671496391296
+        ],
+        [
+          0.6113148331642151,
+          0.38868507742881775
+        ],
+        [
+          0.33923372626304626,
+          0.6607662439346313
+        ],
+        [
+          0.3356141149997711,
+          0.6643859148025513
+        ],
+        [
+          0.3717164993286133,
+          0.6282835602760315
+        ],
+        [
+          0.3165515661239624,
+          0.6834483742713928
+        ]
+      ],
+      "threshold_predictions": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "privacy_note": "This candidate uses the CPU reference backend to freeze the output contract. It is not a secure SPU execution result.",
+    "probabilities": {
+      "dtype": "torch.float32",
+      "max": 0.6836901307106018,
+      "mean": 0.5,
+      "min": 0.3163098692893982,
+      "shape": [
+        8,
+        2
+      ],
+      "std": 0.15739941596984863
+    },
+    "raw_logits_before_output_calibration": null,
+    "runtime": "cpu",
+    "runtime_pruning_keep_mask_pt": null,
+    "runtime_pruning_keep_mask_stage_count": null,
+    "sample_count": 8,
+    "static_depth_limit": 12,
+    "threshold": 0.5,
+    "token_features": {
+      "dtype": "torch.float32",
+      "max": 3.5387423038482666,
+      "mean": -0.017749575898051262,
+      "min": -3.4044034481048584,
+      "shape": [
+        8,
+        196,
+        384
+      ],
+      "std": 0.7277068495750427
+    },
+    "token_ratio_base_override": 0.0
+  },
+  "sample_count": 8,
+  "sample_list": "/opt/transshield-project/results/vps_report_tests/report_sumdiff_full_20260802_v1/lists/finance_boundary_stress.txt",
+  "sample_list_sha256": "19f58ceef4aaf1cc1c4d87958d08025272f15185f2939718242bb8a6f39ce4ac",
+  "sec_per_sample": 0.08050510287284851,
+  "threshold": 0.5,
+  "threshold_accuracy": 1.0
+}

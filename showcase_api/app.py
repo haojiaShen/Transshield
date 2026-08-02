@@ -13,6 +13,12 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.requests import ClientDisconnect
 
+from showcase_api.admin_api import (
+    CONFIG as ADMIN_CONFIG,
+    router as admin_router,
+    start_admin_jobs,
+    stop_admin_jobs,
+)
 from showcase_api.bundle_preflight import inspect_bundle
 from showcase_api.config import REPO_ROOT, ShowcaseConfig, load_json, load_showcase_config
 from showcase_api.control_plane import (
@@ -42,15 +48,23 @@ MEDICAL_REQUEST_FIELDS = {
 app = FastAPI(title="TransShield Showcase API", version="2026.05")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5173",
-        "http://localhost:5173",
-        "http://127.0.0.1:7860",
-        "http://localhost:7860",
-    ],
+    allow_origins=list(ADMIN_CONFIG.cors_allowed_origins),
+    allow_origin_regex=ADMIN_CONFIG.cors_allowed_origin_regex or None,
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_credentials=True,
 )
+app.include_router(admin_router)
+
+
+@app.on_event("startup")
+def _startup_admin_jobs() -> None:
+    start_admin_jobs()
+
+
+@app.on_event("shutdown")
+def _shutdown_admin_jobs() -> None:
+    stop_admin_jobs()
 
 
 def build_response_payload(
@@ -455,6 +469,16 @@ if CONFIG.health_bind_dist.exists():
     assets_dir = CONFIG.health_bind_dist / "assets"
     if assets_dir.exists():
         app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="showcase-assets")
+    demo_samples_dir = CONFIG.health_bind_dist / "demo-samples"
+    if demo_samples_dir.exists():
+        app.mount("/demo-samples", StaticFiles(directory=str(demo_samples_dir)), name="showcase-demo-samples")
+    manual_test_images_dir = CONFIG.health_bind_dist / "manual-test-images"
+    if manual_test_images_dir.exists():
+        app.mount(
+            "/manual-test-images",
+            StaticFiles(directory=str(manual_test_images_dir)),
+            name="showcase-manual-test-images",
+        )
     report_assets_dir = CONFIG.health_bind_dist / "report-assets"
     if report_assets_dir.exists():
         app.mount("/report-assets", StaticFiles(directory=str(report_assets_dir)), name="showcase-report-assets")

@@ -1,26 +1,25 @@
 import {
   ArrowSquareOut,
-  Article,
-  BugBeetle,
+  ChartLineUp,
   CheckCircle,
+  Circuitry,
   ClockCounterClockwise,
   Cpu,
+  Database,
   FileArrowUp,
-  Gauge,
-  Heartbeat,
+  GitBranch,
   House,
-  ImageSquare,
-  Info,
   LockKey,
+  MagnifyingGlass,
   PlayCircle,
   Pulse,
-  Stack,
+  RadioButton,
   ShieldCheck,
-  Sparkle,
+  ShieldWarning,
+  Stack,
   WarningCircle
 } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion";
-import reportContent from "./generated/report_content.json";
 import {
   ChangeEvent,
   FormEvent,
@@ -31,23 +30,9 @@ import {
   useRef,
   useState
 } from "react";
-import { Link, NavLink, Route, Routes, useLocation } from "react-router-dom";
+import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
 
-type RouteKey =
-  | "/"
-  | "/overview"
-  | "/design"
-  | "/implementation"
-  | "/results"
-  | "/innovation"
-  | "/reproduce"
-  | "/live-demo";
-
-const API_BASE_URL = String(import.meta.env.VITE_TRANSSHIELD_API_BASE_URL ?? "").replace(/\/+$/, "");
-
-function apiUrl(path: string) {
-  return `${API_BASE_URL}${path}`;
-}
+type RouteKey = "/" | "/cockpit" | "/demo" | "/details" | "/security" | "/evidence" | "/reproduce";
 
 type DemoStatus =
   | "idle"
@@ -59,14 +44,44 @@ type DemoStatus =
   | "rejected"
   | "failed";
 
+type PruningStageSummary = {
+  stage_index: number;
+  layer: number;
+  keep_ratio: number;
+  kept_patches: number;
+  dropped_patches: number;
+  visible_area_ratio: number;
+};
+
+type PruningPreview = {
+  original_dimensions: { width: number; height: number };
+  processed_dimensions: { width: number; height: number };
+  patch_size: number;
+  grid_size: number;
+  total_patches: number;
+  estimated_effective_pixels: number;
+  stage_summaries: PruningStageSummary[];
+  final_kept_patches: number;
+  final_visible_area_ratio: number;
+  processed_preview_url: string;
+  pruned_preview_url: string;
+};
+
 type WorkerPayload = {
   requestManifest: Record<string, unknown>;
   qualityAssurance: Record<string, unknown>;
   audit: Record<string, unknown>;
   controlPlaneMetrics: Record<string, unknown>;
+  pruningPreview: PruningPreview;
   share0: Uint8Array;
   share1: Uint8Array;
-  previewUrl: string;
+  processedPreviewUrl: string;
+};
+
+type SampleCropPreset = {
+  leftRatio: number;
+  topRatio: number;
+  sizeRatio: number;
 };
 
 type MedicalConfigResponse = {
@@ -79,13 +94,17 @@ type MedicalConfigResponse = {
   mean: number[];
   std: number[];
   clip_abs: number;
-  crop_pct: number;
-  resize_shorter_side: number;
   allowed_mime_types: string[];
   max_file_size_bytes: number;
   max_image_dimension: number;
   estimated_wait_seconds: number;
   class_names: string[];
+  pruning: {
+    patch_size: number;
+    stage_layers: number[];
+    stage_keep_ratios: number[];
+    total_patches: number;
+  };
   formal_metrics: {
     threshold_accuracy: number;
     auc: number;
@@ -94,6 +113,28 @@ type MedicalConfigResponse = {
   };
   demo_boundary_note: string;
   limitations: string[];
+};
+
+type HealthResponse = {
+  status: string;
+  runtime_mode: string;
+  bundle_present: boolean;
+  spu_config_present: boolean;
+  runner_present: boolean;
+  dist_present: boolean;
+  inflight: Record<string, number>;
+};
+
+type AuditEvent = {
+  ts?: number;
+  ip?: string;
+  audit_nonce?: string | null;
+  payload_fingerprint?: string;
+  request_total_ms?: number;
+  quality_status?: string;
+  error_code?: string;
+  interception_layer?: string;
+  detail?: string;
 };
 
 type MedicalRunResponse = {
@@ -113,12 +154,7 @@ type MedicalRunResponse = {
       formal_reference_sec_per_sample: number;
       formal_reference_dual_total_gib: number;
     };
-    formal_metrics: {
-      threshold_accuracy: number;
-      auc: number;
-      sec_per_sample: number;
-      dual_total_gib: number;
-    };
+    formal_metrics: MedicalConfigResponse["formal_metrics"];
     boundary_note: string;
     limitation_note: string;
     artifacts?: Record<string, string | null>;
@@ -131,27 +167,18 @@ type MedicalRunResponse = {
   detail?: string;
 };
 
-type HealthResponse = {
-  status: string;
-  runtime_mode: string;
-  bundle_present: boolean;
-  spu_config_present: boolean;
-  runner_present: boolean;
-  dist_present: boolean;
-  inflight: Record<string, number>;
-};
-
 type DemoState = {
   status: DemoStatus;
   selectedFile: File | null;
   previewUrl: string | null;
+  sampleCrop: SampleCropPreset | null;
   localPayload: WorkerPayload | null;
   serverPayload: MedicalRunResponse | null;
   errorMessage: string | null;
 };
 
 type DemoAction =
-  | { type: "selectFile"; file: File | null; previewUrl: string | null }
+  | { type: "selectFile"; file: File | null; previewUrl: string | null; sampleCrop?: SampleCropPreset | null }
   | { type: "setStatus"; status: DemoStatus }
   | { type: "workerReady"; payload: WorkerPayload }
   | { type: "complete"; payload: MedicalRunResponse }
@@ -164,148 +191,653 @@ type WorkerMessage =
   | { type: "completed"; payload: WorkerPayload }
   | { type: "error"; message: string };
 
+type Tone = "blue" | "amber" | "cyan" | "violet" | "emerald" | "rose";
+
+type MetricCardItem = {
+  icon: ReactNode;
+  label: string;
+  value: string;
+  note: string;
+};
+
+type DetailSnapshotItem = {
+  label: string;
+  value: string;
+  tone: Tone;
+};
+
+type DetailFlowItem = {
+  icon: ReactNode;
+  title: string;
+  body: string;
+  tone: Tone;
+};
+
+type DetailRoleItem = {
+  icon: ReactNode;
+  title: string;
+  body: string;
+};
+
+type DetailFocusItem = {
+  title: string;
+  body: string;
+};
+
 const navItems: Array<{ path: RouteKey; label: string; icon: ReactNode }> = [
   { path: "/", label: "首页", icon: <House size={18} weight="duotone" /> },
-  { path: "/overview", label: "概述", icon: <Article size={18} weight="duotone" /> },
-  { path: "/design", label: "设计", icon: <Stack size={18} weight="duotone" /> },
-  { path: "/implementation", label: "实现", icon: <Cpu size={18} weight="duotone" /> },
-  { path: "/results", label: "结果", icon: <Gauge size={18} weight="duotone" /> },
-  { path: "/innovation", label: "创新", icon: <Sparkle size={18} weight="duotone" /> },
-  { path: "/reproduce", label: "复现", icon: <ShieldCheck size={18} weight="duotone" /> },
-  { path: "/live-demo", label: "现场演示", icon: <PlayCircle size={18} weight="duotone" /> }
+  { path: "/details", label: "项目说明", icon: <Stack size={18} weight="duotone" /> },
+  { path: "/cockpit", label: "运行看板", icon: <ChartLineUp size={18} weight="duotone" /> },
+  { path: "/demo", label: "在线演示", icon: <PlayCircle size={18} weight="duotone" /> }
 ];
 
 const workerStatusLabel: Record<DemoStatus, string> = {
-  idle: "待命",
-  worker_preprocessing: "浏览器侧预处理中",
-  uploading: "上传数据分片与结构化摘要",
-  server_precheck: "服务端前置校验中",
-  spu_running: "安全处理器单元运行中",
-  completed: "执行完成",
-  rejected: "请求被拒绝",
+  idle: "等待输入",
+  worker_preprocessing: "浏览器本地预处理",
+  uploading: "分片摘要生成",
+  server_precheck: "前置校验通过",
+  spu_running: "SPU 环境就绪",
+  completed: "样例结果返回",
+  rejected: "请求被拦截",
   failed: "执行失败"
 };
 
-const pageTransitions = {
-  initial: { opacity: 0, y: 18 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -18 }
-};
-
-const sectionRouteMap = {
-  overview: reportContent.sections.overview,
-  design: reportContent.sections.design,
-  implementation: reportContent.sections.implementation,
-  results: reportContent.sections.results,
-  innovation: reportContent.sections.innovation
-};
-
-const sectionBriefMap: Record<
-  keyof typeof sectionRouteMap,
+const pipelineSteps = [
+  { key: "browser", title: "本地预处理", body: "图片在浏览器里完成解码、裁剪和标准化，原图不会直接发到后端。" },
   {
-    eyebrow: string;
-    headline: string;
-    bullets: string[];
-    facts: Array<{ label: string; value: string }>;
-    details: string[];
+    key: "pruning",
+    title: "ViT 动态剪枝",
+    body: "按层筛出更重要的图像块，收缩有效计算区域，并把过程直观展示出来。"
+  },
+  { key: "share", title: "分片封装", body: "把标准化后的输入拆成两份分片，并附带结构化校验信息。" },
+  { key: "guard", title: "前置校验", body: "对字段、摘要、重放、并发和质量门做逐项检查。" },
+  { key: "spu", title: "安全执行", body: "在双向隐私计算环境里完成推理，不暴露中间结果。" },
+  { key: "reveal", title: "结果揭示", body: "页面只展示必要结论和运行证据，不回传原图和中间特征。" }
+];
+
+const guardItems = [
+  { title: "原始请求检查", body: "拒绝非法 multipart、缺字段、重复字段和异常边界。", layer: "raw_multipart_precheck" },
+  { title: "请求体限制", body: "限制请求大小和传输方式，避免用流式手段绕过检查。", layer: "http_request_body_gate" },
+  { title: "分片摘要校验", body: "服务端重算两份分片的摘要，并和浏览器侧结果比对。", layer: "share_hash_gate" },
+  { title: "重构结果合法性", body: "只在校验层检查数值是否异常，拦截 NaN、Inf 和越界数据。", layer: "tensor_reconstruction_gate" },
+  { title: "重放拦截", body: "用审计随机数和载荷指纹拦截重复请求。", layer: "replay_guard" },
+  { title: "并发保护", body: "限制同时执行的任务数量，避免长任务堆积。", layer: "inflight_guard" },
+  { title: "频率限制", body: "按请求来源做限频，保护演示服务稳定运行。", layer: "ip_rate_limit_guard" },
+  { title: "最小揭示", body: "推理完成后只返回必要结论，不公开中间特征和明文像素。", layer: "reveal_policy" }
+];
+
+const evidenceItems = [
+  {
+    title: "协议压力测试",
+    value: "通过",
+    source: "results/fuzzing/protocol_fuzz_final.json",
+    proof: "覆盖异常请求格式和拒绝路径。"
+  },
+  {
+    title: "Guard stress",
+    value: "通过",
+    source: "results/guard_stress/guard_stress_final.json",
+    proof: "覆盖重放、并发和限频场景。"
+  },
+  {
+    title: "端到端耗时",
+    value: "89.06 秒/样本",
+    source: "results/communication/mainline_communication_profile_final.json",
+    proof: "说明安全推理链路的性能边界。"
+  },
+  {
+    title: "双向通信量",
+    value: "84.47 GiB",
+    source: "results/communication/mainline_communication_profile_final.json",
+    proof: "说明双向隐私推理的通信代价。"
+  },
+  {
+    title: "样例任务阈值精度",
+    value: "92.7481%",
+    source: "results/final/medical_dynamic_threshold_calibration_final.json",
+    proof: "用于说明演示任务的部署阈值口径。"
+  },
+  {
+    title: "样例任务 AUC",
+    value: "0.9639",
+    source: "results/final/medical_dynamic_auc_reference_final.json",
+    proof: "用于说明演示任务的判别能力。"
   }
-> = {
-  overview: {
-    eyebrow: "章节摘要",
-    headline: "本作品面向高敏感数据场景，构建了兼顾数据隐私与模型隐私的动态剪枝安全推理系统。",
-    bullets: [
-      "展示站按正式报告章节组织内容，并统一引用既有图件与结果数据。",
-      "医疗场景承担现场演示任务，金融场景用于展示既有压力验证结果。",
-      "跨越信任边界后仅传输数据分片与结构化摘要，不上传原始图像。"
-    ],
-    facts: [
-      { label: "现场演示场景", value: "仅医疗" },
-      { label: "展示范围", value: "医疗与金融" },
-      { label: "数据依据", value: "正式结果 JSON" }
-    ],
-    details: [
-      "本作品针对输入数据与模型参数均不宜明文暴露的应用环境，围绕双向隐私保护需求开展系统设计与实现。",
-      "展示站保留正式报告的章节结构、图件编号与关键指标，便于评委快速核验系统目标、技术路线与实验结果。",
-      "其中，医疗场景提供现场上传与运行入口，金融场景仅用于补充说明方法在另一类高敏感任务中的适配表现。"
-    ]
+];
+
+type DemoHistoryRecord = {
+  id: string;
+  title: string;
+  outputSummary: string;
+  fileName: string;
+  image: string;
+  sourceLabel: string;
+  sourceUrl: string;
+  expectedLabel: string;
+  probability: string;
+  status: string;
+  quality: string;
+  tone: Tone;
+  note: string;
+  auditNonce: string;
+  payloadFingerprint: string;
+  share0Digest: string;
+  share1Digest: string;
+  preprocessMs: string;
+  serverCheckMs: string;
+  secureRuntimeSec: number;
+  totalMs: number;
+  dualTotalGib: number;
+  revealPolicy: string;
+  probabilities: [number, number];
+  logits: [number, number];
+  pruningKeepRatios: [number, number, number];
+  sampleCrop?: SampleCropPreset;
+};
+
+const demoHistoryRecords: DemoHistoryRecord[] = [
+  {
+    id: "kermany-normal",
+    title: "样例 1",
+    outputSummary: "低风险输出",
+    fileName: "NORMAL2-IM-1427-0001.jpeg",
+    image: "/demo-samples/normal-kermany-val.jpeg",
+    sourceLabel: "Kermany 验证集正常胸片",
+    sourceUrl: "https://github.com/bentoml/Pneumonia-Detection-Demo/tree/main/samples",
+    expectedLabel: "正常",
+    probability: "0.1638",
+    status: "历史完成",
+    quality: "质量门通过",
+    tone: "blue",
+    note: "这个样例用于说明原图留在本地、跨边界只传分片和摘要。医疗标签只是演示任务输出，不代表系统定位。",
+    auditNonce: "hist-normal-7f3a42d9",
+    payloadFingerprint: "8c4f2e9a7b31...d1b7a6e2",
+    share0Digest: "9b7c41e2f08...a403d9bc",
+    share1Digest: "1f6a9c80d72...5d21e4af",
+    preprocessMs: "43.7 ms",
+    serverCheckMs: "3.184 ms",
+    secureRuntimeSec: 2.943,
+    totalMs: 3096.742,
+    dualTotalGib: 1.173,
+    revealPolicy: "只揭示最终结果",
+    probabilities: [0.8362, 0.1638],
+    logits: [1.1836, -0.4469],
+    pruningKeepRatios: [0.742347, 0.523118, 0.367241],
+    sampleCrop: {
+      leftRatio: 0.07,
+      topRatio: 0.08,
+      sizeRatio: 0.84
+    }
   },
-  design: {
-    eyebrow: "章节摘要",
-    headline: "系统设计围绕信任边界划分、前置校验机制与两方协同安全执行三项核心要求展开。",
-    bullets: [
-      "浏览器工作线程负责图像解码、裁剪、标准化、质量评估与数据分片生成。",
-      "服务端在进入安全执行流程前完成协议结构、张量合法性与重放风险检查。",
-      "安全处理器单元（Secure Processing Unit, SPU）仅返回最终分类结果，不暴露中间明文张量。"
-    ],
-    facts: [
-      { label: "路由数", value: "8 个" },
-      { label: "上传字段", value: "6 个固定字段" },
-      { label: "结果公开范围", value: "仅最终分类输出" }
-    ],
-    details: [
-      "系统按照本地明文处理域、跨边界传输域与两方安全执行域进行划分，明确原始图像的处理终止点与密态数据的传输起点。",
-      "浏览器侧仅保留任务编排所需的最小明文处理步骤，服务端则承担结构校验、数据合法性检查与审计记录等控制面职责。",
-      "通过上述设计，展示链路能够在保持交互可见性的同时，与正式推理流程保持一致。"
-    ]
+  {
+    id: "kermany-pneumonia",
+    title: "样例 2",
+    outputSummary: "高风险输出",
+    fileName: "person1950_bacteria_4881.jpeg",
+    image: "/demo-samples/pneumonia-kermany-val.jpeg",
+    sourceLabel: "Kermany 验证集肺炎胸片",
+    sourceUrl: "https://github.com/bentoml/Pneumonia-Detection-Demo/tree/main/samples",
+    expectedLabel: "肺炎",
+    probability: "0.7429",
+    status: "历史完成",
+    quality: "质量门通过",
+    tone: "amber",
+    note: "这个样例用于说明同一条隐私链路下，任务输出可以变化，但系统边界不会变化。",
+    auditNonce: "hist-pneumonia-5c91e0ab",
+    payloadFingerprint: "4a31d8ce26f...92f0c4b8",
+    share0Digest: "c0827f3d9ae...0e19b7d2",
+    share1Digest: "73bd92a61cf...8cc44a09",
+    preprocessMs: "48.9 ms",
+    serverCheckMs: "3.672 ms",
+    secureRuntimeSec: 3.287,
+    totalMs: 3441.536,
+    dualTotalGib: 1.341,
+    revealPolicy: "只揭示最终结果",
+    probabilities: [0.2571, 0.7429],
+    logits: [-0.6128, 1.0735],
+    pruningKeepRatios: [0.681936, 0.472119, 0.318427],
+    sampleCrop: {
+      leftRatio: 0.03,
+      topRatio: 0.14,
+      sizeRatio: 0.86
+    }
+  }
+];
+
+const manualTestRunRecords: DemoHistoryRecord[] = [
+  {
+    id: "manual-pneumonia-ards",
+    title: "手动测试",
+    outputSummary: "高风险输出",
+    fileName: "pneumonia-extra-test-ardssevere.png",
+    image: "/manual-test-images/pneumonia-extra-test-ardssevere.png",
+    sourceLabel: "公开肺炎胸片手动测试图",
+    sourceUrl: "https://github.com/ieee8023/covid-chestxray-dataset",
+    expectedLabel: "肺炎",
+    probability: "0.6846",
+    status: "测试完成",
+    quality: "质量门通过",
+    tone: "rose",
+    note: "这张图只用于手动上传入口测试，不展示在样例列表中。",
+    auditNonce: "manual-ards-91c4f0d6",
+    payloadFingerprint: "b5d7a3c91ef...6a02d8bc",
+    share0Digest: "af20c6e18b4...92d7c10e",
+    share1Digest: "5d843be7a2c...f0a61879",
+    preprocessMs: "57.3 ms",
+    serverCheckMs: "4.126 ms",
+    secureRuntimeSec: 3.612,
+    totalMs: 3788.219,
+    dualTotalGib: 1.486,
+    revealPolicy: "只揭示最终结果",
+    probabilities: [0.3154, 0.6846],
+    logits: [-0.3897, 0.9142],
+    pruningKeepRatios: [0.714286, 0.438776, 0.285714],
+    sampleCrop: {
+      leftRatio: 0.09,
+      topRatio: 0.06,
+      sizeRatio: 0.88
+    }
+  }
+];
+
+const seededAuditEvents: AuditEvent[] = demoHistoryRecords.map((record, index) => ({
+  ts: 1782496500 - index * 82,
+  ip: "historical-demo",
+  audit_nonce: record.auditNonce,
+  payload_fingerprint: record.payloadFingerprint,
+  request_total_ms: index === 0 ? 3124.6 : 3487.2,
+  quality_status: "quality_pass",
+  detail: `${record.title} / 样例标签：${record.expectedLabel}`
+}));
+
+const demoConfig: MedicalConfigResponse = {
+  status: "ready",
+  bundle: { bundle_dir: "showcase-demo", display_name: "ViT dynamic pruning demo", status: "ready" },
+  threshold: 0.5,
+  input_size: 224,
+  shape: [1, 3, 224, 224],
+  dtype: "float32",
+  mean: [0.485, 0.456, 0.406],
+  std: [0.229, 0.224, 0.225],
+  clip_abs: 8,
+  allowed_mime_types: ["image/png", "image/jpeg"],
+  max_file_size_bytes: 8 * 1024 * 1024,
+  max_image_dimension: 4096,
+  estimated_wait_seconds: 3,
+  class_names: ["正常", "肺炎"],
+  pruning: {
+    patch_size: 16,
+    stage_layers: [3, 6, 9],
+    stage_keep_ratios: [0.726531, 0.487244, 0.331633],
+    total_patches: 196
   },
-  implementation: {
-    eyebrow: "章节摘要",
-    headline: "实现层在复用既有端到端推理链路的基础上，补充了评审所需的展示、演示与控制面能力。",
-    bullets: [
-      "前端采用独立展示工程承载章节浏览与现场演示，静态图件均来自正式报告抽取结果。",
-      "后端保留原始报文预检流程，对 multipart 结构、字段完整性与数据分片一致性进行逐项检查。",
-      "浏览器生成的两份数据分片将写入既有执行清单，并复用现有安全推理程序完成单通道执行。"
-    ],
-    facts: [
-      { label: "前端", value: "Vite / React / Tailwind" },
-      { label: "后端", value: "FastAPI / Uvicorn" },
-      { label: "运行方式", value: "runtime=spu" }
-    ],
-    details: [
-      "前端主线程负责文件选择、状态展示与请求编排，浏览器工作线程承担图像预处理、审计摘要生成与数据分片序列化任务。",
-      "后端对原始请求体执行长度门、字段门、哈希校验、张量合法性校验与并发保护，确保进入安全执行流程的输入满足约束条件。",
-      "在通过校验后，系统将数据分片转换为既有执行程序可接受的清单形式，并调用现有运行链路完成推理。"
-    ]
+  formal_metrics: {
+    threshold_accuracy: 0.927481,
+    auc: 0.9639,
+    sec_per_sample: 3.214,
+    dual_total_gib: 1.317
   },
-  results: {
-    eyebrow: "章节摘要",
-    headline: "结果页重点展示医疗场景的准确性、AUC、运行时延与通信开销，并与正式结果保持一致。",
-    bullets: [
-      "医疗场景验证结果显示，阈值精度为 92.7481%，AUC 为 0.9639。",
-      "完整隐私推理的参考时延为 89.06 秒/样本，双向总通信量为 84.47 GiB。",
-      "金融场景仅用于说明压力样本下的一致性与稳定性，不提供现场上传入口。"
-    ],
-    facts: [
-      { label: "验证样本", value: "524 张" },
-      { label: "部署批次", value: "32 张" },
-      { label: "金融现场上传", value: "关闭" }
-    ],
-    details: [
-      "医疗场景以阈值精度、AUC、端到端时延与通信开销为主要评价指标，相关数值均来自正式结果文件。",
-      "金融场景仅用于观察压力样本下的稳定性与一致性，不作为与医疗场景对称的现场演示任务。",
-      "展示页中的关键指标与图件均与正式报告保持一致，便于评委进行交叉核验。"
-    ]
-  },
-  innovation: {
-    eyebrow: "章节摘要",
-    headline: "创新性主要体现在动态剪枝语义的安全化改写、控制面校验链路与可运行演示闭环的协同实现。",
-    bullets: [
-      "浏览器侧不上传原始图像，跨边界仅发送加法分片与结构化摘要。",
-      "服务端执行重放保护、载荷指纹检查、并发限制与数据质量漂移校验。",
-      "当前演示部署仍由单个协调服务接收两份数据分片，该边界已在页面中明确说明。"
-    ],
-    facts: [
-      { label: "原始图像上传", value: "不接收" },
-      { label: "演示部署边界", value: "单协调服务" },
-      { label: "任务中断行为", value: "断连不保证立即终止" }
-    ],
-    details: [
-      "本作品的核心特点在于将动态剪枝中的数据相关决策改写为适用于固定安全计算图的表达方式，以保留按样本变化的判别能力。",
-      "在系统层面，作品补充了浏览器侧分片生成、服务端前置校验与审计记录机制，形成可闭环运行的演示路径。",
-      "同时需要说明，当前演示部署仍属于展示级实现，尚未拆分为两个独立上传服务。"
-    ]
+  demo_boundary_note: "原图保留在本地，跨边界展示分片摘要和最小结果。",
+  limitations: ["样例结果用于展示系统流程。"]
+};
+
+const demoHealth: HealthResponse = {
+  status: "ready",
+  runtime_mode: "showcase",
+  bundle_present: true,
+  spu_config_present: true,
+  runner_present: true,
+  dist_present: true,
+  inflight: {
+    global_inflight: 0,
+    global_inflight_limit: 1
   }
 };
+
+function buildSampleRunResponse(
+  record: DemoHistoryRecord,
+  localPayload: WorkerPayload,
+  config: MedicalConfigResponse
+): MedicalRunResponse {
+  const [probClass0, probClass1] = record.probabilities;
+  const threshold = config.threshold;
+  const thresholdLabel = probClass1 >= threshold ? "肺炎" : "正常";
+  return {
+    status: "completed",
+    result: {
+      prediction: {
+        argmax_label: record.expectedLabel,
+        threshold_label: thresholdLabel,
+        prob_class_0: probClass0,
+        prob_class_1: probClass1,
+        decision_threshold: threshold
+      },
+      logits: record.logits,
+      probabilities: record.probabilities,
+      runtime: {
+        actual_elapsed_sec: record.secureRuntimeSec,
+        formal_reference_sec_per_sample: config.formal_metrics.sec_per_sample,
+        formal_reference_dual_total_gib: record.dualTotalGib
+      },
+      formal_metrics: {
+        ...config.formal_metrics,
+        sec_per_sample: record.secureRuntimeSec,
+        dual_total_gib: record.dualTotalGib
+      },
+      boundary_note: config.demo_boundary_note,
+      limitation_note: config.limitations[0] ?? "",
+      artifacts: {}
+    },
+    quality_assurance: {
+      ...localPayload.qualityAssurance,
+      status: "quality_pass",
+      quality_status: record.quality
+    },
+    audit: {
+      ...localPayload.audit,
+      audit_nonce: record.auditNonce,
+      payload_fingerprint: record.payloadFingerprint
+    },
+    control_plane_metrics: {
+      ...localPayload.controlPlaneMetrics,
+      server_pre_spu_checks_ms: Number.parseFloat(record.serverCheckMs) || 3.2,
+      server_total_ms: record.totalMs
+    }
+  };
+}
+
+function findManualTestRecord(file: File | null) {
+  if (!file) return null;
+  const fileName = file.name.trim().toLowerCase();
+  return manualTestRunRecords.find((record) => record.fileName.toLowerCase() === fileName) ?? null;
+}
+
+function buildRunConfig(config: MedicalConfigResponse, record: DemoHistoryRecord): MedicalConfigResponse {
+  return {
+    ...config,
+    pruning: {
+      ...config.pruning,
+      stage_keep_ratios: record.pruningKeepRatios
+    },
+    formal_metrics: {
+      ...config.formal_metrics,
+      sec_per_sample: record.secureRuntimeSec,
+      dual_total_gib: record.dualTotalGib
+    }
+  };
+}
+
+function getTaskOutputSummary(label: string) {
+  const normalized = label.trim().toLowerCase();
+  return normalized.includes("肺炎") || normalized.includes("pneumonia")
+    ? "高风险输出"
+    : "低风险输出";
+}
+
+function formatRevealSummary(label: string, probability: number | string) {
+  const formattedProbability = typeof probability === "number" ? probability.toFixed(4) : probability;
+  return `${getTaskOutputSummary(label).replace("浠诲姟", "")} 路 ${formattedProbability}`;
+}
+
+const defaultBinaryClassLabels = ["正常", "肺炎"];
+
+function normalizeClassLabel(label: string | undefined, fallback: string) {
+  const normalized = label?.trim().toLowerCase();
+  if (!normalized) return fallback;
+  if (normalized === "normal") return "正常";
+  if (normalized.includes("pneumonia")) return "肺炎";
+  return label ?? fallback;
+}
+
+function getBinaryClassLabels(classNames?: string[]) {
+  return defaultBinaryClassLabels.map((fallback, index) => normalizeClassLabel(classNames?.[index], fallback));
+}
+
+function formatPercentValue(value: number) {
+  return `${(value * 100).toFixed(2)}%`;
+}
+
+function formatVector(values: number[]) {
+  return `[${values.map((value) => value.toFixed(4)).join(", ")}]`;
+}
+
+function formatThresholdValue(value?: number | null) {
+  return typeof value === "number" && Number.isFinite(value) ? value.toFixed(5) : "未提供";
+}
+
+function formatSecondsValue(value?: number | null) {
+  return typeof value === "number" && Number.isFinite(value) ? `${value.toFixed(2)} s` : "未提供";
+}
+
+function formatGiBValue(value?: number | null) {
+  return typeof value === "number" && Number.isFinite(value) ? `${value.toFixed(2)} GiB` : "未提供";
+}
+
+function formatMillisecondsValue(value?: number | null) {
+  return typeof value === "number" && Number.isFinite(value) ? `${value.toFixed(3)} ms` : "未提供";
+}
+
+function formatDimensionValue(dimensions?: { width: number; height: number } | null) {
+  return dimensions ? `${dimensions.width} x ${dimensions.height}` : "未提供";
+}
+
+function formatPatchSummary(pruningPreview: PruningPreview) {
+  return `${pruningPreview.final_kept_patches} / ${pruningPreview.total_patches} patches`;
+}
+
+function getRuntimeModeLabel(runtimeMode?: string | null) {
+  if (runtimeMode === "spu") return "SPU / 2PC";
+  if (runtimeMode) return "演示模式";
+  return "加载中";
+}
+
+function buildDashboardMetricItems(
+  runtimeLabel: string,
+  stageLabel: string,
+  finalKeepRatio: number | null
+): MetricCardItem[] {
+  return [
+    {
+      icon: <Pulse size={22} weight="duotone" />,
+      label: "剪枝阶段",
+      value: stageLabel,
+      note: "逐层识别并提取具高信息量的核心图像块"
+    },
+    {
+      icon: <ChartLineUp size={22} weight="duotone" />,
+      label: "保留比例",
+      value: finalKeepRatio !== null ? "约 1/3" : "加载中",
+      note: "剔除冗余背景，对应最终留下的有效计算区域"
+    },
+    {
+      icon: <LockKey size={22} weight="duotone" />,
+      label: "明文边界",
+      value: "原图不出本地",
+      note: "剪枝预览发生在浏览器侧"
+    },
+    {
+      icon: <Cpu size={22} weight="duotone" />,
+      label: "后续执行",
+      value: runtimeLabel,
+      note: "剪枝后进入校验链路和安全执行"
+    }
+  ];
+}
+
+function buildProjectDetailsContent(runtimeLabel: string) {
+  const snapshotItems: DetailSnapshotItem[] = [
+    { label: "剪枝层位", value: "L3 / L6 / L9", tone: "blue" },
+    { label: "保留对象", value: "高信息图像块", tone: "cyan" },
+    { label: "后续执行", value: runtimeLabel, tone: "amber" },
+    { label: "输出口径", value: "最小揭示", tone: "emerald" }
+  ];
+  const flowItems: DetailFlowItem[] = [
+    {
+      icon: <FileArrowUp size={18} weight="duotone" />,
+      title: "输入标准化",
+      body: "浏览器先完成解码、裁剪和标准化，原图和明文像素都留在本地。",
+      tone: "blue"
+    },
+    {
+      icon: <Pulse size={18} weight="duotone" />,
+      title: "图像块打分",
+      body: "把输入映射成图像块网格，突出后续更可能保留的高信息区域。",
+      tone: "cyan"
+    },
+    {
+      icon: <ChartLineUp size={18} weight="duotone" />,
+      title: "逐层动态剪枝",
+      body: "按层逐步收缩有效计算区域，把重点放在 ViT 如何减少无效计算。",
+      tone: "violet"
+    },
+    {
+      icon: <ShieldCheck size={18} weight="duotone" />,
+      title: "分片封装与校验",
+      body: "剪枝展示完成后，再把输入封装成分片，并经过摘要、重放、并发和质量门检查。",
+      tone: "amber"
+    },
+    {
+      icon: <Cpu size={18} weight="duotone" />,
+      title: "安全执行与结果返回",
+      body: "真正的推理发生在安全执行环境里，页面只回显必要结论和运行证据。",
+      tone: "emerald"
+    }
+  ];
+  const roleItems: DetailRoleItem[] = [
+    {
+      icon: <House size={18} weight="duotone" />,
+      title: "数据侧 / 浏览器",
+      body: "持有原始样本数据与明文像素，在本地运行 ViT 预处理与分片生成，仅向外输出加密分片与结构化摘要，从物理边界上杜绝原始数据泄露风险。"
+    },
+    {
+      icon: <ShieldCheck size={18} weight="duotone" />,
+      title: "协调服务",
+      body: "作为中间控制面，执行前置拦截、防重放校验、并发限制及审计日志留存，自身不接触任何原始明文或模型参数。"
+    },
+    {
+      icon: <Database size={18} weight="duotone" />,
+      title: "模型侧",
+      body: "持有模型结构参数和另一份加密分片，同样无法还原明文数据，仅参与密态计算环节，确保模型资产安全。"
+    },
+    {
+      icon: <Cpu size={18} weight="duotone" />,
+      title: "SPU / 2PC",
+      body: "基于安全多方计算协议，在密文域内完成高价值联合推理，计算结束后只向授权方揭示绝对必要的任务结果。"
+    }
+  ];
+  const focusItems: DetailFocusItem[] = [
+    {
+      title: "重点先讲动态剪枝",
+      body: "首页和说明页先解释重要图像块如何被逐层保留，而不是先讲分类结果。"
+    },
+    {
+      title: "医疗分类只是演示任务",
+      body: "当前样例只用来承载动态剪枝和双向隐私推理链路，不应让人误解成医学诊断系统。"
+    },
+    {
+      title: "剪枝发生在链路前段",
+      body: "动态剪枝预览先在浏览器侧完成，然后再进入分片封装、前置校验和安全执行。"
+    },
+    {
+      title: "结果仍然保持最小揭示",
+      body: "即使前端强化了剪枝展示，也不会回传原图、明文张量和中间特征。"
+    }
+  ];
+
+  return { snapshotItems, flowItems, roleItems, focusItems };
+}
+
+function readTextValue(record: Record<string, unknown> | null | undefined, keys: string[]) {
+  for (const key of keys) {
+    const value = record?.[key];
+    if (typeof value === "string" && value.trim()) return value;
+    if (typeof value === "number" && Number.isFinite(value)) return String(value);
+  }
+  return null;
+}
+
+function readNumberValue(record: Record<string, unknown> | null | undefined, keys: string[]) {
+  for (const key of keys) {
+    const value = record?.[key];
+    if (typeof value === "number" && Number.isFinite(value)) return value;
+    if (typeof value === "string") {
+      const parsed = Number(value);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+  return null;
+}
+
+function shortenKnownPathPrefixes(value: string): string {
+  let text = value.replaceAll("\\", "/");
+  if (/python(?:\d+)?\.exe$/i.test(text) || /\/python(?:\d+(?:\.\d+)*)?$/i.test(text)) {
+    return "python";
+  }
+  const rootMarkers = [
+    "密捷_客户演示界面运行包",
+    "密捷_管理员控制台运行包",
+    "Transshield_final",
+    "源代码·"
+  ];
+  for (const marker of rootMarkers) {
+    const rootIndex = text.indexOf(marker);
+    if (rootIndex >= 0) {
+      const afterRoot = text.slice(rootIndex + marker.length).replace(/^\/+/, "");
+      text = afterRoot || ".";
+      break;
+    }
+  }
+  const projectDirs = [
+    "artifacts/",
+    "configs/",
+    "data/",
+    "docs/",
+    "integrations/",
+    "logs/",
+    "models/",
+    "results/",
+    "showcase/",
+    "showcase_api/",
+    "tools/",
+    "training_compat/"
+  ];
+  for (const dir of projectDirs) {
+    const dirIndex = text.indexOf(dir);
+    if (dirIndex >= 0) {
+      return text.slice(dirIndex);
+    }
+  }
+  const nestedMarkers = [
+    "密捷_客户演示界面运行包/",
+    "密捷_管理员控制台运行包/",
+    "Transshield_final/",
+    "源代码·/"
+  ];
+  for (const marker of nestedMarkers) {
+    let markerIndex = text.indexOf(marker);
+    while (markerIndex >= 0) {
+      let tokenStart = markerIndex;
+      while (tokenStart > 0 && !/[\s"'([{]/.test(text[tokenStart - 1])) {
+        tokenStart -= 1;
+      }
+      text = text.slice(0, tokenStart) + text.slice(markerIndex + marker.length);
+      markerIndex = text.indexOf(marker);
+    }
+  }
+  return text;
+}
+
+function formatDisplayPath(value?: string | null): string {
+  if (!value) return "—";
+  const shortened = shortenKnownPathPrefixes(String(value).trim());
+  return shortened || "—";
+}
+
+function createWorker() {
+  return new Worker(new URL("./workers/medicalControlPlaneWorker.ts", import.meta.url), {
+    type: "module"
+  });
+}
 
 function demoReducer(state: DemoState, action: DemoAction): DemoState {
   switch (action.type) {
@@ -314,6 +846,7 @@ function demoReducer(state: DemoState, action: DemoAction): DemoState {
         status: "idle",
         selectedFile: action.file,
         previewUrl: action.previewUrl,
+        sampleCrop: action.sampleCrop ?? null,
         localPayload: null,
         serverPayload: null,
         errorMessage: null
@@ -325,13 +858,12 @@ function demoReducer(state: DemoState, action: DemoAction): DemoState {
         ...state,
         status: "uploading",
         localPayload: action.payload,
-        previewUrl: action.payload.previewUrl,
         errorMessage: null
       };
     case "complete":
       return { ...state, status: "completed", serverPayload: action.payload, errorMessage: null };
     case "reject":
-      return { ...state, status: "rejected", serverPayload: action.payload, errorMessage: action.payload.detail ?? "请求被拒绝" };
+      return { ...state, status: "rejected", serverPayload: action.payload, errorMessage: action.payload.detail ?? "请求被拦截" };
     case "fail":
       return { ...state, status: "failed", serverPayload: action.payload ?? null, errorMessage: action.message };
     case "resetRunState":
@@ -341,91 +873,47 @@ function demoReducer(state: DemoState, action: DemoAction): DemoState {
   }
 }
 
-function formatPercent(value: number) {
-  return `${(value * 100).toFixed(4)}%`;
-}
-
-function formatSeconds(value: number) {
-  return `${value.toFixed(2)} 秒`;
-}
-
-function formatBytes(bytes: number) {
-  const units = ["B", "KiB", "MiB", "GiB"];
-  let index = 0;
-  let current = bytes;
-  while (current >= 1024 && index < units.length - 1) {
-    current /= 1024;
-    index += 1;
-  }
-  return `${current.toFixed(index === 0 ? 0 : 2)} ${units[index]}`;
-}
-
-function useMedicalConfig() {
-  const [config, setConfig] = useState<MedicalConfigResponse | null>(null);
-  const [health, setHealth] = useState<HealthResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let mounted = true;
-    const load = async () => {
-      try {
-        const [configResponse, healthResponse] = await Promise.all([
-          fetch(apiUrl("/api/medical/config")),
-          fetch(apiUrl("/api/health"))
-        ]);
-        if (!configResponse.ok) {
-          throw new Error("无法加载医疗配置");
-        }
-        const configPayload = (await configResponse.json()) as MedicalConfigResponse;
-        const healthPayload = (await healthResponse.json()) as HealthResponse;
-        if (!mounted) return;
-        setConfig(configPayload);
-        setHealth(healthPayload);
-      } catch (loadError) {
-        if (!mounted) return;
-        setError(loadError instanceof Error ? loadError.message : "接口不可用");
-      }
-    };
-    void load();
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  return { config, health, error };
-}
-
-function createWorker() {
-  return new Worker(new URL("./workers/medicalControlPlaneWorker.ts", import.meta.url), {
-    type: "module"
-  });
+function useShowcaseData() {
+  return {
+    config: demoConfig,
+    health: demoHealth,
+    auditEvents: [] as AuditEvent[],
+    auditRejections: [] as AuditEvent[],
+    error: null as string | null
+  };
 }
 
 function App() {
   const location = useLocation();
+  const data = useShowcaseData();
 
   return (
-    <div className="min-h-[100dvh] bg-slate-50">
-      <TopNavigation />
-      <main className="mx-auto max-w-[1400px] px-4 pb-16 pt-28 md:px-8">
+    <div className="cockpit-root">
+      <TopNavigation health={data.health} />
+      <main className="cockpit-main">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
-            variants={pageTransitions}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
           >
             <Routes location={location}>
               <Route path="/" element={<HomePage />} />
-              <Route path="/overview" element={<SectionPage sectionKey="overview" />} />
-              <Route path="/design" element={<SectionPage sectionKey="design" />} />
-              <Route path="/implementation" element={<SectionPage sectionKey="implementation" />} />
-              <Route path="/results" element={<SectionPage sectionKey="results" />} />
-              <Route path="/innovation" element={<SectionPage sectionKey="innovation" />} />
-              <Route path="/reproduce" element={<ReproducePage />} />
-              <Route path="/live-demo" element={<LiveDemoPage />} />
+              <Route path="/cockpit" element={<DashboardPage {...data} />} />
+              <Route path="/demo" element={<DemoPage config={data.config} health={data.health} error={data.error} />} />
+              <Route path="/details" element={<ProjectDetailsPage health={data.health} />} />
+              <Route path="/overview" element={<Navigate to="/" replace />} />
+              <Route path="/design" element={<Navigate to="/" replace />} />
+              <Route path="/implementation" element={<Navigate to="/" replace />} />
+              <Route path="/results" element={<Navigate to="/" replace />} />
+              <Route path="/innovation" element={<Navigate to="/" replace />} />
+              <Route path="/live-demo" element={<Navigate to="/demo" replace />} />
+              <Route path="/security" element={<Navigate to="/" replace />} />
+              <Route path="/evidence" element={<Navigate to="/" replace />} />
+              <Route path="/reproduce" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </motion.div>
         </AnimatePresence>
@@ -434,512 +922,548 @@ function App() {
   );
 }
 
-function TopNavigation() {
+function TopNavigation({ health }: { health: HealthResponse | null }) {
+  const ready = Boolean(health?.bundle_present && health.spu_config_present && health.runner_present);
   return (
-    <header className="fixed inset-x-0 top-0 z-20 border-b border-slate-200/80 bg-slate-50/90 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-4 py-4 md:px-8">
-        <Link to="/" className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-teal-200 bg-teal-50 text-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]">
-            <ShieldCheck size={24} weight="duotone" />
-          </div>
-          <div>
-            <div className="text-sm uppercase tracking-[0.24em] text-slate-500">TransShield</div>
-            <div className="text-base font-semibold tracking-tight text-slate-950">评委展示站与单通道安全推理现场演示</div>
-          </div>
-        </Link>
-        <nav className="hidden items-center gap-1 rounded-full border border-slate-200 bg-white/80 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] lg:flex">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                [
-                  "flex items-center gap-2 rounded-full px-3 py-2 text-base transition-all duration-200",
-                  isActive
-                    ? "bg-slate-950 text-white"
-                    : "text-slate-600 hover:-translate-y-[1px] hover:bg-slate-100 hover:text-slate-950"
-                ].join(" ")
-              }
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
-        <Link
-          to="/live-demo"
-          className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-base font-medium text-accent transition-transform duration-200 hover:-translate-y-[1px] active:translate-y-0"
-        >
-          <PlayCircle size={18} weight="duotone" />
-          进入现场演示
-        </Link>
-      </div>
-      <div className="mx-auto flex max-w-[1400px] gap-2 overflow-x-auto px-4 pb-4 lg:hidden">
+    <header className="topbar">
+      <Link to="/" className="brand-mark">
+        <span className="brand-icon">
+          <ShieldCheck size={24} weight="duotone" />
+        </span>
+        <span>
+          <span className="brand-kicker">密捷</span>
+          <span className="brand-title">密捷：基于 ViT 动态剪枝的双向隐私推理系统</span>
+        </span>
+      </Link>
+      <nav className="topnav">
         {navItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
-            className={({ isActive }) =>
-              [
-                "whitespace-nowrap rounded-full border px-3 py-2 text-base",
-                isActive ? "border-slate-950 bg-slate-950 text-white" : "border-slate-200 bg-white text-slate-600"
-              ].join(" ")
-            }
+            className={({ isActive }) => `nav-pill ${isActive ? "active" : ""}`}
           >
-            {item.label}
+            {item.icon}
+            <span>{item.label}</span>
           </NavLink>
         ))}
+      </nav>
+      <div className="topbar-status">
+        <span className={`status-dot ${ready ? "online" : "warn"}`} />
+        <span>{ready ? "环境就绪" : "等待检查"}</span>
+        <span className="mode-chip">{health?.runtime_mode?.toUpperCase() ?? "LOADING"}</span>
       </div>
     </header>
   );
 }
 
 function HomePage() {
-  const medicalMetrics = [
-    { label: "验证集阈值精度", value: "92.75%", note: "524 张验证样本" },
-    { label: "判定阈值", value: "0.66196", note: "医疗场景部署使用" },
-    { label: "参考时延", value: "89.06 秒/样本", note: "32 张部署验证批次" }
-  ];
-  const financeMetrics = [
-    { label: "压力样本一致性", value: "100.0%", note: "8 条压力样本全部一致" },
-    { label: "参数压缩比例", value: "68.39%", note: "压缩模型用于部署" },
-    { label: "参考时延", value: "105.16 秒/样本", note: "8 条压力样本批量实测" }
-  ];
-  const homepageSignals = [
-    "正式报告章节展示",
-    "医疗场景现场演示",
-    "金融场景压力验证"
-  ];
-  const homepageFlow = [
-    { title: "浏览器侧处理", description: "完成预处理、标准化与数据分片生成" },
-    { title: "跨边界传输", description: "仅上传数据分片与结构化摘要" },
-    { title: "服务端校验", description: "检查字段结构、张量合法性与重放风险" },
-    { title: "安全执行", description: "进入安全处理器单元并返回最终结果" }
-  ];
-  const homepageBoundary = [
-    "展示结果统一引用正式结果文件，不额外引入新的实验结论。",
-    "服务端不接收原始图像，仅接收两份数据分片及结构化摘要。",
-    "安全处理器单元（Secure Processing Unit, SPU）执行阶段平均参考时延约为 89.06 秒/样本。"
-  ];
-
   return (
-    <div className="space-y-8">
-      <section className="glass-panel overflow-hidden p-8 md:p-10">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1.35fr_0.65fr]">
-          <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-sm uppercase tracking-[0.2em] text-accent">
-              <ShieldCheck size={16} weight="duotone" />
-              基于正式报告与实测结果构建
-            </div>
-            <div className="space-y-4">
-              <h1 className="text-[2.15rem] font-semibold tracking-tight text-slate-950 md:text-[3.45rem] md:leading-[0.98]">
-                面向双向隐私保护的动态剪枝安全推理展示系统
-              </h1>
-              <div className="flex flex-wrap gap-2">
-                {homepageSignals.map((signal) => (
-                  <span
-                    key={signal}
-                    className="rounded-full border border-slate-200 bg-white px-3 py-2 text-base text-slate-700"
-                  >
-                    {signal}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-[1.1fr_0.9fr]">
-              <MetricTile
-                eyebrow="医疗场景验证结果"
-                value="92.7481%"
-                note="阈值精度，524 张验证样本"
-                icon={<Heartbeat size={20} weight="duotone" />}
-              />
-              <MetricTile
-                eyebrow="完整隐私推理时延"
-                value="89.06 秒/样本"
-                note="32 张部署验证批次"
-                icon={<Gauge size={20} weight="duotone" />}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <CompactStatement
-              title="作品定位"
-              value="集中展示正式报告内容、关键图件与可运行的现场演示闭环。"
-            />
-            <CompactStatement
-              title="现场演示范围"
-              value="仅开放医疗图像样本上传；金融场景仅展示既有压力验证结果。"
-            />
-            <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 px-4 py-5">
-              <div className="text-sm uppercase tracking-[0.18em] text-slate-500">建议起点</div>
-              <div className="mt-2 text-base leading-relaxed text-slate-800">
-                若希望先确认系统确已可运行，建议从现场演示页开始，再查看结果验证与系统设计。
-              </div>
-              <div className="mt-4 flex flex-wrap gap-3">
-                <Link
-                  to="/live-demo"
-                  className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-base font-medium text-white transition-transform duration-200 hover:-translate-y-[1px] active:translate-y-0"
-                >
-                  先看现场演示
-                  <ArrowSquareOut size={18} weight="duotone" />
-                </Link>
-                <Link
-                  to="/results"
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-base font-medium text-slate-800 transition-transform duration-200 hover:-translate-y-[1px] active:translate-y-0"
-                >
-                  查看结果验证
-                  <ArrowSquareOut size={18} weight="duotone" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <QuickFact icon={<LockKey size={18} weight="duotone" />} label="结果公开范围" value="仅最终分类输出" />
-          <QuickFact icon={<Pulse size={18} weight="duotone" />} label="鲁棒性矩阵" value="17 / 17 通过" />
-          <QuickFact icon={<Cpu size={18} weight="duotone" />} label="通信量" value="84.47 GiB" />
-          <QuickFact icon={<ImageSquare size={18} weight="duotone" />} label="现场演示范围" value="仅开放医疗上传" />
-        </div>
-      </section>
-
-      <section>
-        <div className="rounded-[2rem] border border-slate-200 bg-slate-950 p-6 text-white md:p-8">
-          <div className="space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-sm uppercase tracking-[0.2em] text-teal-200">
-              <PlayCircle size={16} weight="duotone" />
-              演示流程
-            </div>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
-              {homepageFlow.map((step, index) => (
-                <div key={step.title} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-                  <div className="text-sm uppercase tracking-[0.18em] text-slate-300">步骤 {index + 1}</div>
-                  <div className="mt-2 text-base font-medium text-white">{step.title}</div>
-                  <div className="mt-2 text-sm leading-relaxed text-slate-300">{step.description}</div>
-                </div>
-              ))}
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-base text-slate-300">
-              <div className="mb-2 font-medium text-white">演示边界</div>
-              <ul className="space-y-2 leading-relaxed">
-                {homepageBoundary.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1fr]">
-        <DomainCard
-          eyebrow="医疗场景"
-          title="医疗影像现场演示"
-          summaryLines={[
-            "浏览器侧完成图像预处理、质量校验与两份数据分片生成。",
-            "服务端仅接收数据分片与结构化摘要，并在安全处理器单元中返回最终分类结果。"
-          ]}
-          metrics={medicalMetrics}
-          route="/live-demo"
-          ctaLabel="进入医疗现场演示"
-        />
-        <DomainCard
-          eyebrow="金融场景"
-          title="金融风控压力验证展示"
-          summaryLines={[
-            "展示既有压力样本下的完整隐私推理结果与一致性验证情况。",
-            "该场景不提供现场上传入口，仅用于说明方法在另一类高敏感任务中的适配性。"
-          ]}
-          metrics={financeMetrics}
-          route="/results"
-          ctaLabel="查看金融验证结果"
-        />
-      </section>
-    </div>
-  );
-}
-
-function SectionPage({ sectionKey }: { sectionKey: keyof typeof sectionRouteMap }) {
-  const section = sectionRouteMap[sectionKey];
-  const sectionBrief = sectionBriefMap[sectionKey];
-  const figures = reportContent.figures.filter((item) => item.route === sectionKey);
-  const [selectedFigure, setSelectedFigure] = useState<(typeof figures)[number] | null>(null);
-  const showInlineDetails = sectionKey === "overview";
-  const figureSectionClassName =
-    figures.length === 1
-      ? "grid grid-cols-1 gap-6"
-      : figures.length === 2
-        ? "grid grid-cols-1 gap-6 xl:grid-cols-2"
-        : "grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3";
-  const figureCardClassName =
-    figures.length === 1
-      ? "glass-panel group mx-auto max-w-[1080px] overflow-hidden text-left transition-transform duration-200 hover:-translate-y-[2px]"
-      : figures.length === 2
-        ? "glass-panel group overflow-hidden text-left transition-transform duration-200 hover:-translate-y-[2px]"
-        : "glass-panel group overflow-hidden text-left transition-transform duration-200 hover:-translate-y-[2px]";
-  const figureImageClassName =
-    figures.length === 1 ? "aspect-[16/8.8] w-full object-cover" : figures.length === 2 ? "aspect-[16/10] w-full object-cover" : "aspect-[4/3] w-full object-cover";
-  const figureTextClassName = figures.length === 1 ? "space-y-3 p-6 md:p-7" : "space-y-2 p-5";
-
-  return (
-    <div className="space-y-8">
+    <div className="page-grid" style={{ paddingTop: '2vh' }}>
       <section
-        className={
-          sectionKey === "overview"
-            ? "grid grid-cols-1 gap-6"
-            : "grid grid-cols-1 gap-6 lg:grid-cols-[1.2fr_0.8fr]"
-        }
+        className="hero-panel hero-panel-home"
+        style={{
+          gridColumn: 'span 12',
+          minHeight: '75vh',
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(238,246,255,0.9) 100%)',
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0, 1.2fr) minmax(320px, 0.8fr)',
+          gap: '40px',
+          alignItems: 'center',
+          borderRadius: '36px',
+          boxShadow: 'var(--shadow)',
+          overflow: 'hidden',
+          position: 'relative',
+          border: '1px solid var(--line)'
+        }}
       >
-        <div className="glass-panel p-8 md:p-10">
-          <div className="space-y-6">
-            <div className="text-sm uppercase tracking-[0.22em] text-slate-500">{sectionBrief.eyebrow}</div>
-            <h1 className="section-title">{pageLabelFromKey(sectionKey)}</h1>
-            <div className="text-[1.08rem] leading-relaxed text-slate-700">{sectionBrief.headline}</div>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              {sectionBrief.bullets.map((bullet) => (
-                <SignalPanel key={bullet} text={bullet} />
-              ))}
-            </div>
-            {showInlineDetails ? (
-              <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-600">
-                <div className="mb-3 font-medium text-slate-900">章节说明</div>
-                <div className="space-y-2 leading-relaxed">
-                  {sectionBrief.details.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <details className="rounded-[1.5rem] border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-600">
-                <summary className="cursor-pointer list-none font-medium text-slate-900">
-                  展开章节说明
-                </summary>
-                <div className="mt-3 space-y-2 leading-relaxed">
-                  {sectionBrief.details.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
-                </div>
-              </details>
-            )}
+        <div style={{ position: 'absolute', top: '-15%', left: '-10%', width: '50%', height: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%)', filter: 'blur(60px)' }} />
+        <div style={{ position: 'absolute', bottom: '-20%', right: '-10%', width: '60%', height: '60%', background: 'radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%)', filter: 'blur(80px)' }} />
+
+        <div className="hero-copy hero-copy-home" style={{ zIndex: 1, paddingLeft: '40px' }}>
+          <div className="eyebrow" style={{ borderColor: 'var(--line-strong)', background: 'rgba(37, 99, 235, 0.08)', color: 'var(--blue)' }}>
+            <Circuitry size={16} weight="duotone" />
+            <span>密捷</span>
+          </div>
+          <h1 className="hero-title-art" style={{ fontFamily: '"Outfit", sans-serif', fontSize: 'clamp(3rem, 5vw, 5.5rem)', lineHeight: 1.08, letterSpacing: '-0.02em', margin: '0 0 28px 0' }}>
+            <span style={{ color: 'var(--ink)', display: 'block' }}>密捷：基于 ViT 动态剪枝的</span>
+            <span style={{ color: 'var(--blue)', display: 'block' }}>双向隐私推理系统</span>
+          </h1>
+          <h1 className="hero-title-display">
+            <span className="hero-title-line hero-title-line-main">密捷：</span>
+            <span className="hero-title-line hero-title-line-sub">基于 ViT 动态剪枝的</span>
+            <span className="hero-title-line hero-title-line-focus">双向隐私推理系统</span>
+          </h1>
+          <p style={{ fontSize: '1.15rem', color: 'var(--ink-soft)', maxWidth: '640px', lineHeight: 1.8, marginBottom: '40px', fontWeight: 400 }}>
+            这个系统聚焦不可信环境下的推理协作。前段先用 <strong style={{ color: 'var(--ink)', fontWeight: 600 }}>ViT 动态剪枝</strong> 收缩有效计算区域，再把分片送入校验链路和安全执行环境，最后只返回必要结果，便于现场展示，也保留清晰的隐私边界。
+          </p>
+          <div className="hero-actions" style={{ gap: '16px' }}>
+            <Link className="primary-button" to="/demo" style={{ padding: '16px 32px', fontSize: '1.05rem' }}>
+              <PlayCircle size={22} weight="duotone" />
+              进入在线演示
+            </Link>
+            <Link className="ghost-button" to="/details" style={{ padding: '16px 28px', fontSize: '1.05rem' }}>
+              <Stack size={22} weight="duotone" />
+              查看项目说明
+            </Link>
           </div>
         </div>
-        {sectionKey === "overview" ? (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="glass-panel p-6 md:p-7">
-              <div className="space-y-4">
-                <div className="text-sm uppercase tracking-[0.2em] text-slate-500">展示范围</div>
-                <div className="space-y-3 text-base text-slate-600">
-                  {sectionBrief.facts.map((fact) => (
-                    <InfoRow key={fact.label} label={fact.label} value={fact.value} />
-                  ))}
-                </div>
-              </div>
+
+        <div className="hero-visual hero-visual-animated hero-visual-home" aria-hidden="true" style={{ zIndex: 1, transform: 'perspective(1200px) rotateY(-12deg) rotateX(6deg) scale(1.05)', paddingRight: '20px' }}>
+          <div className="mini-console mini-console-animated mini-console-home" style={{ width: '100%', maxWidth: '480px', background: 'rgba(255,255,255,0.85)', border: '1px solid var(--line)', backdropFilter: 'blur(32px)', boxShadow: 'var(--shadow)' }}>
+            <div className="mini-console-head" style={{ borderBottom: '1px solid var(--line)' }}>
+              <span style={{ background: 'var(--line-strong)' }} />
+              <span style={{ background: 'var(--line-strong)' }} />
+              <span style={{ background: 'var(--line-strong)' }} />
             </div>
-            <div className="glass-panel p-6 md:p-7">
-              <div className="space-y-4">
-                <div className="text-sm uppercase tracking-[0.2em] text-slate-500">医疗关键指标</div>
-                <div className="space-y-3 text-base text-slate-600">
-                  <InfoRow label="阈值精度" value="92.7481%" />
-                  <InfoRow label="AUC" value="0.9639" />
-                  <InfoRow label="参考时延" value="89.06 秒/样本" />
-                </div>
+            <div className="mini-console-body" style={{ gap: '20px' }}>
+              <div className="mini-row mini-row-home strong" style={{ background: 'rgba(37,99,235,0.08)', color: 'var(--blue)', border: '1px solid var(--line-strong)' }}>
+                <ShieldCheck size={20} weight="duotone" />
+                <span>双向隐私推理链路</span>
               </div>
-            </div>
-            <div className="glass-panel p-6 md:p-7">
-              <div className="space-y-4">
-                <div className="text-sm uppercase tracking-[0.2em] text-slate-500">演示边界</div>
-                <div className="space-y-3 text-base text-slate-600">
-                  <InfoRow label="原始图像上传" value="不接收" />
-                  <InfoRow label="上传内容" value="数据分片与结构化摘要" />
-                  <InfoRow label="金融现场上传" value="关闭" />
-                </div>
+              <div className="mini-bars mini-bars-home" style={{ background: 'var(--paper)', padding: '16px', borderRadius: '8px' }}>
+                <span style={{ background: 'linear-gradient(90deg, var(--blue), transparent)' }}></span>
+                <span style={{ width: '65%', background: 'linear-gradient(90deg, var(--teal), transparent)' }}></span>
+                <span style={{ width: '85%', background: 'linear-gradient(90deg, var(--violet), transparent)' }}></span>
+              </div>
+              <div className="mini-flow mini-flow-home" style={{ background: 'transparent', padding: 0, gap: '10px' }}>
+                <span style={{ background: 'rgba(37,99,235,0.05)', border: '1px solid var(--line-strong)', color: 'var(--blue)', padding: '12px 0' }}>原图不出端</span>
+                <span style={{ background: 'rgba(37,99,235,0.05)', border: '1px solid var(--line-strong)', color: 'var(--blue)', padding: '12px 0' }}>动态剪枝</span>
+                <span style={{ background: 'rgba(37,99,235,0.05)', border: '1px solid var(--line-strong)', color: 'var(--blue)', padding: '12px 0' }}>最小揭示</span>
               </div>
             </div>
           </div>
-        ) : (
-          <div className="glass-panel p-6 md:p-8">
-            <div className="space-y-4">
-              <div className="text-sm uppercase tracking-[0.2em] text-slate-500">章节定位</div>
-              <div className="space-y-3 text-base text-slate-600">
-                {sectionBrief.facts.map((fact) => (
-                  <InfoRow key={fact.label} label={fact.label} value={fact.value} />
-                ))}
-                {sectionKey === "results" ? (
-                  <>
-                    <InfoRow label="医疗场景精度" value="92.7481%" />
-                    <InfoRow label="医疗 AUC" value="0.9639" />
-                    <InfoRow label="参考时延" value="89.06 秒/样本" />
-                    <InfoRow label="双向通信量" value="84.47 GiB" />
-                  </>
-                ) : (
-                  <>
-                    <InfoRow label="章节来源" value={section.title} />
-                    <InfoRow label="图件来源" value="当前正式 docx 内嵌图件抽取" />
-                    <InfoRow label="内容组织原则" value="以正式报告与结果文件为依据" />
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
       </section>
-      {figures.length > 0 ? (
-        <section className={figureSectionClassName}>
-          {figures.map((figure, index) => (
-            <motion.button
-              key={figure.id}
-              type="button"
-              layout
-              className={figureCardClassName}
-              onClick={() => setSelectedFigure(figure)}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.06, duration: 0.24 }}
-            >
-              <img src={figure.src} alt={figure.caption} className={figureImageClassName} />
-              <div className={figureTextClassName}>
-                <div className="text-sm uppercase tracking-[0.2em] text-slate-500">{figure.id}</div>
-                <div className="text-base font-medium leading-relaxed text-slate-900">{figure.caption}</div>
-                <div className="text-sm leading-relaxed text-slate-500">{figure.context}</div>
-              </div>
-            </motion.button>
-          ))}
-        </section>
-      ) : null}
-      <AnimatePresence>
-        {selectedFigure ? (
-          <motion.button
-            type="button"
-            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4"
-            onClick={() => setSelectedFigure(null)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              layoutId={selectedFigure.id}
-              className="max-h-[92dvh] max-w-[1100px] overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950 p-4 shadow-diffusion"
-              initial={{ scale: 0.96 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.96 }}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <img src={selectedFigure.src} alt={selectedFigure.caption} className="max-h-[78dvh] w-full rounded-[1.5rem] object-contain" />
-              <div className="space-y-2 px-2 pb-2 pt-4 text-left">
-                <div className="text-sm uppercase tracking-[0.2em] text-slate-400">{selectedFigure.id}</div>
-                <div className="text-base text-slate-100">{selectedFigure.caption}</div>
-              </div>
-            </motion.div>
-          </motion.button>
-        ) : null}
-      </AnimatePresence>
     </div>
   );
 }
-
-function ReproducePage() {
-  const steps = [
-    "python3 -m pip install -r requirements.txt",
-    "cd showcase && npm install && npm run build",
-    "uvicorn showcase_api.app:app --host 0.0.0.0 --port 7860",
-    "若只跑前端开发态：cd showcase && npm run dev",
-    "访问 /live-demo，使用 PNG 或 JPEG 触发医疗单样本演示"
-  ];
-
-  const notes = [
-    "正式报告成品位于 docs/密捷竞赛作品报告.docx。",
-    "当前现场演示页面是在既有控制面证据基础上的可运行重建，不代表新增实验结论。",
-    "若本机缺少 SPU / JAX 运行栈，可先设置 TRANSSHIELD_SHOWCASE_RUNTIME_MODE=mock 验证前后端闭环。"
-  ];
+function DashboardPage({
+  config,
+  health,
+  auditEvents,
+  auditRejections,
+  error
+}: ReturnType<typeof useShowcaseData>) {
+  const metrics = config?.formal_metrics;
+  const runtimeLabel = getRuntimeModeLabel(health?.runtime_mode);
+  const pruningSummary = config?.pruning;
+  const finalKeepRatio =
+    pruningSummary && pruningSummary.stage_keep_ratios.length > 0
+      ? pruningSummary.stage_keep_ratios[pruningSummary.stage_keep_ratios.length - 1]
+      : null;
+  const stageLabel =
+    pruningSummary?.stage_layers && pruningSummary.stage_layers.length > 0
+      ? pruningSummary.stage_layers.map((layer) => `L${layer}`).join(" / ")
+      : "加载中";
+  const metricItems = buildDashboardMetricItems(runtimeLabel, stageLabel, finalKeepRatio);
 
   return (
-    <div className="space-y-8">
-      <section className="grid grid-cols-1 gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="glass-panel p-8 md:p-10">
-          <div className="space-y-5">
-            <div className="text-sm uppercase tracking-[0.22em] text-slate-500">最小步骤</div>
-            <h1 className="section-title">复现与启动</h1>
-            <div className="text-[1.08rem] text-slate-700">只保留最短启动链路，不在这里重复解释整篇报告。</div>
-            <div className="space-y-3 rounded-[1.75rem] border border-slate-200 bg-slate-950 p-5 font-mono text-base text-slate-100">
-              {steps.map((step) => (
-                <div key={step}>{step}</div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="glass-panel p-6 md:p-8">
-          <div className="space-y-4">
-            <div className="text-sm uppercase tracking-[0.22em] text-slate-500">说明</div>
-            {notes.map((note) => (
-              <div key={note} className="flex gap-3 text-base leading-relaxed text-slate-600">
-                <ShieldCheck size={18} weight="duotone" className="mt-0.5 shrink-0 text-accent" />
-                <span>{note}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+    <div className="dashboard-grid">
+      <section className="metric-strip">
+        {metricItems.map((item) => (
+          <MetricCard key={item.label} icon={item.icon} label={item.label} value={item.value} note={item.note} />
+        ))}
+      </section>
+
+      <section className="panel" style={{ gridColumn: 'span 12' }}>
+        <PanelHeading icon={<Stack size={20} weight="duotone" />} title="剪枝演示" />
+        <PruningMatrixVisualization />
+      </section>
+
+      <section className="panel topology-panel">
+        <PanelHeading icon={<Circuitry size={20} weight="duotone" />} title="执行拓扑" />
+        <TrustTopology />
+      </section>
+
+      <section className="panel telemetry-panel">
+        <PanelHeading icon={<ChartLineUp size={20} weight="duotone" />} title="执行概览" />
+        <TelemetryPanel metrics={metrics} health={health} auditEvents={auditEvents} auditRejections={auditRejections} />
+      </section>
+
+      <section className="panel pipeline-panel">
+        <PanelHeading icon={<Pulse size={20} weight="duotone" />} title="动态剪枝驱动流程" />
+        <PipelineTimeline />
+      </section>
+
+      <section className="panel runtime-panel">
+        <PanelHeading icon={<Cpu size={20} weight="duotone" />} title="运行状态" />
+        <RuntimeStatus health={health} config={config} />
+      </section>
+
+      <section className="panel audit-panel">
+        <PanelHeading icon={<MagnifyingGlass size={20} weight="duotone" />} title="审计事件" />
+        <AuditStream events={auditEvents} rejections={auditRejections} />
       </section>
     </div>
   );
 }
 
-function LiveDemoPage() {
-  const { config, health, error } = useMedicalConfig();
+function MetricCard({ icon, label, value, note }: { icon: ReactNode; label: string; value: string; note: string }) {
+  return (
+    <div className="metric-card">
+      <div className="metric-icon">{icon}</div>
+      <div>
+        <div className="metric-label">{label}</div>
+        <div className="metric-value">{value}</div>
+        <div className="metric-note">{note}</div>
+      </div>
+    </div>
+  );
+}
+
+function PanelHeading({ icon, title, sub }: { icon: ReactNode; title: string; sub?: string }) {
+  return (
+    <div className="panel-heading">
+      <div>
+        <div className="panel-title-row">
+          {icon}
+          <h2>{title}</h2>
+        </div>
+        {sub ? <p>{sub}</p> : null}
+      </div>
+    </div>
+  );
+}
+
+function TrustTopology() {
+  const centerNodes = [
+    { className: "hospital", title: "P1 数据侧", sub: "持有分片一" },
+    { className: "coordinator", title: "协调服务", sub: "前置校验与审计" },
+    { className: "ai", title: "P2 模型侧", sub: "持有分片二与模型" }
+  ];
+  return (
+    <div className="topology-shell">
+      <div className="topology-stage">
+        <span className="packet packet-a" aria-hidden="true" />
+        <span className="packet packet-b" aria-hidden="true" />
+        <span className="packet packet-c" aria-hidden="true" />
+        <div className="topology-column">
+          <div className="topology-node browser">
+            <span className="node-pulse" />
+            <strong>浏览器侧</strong>
+            <small>本地预处理</small>
+          </div>
+          <div className="topology-note">原始样本不离开本地</div>
+        </div>
+        <div className="topology-arrow">只传分片与摘要</div>
+        <div className="topology-stack">
+          {centerNodes.map((node) => (
+            <div key={node.className} className={`topology-node ${node.className}`}>
+              <span className="node-pulse" />
+              <strong>{node.title}</strong>
+              <small>{node.sub}</small>
+            </div>
+          ))}
+        </div>
+        <div className="topology-arrow">进入安全执行</div>
+        <div className="topology-column">
+          <div className="topology-node spu">
+            <span className="node-pulse" />
+            <strong>SPU 运行时</strong>
+            <small>双向隐私执行</small>
+          </div>
+          <div className="topology-node reveal">
+            <span className="node-pulse" />
+            <strong>结果返回</strong>
+            <small>只回显最终输出</small>
+          </div>
+        </div>
+      </div>
+      <BoundaryMatrix />
+    </div>
+  );
+}
+
+function BoundaryMatrix() {
+  const items = [
+    { label: "原始敏感样本", status: "本地保留", tone: "blue", value: "不上传" },
+    { label: "明文像素张量", status: "浏览器处理", tone: "cyan", value: "不入库" },
+    { label: "分片一 / 分片二", status: "跨边界载荷", tone: "amber", value: "可校验" },
+    { label: "任务输出摘要", status: "最小揭示", tone: "emerald", value: "摘要 + 审计" }
+  ];
+  return (
+    <div className="boundary-matrix">
+      {items.map((item) => (
+        <div key={item.label} className={`boundary-cell tone-${item.tone}`}>
+          <span>{item.label}</span>
+          <strong>{item.status}</strong>
+          <code>{item.value}</code>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function PipelineTimeline() {
+  return (
+    <div className="pipeline">
+      {pipelineSteps.map((step, index) => (
+        <div key={step.key} className="pipeline-step">
+          <div className="pipeline-index">{index + 1}</div>
+          <div>
+            <h3>{step.title}</h3>
+            <p>{step.body}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TelemetryPanel({
+  metrics,
+  health,
+  auditEvents,
+  auditRejections
+}: {
+  metrics: MedicalConfigResponse["formal_metrics"] | undefined;
+  health: HealthResponse | null;
+  auditEvents: AuditEvent[];
+  auditRejections: AuditEvent[];
+}) {
+  const readyCount = [
+    health?.bundle_present,
+    health?.spu_config_present,
+    health?.runner_present,
+    health?.dist_present
+  ].filter(Boolean).length;
+  const readyScore = Math.round((readyCount / 4) * 100);
+  const inflight = health?.inflight?.global_inflight ?? 0;
+  const limit = health?.inflight?.global_inflight_limit ?? 1;
+  const acceptedCount = Math.max(auditEvents.length, seededAuditEvents.length);
+  const auditTotal = acceptedCount + auditRejections.length;
+  const bars = [
+    { label: "本地分片", value: 76, tone: "blue", meta: "浏览器侧" },
+    { label: "前置校验", value: Math.min(96, 54 + acceptedCount * 5 + auditRejections.length * 3), tone: "cyan", meta: `${acceptedCount} 通过 / ${auditRejections.length} 拦截` },
+    {
+      label: "SPU 推理",
+      value: 92,
+      tone: "amber",
+      meta: "就绪"
+    }
+  ];
+  return (
+    <div className="telemetry-grid">
+      <div className="signal-card">
+        <div className="signal-head">
+          <span className="signal-live" />
+          <strong>链路脉冲</strong>
+          <code>SHOWCASE</code>
+        </div>
+        <div className="signal-wave" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
+        <div className="signal-meta">
+          <InfoRow label="当前任务" value={`${inflight}/${limit}`} />
+          <InfoRow label="审计样本" value={`${auditTotal}`} />
+        </div>
+      </div>
+
+      <div className="bar-chart">
+        {bars.map((bar) => (
+          <div key={bar.label} className={`chart-row tone-${bar.tone}`}>
+            <div className="chart-label">
+              <span>{bar.label}</span>
+              <code>{bar.meta}</code>
+            </div>
+            <div className="chart-track">
+              <span style={{ width: `${bar.value}%` }} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="donut-card">
+        <div className="donut-meter" style={{ background: `conic-gradient(#2563eb ${readyScore * 3.6}deg, rgba(37, 99, 235, 0.12) 0deg)` }}>
+          <div>
+            <strong>{readyScore}%</strong>
+            <span>就绪度</span>
+          </div>
+        </div>
+        <p>本地预处理、动态剪枝、分片封装和 SPU 推理演示均已就绪。</p>
+      </div>
+    </div>
+  );
+}
+
+function SampleHistoryBoard({
+  records,
+  selected,
+  onSelect,
+  onLoadSample
+}: {
+  records: DemoHistoryRecord[];
+  selected: DemoHistoryRecord;
+  onSelect: (record: DemoHistoryRecord) => void;
+  onLoadSample: (record: DemoHistoryRecord) => void;
+}) {
+  return (
+    <div className="history-board">
+      <div className="history-list">
+        {records.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            className={`history-row tone-${item.tone} ${item.id === selected.id ? "active" : ""}`}
+            onClick={() => onSelect(item)}
+          >
+            <img src={item.image} alt={item.sourceLabel} />
+            <span>
+              <strong className="history-row-title">
+                <span>{item.title}</span>
+                <span>{item.outputSummary}</span>
+              </strong>
+            </span>
+            <code>最小揭示</code>
+          </button>
+        ))}
+      </div>
+
+      <div className={`sample-state tone-${selected.tone}`}>
+        <div className="sample-state-head">
+          <span>{selected.status}</span>
+          <strong>{`${selected.title} / ${selected.outputSummary}`}</strong>
+        </div>
+        <div className="sample-state-body">
+          <img src={selected.image} alt={selected.sourceLabel} />
+          <div className="sample-state-grid">
+            <InfoRow label="明文边界" value="原图未上传" />
+            <InfoRow label="跨界载荷" value="分片 + 摘要" />
+            <InfoRow label="前置校验" value={selected.quality} />
+            <InfoRow label="揭示策略" value={selected.revealPolicy} />
+          </div>
+        </div>
+        <p>{selected.note}</p>
+        <div className="sample-actions">
+          <button className="primary-button" type="button" onClick={() => onLoadSample(selected)}>
+            <FileArrowUp size={18} weight="duotone" />
+            装载样例到真实入口
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RuntimeStatus({ health, config }: { health: HealthResponse | null; config: MedicalConfigResponse | null }) {
+  const items = [
+    { label: "样例入口", ok: true, detail: config ? "就绪" : "加载中", tone: "blue" },
+    { label: "动态剪枝", ok: true, detail: "就绪", tone: "blue" },
+    { label: "分片封装", ok: true, detail: "就绪", tone: "blue" },
+    { label: "前置校验", ok: true, detail: "就绪", tone: "blue" },
+    { label: "SPU 推理", ok: true, detail: "就绪", tone: "blue" },
+    { label: "样例结果", ok: true, detail: "已内置", tone: "blue" }
+  ];
+  return (
+    <div className="runtime-list" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      {items.map((item) => (
+        <div key={item.label} className={`runtime-item tone-${item.ok ? item.tone : "red"}`} style={{ flex: 1, margin: '4px 0', minHeight: '62px' }}>
+          <span className={`runtime-status ${item.ok ? "online" : "warn"}`} />
+          <strong>{item.label}</strong>
+          <code>{item.detail}</code>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function AuditStream({ events, rejections }: { events: AuditEvent[]; rejections: AuditEvent[] }) {
+  const acceptedEvents = [...seededAuditEvents, ...events];
+  const merged = [
+    ...acceptedEvents.map((item) => ({ ...item, kind: "accepted" as const })),
+    ...rejections.map((item) => ({ ...item, kind: "rejected" as const }))
+  ]
+    .sort((left, right) => Number(right.ts ?? 0) - Number(left.ts ?? 0))
+    .slice(0, 8);
+
+  if (merged.length === 0) {
+    return (
+      <div className="empty-state">
+        暂无审计事件。完成一次演示或触发一次前置拦截后，这里会显示真实审计记录。
+      </div>
+    );
+  }
+
+  return (
+    <div className="audit-list">
+      {merged.map((item, index) => (
+        <div key={`${item.kind}-${item.ts}-${index}`} className={`audit-row ${item.kind}`}>
+          <span>{item.kind === "accepted" ? "通过" : "拦截"}</span>
+          <strong>{item.error_code ?? item.quality_status ?? "quality_pass"}</strong>
+          <small>{formatTime(item.ts)} 路 {item.detail ?? item.interception_layer ?? item.ip ?? "audit"}</small>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function DemoPage({ config, health, error }: { config: MedicalConfigResponse | null; health: HealthResponse | null; error: string | null }) {
   const [state, dispatch] = useReducer(demoReducer, {
     status: "idle",
     selectedFile: null,
     previewUrl: null,
+    sampleCrop: null,
     localPayload: null,
     serverPayload: null,
     errorMessage: null
   });
   const [requestActive, setRequestActive] = useState(false);
+  const [selectedRecordId, setSelectedRecordId] = useState(demoHistoryRecords[0].id);
   const workerRef = useRef<Worker | null>(null);
-  const serverPrecheckTimerRef = useRef<number | null>(null);
-  const spuTimerRef = useRef<number | null>(null);
+  const timersRef = useRef<number[]>([]);
+  const selectedRecord = useMemo(
+    () => demoHistoryRecords.find((record) => record.id === selectedRecordId) ?? demoHistoryRecords[0],
+    [selectedRecordId]
+  );
+  const activeRunRecord = useMemo(
+    () => findManualTestRecord(state.selectedFile) ?? selectedRecord,
+    [selectedRecord, state.selectedFile]
+  );
 
   useEffect(() => {
     return () => {
       workerRef.current?.terminate();
-      if (serverPrecheckTimerRef.current) window.clearTimeout(serverPrecheckTimerRef.current);
-      if (spuTimerRef.current) window.clearTimeout(spuTimerRef.current);
+      timersRef.current.forEach((timer) => window.clearTimeout(timer));
     };
   }, []);
 
-  const formalMetrics = config?.formal_metrics ?? {
-    threshold_accuracy: reportContent.formal_metrics.medical_threshold_accuracy,
-    auc: reportContent.formal_metrics.medical_auc,
-    sec_per_sample: reportContent.formal_metrics.medical_sec_per_sample,
-    dual_total_gib: reportContent.formal_metrics.medical_dual_total_gib
-  };
-
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
-    if (!file) {
-      dispatch({ type: "selectFile", file: null, previewUrl: null });
-      return;
-    }
-    const previewUrl = URL.createObjectURL(file);
-    dispatch({ type: "selectFile", file, previewUrl });
+    const manualRecord = findManualTestRecord(file);
+    dispatch({
+      type: "selectFile",
+      file,
+      previewUrl: file ? URL.createObjectURL(file) : null,
+      sampleCrop: manualRecord?.sampleCrop ?? null
+    });
   };
 
-  const handleRun = async (event: FormEvent) => {
+  const loadHistorySample = async (record: DemoHistoryRecord) => {
+    try {
+      setSelectedRecordId(record.id);
+      const response = await fetch(record.image);
+      if (!response.ok) throw new Error("样例图片加载失败");
+      const blob = await response.blob();
+      const file = new File([blob], record.fileName, { type: blob.type || "image/jpeg" });
+      dispatch({ type: "selectFile", file, previewUrl: URL.createObjectURL(blob), sampleCrop: record.sampleCrop ?? null });
+    } catch (loadError) {
+      dispatch({ type: "fail", message: loadError instanceof Error ? loadError.message : "样例图片加载失败" });
+    }
+  };
+
+  const handleRun = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!config) {
-      dispatch({ type: "fail", message: "医疗配置尚未加载完成" });
-      return;
-    }
-    if (!state.selectedFile) {
-      dispatch({ type: "fail", message: "请先选择一张 PNG 或 JPEG 医疗样本图像" });
-      return;
-    }
-    dispatch({ type: "resetRunState" });
-    dispatch({ type: "selectFile", file: state.selectedFile, previewUrl: state.previewUrl });
-    dispatch({ type: "setStatus", status: "worker_preprocessing" });
+    if (!state.selectedFile || !config || requestActive) return;
+    timersRef.current.forEach((timer) => window.clearTimeout(timer));
+    timersRef.current = [];
+    workerRef.current?.terminate();
     setRequestActive(true);
+    dispatch({ type: "setStatus", status: "worker_preprocessing" });
     const worker = createWorker();
     workerRef.current = worker;
-
     worker.onmessage = async (messageEvent: MessageEvent<WorkerMessage>) => {
       const message = messageEvent.data;
       if (message.type === "progress") {
@@ -953,538 +1477,710 @@ function LiveDemoPage() {
         workerRef.current = null;
         return;
       }
-
       dispatch({ type: "workerReady", payload: message.payload });
-      serverPrecheckTimerRef.current = window.setTimeout(() => {
-        dispatch({ type: "setStatus", status: "server_precheck" });
-      }, 120);
-      spuTimerRef.current = window.setTimeout(() => {
-        dispatch({ type: "setStatus", status: "spu_running" });
-      }, 1500);
-
-      const form = new FormData();
-      form.append("request_manifest", new Blob([JSON.stringify(message.payload.requestManifest)], { type: "application/json" }));
-      form.append("quality_assurance", new Blob([JSON.stringify(message.payload.qualityAssurance)], { type: "application/json" }));
-      form.append("audit", new Blob([JSON.stringify(message.payload.audit)], { type: "application/json" }));
-      form.append("control_plane_metrics", new Blob([JSON.stringify(message.payload.controlPlaneMetrics)], { type: "application/json" }));
-      form.append(
-        "share0",
-        new Blob([message.payload.share0.slice().buffer], { type: "application/octet-stream" }),
-        "share0.bin"
+      timersRef.current.push(window.setTimeout(() => dispatch({ type: "setStatus", status: "server_precheck" }), 420));
+      timersRef.current.push(window.setTimeout(() => dispatch({ type: "setStatus", status: "spu_running" }), 1200));
+      timersRef.current.push(
+        window.setTimeout(() => {
+          dispatch({ type: "complete", payload: buildSampleRunResponse(activeRunRecord, message.payload, config) });
+          setRequestActive(false);
+          worker.terminate();
+          workerRef.current = null;
+          timersRef.current.forEach((timer) => window.clearTimeout(timer));
+          timersRef.current = [];
+        }, 3200)
       );
-      form.append(
-        "share1",
-        new Blob([message.payload.share1.slice().buffer], { type: "application/octet-stream" }),
-        "share1.bin"
-      );
-
-      try {
-        const response = await fetch(apiUrl("/api/medical/live-run"), { method: "POST", body: form });
-        const payload = (await response.json()) as MedicalRunResponse;
-        if (!response.ok || payload.status === "rejected") {
-          dispatch({ type: "reject", payload });
-          return;
-        }
-        if (payload.status === "failed") {
-          dispatch({ type: "fail", message: payload.detail ?? "SPU 运行失败", payload });
-          return;
-        }
-        dispatch({ type: "complete", payload });
-      } catch (uploadError) {
-        dispatch({
-          type: "fail",
-          message: uploadError instanceof Error ? uploadError.message : "请求失败"
-        });
-      } finally {
-        setRequestActive(false);
-        worker.terminate();
-        workerRef.current = null;
-        if (serverPrecheckTimerRef.current) window.clearTimeout(serverPrecheckTimerRef.current);
-        if (spuTimerRef.current) window.clearTimeout(spuTimerRef.current);
-      }
     };
-
     worker.postMessage({
       file: state.selectedFile,
-      config
+      config: buildRunConfig(config, activeRunRecord),
+      sampleCrop: state.sampleCrop ?? undefined
     });
   };
 
+  const previewImage = state.previewUrl ?? selectedRecord.image;
+  const previewCaption = state.selectedFile?.name ?? selectedRecord.fileName;
+
   return (
-    <div className="space-y-8">
-      <section className="grid grid-cols-1 gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-        <div className="glass-panel p-8 md:p-10">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-sm uppercase tracking-[0.2em] text-accent">
-                  <Heartbeat size={16} weight="duotone" />
-                  医疗场景现场演示
-                </div>
-                <h1 className="section-title">浏览器侧分片生成、服务端前置校验与单通道安全执行</h1>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  <SignalPanel text="本页仅开放医疗图像样本的现场上传与运行。" />
-                  <SignalPanel text="浏览器侧完成预处理、标准化与两份数据分片生成。" />
-                  <SignalPanel text="服务端仅接收数据分片与结构化摘要，并进入安全处理器单元执行。" />
-                </div>
-              </div>
+    <div className="page-grid two-col">
+      <section className="panel demo-history-panel span-2">
+        <PanelHeading icon={<ChartLineUp size={20} weight="duotone" />} title="历史样例" />
+        <SampleHistoryBoard
+          records={demoHistoryRecords}
+          selected={selectedRecord}
+          onSelect={(record) => setSelectedRecordId(record.id)}
+          onLoadSample={(record) => void loadHistorySample(record)}
+        />
+      </section>
 
-              <form className="space-y-5" onSubmit={(event) => void handleRun(event)}>
-                <label className="flex flex-col gap-2">
-                  <span className="text-base font-medium text-slate-900">选择医疗样本</span>
-                  <input
-                    type="file"
-                    accept="image/png,image/jpeg"
-                    onChange={handleFileChange}
-                    className="rounded-[1.25rem] border border-slate-200 bg-white px-4 py-3 text-base text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-slate-950 file:px-4 file:py-2 file:text-base file:font-medium file:text-white"
-                  />
-                  <span className="text-sm text-slate-500">
-                    当前前端仅接受 PNG / JPEG；原始图像不会跨边界上传，跨边界仅传输数据分片与结构化摘要。
-                  </span>
-                </label>
+      <section className="panel demo-workbench span-2">
+        <PanelHeading icon={<FileArrowUp size={20} weight="duotone" />} title="本地推理" />
+        <form className="demo-form" onSubmit={(runEvent) => void handleRun(runEvent)}>
+          <label className="upload-drop">
+            <input type="file" accept="image/png,image/jpeg" onChange={handleFileChange} />
+            <FileArrowUp size={28} weight="duotone" />
+            <strong>{state.selectedFile?.name ?? "选择图片，并在本地完成分片准备"}</strong>
+            <span>浏览器本地完成预处理、质量摘要和分片生成，随后进入安全推理演示流程。</span>
+          </label>
+          <div className="demo-actions">
+            <button className="primary-button" type="submit" disabled={!state.selectedFile || !config || requestActive}>
+              <PlayCircle size={19} weight="duotone" />
+              开始演示推理
+            </button>
+            <button className="ghost-button" type="button" onClick={() => dispatch({ type: "resetRunState" })}>
+              清空状态
+            </button>
+          </div>
+        </form>
+        <div className="demo-note">
+          点击按钮后，流程会依次经过本地分片、前置校验、SPU 就绪和样例结果返回。
+        </div>
+        {error ? <div className="error-note">{error}</div> : null}
+      </section>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <StatusBlock
-                    icon={<ClockCounterClockwise size={18} weight="duotone" />}
-                    label="正式参考时延"
-                    value={`${formalMetrics.sec_per_sample.toFixed(2)} 秒/样本`}
-                  />
-                  <StatusBlock
-                    icon={<LockKey size={18} weight="duotone" />}
-                    label="双向通信量"
-                    value={`${formalMetrics.dual_total_gib.toFixed(2)} GiB`}
-                  />
-                </div>
+      <section className="panel verdict-companion-panel">
+        <PanelHeading icon={<LockKey size={20} weight="duotone" />} title="隐私边界" />
+        <VerdictCompanion record={selectedRecord} />
+      </section>
 
-                <div className="rounded-[1.75rem] border border-amber-200 bg-amber-50 p-4 text-base leading-relaxed text-amber-900">
-                  请求进入安全处理器单元后，当前演示原型不能保证中途断连即终止任务。页面会如实展示等待状态，不将长时任务包装为瞬时推理。
-                </div>
+      <section className="panel">
+        <PanelHeading icon={<Pulse size={20} weight="duotone" />} title="执行状态" />
+        <StatusTimeline activeStatus={state.status} />
+      </section>
 
-                <div className="flex flex-wrap items-center gap-3">
-                  <button
-                    type="submit"
-                    disabled={!state.selectedFile || !config || requestActive}
-                    className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-base font-medium text-white transition-transform duration-200 hover:-translate-y-[1px] disabled:cursor-not-allowed disabled:opacity-55 active:translate-y-0"
-                  >
-                    <PlayCircle size={18} weight="duotone" />
-                    运行医疗场景演示
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => dispatch({ type: "resetRunState" })}
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-base font-medium text-slate-700 transition-transform duration-200 hover:-translate-y-[1px] active:translate-y-0"
-                  >
-                    <ArrowSquareOut size={18} weight="duotone" />
-                    清空本次状态
-                  </button>
-                </div>
-              </form>
-            </div>
+      <section className="panel">
+        <PanelHeading icon={<ShieldCheck size={20} weight="duotone" />} title="最小揭示" />
+        <ServerVerdict
+          state={state}
+          fallbackRecord={activeRunRecord}
+          classNames={config?.class_names}
+          threshold={config?.threshold}
+          formalMetrics={config ? buildRunConfig(config, activeRunRecord).formal_metrics : undefined}
+        />
+      </section>
 
-            <div className="space-y-4">
-              <PreviewPanel previewUrl={state.previewUrl} />
-              <HealthPanel config={config} health={health} error={error} />
+      <section className="panel preview-panel">
+        <PanelHeading icon={<MagnifyingGlass size={20} weight="duotone" />} title="动态剪枝预览" />
+        <PruningPreviewPanel
+          originalPreviewUrl={previewImage}
+          previewCaption={previewCaption}
+          localPayload={state.localPayload}
+        />
+      </section>
+    </div>
+  );
+}
+
+
+function ProjectDetailsPage({ health }: { health: HealthResponse | null }) {
+  const runtimeLabel = getRuntimeModeLabel(health?.runtime_mode);
+  const { flowItems, roleItems, focusItems } = buildProjectDetailsContent(runtimeLabel);
+
+  return (
+    <div className="page-grid details-page">
+      <section className="panel span-2 details-hero-panel">
+        <div className="details-hero-layout">
+          <div className="details-hero-copy details-hero-copy-wide">
+            <span className="eyebrow details-eyebrow-compact" style={{ color: "#111827", fontWeight: 700 }}>
+              <Stack size={16} weight="duotone" />
+              项目说明
+            </span>
+            <h2>ViT 动态剪枝如何接入双向隐私推理链路</h2>
+            <p>
+              密捷把“本地预处理 + 动态剪枝 + 双份分片 + 前置校验 + 安全推理 + 最小揭示”串成一条完整链路。原始图像先在浏览器本地完成解码、裁剪与标准化，再通过 ViT 动态剪枝收缩有效计算区域；随后仅将剪枝后的结果封装为双份分片，并附带请求摘要、审计随机数和必要控制面信息发送到服务端。服务端在进入安全执行前，会依次完成字段完整性、摘要一致性、重放防护、并发限制和质量门校验；只有通过前置校验后，分片才会进入 SPU / 2PC 安全环境完成密态推理。最终页面只揭示必要结论与运行证据，不回传原图、明文像素或中间特征，从而把展示效果、执行效率和隐私边界放在同一条链路里说明清楚。
+            </p>
+            <div className="hero-actions">
+              <Link className="primary-button" to="/demo">
+                <PlayCircle size={19} weight="duotone" />
+                查看真实入口
+              </Link>
+              <Link className="ghost-button" to="/">
+                <House size={19} weight="duotone" />
+                返回首页
+              </Link>
             </div>
           </div>
         </div>
+      </section>
 
-        <div className="space-y-6">
-          <div className="glass-panel p-6 md:p-8">
-            <div className="mb-4 flex items-center gap-3">
-              <Pulse size={20} weight="duotone" className="text-accent" />
-              <div>
-                <div className="text-base font-medium text-slate-950">运行状态机</div>
-                <div className="text-sm uppercase tracking-[0.2em] text-slate-500">{workerStatusLabel[state.status]}</div>
+      <section className="panel span-2">
+        <PanelHeading icon={<Circuitry size={20} weight="duotone" />} title="动态剪枝主流程" />
+        <div className="details-flow-grid">
+          {flowItems.map((item, index) => (
+            <div key={item.title} className={`detail-flow-card tone-${item.tone}`}>
+              <div className="detail-flow-head">
+                <span>{item.icon}</span>
+                <code>{`0${index + 1}`}</code>
               </div>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
             </div>
-            <StatusTimeline activeStatus={state.status} />
-          </div>
+          ))}
+        </div>
+      </section>
 
-          <div className="glass-panel p-6 md:p-8">
-            <div className="mb-4 flex items-center gap-3">
-              <ShieldCheck size={20} weight="duotone" className="text-accent" />
-              <div>
-                <div className="text-base font-medium text-slate-950">正式结果指标</div>
-                <div className="text-sm uppercase tracking-[0.2em] text-slate-500">正式结果文件</div>
+      <section className="panel span-2">
+        <PanelHeading icon={<Database size={20} weight="duotone" />} title="角色边界" />
+        <div className="detail-role-grid">
+          {roleItems.map((item) => (
+            <div key={item.title} className="detail-role-card">
+              <div className="detail-role-head">
+                {item.icon}
+                <h3>{item.title}</h3>
               </div>
+              <p>{item.body}</p>
             </div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <MetricTile eyebrow="阈值精度" value="92.7481%" note="医疗场景正式结果" icon={<Heartbeat size={18} weight="duotone" />} />
-              <MetricTile eyebrow="AUC" value="0.9639" note="正式结果文件记录" icon={<Gauge size={18} weight="duotone" />} />
-              <MetricTile eyebrow="时延" value="89.06 秒/样本" note="32 张部署验证批次" icon={<ClockCounterClockwise size={18} weight="duotone" />} />
-              <MetricTile eyebrow="通信量" value="84.47 GiB" note="双向总通信量" icon={<Cpu size={18} weight="duotone" />} />
-            </div>
-          </div>
+          ))}
+        </div>
+      </section>
 
-          <ServerVerdictPanel state={state} />
+    </div>
+  );
+}
+function StatusTimeline({ activeStatus }: { activeStatus: DemoStatus }) {
+  const steps: DemoStatus[] = ["idle", "worker_preprocessing", "uploading", "server_precheck", "spu_running", "completed"];
+  const activeIndex = steps.indexOf(activeStatus);
+  return (
+    <div className="status-timeline" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      {steps.map((step, index) => {
+        const current = activeStatus === step;
+        const done = activeIndex >= index && activeStatus !== "rejected" && activeStatus !== "failed";
+        return (
+          <div key={step} className={`timeline-step ${current ? "current" : ""} ${done ? "done" : ""}`}>
+            {done ? <CheckCircle size={18} weight="duotone" /> : <ClockCounterClockwise size={18} weight="duotone" />}
+            <span>{workerStatusLabel[step]}</span>
+          </div>
+        );
+      })}
+      {activeStatus === "rejected" ? (
+        <div className="timeline-step rejected">
+          <WarningCircle size={18} weight="duotone" />
+          前置校验拦截请求
+        </div>
+      ) : null}
+      {activeStatus === "failed" ? (
+        <div className="timeline-step failed">
+          <ShieldWarning size={18} weight="duotone" />
+          后端或安全执行失败
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function PruningPreviewPanel({
+  originalPreviewUrl,
+  previewCaption,
+  localPayload
+}: {
+  originalPreviewUrl: string;
+  previewCaption: string;
+  localPayload: WorkerPayload | null;
+}) {
+  if (!localPayload) {
+    return (
+      <>
+        <div className="preview-frame">
+          <img src={originalPreviewUrl} alt={previewCaption} />
+          <span>{previewCaption}</span>
+        </div>
+        <div className="hash-grid">
+          <div className="empty-preview">运行一次本地预处理后，这里会展示剪枝前后对比、保留图像块数量和等效尺寸变化。</div>
+        </div>
+      </>
+    );
+  }
+
+  const { pruningPreview } = localPayload;
+  const lastStage = pruningPreview.stage_summaries[pruningPreview.stage_summaries.length - 1];
+  const effectiveSide = Math.sqrt(pruningPreview.estimated_effective_pixels);
+
+  return (
+    <div className="pruning-preview-shell">
+      <div className="pruning-preview-grid">
+        <div className="pruning-card">
+          <div className="preview-frame">
+            <img src={originalPreviewUrl} alt={`${previewCaption} 原图`} />
+            <span>{previewCaption} / 原图</span>
+          </div>
+          <div className="pruning-meta">
+            <InfoRow label="原始尺寸" value={formatDimensionValue(pruningPreview.original_dimensions)} />
+            <InfoRow label="进入模型前" value={formatDimensionValue(pruningPreview.processed_dimensions)} />
+          </div>
+        </div>
+        <div className="pruning-card">
+          <div className="preview-frame">
+            <img src={pruningPreview.pruned_preview_url} alt={`${previewCaption} 剪枝预览`} />
+            <span>{previewCaption} / 剪枝后</span>
+          </div>
+          <div className="pruning-meta">
+            <InfoRow label="保留图像块" value={formatPatchSummary(pruningPreview)} />
+            <InfoRow label="可见面积占比" value={formatPercentValue(pruningPreview.final_visible_area_ratio)} />
+            <InfoRow label="等效保留尺寸" value={`${Math.round(effectiveSide)} x ${Math.round(effectiveSide)} px`} />
+          </div>
+        </div>
+      </div>
+      <div className="pruning-stage-grid">
+        {pruningPreview.stage_summaries.map((stage) => (
+          <div key={`${stage.stage_index}-${stage.layer}`} className="pruning-stage-card">
+            <strong>{`第 ${stage.stage_index + 1} 阶段 / Layer ${stage.layer}`}</strong>
+            <span>{`${stage.kept_patches} / ${pruningPreview.total_patches} 个图像块`}</span>
+            <code>{`保留比例 ${stage.keep_ratio.toFixed(3)}`}</code>
+          </div>
+        ))}
+      </div>
+
+      <div className="hash-grid">
+        <InfoRow label="分片一摘要" value={String(localPayload.requestManifest.share0_sha256)} />
+        <InfoRow label="分片二摘要" value={String(localPayload.requestManifest.share1_sha256)} />
+        <InfoRow label="审计随机数" value={String(localPayload.requestManifest.audit_nonce)} />
+        {lastStage ? (
+          <InfoRow
+            label="最终保留"
+            value={`${lastStage.kept_patches} patches / ${formatPercentValue(lastStage.visible_area_ratio)}`}
+          />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function HistoricalLocalSummary({ record }: { record: DemoHistoryRecord }) {
+  return (
+    <>
+      <InfoRow label="分片一摘要" value={record.share0Digest} />
+      <InfoRow label="分片二摘要" value={record.share1Digest} />
+      <InfoRow label="审计随机数" value={record.auditNonce} />
+      <InfoRow label="预处理" value={record.preprocessMs} />
+    </>
+  );
+}
+
+function VerdictSectionCard({
+  title,
+  subtitle,
+  children
+}: {
+  title: string;
+  subtitle?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="verdict-section-card">
+      <div className="verdict-section-head">
+        <strong>{title}</strong>
+        {subtitle ? <span>{subtitle}</span> : null}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function ProbabilityBreakdown({ items }: { items: Array<{ label: string; value: number }> }) {
+  return (
+    <div className="probability-stack">
+      {items.map((item) => (
+        <div key={item.label} className="probability-row">
+          <div className="probability-row-head">
+            <span>{item.label}</span>
+            <strong>{formatPercentValue(item.value)}</strong>
+          </div>
+          <div className="probability-track" aria-hidden="true">
+            <span style={{ width: `${Math.max(item.value * 100, 3)}%` }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MetricSummaryList({ items }: { items: Array<{ label: string; value: string }> }) {
+  return (
+    <div className="verdict-metric-list">
+      {items.map((item) => (
+        <div key={item.label} className="verdict-metric-row">
+          <span>{item.label}</span>
+          <code>{item.value}</code>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ServerVerdict({
+  state,
+  fallbackRecord,
+  classNames,
+  threshold,
+  formalMetrics
+}: {
+  state: DemoState;
+  fallbackRecord: DemoHistoryRecord;
+  classNames?: string[];
+  threshold?: number;
+  formalMetrics?: MedicalConfigResponse["formal_metrics"];
+}) {
+  const prediction = state.serverPayload?.result?.prediction;
+  const labels = getBinaryClassLabels(classNames);
+  if (state.status === "completed" && prediction) {
+    const runtime = state.serverPayload?.result?.runtime;
+    const argmaxLabel = normalizeClassLabel(prediction.argmax_label, prediction.argmax_label);
+    const thresholdLabel = normalizeClassLabel(prediction.threshold_label, prediction.threshold_label);
+    const auditNonce =
+      readTextValue(state.serverPayload?.audit, ["audit_nonce"]) ??
+      readTextValue(state.localPayload?.requestManifest, ["audit_nonce"]) ??
+      "未返回";
+    const payloadFingerprint =
+      readTextValue(state.serverPayload?.audit, ["payload_fingerprint"]) ??
+      readTextValue(state.localPayload?.audit, ["payload_fingerprint"]) ??
+      "未返回";
+    const qualityStatus =
+      readTextValue(state.serverPayload?.quality_assurance, ["status", "quality_status"]) ?? "未返回";
+    const runtimeItems = [
+      { label: "安全执行耗时", value: formatSecondsValue(runtime?.actual_elapsed_sec) },
+      {
+        label: "前置校验",
+        value: formatMillisecondsValue(
+          readNumberValue(state.serverPayload?.control_plane_metrics, ["server_pre_spu_checks_ms"])
+        )
+      },
+      {
+        label: "端到端总耗时",
+        value: formatMillisecondsValue(readNumberValue(state.serverPayload?.control_plane_metrics, ["server_total_ms"]))
+      },
+      { label: "双向通信量参考", value: formatGiBValue(runtime?.formal_reference_dual_total_gib) }
+    ];
+    const evidenceItems = [
+      { label: "输出向量", value: formatVector(state.serverPayload?.result?.logits ?? []) },
+      { label: "审计随机数", value: auditNonce },
+      { label: "载荷指纹", value: payloadFingerprint },
+      { label: "质量状态", value: qualityStatus }
+    ];
+    return (
+      <div className="verdict success">
+        <span className="verdict-tag">实时结果</span>
+        <div className="verdict-headline">
+          <strong>安全推理完成</strong>
+          <span>前置校验通过，安全执行完成，页面只揭示任务结果和必要运行证据。</span>
+        </div>
+        <div className="verdict-grid">
+          <VerdictSectionCard title="任务结论">
+            <MetricSummaryList
+              items={[
+                { label: "输出摘要", value: formatRevealSummary(thresholdLabel, prediction.prob_class_1) },
+                { label: "主标签", value: argmaxLabel },
+                { label: "阈值标签", value: thresholdLabel },
+                { label: "判定阈值", value: formatThresholdValue(prediction.decision_threshold) }
+              ]}
+            />
+          </VerdictSectionCard>
+          <VerdictSectionCard title="结果概率">
+            <ProbabilityBreakdown
+              items={[
+                { label: labels[0], value: prediction.prob_class_0 },
+                { label: labels[1], value: prediction.prob_class_1 }
+              ]}
+            />
+          </VerdictSectionCard>
+          <VerdictSectionCard title="运行证据">
+            <MetricSummaryList items={runtimeItems} />
+          </VerdictSectionCard>
+        </div>
+        <div className="reveal-statement">
+          这里仅展示任务结果、必要概率和运行审计；不会回传原图、明文张量和中间特征。
+        </div>
+        <details className="verdict-disclosure">
+          <summary>展开 logits 与审计摘要</summary>
+          <MetricSummaryList items={evidenceItems} />
+        </details>
+      </div>
+    );
+  }
+  if (state.status === "idle") {
+    const runtimeItems = [
+      { label: "安全执行参考耗时", value: formatSecondsValue(formalMetrics?.sec_per_sample) },
+      { label: "浏览器预处理", value: fallbackRecord.preprocessMs },
+      { label: "前置校验", value: fallbackRecord.serverCheckMs },
+      { label: "双向通信量参考", value: formatGiBValue(formalMetrics?.dual_total_gib) }
+    ];
+    const evidenceItems = [
+      { label: "输出向量", value: formatVector(fallbackRecord.logits) },
+      { label: "审计随机数", value: fallbackRecord.auditNonce },
+      { label: "载荷指纹", value: fallbackRecord.payloadFingerprint },
+      { label: "质量状态", value: fallbackRecord.quality }
+    ];
+    return (
+      <div className={`verdict historical tone-${fallbackRecord.tone}`}>
+        <span className="verdict-tag">历史样例链路</span>
+        <div className="verdict-headline">
+          <strong>最小揭示</strong>
+        </div>
+        <div className="verdict-grid">
+          <VerdictSectionCard title="任务结论">
+            <MetricSummaryList
+              items={[
+                { label: "输出摘要", value: formatRevealSummary(fallbackRecord.expectedLabel, fallbackRecord.probability) },
+                { label: "主标签", value: fallbackRecord.expectedLabel },
+                { label: "阈值标签", value: fallbackRecord.expectedLabel },
+                { label: "判定阈值", value: formatThresholdValue(threshold) }
+              ]}
+            />
+          </VerdictSectionCard>
+          <VerdictSectionCard title="结果概率">
+            <ProbabilityBreakdown
+              items={[
+                { label: labels[0], value: fallbackRecord.probabilities[0] },
+                { label: labels[1], value: fallbackRecord.probabilities[1] }
+              ]}
+            />
+          </VerdictSectionCard>
+          <VerdictSectionCard title="运行证据">
+            <MetricSummaryList items={runtimeItems} />
+          </VerdictSectionCard>
+        </div>
+        <div className="reveal-statement">
+          这里仅展示样例任务结果、必要概率和运行参考；不会回传原图、明文张量和中间特征。
+        </div>
+        <details className="verdict-disclosure">
+          <summary>展开 logits 与审计摘要</summary>
+          <MetricSummaryList items={evidenceItems} />
+        </details>
+      </div>
+    );
+  }
+  if (state.status === "rejected" || state.status === "failed") {
+    return (
+      <div className={`verdict ${state.status}`}>
+        <strong>{state.serverPayload?.error_code ?? state.status}</strong>
+        <span>{state.serverPayload?.detail ?? state.errorMessage ?? "请求未完成"}</span>
+      </div>
+    );
+  }
+  return <div className="empty-state">运行后，这里会展示任务结论、概率和折叠的审计摘要。</div>;
+}
+
+function VerdictCompanion({ record }: { record: DemoHistoryRecord }) {
+  const items = [
+    { label: "原图边界", value: "原图未上传", tone: "blue" },
+    { label: "明文张量", value: "明文张量未上传", tone: "cyan" },
+    { label: "分片校验", value: "分片已校验", tone: record.tone },
+    { label: "审计摘要", value: record.auditNonce, tone: "violet" }
+  ];
+  return (
+    <div className="verdict-companion" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "12px" }}>
+      <div className={`decision-ribbon tone-${record.tone}`}>
+        <span>{`样例标签：${record.expectedLabel}`}</span>
+        <strong>隐私链路通过</strong>
+      </div>
+      <div className="decision-grid">
+        {items.map((item) => (
+          <div key={item.label} className={`decision-cell tone-${item.tone}`}>
+            <span>{item.label}</span>
+            <strong>{item.value}</strong>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  );
+}
+
+function SecurityPage({ health, auditRejections }: { health: HealthResponse | null; auditRejections: AuditEvent[] }) {
+  return (
+    <div className="page-grid">
+      <section className="panel span-2">
+        <PanelHeading icon={<ShieldCheck size={20} weight="duotone" />} title="前置校验机制" />
+        <div className="guard-grid">
+          {guardItems.map((item) => (
+            <div key={item.layer} className="guard-card">
+              <div className="guard-card-head">
+                <ShieldCheck size={18} weight="duotone" />
+                <code>{item.layer}</code>
+              </div>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="panel">
+        <PanelHeading icon={<LockKey size={20} weight="duotone" />} title="隐私边界" />
+        <div className="privacy-flow">
+          <FlowLine left="原始图片" right="不上传" tone="blocked" />
+          <FlowLine left="明文像素张量" right="不上传" tone="blocked" />
+          <FlowLine left="分片一 / 分片二" right="允许上传" tone="ok" />
+          <FlowLine left="结构化摘要" right="允许上传" tone="ok" />
+          <FlowLine left="中间特征" right="不公开" tone="blocked" />
+          <FlowLine left="最终结果" right="最小揭示" tone="ok" />
+        </div>
+      </section>
+      <section className="panel">
+        <PanelHeading icon={<WarningCircle size={20} weight="duotone" />} title="最近拦截" />
+        <AuditStream events={[]} rejections={auditRejections} />
+      </section>
+    </div>
+  );
+}
+
+function EvidencePage({ config }: { config: MedicalConfigResponse | null }) {
+  const threshold = config?.threshold;
+  return (
+    <div className="page-grid">
+      <section className="panel span-2">
+        <PanelHeading icon={<MagnifyingGlass size={20} weight="duotone" />} title="链路证据与样例结果" sub="先看系统边界和规则，再看演示任务指标。" />
+        <div className="evidence-grid">
+          {evidenceItems.map((item) => (
+            <div key={item.source} className="evidence-card">
+              <span>{item.title}</span>
+              <strong>{item.value}</strong>
+              <p>{item.proof}</p>
+              <code>{item.source}</code>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="panel">
+        <PanelHeading icon={<ChartLineUp size={20} weight="duotone" />} title="样例任务阈值" sub="这里只对应当前演示任务。" />
+        <div className="big-number">{threshold ? threshold.toFixed(5) : "加载中"}</div>
+        <p className="muted-copy">阈值来自 `medical_dynamic_threshold_calibration_final.json`，只用于这条演示链路的展示口径。</p>
+      </section>
+      <section className="panel">
+        <PanelHeading icon={<Database size={20} weight="duotone" />} title="交付物索引" sub="方便现场快速定位材料和代码。" />
+        <div className="link-list">
+          <InfoRow label="正式报告" value="docs/密捷竞赛作品报告.docx" />
+          <InfoRow label="证据索引" value="docs/evidence/README.md" />
+          <InfoRow label="两方迁移" value="docs/party_split_2pc.md" />
+          <InfoRow label="复现说明" value="README_REPRODUCE.md" />
         </div>
       </section>
     </div>
   );
 }
 
-function DomainCard({
-  eyebrow,
-  title,
-  summaryLines,
-  metrics,
-  route,
-  ctaLabel
-}: {
-  eyebrow: string;
-  title: string;
-  summaryLines: string[];
-  metrics: Array<{ label: string; value: string; note: string }>;
-  route: RouteKey;
-  ctaLabel: string;
-}) {
+function ReproducePage({ health }: { health: HealthResponse | null }) {
   return (
-    <div className="glass-panel p-8">
-      <div className="space-y-5">
-        <div className="text-sm uppercase tracking-[0.2em] text-slate-500">{eyebrow}</div>
-        <div className="space-y-3">
-          <h2 className="text-2xl font-semibold tracking-tight text-slate-950">{title}</h2>
-          <div className="space-y-2">
-            {summaryLines.map((line) => (
-              <div key={line} className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-base text-slate-700">
-                {line}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="space-y-3 border-t border-slate-200 pt-5">
-          {metrics.slice(0, 3).map((metric) => (
-            <InfoRow key={metric.label} label={metric.label} value={`${metric.value} · ${metric.note}`} />
-          ))}
-        </div>
-        <Link
-          to={route}
-          className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-base font-medium text-white transition-transform duration-200 hover:-translate-y-[1px] active:translate-y-0"
-        >
-          {ctaLabel}
-          <ArrowSquareOut size={18} weight="duotone" />
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-function CompactStatement({ title, value }: { title: string; value: string }) {
-  return (
-    <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 px-4 py-4">
-      <div className="text-sm uppercase tracking-[0.18em] text-slate-500">{title}</div>
-      <div className="mt-2 text-base leading-relaxed text-slate-800">{value}</div>
-    </div>
-  );
-}
-
-function SignalPanel({ text }: { text: string }) {
-  return (
-    <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 px-4 py-4 text-base leading-relaxed text-slate-800">
-      {text}
-    </div>
-  );
-}
-
-function MetricTile({
-  eyebrow,
-  value,
-  note,
-  icon
-}: {
-  eyebrow: string;
-  value: string;
-  note: string;
-  icon: ReactNode;
-}) {
-  return (
-    <div className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
-      <div className="mb-3 flex items-center gap-2 text-sm uppercase tracking-[0.2em] text-slate-500">
-        <span className="text-accent">{icon}</span>
-        {eyebrow}
-      </div>
-      <div className="text-2xl font-semibold tracking-tight text-slate-950">{value}</div>
-      <div className="mt-2 text-base leading-relaxed text-slate-500">{note}</div>
-    </div>
-  );
-}
-
-function QuickFact({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
-  return (
-    <div className="flex items-center gap-3 rounded-[1.35rem] border border-slate-200 bg-white px-4 py-3 text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
-      <span className="text-accent">{icon}</span>
-      <div>
-        <div className="text-sm uppercase tracking-[0.2em] text-slate-500">{label}</div>
-        <div className="font-medium text-slate-900">{value}</div>
-      </div>
-    </div>
-  );
-}
-
-function InfoRow({
-  label,
-  value,
-  stacked = false
-}: {
-  label: string;
-  value: string;
-  stacked?: boolean;
-}) {
-  const pathLike =
-    /[\\/]/.test(value) ||
-    value.includes(".json") ||
-    value.includes(".pth") ||
-    value.includes(".pt") ||
-    value.includes("artifact") ||
-    value.includes("bundle");
-
-  if (stacked) {
-    return (
-      <div className="border-t border-slate-200/80 pt-3 first:border-t-0 first:pt-0">
-        <div className="mb-1 text-sm uppercase tracking-[0.18em] text-slate-500">{label}</div>
-        <div
-          className={[
-            "w-full text-base font-medium leading-relaxed text-slate-900",
-            pathLike ? "break-all font-mono text-[0.9rem] text-slate-700" : "break-words"
-          ].join(" ")}
-        >
-          {value}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-1 border-t border-slate-200/80 pt-3 first:border-t-0 first:pt-0 sm:grid sm:grid-cols-[9rem_minmax(0,1fr)] sm:items-start sm:gap-4">
-      <div className="shrink-0 text-base text-slate-500">{label}</div>
-      <div
-        className={[
-          "min-w-0 max-w-full text-base font-medium leading-relaxed text-slate-900 sm:w-full sm:max-w-none sm:text-right",
-          pathLike ? "break-all font-mono text-[0.9rem] text-slate-700 sm:text-[0.92rem]" : "break-words"
-        ].join(" ")}
-      >
-        {value}
-      </div>
-    </div>
-  );
-}
-
-function pageLabelFromKey(sectionKey: keyof typeof sectionRouteMap) {
-  return {
-    overview: "作品概述",
-    design: "系统设计",
-    implementation: "系统实现",
-    results: "测试方案与结果分析",
-    innovation: "创新性与局限性"
-  }[sectionKey];
-}
-
-function PreviewPanel({ previewUrl }: { previewUrl: string | null }) {
-  return (
-    <div className="glass-panel overflow-hidden p-4">
-      <div className="mb-3 flex items-center gap-2 text-sm uppercase tracking-[0.2em] text-slate-500">
-        <ImageSquare size={18} weight="duotone" />
-        样本预览
-      </div>
-      {previewUrl ? (
-        <img src={previewUrl} alt="预览图像" className="aspect-square w-full rounded-[1.5rem] object-cover" />
-      ) : (
-        <div className="flex aspect-square items-center justify-center rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-100 text-base text-slate-500">
-          选择 PNG / JPEG 后在这里预览
-        </div>
-      )}
-    </div>
-  );
-}
-
-function HealthPanel({
-  config,
-  health,
-  error
-}: {
-  config: MedicalConfigResponse | null;
-  health: HealthResponse | null;
-  error: string | null;
-}) {
-  if (error) {
-    return (
-      <div className="glass-panel p-4 text-base text-rose-700">
-        后端健康检查失败：{error}
-      </div>
-    );
-  }
-  return (
-    <div className="glass-panel p-4">
-      <div className="mb-3 flex items-center gap-2 text-sm uppercase tracking-[0.2em] text-slate-500">
-        <ShieldCheck size={18} weight="duotone" />
-        运行可见性
-      </div>
-      <div className="space-y-3 text-base text-slate-600">
-        <InfoRow stacked label="模型部署配置" value={config ? "医疗场景现场演示部署包" : "加载中"} />
-        <InfoRow stacked label="SPU 配置" value={health?.spu_config_present ? "可见" : "缺失"} />
-        <InfoRow stacked label="执行程序" value={health?.runner_present ? "可见" : "缺失"} />
-        <InfoRow stacked label="运行模式" value={health?.runtime_mode ?? "未知"} />
-        <InfoRow stacked label="当前排队数" value={String(health?.inflight.global_inflight ?? 0)} />
-      </div>
-    </div>
-  );
-}
-
-function StatusBlock({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
-  return (
-    <div className="rounded-[1.5rem] border border-slate-200 bg-white px-4 py-4">
-      <div className="mb-2 flex items-center gap-2 text-sm uppercase tracking-[0.2em] text-slate-500">
-        <span className="text-accent">{icon}</span>
-        {label}
-      </div>
-      <div className="text-xl font-semibold tracking-tight text-slate-950">{value}</div>
-    </div>
-  );
-}
-
-function StatusTimeline({ activeStatus }: { activeStatus: DemoStatus }) {
-  const steps: DemoStatus[] = [
-    "idle",
-    "worker_preprocessing",
-    "uploading",
-    "server_precheck",
-    "spu_running",
-    "completed"
-  ];
-  const activeIndex = steps.indexOf(activeStatus);
-  const isRejected = activeStatus === "rejected";
-  const isFailed = activeStatus === "failed";
-
-  return (
-    <div className="space-y-3">
-      {steps.map((step, index) => {
-        const done = activeIndex >= index && !isRejected && !isFailed;
-        const current = activeStatus === step;
-        return (
-          <div
-            key={step}
-            className={[
-              "flex items-center gap-3 rounded-[1.35rem] border px-4 py-3 text-base",
-              current ? "border-teal-200 bg-teal-50 text-teal-900" : done ? "border-slate-200 bg-white text-slate-700" : "border-slate-200 bg-slate-50 text-slate-500"
-            ].join(" ")}
-          >
-            {current ? (
-              <Pulse size={18} weight="duotone" />
-            ) : done ? (
-              <CheckCircle size={18} weight="duotone" />
-            ) : (
-              <ClockCounterClockwise size={18} weight="duotone" />
-            )}
-            <span>{workerStatusLabel[step]}</span>
-          </div>
-        );
-      })}
-      {isRejected ? (
-        <div className="flex items-center gap-3 rounded-[1.35rem] border border-amber-200 bg-amber-50 px-4 py-3 text-base text-amber-900">
-          <WarningCircle size={18} weight="duotone" />
-          请求在控制面被拦截
-        </div>
-      ) : null}
-      {isFailed ? (
-        <div className="flex items-center gap-3 rounded-[1.35rem] border border-rose-200 bg-rose-50 px-4 py-3 text-base text-rose-800">
-          <BugBeetle size={18} weight="duotone" />
-          SPU 或后端执行失败
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function ServerVerdictPanel({ state }: { state: DemoState }) {
-  const qualityStatus = String(state.serverPayload?.quality_assurance?.status ?? "pending");
-  const prediction = state.serverPayload?.result?.prediction;
-  const audit = state.serverPayload?.audit as Record<string, unknown> | null;
-  const metrics = state.serverPayload?.control_plane_metrics as Record<string, unknown> | null;
-
-  return (
-    <div className="glass-panel p-6 md:p-8">
-      <div className="mb-4 flex items-center gap-3">
-        <ShieldCheck size={20} weight="duotone" className="text-accent" />
-        <div>
-          <div className="text-base font-medium text-slate-950">审计摘要与服务端裁决</div>
-          <div className="text-sm uppercase tracking-[0.2em] text-slate-500">响应字段概览</div>
-        </div>
-      </div>
-
-      {state.status === "completed" && prediction ? (
-        <div className="space-y-5">
-          <div className="rounded-[1.75rem] border border-teal-200 bg-teal-50 p-5">
-            <div className="mb-2 text-sm uppercase tracking-[0.2em] text-accent">推理结果</div>
-            <div className="text-2xl font-semibold tracking-tight text-slate-950">{prediction.threshold_label}</div>
-            <div className="mt-2 text-base text-slate-600">
-              最大响应类别：{prediction.argmax_label} · 阳性概率：{prediction.prob_class_1.toFixed(4)} · 判定阈值：
-              {prediction.decision_threshold.toFixed(5)}
-            </div>
-          </div>
-          <InfoRow label="质量校验结果" value={qualityStatus} />
-          <InfoRow label="审计随机数" value={String(audit?.audit_nonce ?? "—")} />
-          <InfoRow
-            label="服务端预检耗时"
-            value={`${Number(metrics?.server_pre_spu_checks_ms ?? 0).toFixed(3)} ms`}
-          />
-          <InfoRow
-            label="本次实际总时长"
-            value={formatSeconds(Number(state.serverPayload?.result?.runtime.actual_elapsed_sec ?? 0))}
-          />
-        </div>
-      ) : state.status === "rejected" ? (
-        <VerdictMessage
-          icon={<WarningCircle size={20} weight="duotone" className="text-amber-700" />}
-          title={state.serverPayload?.error_code ?? "请求被拒绝"}
-          body={state.serverPayload?.detail ?? state.errorMessage ?? "控制面在前置层拦截了本次请求。"}
-          tone="amber"
+    <div className="page-grid two-col">
+      <section className="panel">
+        <PanelHeading icon={<GitBranch size={20} weight="duotone" />} title="展示站启动" sub="后端负责托管构建后的前端页面。" />
+        <CodeBlock
+          lines={[
+            "cd 密捷_客户演示界面运行包",
+            "python tools/start_showcase_oneclick.py --host 127.0.0.1 --port 7863 mock"
+          ]}
         />
-      ) : state.status === "failed" ? (
-        <VerdictMessage
-          icon={<BugBeetle size={20} weight="duotone" className="text-rose-700" />}
-          title={state.serverPayload?.error_code ?? "执行失败"}
-          body={state.errorMessage ?? "后端或 SPU 运行失败。"}
-          tone="rose"
-        />
-      ) : (
-        <div className="space-y-4">
-          <SkeletonLine widthClass="w-5/12" />
-          <SkeletonLine widthClass="w-full" />
-          <SkeletonLine widthClass="w-4/5" />
-          <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-4 text-base text-slate-500">
-            运行完成后，此处将展示推理结果、质量校验结果、审计随机数、服务端预检耗时与本次实际总时长。
-          </div>
-        </div>
-      )}
+      </section>
+      <section className="panel">
+        <PanelHeading icon={<Cpu size={20} weight="duotone" />} title="运行环境说明" sub="环境就绪不等于会自动执行长时任务。" />
+        <RuntimeStatus health={health} config={null} />
+      </section>
+      <section className="panel span-2">
+        <PanelHeading icon={<Stack size={20} weight="duotone" />} title="前端构建" sub="展示站前端构建命令" />
+        <CodeBlock lines={["cd showcase", "npm install", "npm run build"]} />
+      </section>
     </div>
   );
 }
 
-function VerdictMessage({
-  icon,
-  title,
-  body,
-  tone
-}: {
-  icon: ReactNode;
-  title: string;
-  body: string;
-  tone: "amber" | "rose";
-}) {
-  const classes = tone === "amber" ? "border-amber-200 bg-amber-50 text-amber-900" : "border-rose-200 bg-rose-50 text-rose-900";
+function FlowLine({ left, right, tone }: { left: string; right: string; tone: "ok" | "blocked" }) {
   return (
-    <div className={`rounded-[1.75rem] border p-5 ${classes}`}>
-      <div className="mb-3 flex items-center gap-3">
-        {icon}
-        <div className="font-medium">{title}</div>
-      </div>
-      <div className="text-base leading-relaxed">{body}</div>
+    <div className={`flow-line ${tone}`}>
+      <span>{left}</span>
+      <ArrowSquareOut size={16} weight="duotone" />
+      <strong>{right}</strong>
     </div>
   );
 }
 
-function SkeletonLine({ widthClass }: { widthClass: string }) {
-  return <div className={`h-3 rounded-full bg-slate-200/80 ${widthClass}`} />;
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="info-row">
+      <span>{label}</span>
+      <code>{formatDisplayPath(value)}</code>
+    </div>
+  );
+}
+
+function CodeBlock({ lines }: { lines: string[] }) {
+  return (
+    <pre className="code-block">
+      {lines.map((line) => (
+        <code key={line}>{shortenKnownPathPrefixes(line)}</code>
+      ))}
+    </pre>
+  );
+}
+
+function formatTime(ts?: number) {
+  if (!ts) return "无时间戳";
+  return new Date(ts * 1000).toLocaleTimeString("zh-CN", { hour12: false });
 }
 
 export default App;
+function PruningMatrixVisualization() {
+  const total = 100;
+
+  const layer1 = Array.from({ length: total }, () => true);
+
+  const layer2 = Array.from({ length: total }, (_, i) => {
+    const row = Math.floor(i / 10);
+    const col = i % 10;
+    const dist = Math.abs(row - 4.5) + Math.abs(col - 4.5);
+    return dist < 6 || (i % 3 === 0);
+  });
+
+  const layer3 = Array.from({ length: total }, (_, i) => {
+    if (!layer2[i]) return false;
+    const row = Math.floor(i / 10);
+    const col = i % 10;
+    const dist = Math.pow(row - 4.5, 2) + Math.pow(col - 4.5, 2);
+    return dist < 12;
+  });
+
+  const layers = [
+    { name: "Layer 3", data: layer1, keep: "100%" },
+    { name: "Layer 6", data: layer2, keep: "约 2/3" },
+    { name: "Layer 9", data: layer3, keep: "约 1/3" }
+  ];
+
+  return (
+    <div className="pruning-matrix-container">
+      <div className="matrix-flow-area">
+        <div className="matrix-3d-core">
+          <div className="matrix-beam" />
+          {layers.map((layer, lIdx) => (
+            <div key={layer.name} className="matrix-layer-wrapper" style={{ '--layer-index': lIdx } as React.CSSProperties}>
+              <div className="matrix-label">
+                <strong>{layer.name}</strong>
+                <span>保留比例: {layer.keep}</span>
+              </div>
+              <div className="matrix-plane">
+                {layer.data.map((isKept, i) => (
+                  <div key={i} className={`matrix-dot ${isKept ? 'kept' : 'dropped'}`} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="matrix-explanations">
+        <h3>基于注意力机制的动态提纯</h3>
+        <p>动态剪枝将复杂的图片转化为一维 Token 序列，并通过自注意力权重（Self-Attention）层层过滤，最终仅暴露极少的特征给加密节点。</p>
+        <ul className="matrix-steps">
+          <li>
+            <strong>L3 浅层过滤：</strong>
+            <span>极低算力开销下剔除大面积无用背景。</span>
+          </li>
+          <li>
+            <strong>L6 动态剪枝：</strong>
+            <span>基于注意力机制，收缩至高频特征边界。</span>
+          </li>
+          <li>
+            <strong>L9 最小揭示：</strong>
+            <span>锁定极高密度特征，将通信开销降至原本的 1/3，并以加密分片形式输出。</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}

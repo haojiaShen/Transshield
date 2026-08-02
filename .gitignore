@@ -56,6 +56,8 @@ artifacts/web_demo_uploads/
 artifacts/web_demo_audit/
 artifacts/showcase_audit/
 artifacts/showcase_runs/
+artifacts/showcase_admin/
+artifacts/showcase_server_logs/
 artifacts/bazel_distdir_cache/
 
 # ==================== 旧的结果数据 ====================
@@ -94,6 +96,7 @@ secrets.yaml
 dist/
 build/
 node_modules/
+showcase_admin/node_modules
 *.tsbuildinfo
 *.egg-info/
 

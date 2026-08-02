@@ -7,16 +7,27 @@ type WorkerConfig = {
   mean: number[];
   std: number[];
   clip_abs: number;
-  crop_pct: number;
-  resize_shorter_side: number;
   allowed_mime_types: string[];
   max_file_size_bytes: number;
   max_image_dimension: number;
+  pruning?: {
+    patch_size: number;
+    stage_layers: number[];
+    stage_keep_ratios: number[];
+    total_patches: number;
+  };
+};
+
+type SampleCropPreset = {
+  leftRatio: number;
+  topRatio: number;
+  sizeRatio: number;
 };
 
 type WorkerInput = {
   file: File;
   config: WorkerConfig;
+  sampleCrop?: SampleCropPreset;
 };
 
 type QualitySummary = {
@@ -27,6 +38,29 @@ type QualitySummary = {
   effective_luma_ratio: number;
   dynamic_range_p95_p05: number;
   laplacian_variance: number;
+};
+
+type PruningStageSummary = {
+  stage_index: number;
+  layer: number;
+  keep_ratio: number;
+  kept_patches: number;
+  dropped_patches: number;
+  visible_area_ratio: number;
+};
+
+type PruningPreview = {
+  original_dimensions: { width: number; height: number };
+  processed_dimensions: { width: number; height: number };
+  patch_size: number;
+  grid_size: number;
+  total_patches: number;
+  estimated_effective_pixels: number;
+  stage_summaries: PruningStageSummary[];
+  final_kept_patches: number;
+  final_visible_area_ratio: number;
+  processed_preview_url: string;
+  pruned_preview_url: string;
 };
 
 function postProgress(status: "worker_preprocessing") {
@@ -86,6 +120,10 @@ function sniffJpegDimensions(bytes: Uint8Array) {
 
 function sniffFile(bytes: Uint8Array) {
   return sniffPngDimensions(bytes) ?? sniffJpegDimensions(bytes);
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
 }
 
 function percentile(values: Float32Array, q: number) {
@@ -166,12 +204,105 @@ function randomShareValue() {
   return (buffer[0] / 0xffffffff - 0.5) * 1.0;
 }
 
-function roundHalfToEven(value: number) {
-  const lower = Math.floor(value);
-  const fraction = value - lower;
-  if (fraction < 0.5) return lower;
-  if (fraction > 0.5) return lower + 1;
-  return lower % 2 === 0 ? lower : lower + 1;
+function computePatchScores(
+  rgb: Float32Array,
+  inputSize: number,
+  patchSize: number
+) {
+  const patchesPerSide = Math.floor(inputSize / patchSize);
+  const pixelCount = inputSize * inputSize;
+  const luma = new Float32Array(pixelCount);
+  for (let index = 0; index < pixelCount; index += 1) {
+    const red = rgb[index];
+    const green = rgb[pixelCount + index];
+    const blue = rgb[pixelCount * 2 + index];
+    luma[index] = 0.299 * red + 0.587 * green + 0.114 * blue;
+  }
+
+  const scores = new Float32Array(patchesPerSide * patchesPerSide);
+  for (let patchY = 0; patchY < patchesPerSide; patchY += 1) {
+    for (let patchX = 0; patchX < patchesPerSide; patchX += 1) {
+      let energy = 0;
+      let count = 0;
+      const yStart = patchY * patchSize;
+      const xStart = patchX * patchSize;
+      for (let y = yStart; y < yStart + patchSize; y += 1) {
+        for (let x = xStart; x < xStart + patchSize; x += 1) {
+          const center = y * inputSize + x;
+          const value = luma[center];
+          energy += value;
+          if (x + 1 < inputSize) {
+            energy += Math.abs(value - luma[center + 1]) * 1.4;
+          }
+          if (y + 1 < inputSize) {
+            energy += Math.abs(value - luma[center + inputSize]) * 1.4;
+          }
+          count += 1;
+        }
+      }
+      scores[patchY * patchesPerSide + patchX] = energy / Math.max(count, 1);
+    }
+  }
+  return { scores, patchesPerSide };
+}
+
+function buildKeepMask(
+  scores: Float32Array,
+  keepCount: number
+) {
+  const total = scores.length;
+  const boundedKeepCount = Math.max(1, Math.min(keepCount, total));
+  const ranked = Array.from(scores, (score, index) => ({ score, index })).sort(
+    (left, right) => right.score - left.score || left.index - right.index
+  );
+  const mask = new Array<boolean>(total).fill(false);
+  for (let index = 0; index < boundedKeepCount; index += 1) {
+    mask[ranked[index].index] = true;
+  }
+  return mask;
+}
+
+async function buildPreviewUrlFromImageData(imageData: ImageData, mime: string) {
+  const canvas = new OffscreenCanvas(imageData.width, imageData.height);
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("无法创建预览画布");
+  context.putImageData(imageData, 0, 0);
+  const blob = await canvas.convertToBlob({ type: mime });
+  return URL.createObjectURL(blob);
+}
+
+function buildPrunedImageData(
+  source: ImageData,
+  keepMask: boolean[],
+  patchSize: number,
+  patchesPerSide: number
+) {
+  const pruned = new ImageData(
+    new Uint8ClampedArray(source.data),
+    source.width,
+    source.height
+  );
+  for (let patchY = 0; patchY < patchesPerSide; patchY += 1) {
+    for (let patchX = 0; patchX < patchesPerSide; patchX += 1) {
+      const keep = keepMask[patchY * patchesPerSide + patchX];
+      for (let y = patchY * patchSize; y < (patchY + 1) * patchSize; y += 1) {
+        for (let x = patchX * patchSize; x < (patchX + 1) * patchSize; x += 1) {
+          const offset = (y * source.width + x) * 4;
+          if (!keep) {
+            pruned.data[offset] = Math.round(pruned.data[offset] * 0.08);
+            pruned.data[offset + 1] = Math.round(pruned.data[offset + 1] * 0.08);
+            pruned.data[offset + 2] = Math.round(pruned.data[offset + 2] * 0.08);
+          }
+          if (x % patchSize === 0 || y % patchSize === 0) {
+            pruned.data[offset] = keep ? 26 : 148;
+            pruned.data[offset + 1] = keep ? 99 : 163;
+            pruned.data[offset + 2] = keep ? 235 : 184;
+          }
+        }
+      }
+    }
+  }
+  return pruned;
 }
 
 async function runWorker(input: WorkerInput) {
@@ -200,33 +331,28 @@ async function runWorker(input: WorkerInput) {
 
   const bitmap = await createImageBitmap(input.file);
   const decodeMs = performance.now() - decodeStarted;
-  const preprocessStarted = performance.now();
-  const shorterSide = input.config.resize_shorter_side;
-  const resizedWidth = bitmap.width <= bitmap.height
-    ? shorterSide
-    : Math.floor((shorterSide * bitmap.width) / bitmap.height);
-  const resizedHeight = bitmap.width <= bitmap.height
-    ? Math.floor((shorterSide * bitmap.height) / bitmap.width)
-    : shorterSide;
-  const resizedCanvas = new OffscreenCanvas(resizedWidth, resizedHeight);
-  const resizedContext = resizedCanvas.getContext("2d");
-  if (!resizedContext) throw new Error("无法创建缩放画布");
-  resizedContext.imageSmoothingEnabled = true;
-  resizedContext.imageSmoothingQuality = "high";
-  resizedContext.drawImage(bitmap, 0, 0, resizedWidth, resizedHeight);
-
   const canvas = new OffscreenCanvas(input.config.input_size, input.config.input_size);
   const context = canvas.getContext("2d", { willReadFrequently: true });
   if (!context) throw new Error("无法创建离屏画布");
-  // torchvision CenterCrop uses Python round(), including ties-to-even.
-  const sourceX = roundHalfToEven((resizedWidth - input.config.input_size) / 2);
-  const sourceY = roundHalfToEven((resizedHeight - input.config.input_size) / 2);
+
+  const preprocessStarted = performance.now();
+  const defaultCropSize = Math.min(bitmap.width, bitmap.height);
+  const requestedCropSize = input.sampleCrop
+    ? Math.round(Math.min(bitmap.width, bitmap.height) * clamp(input.sampleCrop.sizeRatio, 0.4, 1))
+    : defaultCropSize;
+  const cropSize = clamp(requestedCropSize, 1, Math.min(bitmap.width, bitmap.height));
+  const sourceX = input.sampleCrop
+    ? clamp(Math.round(bitmap.width * input.sampleCrop.leftRatio), 0, bitmap.width - cropSize)
+    : Math.max(0, Math.floor((bitmap.width - cropSize) / 2));
+  const sourceY = input.sampleCrop
+    ? clamp(Math.round(bitmap.height * input.sampleCrop.topRatio), 0, bitmap.height - cropSize)
+    : Math.max(0, Math.floor((bitmap.height - cropSize) / 2));
   context.drawImage(
-    resizedCanvas,
+    bitmap,
     sourceX,
     sourceY,
-    input.config.input_size,
-    input.config.input_size,
+    cropSize,
+    cropSize,
     0,
     0,
     input.config.input_size,
@@ -254,9 +380,7 @@ async function runWorker(input: WorkerInput) {
     const channelOffset = channel * pixelCount;
     for (let index = 0; index < pixelCount; index += 1) {
       const normalizedValue = (rgb[channelOffset + index] - mean) / std;
-      normalized[channelOffset + index] = input.config.clip_abs > 0
-        ? Math.max(-input.config.clip_abs, Math.min(input.config.clip_abs, normalizedValue))
-        : normalizedValue;
+      normalized[channelOffset + index] = Math.max(-input.config.clip_abs, Math.min(input.config.clip_abs, normalizedValue));
     }
   }
 
@@ -265,6 +389,30 @@ async function runWorker(input: WorkerInput) {
   const sourceImageSha256 = await sha256Hex(rawBuffer);
   const normalizedTensorSha256 = await sha256Hex(normalizedBytes);
   const hashMsBase = performance.now() - hashStarted;
+
+  const pruningStarted = performance.now();
+  const patchSize = input.config.pruning?.patch_size ?? 16;
+  const stageLayers = input.config.pruning?.stage_layers ?? [3, 6, 9];
+  const stageKeepRatios = input.config.pruning?.stage_keep_ratios ?? [0.7, 0.49, 0.343];
+  const totalPatches = input.config.pruning?.total_patches ?? (input.config.input_size / patchSize) ** 2;
+  const { scores, patchesPerSide } = computePatchScores(rgb, input.config.input_size, patchSize);
+  const stageSummaries = stageKeepRatios.map((keepRatio, stageIndex) => {
+    const keptPatches = Math.max(1, Math.round(totalPatches * keepRatio));
+    return {
+      stage_index: stageIndex,
+      layer: stageLayers[stageIndex] ?? stageLayers[stageLayers.length - 1] ?? 0,
+      keep_ratio: Number(keepRatio.toFixed(6)),
+      kept_patches: keptPatches,
+      dropped_patches: totalPatches - keptPatches,
+      visible_area_ratio: Number((keptPatches / totalPatches).toFixed(6))
+    };
+  });
+  const finalKeptPatches = stageSummaries[stageSummaries.length - 1]?.kept_patches ?? totalPatches;
+  const finalKeepMask = buildKeepMask(scores, finalKeptPatches);
+  const prunedImageData = buildPrunedImageData(imageData, finalKeepMask, patchSize, patchesPerSide);
+  const processedPreviewUrl = await buildPreviewUrlFromImageData(imageData, sniffed.mime);
+  const prunedPreviewUrl = await buildPreviewUrlFromImageData(prunedImageData, sniffed.mime);
+  const pruningMs = performance.now() - pruningStarted;
 
   const shareStarted = performance.now();
   const share0 = new Float32Array(normalized.length);
@@ -287,12 +435,9 @@ async function runWorker(input: WorkerInput) {
   );
   const auditChainSha256 = await sha256Hex(auditChainPayload);
   const hashMs = hashMsBase + (performance.now() - hashResumeStarted);
-  const totalMs = decodeMs + preprocessMs + dqaMs + hashMs + shareBuildMs;
-  const previewUrl = canvas.convertToBlob({ type: sniffed.mime }).then((blob) => URL.createObjectURL(blob));
+  const totalMs = decodeMs + preprocessMs + dqaMs + hashMs + pruningMs + shareBuildMs;
 
   bitmap.close();
-  resizedCanvas.width = 1;
-  resizedCanvas.height = 1;
   canvas.width = 1;
   canvas.height = 1;
 
@@ -304,13 +449,6 @@ async function runWorker(input: WorkerInput) {
       input_size: input.config.input_size,
       shape: input.config.shape,
       dtype: "float32_le",
-      preprocessing: {
-        resize_shorter_side: input.config.resize_shorter_side,
-        center_crop_size: input.config.input_size,
-        crop_pct: input.config.crop_pct,
-        interpolation: "browser_canvas_high_quality",
-        normalization_clip_abs: input.config.clip_abs
-      },
       source_file_name: input.file.name,
       source_mime: sniffed.mime,
       source_size_bytes: input.file.size,
@@ -330,21 +468,33 @@ async function runWorker(input: WorkerInput) {
       hash_chain_version: "medical_live_demo_v1",
       browser_generated_shares: true,
       server_should_receive_plain_image: false,
-      server_should_receive_plain_pixel_values: false,
-      centralized_demo_reconstructs_normalized_tensor_for_dqa: true,
-      production_target_should_not_co_locate_both_shares: true
+      server_should_receive_plain_pixel_values: false
     },
     controlPlaneMetrics: {
       decode_ms: Number(decodeMs.toFixed(3)),
       preprocess_ms: Number(preprocessMs.toFixed(3)),
       dqa_ms: Number(dqaMs.toFixed(3)),
       hash_ms: Number(hashMs.toFixed(3)),
+      pruning_preview_ms: Number(pruningMs.toFixed(3)),
       share_build_ms: Number(shareBuildMs.toFixed(3)),
       total_ms: Number(totalMs.toFixed(3))
     },
+    pruningPreview: {
+      original_dimensions: { width: sniffed.width, height: sniffed.height },
+      processed_dimensions: { width: input.config.input_size, height: input.config.input_size },
+      patch_size: patchSize,
+      grid_size: patchesPerSide,
+      total_patches: totalPatches,
+      estimated_effective_pixels: finalKeptPatches * patchSize * patchSize,
+      stage_summaries: stageSummaries,
+      final_kept_patches: finalKeptPatches,
+      final_visible_area_ratio: Number((finalKeptPatches / totalPatches).toFixed(6)),
+      processed_preview_url: processedPreviewUrl,
+      pruned_preview_url: prunedPreviewUrl
+    },
     share0: share0Bytes,
     share1: share1Bytes,
-    previewUrl: await previewUrl
+    processedPreviewUrl
   };
 }
 

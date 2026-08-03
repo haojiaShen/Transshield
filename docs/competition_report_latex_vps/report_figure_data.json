@@ -1,0 +1,108 @@
+{
+  "base_rate_scan": {
+    "base_rate": [0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+    "threshold_accuracy": [86.2595, 90.0763, 91.6031, 91.2214, 92.7481, 89.8855],
+    "argmax_accuracy": [74.2366, 74.2366, 74.2366, 74.2366, 74.2366, 89.3130],
+    "auc": [0.9011, 0.9351, 0.9520, 0.9565, 0.9639, 0.9539],
+    "three_stage_keep_rate": [
+      "0.30 / 0.09 / 0.027",
+      "0.40 / 0.16 / 0.064",
+      "0.50 / 0.25 / 0.125",
+      "0.60 / 0.36 / 0.216",
+      "0.70 / 0.49 / 0.343",
+      "0.80 / 0.64 / 0.512"
+    ],
+    "selected_base_rate": 0.7
+  },
+  "baseline_comparison": [
+    {
+      "method": "密捷",
+      "detail": "正式动态主线",
+      "threshold_accuracy": 92.7481,
+      "auc": 0.9639,
+      "highlight": true
+    },
+    {
+      "method": "密捷",
+      "detail": "固定结构静态对照线",
+      "threshold_accuracy": 91.9847,
+      "auc": 0.9679
+    },
+    {
+      "method": "MPCViT [3]",
+      "detail": "同数据集明文基线",
+      "threshold_accuracy": 96.9847,
+      "auc": 0.9927
+    },
+    {
+      "method": "DeiT-S",
+      "detail": "静态模型",
+      "threshold_accuracy": 95.9900,
+      "auc": 0.9899
+    },
+    {
+      "method": "原始 DynamicViT",
+      "detail": "未经安全化边界重写",
+      "threshold_accuracy": 75.3817,
+      "auc": 0.6635
+    }
+  ],
+  "probability_distribution": {
+    "dynamic_prediction_json": "results/final/medical_threshold_calibration_raw/fullval_524_runtime_pruning_depth10_reference.json",
+    "dynamic_image_list": "results/final/medical_threshold_calibration_raw/fullval_524_image_list.txt",
+    "dynamic_default_threshold": 0.5,
+    "dynamic_calibrated_threshold": 0.6619606018066406,
+    "dynamic_threshold_accuracy": 0.927480936050415,
+    "densenet_prediction_csv": "artifacts/train_runs/cnn_plaintext_baseline_final/val_predictions.csv",
+    "densenet_summary_json": "artifacts/train_runs/cnn_plaintext_baseline_final/cnn_baseline_summary.json",
+    "bins": 20
+  },
+  "secure_function_benchmark": [
+    {"name": "ReLU", "local_s": 0.0840, "lan_s": 1.1930, "wan_s": 11.5256, "communication_mib": 133.90},
+    {"name": "Quad", "local_s": 0.0095, "lan_s": 0.0834, "wan_s": 0.8082, "communication_mib": 9.23},
+    {"name": "NewGELU", "local_s": 0.1769, "lan_s": 2.5507, "wan_s": 24.9062, "communication_mib": 290.88},
+    {"name": "Sigmoid", "local_s": 0.1695, "lan_s": 2.0017, "wan_s": 19.1249, "communication_mib": 217.01},
+    {"name": "Tanh", "local_s": 0.1483, "lan_s": 2.3268, "wan_s": 22.8228, "communication_mib": 267.80},
+    {"name": "Softmax", "local_s": 0.6035, "lan_s": 3.5206, "wan_s": 33.1046, "communication_mib": 307.06},
+    {"name": "Softmax-2ReLU", "local_s": 0.1904, "lan_s": 1.2902, "wan_s": 12.6885, "communication_mib": 107.85},
+    {"name": "Softmax-2Quad", "local_s": 0.1333, "lan_s": 0.4247, "wan_s": 4.3028, "communication_mib": 11.92},
+    {"name": "LayerNorm proxy", "local_s": 0.0747, "lan_s": 0.2031, "wan_s": 1.9138, "communication_mib": 3.61}
+  ],
+  "primitive_benchmark": [
+    {"name": "Beaver triple\n(additive)", "local_ms": 0.720, "lan_ms": 1.039, "wan_ms": 1.508, "communication_mib": 0.0},
+    {"name": "Binary triple", "local_ms": 0.656, "lan_ms": 0.962, "wan_ms": 1.445, "communication_mib": 0.0},
+    {"name": "B2A 随机材料", "local_ms": 0.410, "lan_ms": 0.692, "wan_ms": 1.077, "communication_mib": 0.0},
+    {"name": "A2B", "local_ms": 71.800, "lan_ms": 1060.271, "wan_ms": 10285.314, "communication_mib": 240.09},
+    {"name": "B2A (1-bit)", "local_ms": 4.452, "lan_ms": 45.033, "wan_ms": 432.271, "communication_mib": 9.23}
+  ],
+  "guard_matrix": [
+    {"scenario": "协议字段超长", "layer": "协议解析层", "status": "通过", "summary": "报文在解析阶段被拒绝，未进入后续处理流程，无状态变更。"},
+    {"scenario": "非法字段值 / 枚举越界", "layer": "协议解析层", "status": "通过", "summary": "非法值被识别并丢弃，未影响会话上下文与业务处理。"},
+    {"scenario": "分片畸形 / 重组异常", "layer": "报文处理层", "status": "通过（有限时资源代价）", "summary": "分片被拒绝重组，释放相关资源，未触发异常告警风暴。"},
+    {"scenario": "重放报文", "layer": "会话层", "status": "通过", "summary": "重复报文被识别并丢弃，会话保持稳定，无重复执行。"},
+    {"scenario": "时序窗口异常", "layer": "时序校验层", "status": "通过（有限时资源代价）", "summary": "超出窗口的报文被限流处理，轻微资源波动后迅速恢复。"},
+    {"scenario": "协议状态机非法跳转", "layer": "状态机引擎层", "status": "通过", "summary": "非法状态跳转被阻断，状态机保持一致性，未进入异常态。"},
+    {"scenario": "认证流程异常", "layer": "认证鉴权层", "status": "通过", "summary": "认证失败路径被拦截，未授予权限，未建立受信会话。"},
+    {"scenario": "控制帧洪泛", "layer": "流量控制层", "status": "通过（有限时资源代价）", "summary": "触发限流与速率控制，短时资源占用上升后回落至基线。"},
+    {"scenario": "扩展选项异常", "layer": "协议合规层", "status": "通过", "summary": "异常选项被忽略或拒绝，维持协议合规性与兼容性策略。"},
+    {"scenario": "未知协议 / 非预期报文", "layer": "协议识别层", "status": "通过", "summary": "未知协议被隔离处理，未影响正常协议识别与转发。"}
+  ],
+  "ablation": [
+    {"method": "正式动态主线", "detail": "动态深度 10", "threshold_accuracy": 92.7481, "auc": 0.9639, "argmax_accuracy": 74.2366, "highlight": true},
+    {"method": "静态安全基线", "detail": "固定深度 12", "threshold_accuracy": 89.6947, "auc": 0.9539, "argmax_accuracy": 75.9542},
+    {"method": "原始明文参考基线", "detail": "原始 plaintext 参考", "threshold_accuracy": 75.3817, "auc": 0.6635, "argmax_accuracy": 74.8092}
+  ],
+  "capability_matrix": {
+    "columns": ["固定结构安全推理", "明文剪枝 + 密态回放", "单向隐私推理", "本作品"],
+    "rows": [
+      {"capability": "输入数据隐私保护", "values": ["yes", "no", "partial", "yes"]},
+      {"capability": "模型参数隐私保护", "values": ["yes", "yes", "partial", "yes"]},
+      {"capability": "动态剪枝能力保留", "values": ["no", "partial", "no", "yes"]},
+      {"capability": "剪枝决策留在密态域内", "values": ["no", "no", "no", "yes"]},
+      {"capability": "服务端权威快检", "values": ["no", "no", "partial", "yes"]},
+      {"capability": "协议异常输入守卫", "values": ["no", "partial", "partial", "yes"]},
+      {"capability": "审计链与可追溯", "values": ["no", "partial", "no", "yes"]},
+      {"capability": "浏览器演示闭环", "values": ["no", "no", "partial", "yes"]}
+    ]
+  }
+}

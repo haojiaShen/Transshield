@@ -34,9 +34,17 @@ source/report_strict_vps.pdf
 python3 build_strict_pdf.py
 ```
 
-图 4-4 的数据保存在 `performance_chart_data.json`，由
-`generate_performance_chart.py` 在空白画布上完整绘制。构建脚本删除原图对象后，
-将生成结果按原页面矩形插入报告，不读取或复用原图像素。
+图 4-1 至图 4-8、图 5-1 均由代码在空白画布上重新生成：
+
+- 图 4-4 的数据保存在 `performance_chart_data.json`，由
+  `generate_performance_chart.py` 绘制。
+- 其余统计图与评测矩阵的数据保存在 `report_figure_data.json`，由
+  `generate_report_figures.py` 绘制。
+- 图 4-3 直接读取仓库中的 524 条动态路径预测结果与 DenseNet121 验证集 CSV，
+  重新统计直方分布，不从旧图反推柱高。
+
+构建脚本会删除对应原图对象，再将完整生成结果按原页面矩形插入报告；整个流程
+不读取、描摹或复用原图像素。附录界面截图与医学样本图仍保留原始证据，不做重绘。
 
 LaTeX 编译：
 

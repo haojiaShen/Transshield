@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Generate the report performance chart from structured metric data.
+"""Generate the report performance dashboard from structured metric data.
 
-The chart is drawn from a blank canvas.  It never reads, retouches, masks, or
-reuses pixels from the submitted report image.
+The complete figure is drawn from a blank canvas.  It never opens, masks,
+retouches, or reuses pixels from the submitted report image.
 """
 
 from __future__ import annotations
@@ -16,68 +16,50 @@ from PIL import Image, ImageDraw, ImageFont
 
 WIDTH = 2726
 HEIGHT = 1452
-BACKGROUND = "#FFFFFF"
-PANEL_BACKGROUND = "#FCFDFE"
-PANEL_BORDER = "#E8EBEF"
-AXIS_COLOR = "#666B73"
-TEXT_COLOR = "#20242A"
-GRID_COLOR = "#D9DEE5"
+WHITE = "#FFFFFF"
+INK = "#172033"
+MUTED = "#667085"
+GRID = "#DCE4ED"
+PANEL = "#F8FAFC"
+BORDER = "#D7E0EA"
+NAVY = "#2D5B9B"
+NAVY_DARK = "#183A6B"
+AMBER = "#E99A2E"
 
 
 def _font(path: Path, size: int) -> ImageFont.FreeTypeFont:
     return ImageFont.truetype(str(path), size)
 
 
-def _centered_text(
-    draw: ImageDraw.ImageDraw,
-    center_x: float,
-    y: float,
-    text: str,
-    font: ImageFont.FreeTypeFont,
-    *,
-    fill: str = TEXT_COLOR,
-) -> None:
+def _text_size(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont) -> tuple[float, float]:
     box = draw.textbbox((0, 0), text, font=font)
-    draw.text((center_x - (box[2] - box[0]) / 2, y), text, font=font, fill=fill)
+    return box[2] - box[0], box[3] - box[1]
 
 
-def _multiline_centered_text(
+def _center_text(
     draw: ImageDraw.ImageDraw,
     center_x: float,
     y: float,
     text: str,
     font: ImageFont.FreeTypeFont,
     *,
-    line_gap: int = 6,
+    fill: str = INK,
 ) -> None:
-    for line_index, line in enumerate(text.splitlines()):
-        _centered_text(draw, center_x, y + line_index * (font.size + line_gap), line, font)
+    width, _ = _text_size(draw, text, font)
+    draw.text((center_x - width / 2, y), text, font=font, fill=fill)
 
 
-def _rotated_axis_label(
-    canvas: Image.Image,
-    center_x: int,
-    center_y: int,
+def _right_text(
+    draw: ImageDraw.ImageDraw,
+    right_x: float,
+    y: float,
     text: str,
     font: ImageFont.FreeTypeFont,
+    *,
+    fill: str = INK,
 ) -> None:
-    box = font.getbbox(text)
-    text_width = box[2] - box[0]
-    text_height = box[3] - box[1]
-    label = Image.new("RGBA", (text_width + 24, text_height + 24), (255, 255, 255, 0))
-    label_draw = ImageDraw.Draw(label)
-    label_draw.text((12, 12 - box[1]), text, font=font, fill=TEXT_COLOR)
-    rotated = label.rotate(90, expand=True, resample=Image.Resampling.BICUBIC)
-    canvas.alpha_composite(
-        rotated,
-        (int(center_x - rotated.width / 2), int(center_y - rotated.height / 2)),
-    )
-
-
-def _format_tick(value: float) -> str:
-    if value.is_integer():
-        return str(int(value))
-    return f"{value:.1f}"
+    width, _ = _text_size(draw, text, font)
+    draw.text((right_x - width, y), text, font=font, fill=fill)
 
 
 def _load_chart_data(path: Path) -> dict[str, Any]:
@@ -96,6 +78,56 @@ def _load_chart_data(path: Path) -> dict[str, Any]:
     return data
 
 
+def _single_line_label(label: str) -> str:
+    return label.replace("\n", "")
+
+
+def _metric_card(
+    draw: ImageDraw.ImageDraw,
+    box: tuple[int, int, int, int],
+    metric: dict[str, Any],
+    series: list[dict[str, Any]],
+    *,
+    chinese_font_path: Path,
+    latin_font_path: Path,
+) -> None:
+    left, top, right, bottom = box
+    draw.rounded_rectangle(box, radius=24, fill=PANEL, outline=BORDER, width=2)
+    draw.rounded_rectangle((left + 28, top + 28, left + 42, top + 98), radius=7, fill=NAVY)
+    draw.text((left + 70, top + 23), metric["title"], font=_font(chinese_font_path, 42), fill=INK)
+    draw.text((left + 72, top + 82), metric["axis_label"], font=_font(chinese_font_path, 28), fill=MUTED)
+
+    plot_left = left + 330
+    plot_right = right - 130
+    bar_height = 64
+    row_centers = (top + 218, top + 378)
+    axis_max = float(metric["axis_max"])
+    tick_count = 5
+    tick_font = _font(latin_font_path, 25)
+
+    for tick_index in range(tick_count + 1):
+        value = axis_max * tick_index / tick_count
+        x = plot_left + (plot_right - plot_left) * tick_index / tick_count
+        draw.line((x, top + 145, x, bottom - 72), fill=GRID, width=2)
+        label = f"{value:.1f}" if axis_max <= 5 and not value.is_integer() else f"{value:.0f}"
+        _center_text(draw, x, bottom - 52, label, tick_font, fill=MUTED)
+
+    for index, item in enumerate(series):
+        y = row_centers[index]
+        label = _single_line_label(item["label"])
+        draw.text((left + 70, y - 27), label, font=_font(chinese_font_path, 32), fill=INK)
+        value = float(metric["values"][index])
+        end_x = plot_left + min(value / axis_max, 1.0) * (plot_right - plot_left)
+        draw.rounded_rectangle((plot_left, y - bar_height / 2, plot_right, y + bar_height / 2), radius=bar_height // 2, fill="#E9EEF4")
+        draw.rounded_rectangle((plot_left, y - bar_height / 2, max(plot_left + bar_height, end_x), y + bar_height / 2), radius=bar_height // 2, fill=item["color"])
+        display = metric["display"][index]
+        value_width = _text_size(draw, display, _font(latin_font_path, 34))[0]
+        if end_x - plot_left > value_width + 62:
+            _right_text(draw, end_x - 24, y - 22, display, _font(latin_font_path, 34), fill=WHITE)
+        else:
+            draw.text((end_x + 16, y - 22), display, font=_font(latin_font_path, 34), fill=item["color"])
+
+
 def generate_performance_chart(
     data_path: Path,
     output_path: Path,
@@ -105,122 +137,48 @@ def generate_performance_chart(
 ) -> Path:
     data = _load_chart_data(data_path)
     series = data["series"]
-    metrics = data["metrics"]
+    metrics = {metric["key"]: metric for metric in data["metrics"]}
 
-    canvas = Image.new("RGBA", (WIDTH, HEIGHT), BACKGROUND)
-    draw = ImageDraw.Draw(canvas)
+    image = Image.new("RGB", (WIDTH, HEIGHT), WHITE)
+    draw = ImageDraw.Draw(image)
+    title_font = _font(chinese_font_path, 48)
+    subtitle_font = _font(chinese_font_path, 27)
+    label_font = _font(chinese_font_path, 30)
+    number_font = _font(latin_font_path, 38)
 
-    title_font = _font(chinese_font_path, 30)
-    axis_font = _font(chinese_font_path, 25)
-    label_font = _font(chinese_font_path, 26)
-    tick_font = _font(latin_font_path, 21)
-    value_font = _font(latin_font_path, 25)
+    draw.text((52, 38), "端到端性能与通信量概览", font=title_font, fill=INK)
+    draw.text((54, 104), "总量指标与单样本指标分区展示，避免样本规模差异造成误读", font=subtitle_font, fill=MUTED)
 
-    outer_left = 46
-    outer_right = 24
-    panel_gap = 34
-    panel_width = (WIDTH - outer_left - outer_right - panel_gap * 4) / 5
-    panel_top = 18
-    panel_bottom = HEIGHT - 20
-    plot_top = 142
-    plot_bottom = 1162
+    sample_metric = metrics["sample_count"]
+    chip_left = 1510
+    chip_width = 555
+    for index, item in enumerate(series):
+        left = chip_left + index * (chip_width + 34)
+        top = 27
+        draw.rounded_rectangle((left, top, left + chip_width, top + 122), radius=24, fill="#F4F7FA", outline=BORDER, width=2)
+        draw.rounded_rectangle((left + 22, top + 21, left + 36, top + 99), radius=7, fill=item["color"])
+        draw.text((left + 62, top + 22), _single_line_label(item["label"]), font=label_font, fill=INK)
+        _right_text(draw, left + chip_width - 28, top + 18, sample_metric["display"][index], number_font, fill=item["color"])
+        _right_text(draw, left + chip_width - 28, top + 70, "样本", subtitle_font, fill=MUTED)
 
-    for metric_index, metric in enumerate(metrics):
-        panel_left = outer_left + metric_index * (panel_width + panel_gap)
-        panel_right = panel_left + panel_width
-        draw.rounded_rectangle(
-            (panel_left, panel_top, panel_right, panel_bottom),
-            radius=18,
-            fill=PANEL_BACKGROUND,
-            outline=PANEL_BORDER,
-            width=2,
-        )
-
-        plot_left = panel_left + 106
-        plot_right = panel_right - 24
-        plot_height = plot_bottom - plot_top
-        axis_max = float(metric["axis_max"])
-        tick_step = float(metric["tick_step"])
-
-        _centered_text(
+    cards = [
+        (metrics["total_seconds"], (52, 190, 1346, 774)),
+        (metrics["seconds_per_sample"], (1380, 190, 2674, 774)),
+        (metrics["communication_gib"], (52, 806, 1346, 1390)),
+        (metrics["communication_per_sample_gib"], (1380, 806, 2674, 1390)),
+    ]
+    for metric, box in cards:
+        _metric_card(
             draw,
-            (panel_left + panel_right) / 2,
-            54,
-            metric["title"],
-            title_font,
+            box,
+            metric,
+            series,
+            chinese_font_path=chinese_font_path,
+            latin_font_path=latin_font_path,
         )
-
-        tick_value = 0.0
-        while tick_value <= axis_max + tick_step / 100:
-            y = plot_bottom - plot_height * tick_value / axis_max
-            if tick_value > 0:
-                dash_x = plot_left
-                while dash_x < plot_right:
-                    draw.line(
-                        (dash_x, y, min(dash_x + 12, plot_right), y),
-                        fill=GRID_COLOR,
-                        width=2,
-                    )
-                    dash_x += 22
-            tick_text = _format_tick(tick_value)
-            tick_box = draw.textbbox((0, 0), tick_text, font=tick_font)
-            draw.text(
-                (plot_left - 16 - (tick_box[2] - tick_box[0]), y - (tick_box[3] - tick_box[1]) / 2),
-                tick_text,
-                font=tick_font,
-                fill=AXIS_COLOR,
-            )
-            tick_value += tick_step
-
-        draw.line((plot_left, plot_top, plot_left, plot_bottom), fill=AXIS_COLOR, width=3)
-        draw.line((plot_left, plot_bottom, plot_right, plot_bottom), fill=AXIS_COLOR, width=3)
-
-        axis_center_x = int(panel_left + 28)
-        _rotated_axis_label(
-            canvas,
-            axis_center_x,
-            int((plot_top + plot_bottom) / 2),
-            metric["axis_label"],
-            axis_font,
-        )
-
-        bar_centers = (
-            plot_left + (plot_right - plot_left) * 0.30,
-            plot_left + (plot_right - plot_left) * 0.76,
-        )
-        bar_width = min(92, (plot_right - plot_left) * 0.28)
-
-        for series_index, item in enumerate(series):
-            value = float(metric["values"][series_index])
-            bar_top = plot_bottom - plot_height * value / axis_max
-            center_x = bar_centers[series_index]
-            draw.rounded_rectangle(
-                (
-                    center_x - bar_width / 2,
-                    bar_top,
-                    center_x + bar_width / 2,
-                    plot_bottom,
-                ),
-                radius=5,
-                fill=item["color"],
-            )
-            _centered_text(
-                draw,
-                center_x,
-                max(plot_top + 8, bar_top - 40),
-                metric["display"][series_index],
-                value_font,
-            )
-            _multiline_centered_text(
-                draw,
-                center_x,
-                plot_bottom + 28,
-                item["label"],
-                label_font,
-            )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    canvas.convert("RGB").save(output_path, format="PNG", optimize=True)
+    image.save(output_path, format="PNG", optimize=True)
     return output_path
 
 
@@ -229,7 +187,7 @@ if __name__ == "__main__":
     generated = generate_performance_chart(
         root / "performance_chart_data.json",
         root / "output" / "intermediate" / "strict_format" / "performance_chart_generated.png",
-        chinese_font_path=Path("/mnt/c/Windows/Fonts/simhei.ttf"),
+        chinese_font_path=Path("/mnt/c/Windows/Fonts/msyh.ttc"),
         latin_font_path=Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
     )
     print(generated)

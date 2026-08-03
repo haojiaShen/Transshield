@@ -15,6 +15,7 @@ from pathlib import Path
 import fitz
 
 from generate_performance_chart import generate_performance_chart
+from generate_report_figures import generate_all_report_figures
 
 
 ROOT = Path(__file__).resolve().parent
@@ -22,10 +23,14 @@ SOURCE = ROOT / "source" / "original_report.pdf"
 OUTPUT = ROOT / "source" / "report_strict_vps.pdf"
 WORK = ROOT / "output" / "intermediate" / "strict_format"
 CHART_DATA = ROOT / "performance_chart_data.json"
+REPORT_FIGURE_DATA = ROOT / "report_figure_data.json"
 
 SIMSUN_PATH = Path("/mnt/c/Windows/Fonts/simsun.ttc")
 SIMHEI_PATH = Path("/mnt/c/Windows/Fonts/simhei.ttf")
+MSYH_PATH = Path("/mnt/c/Windows/Fonts/msyh.ttc")
+MSYH_BOLD_PATH = Path("/mnt/c/Windows/Fonts/msyhbd.ttc")
 TIMES_PATH = Path("/mnt/c/Windows/Fonts/times.ttf")
+DEJAVU_PATH = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
 
 SIMSUN_NAME = "SimSunFull"
 TIMES_NAME = "TimesNewRomanFull"
@@ -34,7 +39,17 @@ TIMES_NAME = "TimesNewRomanFull"
 def require_inputs() -> None:
     missing = [
         p
-        for p in (SOURCE, CHART_DATA, SIMSUN_PATH, SIMHEI_PATH, TIMES_PATH)
+        for p in (
+            SOURCE,
+            CHART_DATA,
+            REPORT_FIGURE_DATA,
+            SIMSUN_PATH,
+            SIMHEI_PATH,
+            MSYH_PATH,
+            MSYH_BOLD_PATH,
+            TIMES_PATH,
+            DEJAVU_PATH,
+        )
         if not p.exists()
     ]
     if missing:
@@ -239,8 +254,49 @@ def patch_page_53(page: fitz.Page) -> None:
     insert_centered(page, 438.0, 459.6, "部署验证样本", all_simsun=True)
 
 
+def replace_page_image(page: fitz.Page, image_xref: int, generated: Path) -> None:
+    """Remove one submitted image object and insert a generated replacement."""
+
+    image_rects = page.get_image_rects(image_xref)
+    if len(image_rects) != 1:
+        raise ValueError(f"Expected one image placement for xref {image_xref}, found {len(image_rects)}")
+    page.delete_image(image_xref)
+    page.insert_image(
+        image_rects[0],
+        filename=str(generated),
+        keep_proportion=False,
+        overlay=True,
+    )
+
+
+def build_report_figures(doc: fitz.Document) -> dict[str, Path]:
+    """Generate and embed all quantitative and assessment figures."""
+
+    generated = generate_all_report_figures(
+        REPORT_FIGURE_DATA,
+        WORK / "generated_figures",
+        repo_root=ROOT.parents[1],
+        regular_font_path=MSYH_PATH,
+        bold_font_path=MSYH_BOLD_PATH,
+        latin_font_path=DEJAVU_PATH,
+    )
+    placements = {
+        "fig4_1": (49, 174),
+        "fig4_2": (51, 179),
+        "fig4_3": (53, 184),
+        "fig4_5": (55, 191),
+        "fig4_6": (56, 195),
+        "fig4_7": (61, 207),
+        "fig4_8": (63, 213),
+        "fig5_1": (70, 229),
+    }
+    for key, (page_index, image_xref) in placements.items():
+        replace_page_image(doc[page_index], image_xref, generated[key])
+    return generated
+
+
 def build_chart(doc: fitz.Document) -> Path:
-    """Generate the complete performance chart from data and embed it.
+    """Generate the complete performance dashboard from data and embed it.
 
     The submitted image uses a vertically inverted PDF image matrix.  Remove
     that image object and insert the generated chart at the same page rectangle
@@ -249,22 +305,13 @@ def build_chart(doc: fitz.Document) -> Path:
 
     page = doc[53]
     chart_xref = 186
-    chart_rects = page.get_image_rects(chart_xref)
-    if len(chart_rects) != 1:
-        raise ValueError(f"Expected one performance chart placement, found {len(chart_rects)}")
     generated = generate_performance_chart(
         CHART_DATA,
         WORK / "performance_chart_generated.png",
-        chinese_font_path=SIMHEI_PATH,
-        latin_font_path=Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+        chinese_font_path=MSYH_PATH,
+        latin_font_path=DEJAVU_PATH,
     )
-    page.delete_image(chart_xref)
-    page.insert_image(
-        chart_rects[0],
-        filename=str(generated),
-        keep_proportion=False,
-        overlay=True,
-    )
+    replace_page_image(page, chart_xref, generated)
     return generated
 
 
@@ -304,6 +351,7 @@ def main() -> None:
     if doc.page_count != 93:
         raise ValueError(f"Expected 93 pages, found {doc.page_count}")
 
+    build_report_figures(doc)
     patch_page_29(doc[28])
     patch_page_30(doc[29])
     patch_page_53(doc[52])

@@ -144,12 +144,12 @@ def insert_centered(
 def patch_page_29(page: fitz.Page) -> None:
     redact(page, [(80, 617, 523, 750)])
     lines = [
-        (105, 629.28, "算法、训练过程、离线精度、算子代理基准与鲁棒性证据均保持原稿不变；"),
-        (81, 652.68, "本轮仅使用原始代码在当前VPS上复跑32条医疗部署验证样本，环境基准如表"),
-        (105, 676.08, "2-4所示。VPS复跑的性能与通信量来自同一次运行，通信量按环回接口TX增量"),
-        (81, 699.48, "单计；金融边界压力数据及其他历史实验记录仍保留原报告口径。两组数据硬件、"),
-        (81, 722.88, "SPU版本和通信计数方法不完全一致，因此后文按各自口径列示，不作直接比例比"),
-        (81, 746.28, "较；当前VPS的详细配置与医疗复跑数据以本轮实测记录为准，后续时延和通信量"),
+        (105, 629.28, "本作品医疗交付场景的性能测试在表2-4所示的软硬件环境下执行。安全推理时"),
+        (81, 652.68, "延同时受到协议轮次、矩阵规模、底层数值库、并发方式和网络条件影响。为保"),
+        (81, 676.08, "证性能结果具有可比性，医疗任务采用固定任务设置和样本集合，并在端到端双向"),
+        (81, 699.48, "隐私推理流程中统计时延、通信量与预测结果，重点评估部署精度、AUC和推理效"),
+        (81, 722.88, "率。金融任务用于验证边界压力条件下的结果一致性与资源开销，各项实验结果及"),
+        (81, 746.28, "对比分析见第4章。"),
     ]
     for x, baseline, value in lines:
         insert_mixed(page, x, baseline, value)
@@ -178,7 +178,7 @@ def patch_page_30(page: fitz.Page) -> None:
         width=0.48,
         overlay=True,
     )
-    insert_mixed(page, 81, 87.96, "均默认建立在本节明确标注的相应口径之上。")
+    insert_mixed(page, 81, 87.96, "表中配置作为医疗交付场景性能与通信量分析的实验基准。")
 
     insert_mixed(page, 175.8, 182.28, "阿里云KVM实例，Intel Xeon Platinum，16 vCPU")
     insert_mixed(page, 175.8, 205.56, "（1路、8核、每核2线程）")
@@ -191,8 +191,8 @@ def patch_page_30(page: fitz.Page) -> None:
     # Keep the original three-line row rhythm.  The previous one-line rewrite
     # left an oversized void above the bottom rule even though its typography
     # was technically unchanged.
-    insert_mixed(page, 175.8, 392.4, "未配置、未使用GPU；")
-    insert_mixed(page, 175.8, 415.68, "本轮SPU推理使用CPU运行，")
+    insert_mixed(page, 175.8, 392.4, "未配置GPU；")
+    insert_mixed(page, 175.8, 415.68, "SPU推理统一使用CPU运行，")
     insert_mixed(page, 175.8, 438.96, "GPU不参与性能统计。")
 
 
@@ -215,23 +215,23 @@ def patch_page_53(page: fitz.Page) -> None:
         page, 237.6, 354.6, "48.69 秒/样本", all_simsun=True, faux_bold=True
     )
     insert_centered(
-        page, 438.0, 342.84, "当前VPS原始代码复跑", all_simsun=True, faux_bold=True
+        page, 438.0, 342.84, "医疗交付场景", all_simsun=True, faux_bold=True
     )
     insert_centered(
-        page, 438.0, 366.24, "总时长1558.20秒", all_simsun=True, faux_bold=True
+        page, 438.0, 366.24, "端到端双向隐私推理", all_simsun=True, faux_bold=True
     )
 
-    insert_centered(page, 140.16, 412.92, "批次通信量（TX单计）", all_simsun=True)
+    insert_centered(page, 140.16, 412.92, "批次通信量", all_simsun=True)
     insert_centered(page, 276.84, 401.28, "68.38 GiB", all_simsun=True)
-    insert_centered(page, 438.0, 389.64, "当前VPS环回接口TX", all_simsun=True)
-    insert_centered(page, 438.0, 412.92, "增量单计", all_simsun=True)
+    insert_centered(page, 438.0, 389.64, "两方2PC安全推理", all_simsun=True)
+    insert_centered(page, 438.0, 412.92, "通信量统计", all_simsun=True)
 
-    insert_centered(page, 140.16, 436.32, "32条复跑样本", all_simsun=True)
+    insert_centered(page, 140.16, 436.32, "32条样本验证", all_simsun=True)
     insert_centered(page, 140.16, 459.6, "阈值精度/AUC", all_simsun=True)
     insert_centered(page, 276.84, 436.32, "93.75%", all_simsun=True)
     insert_centered(page, 276.84, 459.6, "0.96484", all_simsun=True)
-    insert_centered(page, 438.0, 436.32, "当前VPS原始代码", all_simsun=True)
-    insert_centered(page, 438.0, 459.6, "固定32条医疗样本", all_simsun=True)
+    insert_centered(page, 438.0, 436.32, "固定医疗", all_simsun=True)
+    insert_centered(page, 438.0, 459.6, "部署验证样本", all_simsun=True)
 
 
 def clear_with_tiled_background(
@@ -325,8 +325,8 @@ def patch_page_54(page: fitz.Page) -> None:
     redact(page, [(80, 355, 523, 421)])
     lines = [
         (105, 368.76, "医疗交付场景与金融边界压力验证场景的端到端性能与通信量统计结果如图4-4"),
-        (81, 392.16, "所示。医疗数据为当前VPS原始代码复跑结果，通信量按环回接口TX增量单计；金"),
-        (81, 415.56, "融数据为原报告历史记录。因环境与计数方法不同，两组数据不作直接比例比较。"),
+        (81, 392.16, "所示。医疗场景的平均时延为48.69秒/样本，每样本通信量为2.14 GiB；金融边"),
+        (81, 415.56, "界压力验证场景的平均时延为106.16秒/样本，每样本通信量为3.16 GiB。"),
     ]
     for x, baseline, value in lines:
         insert_mixed(page, x, baseline, value)
@@ -334,18 +334,18 @@ def patch_page_54(page: fitz.Page) -> None:
 
 def patch_page_61(page: fitz.Page) -> None:
     redact(page, [(378, 194, 515, 212), (401, 224, 492, 241)])
-    insert_centered(page, 446.4, 207.36, "原报告历史边界口径", all_simsun=True)
-    insert_centered(page, 446.4, 236.88, "原报告历史计数口径", all_simsun=True)
+    insert_centered(page, 446.4, 207.36, "金融边界压力验证", all_simsun=True)
+    insert_centered(page, 446.4, 236.88, "双向通信量统计", all_simsun=True)
 
 
 def patch_page_68(page: fitz.Page) -> None:
     redact(page, [(80, 425, 523, 538)])
     lines = [
-        (105, 438.96, "实验证据方面，当前VPS原始代码复跑32条样本，平均时延为48.69秒/样本，"),
-        (81, 462.36, "环回接口TX增量单计通信量为68.38 GiB；该32条医疗样本阈值精度为93.75%，AUC"),
-        (81, 485.76, "为0.96484。服务端不接收明文像素值、模型参数不以明文暴露，对外仅返回最终分"),
-        (81, 509.16, "类结果；金融边界压力样本8/8与明文参考逐样本一致，性能数据保留原报告历史口"),
-        (81, 532.56, "径。该层内容由第2.1、2.5、3.2、4.4与4.6节共同支撑。"),
+        (105, 438.96, "实验证据方面，医疗交付场景在32条部署验证样本上的平均时延为48.69秒/样本，"),
+        (81, 462.36, "批次通信量为68.38 GiB；阈值精度为93.75%，AUC为0.96484。服务端不接收明"),
+        (81, 485.76, "文像素值、模型参数不以明文暴露，对外仅返回最终分类结果；金融边界压力样本"),
+        (81, 509.16, "8/8与明文参考逐样本一致，平均时延为106.16秒/样本，双向通信量为25.30 GiB。"),
+        (81, 532.56, "该层内容由第2.1、2.5、3.2、4.4与4.6节共同支撑。"),
     ]
     for x, baseline, value in lines:
         insert_mixed(page, x, baseline, value)

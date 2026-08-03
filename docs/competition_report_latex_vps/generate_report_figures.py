@@ -167,13 +167,47 @@ def _legend_item(
     *,
     line: bool = False,
 ) -> float:
+    text_box = draw.textbbox((0, 0), label, font=font)
+    text_width = text_box[2] - text_box[0]
+    # Align the symbol with the visual centre of the rendered glyphs rather
+    # than a fixed pixel offset.  Chinese and Latin fonts have different
+    # ascender / descender metrics, so a hard-coded y + 15 drifts whenever the
+    # font or size changes.
+    center_y = y + (text_box[1] + text_box[3]) / 2
+    symbol_gap = max(18, round(font.size * 0.55))
     if line:
-        draw.line((x, y + 15, x + 52, y + 15), fill=color, width=7)
-        draw.ellipse((x + 20, y + 5, x + 40, y + 25), fill=color, outline=WHITE, width=3)
+        symbol_right = x + 56
+        marker_radius = max(8, round(font.size * 0.23))
+        draw.line((x, center_y, symbol_right, center_y), fill=color, width=7)
+        marker_x = x + 30
+        draw.ellipse(
+            (
+                marker_x - marker_radius,
+                center_y - marker_radius,
+                marker_x + marker_radius,
+                center_y + marker_radius,
+            ),
+            fill=color,
+            outline=WHITE,
+            width=3,
+        )
     else:
-        draw.rounded_rectangle((x, y + 2, x + 36, y + 30), radius=6, fill=color)
-    draw.text((x + 50, y), label, font=font, fill=INK)
-    return x + 50 + _text_size(draw, label, font)[0] + 46
+        symbol_width = 36
+        symbol_height = max(26, round(font.size * 0.72))
+        symbol_right = x + symbol_width
+        draw.rounded_rectangle(
+            (
+                x,
+                center_y - symbol_height / 2,
+                symbol_right,
+                center_y + symbol_height / 2,
+            ),
+            radius=6,
+            fill=color,
+        )
+    text_x = symbol_right + symbol_gap
+    draw.text((text_x, y), label, font=font, fill=INK)
+    return text_x + text_width + max(34, round(font.size * 0.9))
 
 
 def _value_badge(

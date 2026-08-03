@@ -1,0 +1,91 @@
+{
+  "schema": "transshield_report_vps_evidence_excerpt_v1",
+  "environment": {
+    "platform": "Alibaba Cloud KVM",
+    "cpu": "Intel Xeon Platinum",
+    "vcpu": 16,
+    "memory_gib": 61,
+    "swap_gib": 0,
+    "os": "Ubuntu 24.04.4 LTS",
+    "kernel": "Linux 6.8.0-136-generic",
+    "python": "3.9.25",
+    "spu": "0.9.3b0",
+    "jax": "0.4.30",
+    "numpy": "1.26.4",
+    "pytorch": "1.13.1+cpu",
+    "gpu": null
+  },
+  "medical": {
+    "source_path": "artifacts/vps_release_backup_20260803/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_spu_latest_summary.json",
+    "source_sha256": "9330e2dbe3564c3a5118a2bfd41d240421fdbf3f6fee300b8fb1a1e589f9ac06",
+    "sample_count": 32,
+    "elapsed_sec": 964.207540512085,
+    "sec_per_sample": 30.131485641002655,
+    "threshold": 0.6619606018066406,
+    "threshold_accuracy": 0.9375,
+    "auc": 0.96484375,
+    "finite_logits": true,
+    "finite_probabilities": true,
+    "network": {
+      "interface": "lo",
+      "counting_rule": "use tx_delta once; loopback tx and rx mirror the same transferred bytes",
+      "tx_delta_bytes": 45714077498,
+      "rx_delta_bytes": 45714077498,
+      "total_bytes": 45714077498,
+      "total_gib": 42.57455235160887,
+      "per_sample_gib": 1.3304547609877773
+    },
+    "runtime": {
+      "base_rate": 0.7,
+      "token_ratio": [0.7, 0.48999999999999994, 0.3429999999999999],
+      "token_keep_counts": [137, 96, 67],
+      "effective_depth": 10,
+      "activation_kind": "fixed_square",
+      "attention_policy": "uniform",
+      "spu_batch_size": 16,
+      "layer_norm_policy": "exact",
+      "params_mode": "secret",
+      "reveal_policy": "final_logits_only"
+    },
+    "first_sample": {
+      "relative_path": "0/00003.png",
+      "target": 0,
+      "threshold_prediction": 0,
+      "logits": [0.1166839599609375, 0.2594757080078125],
+      "probabilities": [0.46436262130737305, 0.5356374382972717]
+    }
+  },
+  "finance": {
+    "source_path": "artifacts/vps_release_backup_20260803/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance8_spu_latest_summary.json",
+    "source_sha256": "babc00f6d6897402b2dea8e81c0ef8df423a8f7c7d7a9ca7a55069f118b28a6c",
+    "sample_count": 8,
+    "elapsed_sec": 377.8549175262451,
+    "sec_per_sample": 47.23186469078064,
+    "threshold": 0.5,
+    "threshold_accuracy": 1.0,
+    "auc": 1.0,
+    "finite_logits": true,
+    "finite_probabilities": true,
+    "network": {
+      "interface": "lo",
+      "counting_rule": "use tx_delta once; loopback tx and rx mirror the same transferred bytes",
+      "tx_delta_bytes": 16593635751,
+      "rx_delta_bytes": 16593635751,
+      "total_bytes": 16593635751,
+      "total_gib": 15.45402756985277,
+      "per_sample_gib": 1.9317534462315962
+    },
+    "runtime": {
+      "base_rate": 0.9,
+      "token_ratio": [0.9, 0.81, 0.7290000000000001],
+      "token_keep_counts": [176, 158, 142],
+      "effective_depth": 12,
+      "spu_batch_size": 8,
+      "parameter_retention_ratio": 0.6839
+    },
+    "reference_comparison": {
+      "argmax_match_ratio": 1.0,
+      "threshold_match_ratio": 1.0
+    }
+  }
+}

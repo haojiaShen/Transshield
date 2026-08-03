@@ -1,6 +1,6 @@
 # 当前 VPS 数据来源与口径
 
-本文件只记录数据来源，不改变算法定义。报告正文中的替换均在原 PDF 坐标内完成，未重新排版表格或段落。
+本文件只记录数据来源，不改变算法定义。报告正文中的替换均在原 PDF 坐标内完成，未重新排版表格或段落。报告生成与审计直接读取已纳入版本控制的 `vps_report_data.json`；该文件只摘录报告实际使用的环境、运行配置与结果字段，并记录原始 VPS JSON 的路径和 SHA-256，避免构建依赖本机未跟踪备份目录。
 
 ## 1. 当前 VPS 环境
 
@@ -27,15 +27,15 @@
 | 指标 | 结果 |
 |---|---:|
 | 样本数 | 32 |
-| 总时长 | 913.363945 秒 |
-| 平均时延 | 28.542623 秒/样本 |
+| 总时长 | 964.207541 秒 |
+| 平均时延 | 30.131486 秒/样本 |
 | 32 条样本阈值精度 | 93.75% |
-| 32 条样本 AUC | 0.984375 |
-| 环回接口 TX 增量单计 | 40.485295 GiB |
-| 每样本通信量 | 1.265165 GiB |
+| 32 条样本 AUC | 0.964844 |
+| 环回接口 TX 增量单计 | 42.574552 GiB |
+| 每样本通信量 | 1.330455 GiB |
 | 输出有限性 | 通过 |
 
-对应证据为 `artifacts/vps_release_backup_20260803/results/vps_optimization/rlwe_equivalence_followup_20260802_v1/hybrid32_summary.json`。该运行保持模型权重、模型维度、剪枝结构、协议、定点精度和最终输出揭示策略不变；本地展示代码未随报告数据更新。
+对应原始证据为 `artifacts/vps_release_backup_20260803/results/vps_report_tests/report_sumdiff_full_20260802_v1/medical32_spu_latest_summary.json`，SHA-256 为 `9330e2dbe3564c3a5118a2bfd41d240421fdbf3f6fee300b8fb1a1e589f9ac06`。运行时实际使用 `base_rate=0.7`，三阶段保留率为 `0.7/0.49/0.343`，空间 token 保留数为 `137/96/67`，与报告算法口径一致；实际 SPU batch size 为 16。本地展示代码未随报告数据更新。
 
 ## 3. 当前 VPS 金融完整运行
 
@@ -51,7 +51,7 @@
 | 每样本通信量 | 1.931753 GiB |
 | 输出有限性 | 通过 |
 
-对应证据为 `artifacts/vps_release_backup_20260803/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance8_spu_latest_summary.json`。
+对应原始证据为 `artifacts/vps_release_backup_20260803/results/vps_report_tests/report_sumdiff_full_20260802_v1/finance8_spu_latest_summary.json`，SHA-256 为 `babc00f6d6897402b2dea8e81c0ef8df423a8f7c7d7a9ca7a55069f118b28a6c`。
 
 ## 4. 计数口径
 

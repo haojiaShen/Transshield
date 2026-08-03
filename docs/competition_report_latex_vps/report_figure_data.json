@@ -29,7 +29,7 @@
       "auc": 0.9679
     },
     {
-      "method": "MPCViT [3]",
+      "method": "MPCViT [30]",
       "detail": "同数据集明文基线",
       "threshold_accuracy": 96.9847,
       "auc": 0.9927

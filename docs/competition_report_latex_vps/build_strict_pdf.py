@@ -13,14 +13,15 @@ import re
 from pathlib import Path
 
 import fitz
-import numpy as np
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+
+from generate_performance_chart import generate_performance_chart
 
 
 ROOT = Path(__file__).resolve().parent
 SOURCE = ROOT / "source" / "original_report.pdf"
 OUTPUT = ROOT / "source" / "report_strict_vps.pdf"
 WORK = ROOT / "output" / "intermediate" / "strict_format"
+CHART_DATA = ROOT / "performance_chart_data.json"
 
 SIMSUN_PATH = Path("/mnt/c/Windows/Fonts/simsun.ttc")
 SIMHEI_PATH = Path("/mnt/c/Windows/Fonts/simhei.ttf")
@@ -31,7 +32,11 @@ TIMES_NAME = "TimesNewRomanFull"
 
 
 def require_inputs() -> None:
-    missing = [p for p in (SOURCE, SIMSUN_PATH, SIMHEI_PATH, TIMES_PATH) if not p.exists()]
+    missing = [
+        p
+        for p in (SOURCE, CHART_DATA, SIMSUN_PATH, SIMHEI_PATH, TIMES_PATH)
+        if not p.exists()
+    ]
     if missing:
         raise FileNotFoundError("Missing strict-format input(s): " + ", ".join(map(str, missing)))
     WORK.mkdir(parents=True, exist_ok=True)
@@ -234,91 +239,33 @@ def patch_page_53(page: fitz.Page) -> None:
     insert_centered(page, 438.0, 459.6, "部署验证样本", all_simsun=True)
 
 
-def clear_with_tiled_background(
-    pixels: np.ndarray,
-    target: tuple[int, int, int, int],
-    source_x: tuple[int, int],
-) -> None:
-    x0, y0, x1, y1 = target
-    sx0, sx1 = source_x
-    strip = pixels[y0:y1, sx0:sx1].copy()
-    repeats = (x1 - x0 + strip.shape[1] - 1) // strip.shape[1]
-    pixels[y0:y1, x0:x1] = np.tile(strip, (1, repeats, 1))[:, : x1 - x0]
-
-
 def build_chart(doc: fitz.Document) -> Path:
+    """Generate the complete performance chart from data and embed it.
+
+    The submitted image uses a vertically inverted PDF image matrix.  Remove
+    that image object and insert the generated chart at the same page rectangle
+    so the new chart remains upright and the old pixels are not retained.
+    """
+
     page = doc[53]
     chart_xref = 186
-    extracted = doc.extract_image(chart_xref)
-    original = WORK / f"chart_original.{extracted['ext']}"
-    original.write_bytes(extracted["image"])
-
-    upright = ImageOps.flip(Image.open(original).convert("RGB"))
-    pixels = np.array(upright)
-
-    # Each edit keeps the original blue bar below the new measured height and
-    # restores the original plot background above it from the adjacent blank
-    # strip.  Axes, ticks, finance bars and all panel geometry remain unchanged.
-    edits = [
-        # bar rect, blank-strip x, old-label rect, label, new top
-        ((368, 180, 435, 401), (523, 540), (362, 143, 443, 182), "1558.20", 401),
-        ((635, 285, 700, 458), (702, 724), (634, 246, 704, 286), "48.69", 458),
-        ((910, 157, 977, 260), (980, 998), (908, 119, 980, 158), "68.38", 260),
-        ((1185, 269, 1253, 348), (1255, 1273), (1186, 230, 1254, 270), "2.14", 348),
-    ]
-    # Tick rows in the original 726 px chart.  Repaint only the pixels formerly
-    # occupied by the taller medical bars and their labels, then restore the
-    # same faint dashed horizontal grid.  This avoids interpolation seams.
-    grid_rows = [
-        [73, 158, 242, 326, 411, 495, 579, 664],
-        [73, 157, 242, 326, 411, 495, 580, 664],
-        [73, 191, 309, 428, 546, 664],
-        [73, 147, 221, 295, 369, 443, 517, 591, 664],
-    ]
-    revised = Image.fromarray(pixels)
-    cleanup_draw = ImageDraw.Draw(revised)
-    for (bar_rect, _, label_rect, _, _), rows in zip(edits, grid_rows):
-        cleanup_draw.rectangle(label_rect, fill=(255, 255, 255))
-        cleanup_draw.rectangle(bar_rect, fill=(255, 255, 255))
-        for region in (label_rect, bar_rect):
-            x0, y0, x1, y1 = region
-            for row in rows:
-                if y0 <= row < y1:
-                    start = x0 - (x0 % 12)
-                    for dash_x in range(start, x1, 12):
-                        cleanup_draw.line(
-                            (max(x0, dash_x), row, min(x1, dash_x + 6), row),
-                            fill=(224, 224, 224),
-                            width=1,
-                        )
-
-    draw = ImageDraw.Draw(revised)
-    number_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 17)
-    for bar_rect, _, _, label, new_top in edits:
-        x0, _, x1, _ = bar_rect
-        bbox = draw.textbbox((0, 0), label, font=number_font)
-        label_width = bbox[2] - bbox[0]
-        draw.text(((x0 + x1 - label_width) / 2, new_top - 29), label, fill=(0, 0, 0), font=number_font)
-
-    # The medical value now uses loopback TX single counting, whereas the
-    # finance value retains the historical report definition.
-    title_rect = (876, 21, 1104, 61)
-    ImageDraw.Draw(revised).rectangle(title_rect, fill=(255, 255, 255))
-    cjk_font = ImageFont.truetype(str(SIMHEI_PATH), 21)
-    latin_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
-    title_runs = [("通信量（", cjk_font), ("GiB", latin_font), ("）", cjk_font)]
-    title_width = sum(draw.textlength(value, font=font) for value, font in title_runs)
-    title_x = (title_rect[0] + title_rect[2] - title_width) / 2
-    for value, font in title_runs:
-        draw.text((title_x, 27), value, fill=(0, 0, 0), font=font)
-        title_x += draw.textlength(value, font=font)
-
-    modified_upright = WORK / "chart_revised_upright.png"
-    revised.save(modified_upright)
-    modified_raw = WORK / "chart_revised_raw.png"
-    ImageOps.flip(revised).save(modified_raw)
-    page.replace_image(chart_xref, filename=str(modified_raw))
-    return modified_upright
+    chart_rects = page.get_image_rects(chart_xref)
+    if len(chart_rects) != 1:
+        raise ValueError(f"Expected one performance chart placement, found {len(chart_rects)}")
+    generated = generate_performance_chart(
+        CHART_DATA,
+        WORK / "performance_chart_generated.png",
+        chinese_font_path=SIMHEI_PATH,
+        latin_font_path=Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+    )
+    page.delete_image(chart_xref)
+    page.insert_image(
+        chart_rects[0],
+        filename=str(generated),
+        keep_proportion=False,
+        overlay=True,
+    )
+    return generated
 
 
 def patch_page_54(page: fitz.Page) -> None:

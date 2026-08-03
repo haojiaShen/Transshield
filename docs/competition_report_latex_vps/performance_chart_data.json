@@ -1,0 +1,61 @@
+{
+  "series": [
+    {
+      "key": "medical",
+      "label": "医疗交付\n场景",
+      "color": "#4C72B0"
+    },
+    {
+      "key": "finance",
+      "label": "金融边界\n压力验证",
+      "color": "#F28E2B"
+    }
+  ],
+  "metrics": [
+    {
+      "key": "sample_count",
+      "title": "样本数",
+      "axis_label": "样本数（个）",
+      "values": [32, 8],
+      "display": ["32", "8"],
+      "axis_max": 40,
+      "tick_step": 10
+    },
+    {
+      "key": "total_seconds",
+      "title": "总时长（秒）",
+      "axis_label": "总时长（秒）",
+      "values": [1558.203079, 849.2608470916748],
+      "display": ["1558.20", "849.26"],
+      "axis_max": 3500,
+      "tick_step": 500
+    },
+    {
+      "key": "seconds_per_sample",
+      "title": "平均时延（秒/样本）",
+      "axis_label": "平均时延（秒/样本）",
+      "values": [48.693846, 106.15760588645935],
+      "display": ["48.69", "106.16"],
+      "axis_max": 140,
+      "tick_step": 20
+    },
+    {
+      "key": "communication_gib",
+      "title": "通信量（GiB）",
+      "axis_label": "通信量（GiB）",
+      "values": [68.379963, 25.30241903476417],
+      "display": ["68.38", "25.30"],
+      "axis_max": 100,
+      "tick_step": 20
+    },
+    {
+      "key": "communication_per_sample_gib",
+      "title": "每样本通信量（GiB）",
+      "axis_label": "每样本通信量（GiB）",
+      "values": [2.13687384375, 3.1628023793455213],
+      "display": ["2.14", "3.16"],
+      "axis_max": 4,
+      "tick_step": 0.5
+    }
+  ]
+}

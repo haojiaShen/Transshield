@@ -14,8 +14,8 @@
 ## 内容边界
 
 - 保持不变：算法、公式、模型结构、训练过程、离线全量指标、算子代理基准、鲁棒性证据、附录代码及展示代码。
-- 当前 VPS 医疗复跑：原始代码、32 条医疗样本、两方 SPU colocated localhost、batch size 8。
-- 金融性能数据：保留原报告历史记录，并明确不与当前 VPS 医疗结果作直接比例比较。
+- 医疗交付场景：32 条医疗样本、两方 SPU colocated localhost、batch size 8。
+- 金融边界压力验证场景：8 条固定样本，并记录端到端时延与双向通信量。
 - 展示、推理、模型、配置和仓库正式结果文件均未修改。
 
 详细数据来源与计数可比性限制见 `DATA_PROVENANCE.md`。
@@ -33,6 +33,10 @@ source/report_strict_vps.pdf
 ```bash
 python3 build_strict_pdf.py
 ```
+
+图 4-4 的数据保存在 `performance_chart_data.json`，由
+`generate_performance_chart.py` 在空白画布上完整绘制。构建脚本删除原图对象后，
+将生成结果按原页面矩形插入报告，不读取或复用原图像素。
 
 LaTeX 编译：
 

@@ -221,6 +221,14 @@ def patch_page_30(page: fitz.Page) -> None:
     insert_mixed(page, 175.8, 438.96, "GPU不参与性能统计。")
 
 
+def patch_page_51(page: fitz.Page) -> None:
+    # Figure 4-2 compares 92.7481% with the 91.9847% static control,
+    # so the improvement here is 0.7634 percentage points.  The 3.0534-point
+    # delta belongs to the separate ablation baseline in Figure 4-8.
+    redact(page, [(488.5, 636.0, 522.5, 653.5)])
+    insert_mixed(page, 489.0, 649.44, "0.7634")
+
+
 def patch_page_53(page: fitz.Page) -> None:
     redact(
         page,
@@ -347,6 +355,13 @@ def patch_page_61(page: fitz.Page) -> None:
     insert_centered(page, 446.4, 236.88, "双向通信量统计", all_simsun=True)
 
 
+def patch_page_67(page: fitz.Page) -> None:
+    # This 3.0534-point statement cites the Figure 4-8 ablation baseline
+    # (89.6947%), not the Figure 4-2 static control (91.9847%).
+    redact(page, [(104.5, 310.8, 213.5, 324.5)])
+    insert_mixed(page, 105.0, 321.96, "静态安全消融基准线", all_simsun=True)
+
+
 def patch_page_68(page: fitz.Page) -> None:
     redact(page, [(80, 425, 523, 538)])
     lines = [
@@ -369,10 +384,12 @@ def main() -> None:
     build_report_figures(doc)
     patch_page_29(doc[28])
     patch_page_30(doc[29])
+    patch_page_51(doc[50])
     patch_page_53(doc[52])
     build_chart(doc)
     patch_page_54(doc[53])
     patch_page_61(doc[60])
+    patch_page_67(doc[66])
     patch_page_68(doc[67])
 
     doc.save(OUTPUT, garbage=4, deflate=True, clean=True)

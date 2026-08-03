@@ -94,16 +94,16 @@ def _metric_card(
     left, top, right, bottom = box
     draw.rounded_rectangle(box, radius=24, fill=PANEL, outline=BORDER, width=2)
     draw.rounded_rectangle((left + 28, top + 28, left + 42, top + 98), radius=7, fill=NAVY)
-    draw.text((left + 70, top + 23), metric["title"], font=_font(chinese_font_path, 42), fill=INK)
-    draw.text((left + 72, top + 82), metric["axis_label"], font=_font(chinese_font_path, 28), fill=MUTED)
+    draw.text((left + 70, top + 18), metric["title"], font=_font(chinese_font_path, 52), fill=INK)
+    draw.text((left + 72, top + 88), metric["axis_label"], font=_font(chinese_font_path, 34), fill=MUTED)
 
-    plot_left = left + 330
-    plot_right = right - 130
+    plot_left = left + 390
+    plot_right = right - 78
     bar_height = 64
     row_centers = (top + 218, top + 378)
     axis_max = float(metric["axis_max"])
     tick_count = 5
-    tick_font = _font(latin_font_path, 25)
+    tick_font = _font(latin_font_path, 30)
 
     for tick_index in range(tick_count + 1):
         value = axis_max * tick_index / tick_count
@@ -114,18 +114,18 @@ def _metric_card(
 
     for index, item in enumerate(series):
         y = row_centers[index]
-        label = _single_line_label(item["label"])
-        draw.text((left + 70, y - 27), label, font=_font(chinese_font_path, 32), fill=INK)
+        label = item.get("short_label", _single_line_label(item["label"]))
+        draw.text((left + 70, y - 34), label, font=_font(chinese_font_path, 40), fill=INK)
         value = float(metric["values"][index])
         end_x = plot_left + min(value / axis_max, 1.0) * (plot_right - plot_left)
         draw.rounded_rectangle((plot_left, y - bar_height / 2, plot_right, y + bar_height / 2), radius=bar_height // 2, fill="#E9EEF4")
         draw.rounded_rectangle((plot_left, y - bar_height / 2, max(plot_left + bar_height, end_x), y + bar_height / 2), radius=bar_height // 2, fill=item["color"])
         display = metric["display"][index]
-        value_width = _text_size(draw, display, _font(latin_font_path, 34))[0]
+        value_width = _text_size(draw, display, _font(latin_font_path, 44))[0]
         if end_x - plot_left > value_width + 62:
-            _right_text(draw, end_x - 24, y - 22, display, _font(latin_font_path, 34), fill=WHITE)
+            _right_text(draw, end_x - 24, y - 28, display, _font(latin_font_path, 44), fill=WHITE)
         else:
-            draw.text((end_x + 16, y - 22), display, font=_font(latin_font_path, 34), fill=item["color"])
+            draw.text((end_x + 16, y - 28), display, font=_font(latin_font_path, 44), fill=item["color"])
 
 
 def generate_performance_chart(
@@ -141,13 +141,13 @@ def generate_performance_chart(
 
     image = Image.new("RGB", (WIDTH, HEIGHT), WHITE)
     draw = ImageDraw.Draw(image)
-    title_font = _font(chinese_font_path, 48)
-    subtitle_font = _font(chinese_font_path, 27)
-    label_font = _font(chinese_font_path, 30)
-    number_font = _font(latin_font_path, 38)
+    title_font = _font(chinese_font_path, 58)
+    subtitle_font = _font(chinese_font_path, 32)
+    label_font = _font(chinese_font_path, 34)
+    number_font = _font(latin_font_path, 44)
 
-    draw.text((52, 38), "端到端性能与通信量概览", font=title_font, fill=INK)
-    draw.text((54, 104), "总量指标与单样本指标分区展示，避免样本规模差异造成误读", font=subtitle_font, fill=MUTED)
+    draw.text((52, 31), "端到端性能与通信量概览", font=title_font, fill=INK)
+    draw.text((54, 107), "总量指标与单样本指标分区展示，避免样本规模差异造成误读", font=subtitle_font, fill=MUTED)
 
     sample_metric = metrics["sample_count"]
     chip_left = 1510

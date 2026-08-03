@@ -3,11 +3,13 @@
     {
       "key": "medical",
       "label": "医疗交付\n场景",
+      "short_label": "医疗场景",
       "color": "#4C72B0"
     },
     {
       "key": "finance",
       "label": "金融边界\n压力验证",
+      "short_label": "金融压力验证",
       "color": "#F28E2B"
     }
   ],

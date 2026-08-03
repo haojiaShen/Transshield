@@ -333,9 +333,9 @@ def _generate_baseline_comparison(rows: list[dict[str, Any]], output: Path, styl
     x_min, x_max = 60.0, 100.0
     title_font = style.font(48, bold=True)
     method_font = style.font(36, bold=True)
-    detail_font = style.font(28)
-    tick_font = style.font(30, latin=True)
-    value_font = style.font(28, bold=True, latin=True)
+    detail_font = style.font(32)
+    tick_font = style.font(34, latin=True)
+    value_font = style.font(32, bold=True, latin=True)
 
     draw.text((54, 35), "医疗任务性能基线：阈值精度与 AUC 对照", font=title_font, fill=INK)
     legend_x = 1030
@@ -347,7 +347,7 @@ def _generate_baseline_comparison(rows: list[dict[str, Any]], output: Path, styl
         draw.line((x, plot_top, x, plot_bottom), fill=GRID, width=2)
         _center_text(draw, x, plot_bottom + 22, str(tick), tick_font, fill=MUTED)
     draw.line((plot_left, plot_bottom, plot_right, plot_bottom), fill=SLATE, width=3)
-    _center_text(draw, (plot_left + plot_right) / 2, 975, "指标值（%）", style.font(34), fill=MUTED)
+    _center_text(draw, (plot_left + plot_right) / 2, 975, "指标值（%）", style.font(38), fill=MUTED)
 
     row_gap = (plot_bottom - plot_top) / len(rows)
     for index, row in enumerate(rows):
@@ -370,7 +370,7 @@ def _generate_baseline_comparison(rows: list[dict[str, Any]], output: Path, styl
         _center_text(draw, auc_x, center_y + 24, f"{auc:.2f}", value_font, fill="#A96510")
 
     draw.rounded_rectangle((54, 1025, 2002, 1082), radius=16, fill=PANEL_ALT)
-    _center_text(draw, 1028, 1032, "AUC 统一按百分制展示；连线仅表示同一方案的两项指标差距。", style.font(28), fill=MUTED)
+    _center_text(draw, 1028, 1029, "AUC 统一按百分制展示；连线仅表示同一方案的两项指标差距。", style.font(32), fill=MUTED)
     return _save(image, output)
 
 
@@ -440,18 +440,18 @@ def _draw_histogram_panel(
 ) -> None:
     left, top, right, bottom = box
     _rounded_panel(draw, box, fill="#FBFCFE", radius=26)
-    draw.text((left + 40, top + 28), dataset["title"], font=style.font(48, bold=True), fill=INK)
-    draw.text((left + 42, top + 91), f"n = {len(dataset['values'])} · 横轴：阳性类别概率", font=style.font(30), fill=MUTED)
+    draw.text((left + 40, top + 24), dataset["title"], font=style.font(60, bold=True), fill=INK)
+    draw.text((left + 42, top + 101), f"n = {len(dataset['values'])} · 横轴：阳性类别概率", font=style.font(38), fill=MUTED)
 
     badge = (right - 430, top + 24, right - 34, top + 142)
     draw.rounded_rectangle(badge, radius=18, fill="#EEF3F8")
-    draw.text((badge[0] + 22, badge[1] + 10), f"argmax  {dataset['argmax_accuracy'] * 100:.2f}%", font=style.font(30, bold=True), fill=INK)
-    draw.text((badge[0] + 22, badge[1] + 61), f"校准后   {dataset['threshold_accuracy'] * 100:.2f}%", font=style.font(30, bold=True), fill=GREEN)
+    draw.text((badge[0] + 18, badge[1] + 5), f"argmax  {dataset['argmax_accuracy'] * 100:.2f}%", font=style.font(36, bold=True), fill=INK)
+    draw.text((badge[0] + 18, badge[1] + 62), f"校准后   {dataset['threshold_accuracy'] * 100:.2f}%", font=style.font(36, bold=True), fill=GREEN)
 
     legend_y = top + 153
     legend_x = left + 42
-    legend_x = _legend_item(draw, legend_x, legend_y, "阴性样本", NAVY, style.font(30))
-    _legend_item(draw, legend_x, legend_y, "阳性样本", CORAL, style.font(30))
+    legend_x = _legend_item(draw, legend_x, legend_y, "阴性样本", NAVY, style.font(38))
+    _legend_item(draw, legend_x, legend_y, "阳性样本", CORAL, style.font(38))
 
     plot_left, plot_top = left + 112, top + 230
     plot_right, plot_bottom = right - 42, bottom - 94
@@ -461,7 +461,7 @@ def _draw_histogram_panel(
         value = max_count * index / 4
         y = plot_bottom - (plot_bottom - plot_top) * index / 4
         draw.line((plot_left, y, plot_right, y), fill=GRID, width=2)
-        _right_text(draw, plot_left - 18, y - 17, f"{value:.0f}", style.font(27, latin=True), fill=MUTED)
+        _right_text(draw, plot_left - 18, y - 21, f"{value:.0f}", style.font(36, latin=True), fill=MUTED)
     draw.line((plot_left, plot_top, plot_left, plot_bottom), fill=SLATE, width=3)
     draw.line((plot_left, plot_bottom, plot_right, plot_bottom), fill=SLATE, width=3)
 
@@ -486,7 +486,7 @@ def _draw_histogram_panel(
         value = tick / 5
         x = plot_left + value * (plot_right - plot_left)
         draw.line((x, plot_bottom, x, plot_bottom + 10), fill=SLATE, width=2)
-        _center_text(draw, x, plot_bottom + 20, f"{value:.1f}", style.font(27, latin=True), fill=MUTED)
+        _center_text(draw, x, plot_bottom + 20, f"{value:.1f}", style.font(36, latin=True), fill=MUTED)
 
     threshold_lines = [
         (dataset["default_threshold"], SLATE, "默认 0.500"),
@@ -498,11 +498,11 @@ def _draw_histogram_panel(
         while dash_y < plot_bottom:
             draw.line((x, dash_y, x, min(dash_y + 18, plot_bottom)), fill=color, width=4)
             dash_y += 30
-        label_width = _text_size(draw, label, style.font(27, bold=True))[0] + 30
-        draw.rounded_rectangle((x - label_width / 2, plot_top + 10, x + label_width / 2, plot_top + 55), radius=13, fill=WHITE, outline=color, width=2)
-        _center_text(draw, x, plot_top + 14, label, style.font(27, bold=True), fill=color)
+        label_width = _text_size(draw, label, style.font(34, bold=True))[0] + 34
+        draw.rounded_rectangle((x - label_width / 2, plot_top + 10, x + label_width / 2, plot_top + 65), radius=14, fill=WHITE, outline=color, width=3)
+        _center_text(draw, x, plot_top + 15, label, style.font(34, bold=True), fill=color)
 
-    _rotated_label(image, (left + 34, (plot_top + plot_bottom) // 2), "样本数", style.font(30))
+    _rotated_label(image, (left + 34, (plot_top + plot_bottom) // 2), "样本数", style.font(40))
 
 
 def _generate_probability_distribution(
@@ -540,35 +540,34 @@ def _generate_benchmark_figure(
     _rounded_panel(draw, left_box, fill="#FBFCFE", radius=26)
     _rounded_panel(draw, right_box, fill="#FBFCFE", radius=26)
 
-    draw.text((58, 45), f"(a) 通信时延（log10 {latency_unit}）", font=style.font(50, bold=True), fill=INK)
-    draw.text((split + 54, 45), "(b) 双端合计通信量（MiB）", font=style.font(50, bold=True), fill=INK)
-    legend_x = 1030
+    draw.text((58, 40), f"(a) 通信时延（log10 {latency_unit}）", font=style.font(60, bold=True), fill=INK)
+    draw.text((split + 54, 40), "(b) 双端合计通信量（MiB）", font=style.font(60, bold=True), fill=INK)
+    legend_x = 1120
     for label, color in (("Local", NAVY), ("LAN", AMBER), ("WAN", GREEN)):
-        legend_x = _legend_item(draw, legend_x, 55, label, color, style.font(34), line=True)
+        legend_x = _legend_item(draw, legend_x, 58, label, color, style.font(42), line=True)
 
-    row_top = 215
+    row_top = 230
     row_bottom = height - 120
     row_gap = (row_bottom - row_top) / len(rows)
     name_x = 58
-    number_columns = (425, 585, 755)
-    plot_left, plot_right = 860, split - 74
-    draw.text((name_x, 142), "函数 / 原语", font=style.font(32, bold=True), fill=MUTED)
-    for x, label, color in zip(number_columns, ("Local", "LAN", "WAN"), (NAVY, AMBER, GREEN)):
-        _center_text(draw, x, 142, label, style.font(31, bold=True), fill=color)
+    plot_left, plot_right = 560, split - 74
+    draw.text((name_x, 147), "函数 / 原语", font=style.font(42, bold=True), fill=MUTED)
 
     exponent_start = math.floor(math.log10(latency_min))
     exponent_end = math.ceil(math.log10(latency_max))
     for exponent in range(exponent_start, exponent_end + 1):
         value = 10**exponent
+        if value < latency_min or value > latency_max:
+            continue
         x = _log_position(value, latency_min, latency_max, plot_left, plot_right)
-        draw.line((x, row_top - 14, x, row_bottom), fill=GRID, width=2)
-        _center_text(draw, x, 143, f"10^{exponent}", style.font(28, latin=True), fill=MUTED)
+        draw.line((x, row_top - 14, x, row_bottom), fill=GRID, width=3)
+        _center_text(draw, x, 150, f"10^{exponent}", style.font(38, latin=True), fill=MUTED)
 
     comm_name_x = split + 54
     comm_plot_left, comm_plot_right = split + 500, width - 80
-    draw.text((comm_name_x, 142), "函数 / 原语", font=style.font(32, bold=True), fill=MUTED)
-    draw.text((comm_plot_left, 142), "0", font=style.font(28, latin=True), fill=MUTED)
-    _right_text(draw, comm_plot_right, 142, f"{communication_max:.0f}", style.font(28, latin=True), fill=MUTED)
+    draw.text((comm_name_x, 147), "函数 / 原语", font=style.font(42, bold=True), fill=MUTED)
+    draw.text((comm_plot_left, 150), "0", font=style.font(38, latin=True), fill=MUTED)
+    _right_text(draw, comm_plot_right, 150, f"{communication_max:.0f}", style.font(38, latin=True), fill=MUTED)
 
     for index, row in enumerate(rows):
         y0 = row_top + index * row_gap
@@ -577,23 +576,26 @@ def _generate_benchmark_figure(
             draw.rounded_rectangle((42, y0 + 4, split - 38, y0 + row_gap - 4), radius=14, fill="#F4F7FA")
             draw.rounded_rectangle((split + 38, y0 + 4, width - 42, y0 + row_gap - 4), radius=14, fill="#F4F7FA")
         name = row["name"]
-        draw.multiline_text((name_x, center_y - (54 if "\n" in name else 27)), name, font=style.font(34, bold=True), fill=INK, spacing=6)
+        draw.multiline_text((name_x, center_y - (72 if "\n" in name else 34)), name, font=style.font(48, bold=True), fill=INK, spacing=7)
         values = [float(row[key]) for key in latency_keys]
-        for x, value, color in zip(number_columns, values, (NAVY, AMBER, GREEN)):
-            value_label = f"{value:.4f}" if value < 10 else (f"{value:.3f}" if value < 1000 else f"{value:.2f}")
-            _center_text(draw, x, center_y - 22, value_label, style.font(28, latin=True), fill=color)
         positions = [_log_position(value, latency_min, latency_max, plot_left, plot_right) for value in values]
-        draw.line((positions[0], center_y, positions[-1], center_y), fill="#B9C4D1", width=7)
+        draw.line((positions[0], center_y, positions[-1], center_y), fill="#B9C4D1", width=10)
         for px, color in zip(positions, (NAVY, AMBER, GREEN)):
-            draw.ellipse((px - 12, center_y - 12, px + 12, center_y + 12), fill=color, outline=WHITE, width=4)
+            draw.ellipse((px - 17, center_y - 17, px + 17, center_y + 17), fill=color, outline=WHITE, width=5)
 
-        draw.text((comm_name_x, center_y - 22), name.replace("\n", " "), font=style.font(32, bold=True), fill=INK)
+        draw.multiline_text(
+            (comm_name_x, center_y - (66 if "\n" in name else 31)),
+            name,
+            font=style.font(44, bold=True),
+            fill=INK,
+            spacing=6,
+        )
         communication = float(row["communication_mib"])
         x = comm_plot_left + communication / communication_max * (comm_plot_right - comm_plot_left)
-        draw.line((comm_plot_left, center_y, x, center_y), fill="#D0C9EA", width=12)
-        draw.ellipse((x - 13, center_y - 13, x + 13, center_y + 13), fill=VIOLET, outline=WHITE, width=4)
+        draw.line((comm_plot_left, center_y, x, center_y), fill="#D0C9EA", width=15)
+        draw.ellipse((x - 17, center_y - 17, x + 17, center_y + 17), fill=VIOLET, outline=WHITE, width=5)
         communication_label = f"{communication:.2f}"
-        badge_font = style.font(30, bold=True, latin=True)
+        badge_font = style.font(40, bold=True, latin=True)
         badge_width = _text_size(draw, communication_label, badge_font)[0] + 32
         badge_center_x = min(
             max(x, comm_plot_left + badge_width / 2),
@@ -602,7 +604,7 @@ def _generate_benchmark_figure(
         _value_badge(
             draw,
             badge_center_x,
-            center_y - 48,
+            center_y - 62,
             communication_label,
             badge_font,
             fill="#F2EFFB",
@@ -663,7 +665,7 @@ def _generate_guard_matrix(rows: list[dict[str, str]], output: Path, style: Figu
         x = columns[index] + 46
         draw.rounded_rectangle((x, 64, x + 54, 118), radius=14, fill=NAVY)
         _center_text(draw, x + 27, 72, header_icons[index], style.font(21, bold=True, latin=True), fill=WHITE)
-        draw.text((x + 78, 59), header, font=style.font(48, bold=True), fill=NAVY_DARK)
+        draw.text((x + 78, 54), header, font=style.font(56, bold=True), fill=NAVY_DARK)
 
     row_top = header_bottom
     row_height = (footer_top - 22 - row_top) / len(rows)
@@ -674,8 +676,8 @@ def _generate_guard_matrix(rows: list[dict[str, str]], output: Path, style: Figu
             draw.rectangle((margin + 2, y0, 3516, y1), fill="#F8FAFC")
         draw.line((margin, y1, 3518, y1), fill=BORDER, width=2)
         draw.ellipse((columns[0] + 46, y0 + 47, columns[0] + 86, y0 + 87), outline=NAVY, width=5)
-        draw.text((columns[0] + 112, y0 + 36), row["scenario"], font=style.font(38, bold=True), fill=INK)
-        draw.text((columns[1] + 58, y0 + 36), row["layer"], font=style.font(36), fill=INK)
+        draw.text((columns[0] + 112, y0 + 31), row["scenario"], font=style.font(44, bold=True), fill=INK)
+        draw.text((columns[1] + 58, y0 + 31), row["layer"], font=style.font(42), fill=INK)
 
         costly = "资源代价" in row["status"]
         status_fill = "#FFF4DB" if costly else "#E7F5EC"
@@ -697,8 +699,8 @@ def _generate_guard_matrix(rows: list[dict[str, str]], output: Path, style: Figu
             width=4,
             joint="curve",
         )
-        _center_text(draw, (pill[0] + pill[2]) / 2 + 18, pill[1] + 13, row["status"], style.font(31, bold=True), fill=status_color)
-        _draw_wrapped(draw, columns[3] + 45, y0 + 23, row["summary"], style.font(34), columns[4] - columns[3] - 82, fill=INK, line_gap=7, max_lines=2)
+        _center_text(draw, (pill[0] + pill[2]) / 2 + 18, pill[1] + 9, row["status"], style.font(38, bold=True), fill=status_color)
+        _draw_wrapped(draw, columns[3] + 45, y0 + 16, row["summary"], style.font(40), columns[4] - columns[3] - 82, fill=INK, line_gap=7, max_lines=2)
 
     for x in columns[1:-1]:
         draw.line((x, header_top, x, footer_top - 22), fill=BORDER, width=2)
@@ -708,18 +710,18 @@ def _generate_guard_matrix(rows: list[dict[str, str]], output: Path, style: Figu
     _center_text(draw, 100, 1694, "i", style.font(38, bold=True, latin=True), fill=WHITE)
     note1 = "结果状态为“通过”表示异常场景被有效拦截且系统保持稳定；“通过（有限时资源代价）”表示存在可控的瞬时资源消耗或短时抖动，但系统未失稳且可恢复。"
     note2 = "验证方法：黑盒测试为主，结合白盒辅助分析与日志审计，覆盖协议解析、会话管理、状态机、认证鉴权与流量控制等关键层级。"
-    _draw_wrapped(draw, 172, 1658, note1, style.font(34), 3285, fill=INK, line_gap=9, max_lines=2)
-    _draw_wrapped(draw, 172, 1770, note2, style.font(34), 3285, fill=MUTED, line_gap=9, max_lines=2)
+    _draw_wrapped(draw, 172, 1651, note1, style.font(40), 3285, fill=INK, line_gap=9, max_lines=2)
+    _draw_wrapped(draw, 172, 1767, note2, style.font(40), 3285, fill=MUTED, line_gap=9, max_lines=2)
     return _save(image, output)
 
 
 def _generate_ablation(rows: list[dict[str, Any]], output: Path, style: FigureStyle) -> Path:
     image, draw = _canvas((3204, 1788))
-    draw.text((64, 37), "动态剪枝消融：统一百分制指标对照", font=style.font(60, bold=True), fill=INK)
+    draw.text((64, 31), "动态剪枝消融：统一百分制指标对照", font=style.font(68, bold=True), fill=INK)
     legend_x = 1600
-    legend_x = _legend_item(draw, legend_x, 57, "阈值精度", NAVY, style.font(37), line=True)
-    legend_x = _legend_item(draw, legend_x, 57, "AUC × 100", AMBER, style.font(37), line=True)
-    _legend_item(draw, legend_x, 57, "argmax 精度", GREEN, style.font(37), line=True)
+    legend_x = _legend_item(draw, legend_x, 57, "阈值精度", NAVY, style.font(42), line=True)
+    legend_x = _legend_item(draw, legend_x, 57, "AUC × 100", AMBER, style.font(42), line=True)
+    _legend_item(draw, legend_x, 57, "argmax 精度", GREEN, style.font(42), line=True)
 
     plot_left, plot_right = 900, 3060
     plot_top, plot_bottom = 245, 1430
@@ -727,8 +729,8 @@ def _generate_ablation(rows: list[dict[str, Any]], output: Path, style: FigureSt
     for tick in range(60, 101, 5):
         x = plot_left + (tick - x_min) / (x_max - x_min) * (plot_right - plot_left)
         draw.line((x, plot_top, x, plot_bottom), fill=GRID, width=3)
-        _center_text(draw, x, plot_bottom + 25, str(tick), style.font(34, latin=True), fill=MUTED)
-    _center_text(draw, (plot_left + plot_right) / 2, 1515, "指标值（%）", style.font(40), fill=MUTED)
+        _center_text(draw, x, plot_bottom + 25, str(tick), style.font(40, latin=True), fill=MUTED)
+    _center_text(draw, (plot_left + plot_right) / 2, 1515, "指标值（%）", style.font(46), fill=MUTED)
 
     row_gap = (plot_bottom - plot_top) / len(rows)
     offsets = (-58, 0, 58)
@@ -739,8 +741,8 @@ def _generate_ablation(rows: list[dict[str, Any]], output: Path, style: FigureSt
         if row.get("highlight"):
             draw.rounded_rectangle((45, y0 + 12, 3159, y0 + row_gap - 12), radius=24, fill="#EDF4FF")
             draw.rounded_rectangle((55, y0 + 54, 69, y0 + row_gap - 54), radius=7, fill=NAVY)
-        draw.text((100, center_y - 63), row["method"], font=style.font(46, bold=True), fill=INK)
-        draw.text((100, center_y + 10), row["detail"], font=style.font(36), fill=MUTED)
+        draw.text((100, center_y - 72), row["method"], font=style.font(54, bold=True), fill=INK)
+        draw.text((100, center_y + 10), row["detail"], font=style.font(42), fill=MUTED)
         for offset, (key, color) in zip(offsets, metrics):
             value = float(row[key]) * 100 if key == "auc" else float(row[key])
             x = plot_left + (value - x_min) / (x_max - x_min) * (plot_right - plot_left)
@@ -748,10 +750,10 @@ def _generate_ablation(rows: list[dict[str, Any]], output: Path, style: FigureSt
             draw.line((plot_left, y, x, y), fill=color, width=8)
             draw.ellipse((x - 16, y - 16, x + 16, y + 16), fill=color, outline=WHITE, width=5)
             label_x = min(x + 24, plot_right - 80)
-            draw.text((label_x, y - 25), f"{value:.2f}", font=style.font(34, bold=True, latin=True), fill=color)
+            draw.text((label_x, y - 29), f"{value:.2f}", font=style.font(40, bold=True, latin=True), fill=color)
 
     draw.rounded_rectangle((64, 1600, 3140, 1724), radius=22, fill=PANEL_ALT)
-    draw.text((104, 1630), "同一横轴直接比较三项指标；AUC 乘以 100 后与准确率统一为百分制。", font=style.font(40), fill=MUTED)
+    draw.text((104, 1626), "同一横轴直接比较三项指标；AUC 乘以 100 后与准确率统一为百分制。", font=style.font(46), fill=MUTED)
     return _save(image, output)
 
 
@@ -765,11 +767,11 @@ def _generate_capability_matrix(data: dict[str, Any], output: Path, style: Figur
     draw.rectangle((22, header_bottom - 24, 2670, header_bottom), fill=NAVY_DARK)
     headers = ["能力项", *data["columns"]]
     for index, header in enumerate(headers):
-        _center_text(draw, (columns[index] + columns[index + 1]) / 2, 59, header, style.font(36, bold=True), fill=WHITE)
+        _center_text(draw, (columns[index] + columns[index + 1]) / 2, 55, header, style.font(42, bold=True), fill=WHITE)
     draw.rounded_rectangle((columns[-2] + 6, 24, columns[-1] - 6, 1026), radius=22, fill="#EAF1FF", outline="#7EA7E8", width=4)
     draw.rounded_rectangle((columns[-2] + 6, 24, columns[-1] - 6, header_bottom), radius=22, fill="#2C5CC5")
     draw.rectangle((columns[-2] + 6, header_bottom - 24, columns[-1] - 6, header_bottom), fill="#2C5CC5")
-    _center_text(draw, (columns[-2] + columns[-1]) / 2, 57, data["columns"][-1], style.font(40, bold=True), fill=WHITE)
+    _center_text(draw, (columns[-2] + columns[-1]) / 2, 53, data["columns"][-1], style.font(46, bold=True), fill=WHITE)
 
     row_height = (1030 - header_bottom) / len(data["rows"])
     for index, row in enumerate(data["rows"]):
@@ -778,7 +780,7 @@ def _generate_capability_matrix(data: dict[str, Any], output: Path, style: Figur
         if index % 2 == 0:
             draw.rectangle((24, y0, columns[-2], y1), fill="#F8FAFC")
         draw.line((22, y1, 2670, y1), fill=BORDER, width=2)
-        draw.text((68, y0 + 31), row["capability"], font=style.font(34, bold=True), fill=INK)
+        draw.text((68, y0 + 26), row["capability"], font=style.font(40, bold=True), fill=INK)
         for column_index, status in enumerate(row["values"]):
             center_x = (columns[column_index + 1] + columns[column_index + 2]) / 2
             _status_symbol(draw, (center_x, (y0 + y1) / 2), status, style, size=26)
@@ -789,9 +791,9 @@ def _generate_capability_matrix(data: dict[str, Any], output: Path, style: Figur
     legend_x = 180
     for status, label in (("yes", "支持"), ("partial", "部分支持"), ("no", "不支持")):
         _status_symbol(draw, (legend_x, 1110), status, style, size=22)
-        draw.text((legend_x + 42, 1085), label, font=style.font(32), fill=INK)
+        draw.text((legend_x + 42, 1081), label, font=style.font(36), fill=INK)
         legend_x += 430
-    draw.text((1675, 1085), "蓝色高亮列为本作品能力边界", font=style.font(32, bold=True), fill=NAVY)
+    draw.text((1675, 1081), "蓝色高亮列为本作品能力边界", font=style.font(36, bold=True), fill=NAVY)
     return _save(image, output)
 
 

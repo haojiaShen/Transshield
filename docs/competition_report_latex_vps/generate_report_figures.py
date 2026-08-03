@@ -176,6 +176,37 @@ def _legend_item(
     return x + 50 + _text_size(draw, label, font)[0] + 46
 
 
+def _value_badge(
+    draw: ImageDraw.ImageDraw,
+    center_x: float,
+    center_y: float,
+    text: str,
+    font: ImageFont.FreeTypeFont,
+    *,
+    fill: str,
+    text_fill: str,
+    outline: str,
+) -> None:
+    """Draw a compact value label without placing text over a data line."""
+
+    text_width, text_height = _text_size(draw, text, font)
+    half_width = text_width / 2 + 16
+    half_height = text_height / 2 + 9
+    draw.rounded_rectangle(
+        (
+            center_x - half_width,
+            center_y - half_height,
+            center_x + half_width,
+            center_y + half_height,
+        ),
+        radius=12,
+        fill=fill,
+        outline=outline,
+        width=2,
+    )
+    _center_text(draw, center_x, center_y - text_height / 2 - 2, text, font, fill=text_fill)
+
+
 def _rotated_label(
     image: Image.Image,
     center: tuple[int, int],
@@ -235,6 +266,7 @@ def _generate_base_rate_scan(data: dict[str, Any], output: Path, style: FigureSt
     x_positions = [x0 + i * (x1 - x0) / (len(rates) - 1) for i in range(len(rates))]
     selected_x = x_positions[selected_index]
     draw.rounded_rectangle((selected_x - 105, y0 - 25, selected_x + 105, y1 + 26), radius=20, fill="#EDF4FF")
+    draw.line((selected_x, y0 - 10, selected_x, y1 + 25), fill=CORAL, width=4)
 
     for value in range(60, 101, 5):
         y = y1 - (value - 60) / 40 * (y1 - y0)
@@ -266,6 +298,10 @@ def _generate_base_rate_scan(data: dict[str, Any], output: Path, style: FigureSt
             draw.text((x + 20, th_y + 20), f"{threshold[index]:.4f}", font=value_font, fill=NAVY_DARK)
             draw.text((x + 20, arg_y + 24), f"{argmax[index]:.4f}", font=value_font, fill=SLATE)
             draw.text((x + 20, auc_y - 48), f"{data['auc'][index]:.4f}", font=value_font, fill="#A96510")
+        elif index == selected_index:
+            _center_text(draw, x - 85, th_y + 20, f"{threshold[index]:.4f}", value_font, fill=NAVY_DARK)
+            _center_text(draw, x + 85, arg_y + 30, f"{argmax[index]:.4f}", value_font, fill=SLATE)
+            _center_text(draw, x + 85, auc_y - 48, f"{data['auc'][index]:.4f}", value_font, fill="#A96510")
         elif index == len(x_positions) - 1:
             _center_text(draw, x, th_y - 48, f"{threshold[index]:.4f}", value_font, fill=NAVY_DARK)
             _center_text(draw, x, arg_y + 30, f"{argmax[index]:.4f}", value_font, fill=SLATE)
@@ -280,7 +316,6 @@ def _generate_base_rate_scan(data: dict[str, Any], output: Path, style: FigureSt
             _right_text(draw, 2370, 1013, keep_label, style.font(26), fill=MUTED)
         else:
             _center_text(draw, x, 1013, keep_label, style.font(26), fill=MUTED)
-    draw.line((selected_x, y0 - 10, selected_x, y1 + 25), fill=CORAL, width=4)
     badge = (selected_x - 210, 93, selected_x + 210, 150)
     draw.rounded_rectangle(badge, radius=24, fill=CORAL)
     _center_text(draw, selected_x, 100, "正式主线 · base_rate = 0.70", style.font(27, bold=True), fill=WHITE)
@@ -558,10 +593,22 @@ def _generate_benchmark_figure(
         draw.line((comm_plot_left, center_y, x, center_y), fill="#D0C9EA", width=12)
         draw.ellipse((x - 13, center_y - 13, x + 13, center_y + 13), fill=VIOLET, outline=WHITE, width=4)
         communication_label = f"{communication:.2f}"
-        if x > comm_plot_right - 160:
-            _right_text(draw, comm_plot_right - 8, center_y - 22, communication_label, style.font(30, bold=True, latin=True), fill="#54428C")
-        else:
-            draw.text((x + 20, center_y - 22), communication_label, font=style.font(30, bold=True, latin=True), fill="#54428C")
+        badge_font = style.font(30, bold=True, latin=True)
+        badge_width = _text_size(draw, communication_label, badge_font)[0] + 32
+        badge_center_x = min(
+            max(x, comm_plot_left + badge_width / 2),
+            comm_plot_right - badge_width / 2,
+        )
+        _value_badge(
+            draw,
+            badge_center_x,
+            center_y - 48,
+            communication_label,
+            badge_font,
+            fill="#F2EFFB",
+            text_fill="#54428C",
+            outline="#C8BDE7",
+        )
 
     return _save(image, output)
 

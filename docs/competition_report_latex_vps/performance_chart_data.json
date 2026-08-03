@@ -27,36 +27,36 @@
       "key": "total_seconds",
       "title": "总时长（秒）",
       "axis_label": "总时长（秒）",
-      "values": [1558.203079, 849.2608470916748],
-      "display": ["1558.20", "849.26"],
-      "axis_max": 3500,
-      "tick_step": 500
+      "values": [913.3639454841614, 377.8549175262451],
+      "display": ["913.36", "377.85"],
+      "axis_max": 1000,
+      "tick_step": 200
     },
     {
       "key": "seconds_per_sample",
       "title": "平均时延（秒/样本）",
       "axis_label": "平均时延（秒/样本）",
-      "values": [48.693846, 106.15760588645935],
-      "display": ["48.69", "106.16"],
-      "axis_max": 140,
-      "tick_step": 20
+      "values": [28.542623296380043, 47.23186469078064],
+      "display": ["28.54", "47.23"],
+      "axis_max": 60,
+      "tick_step": 10
     },
     {
       "key": "communication_gib",
       "title": "通信量（GiB）",
       "axis_label": "通信量（GiB）",
-      "values": [68.379963, 25.30241903476417],
-      "display": ["68.38", "25.30"],
-      "axis_max": 100,
-      "tick_step": 20
+      "values": [40.48529539909214, 15.45402756985277],
+      "display": ["40.49", "15.45"],
+      "axis_max": 50,
+      "tick_step": 10
     },
     {
       "key": "communication_per_sample_gib",
       "title": "每样本通信量（GiB）",
       "axis_label": "每样本通信量（GiB）",
-      "values": [2.13687384375, 3.1628023793455213],
-      "display": ["2.14", "3.16"],
-      "axis_max": 4,
+      "values": [1.2651654812216293, 1.9317534462315962],
+      "display": ["1.27", "1.93"],
+      "axis_max": 2.5,
       "tick_step": 0.5
     }
   ]

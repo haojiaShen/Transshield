@@ -207,7 +207,12 @@ def patch_page_30(page: fitz.Page) -> None:
     insert_mixed(page, 175.8, 274.8, "Linux 6.8.0-136-generic")
     insert_mixed(page, 175.8, 322.32, "SecretFlow SPU 0.9.3b0（Apache License 2.0）")
     insert_mixed(page, 175.8, 345.72, "JAX 0.4.30，NumPy 1.26.4，PyTorch 1.13.1+cpu；")
-    insert_mixed(page, 175.8, 369.0, "两方2PC colocated localhost，batch size 8")
+    insert_mixed(
+        page,
+        175.8,
+        369.0,
+        "两方2PC colocated localhost；医疗batch size 16，金融batch size 8",
+    )
     # Keep the original three-line row rhythm.  The previous one-line rewrite
     # left an oversized void above the bottom rule even though its typography
     # was technically unchanged.
@@ -232,7 +237,7 @@ def patch_page_53(page: fitz.Page) -> None:
     )
 
     insert_mixed(
-        page, 237.6, 354.6, "48.69 秒/样本", all_simsun=True, faux_bold=True
+        page, 237.6, 354.6, "28.54 秒/样本", all_simsun=True, faux_bold=True
     )
     insert_centered(
         page, 438.0, 342.84, "医疗交付场景", all_simsun=True, faux_bold=True
@@ -242,14 +247,14 @@ def patch_page_53(page: fitz.Page) -> None:
     )
 
     insert_centered(page, 140.16, 412.92, "批次通信量", all_simsun=True)
-    insert_centered(page, 276.84, 401.28, "68.38 GiB", all_simsun=True)
+    insert_centered(page, 276.84, 401.28, "40.49 GiB", all_simsun=True)
     insert_centered(page, 438.0, 389.64, "两方2PC安全推理", all_simsun=True)
     insert_centered(page, 438.0, 412.92, "通信量统计", all_simsun=True)
 
     insert_centered(page, 140.16, 436.32, "32条样本验证", all_simsun=True)
     insert_centered(page, 140.16, 459.6, "阈值精度/AUC", all_simsun=True)
     insert_centered(page, 276.84, 436.32, "93.75%", all_simsun=True)
-    insert_centered(page, 276.84, 459.6, "0.96484", all_simsun=True)
+    insert_centered(page, 276.84, 459.6, "0.98438", all_simsun=True)
     insert_centered(page, 438.0, 436.32, "固定医疗", all_simsun=True)
     insert_centered(page, 438.0, 459.6, "部署验证样本", all_simsun=True)
 
@@ -319,15 +324,25 @@ def patch_page_54(page: fitz.Page) -> None:
     redact(page, [(80, 355, 523, 421)])
     lines = [
         (105, 368.76, "医疗交付场景与金融边界压力验证场景的端到端性能与通信量统计结果如图4-4"),
-        (81, 392.16, "所示。医疗场景的平均时延为48.69秒/样本，每样本通信量为2.14 GiB；金融边"),
-        (81, 415.56, "界压力验证场景的平均时延为106.16秒/样本，每样本通信量为3.16 GiB。"),
+        (81, 392.16, "所示。医疗场景的平均时延为28.54秒/样本，每样本通信量为1.27 GiB；金融边"),
+        (81, 415.56, "界压力验证场景的平均时延为47.23秒/样本，每样本通信量为1.93 GiB。"),
     ]
     for x, baseline, value in lines:
         insert_mixed(page, x, baseline, value)
 
 
 def patch_page_61(page: fitz.Page) -> None:
-    redact(page, [(378, 194, 515, 212), (401, 224, 492, 241)])
+    redact(
+        page,
+        [
+            (262, 194, 353, 212),
+            (270, 224, 345, 241),
+            (378, 194, 515, 212),
+            (401, 224, 492, 241),
+        ],
+    )
+    insert_centered(page, 307.5, 207.36, "47.23 秒/样本", all_simsun=True)
+    insert_centered(page, 307.5, 236.88, "15.45 GiB", all_simsun=True)
     insert_centered(page, 446.4, 207.36, "金融边界压力验证", all_simsun=True)
     insert_centered(page, 446.4, 236.88, "双向通信量统计", all_simsun=True)
 
@@ -335,10 +350,10 @@ def patch_page_61(page: fitz.Page) -> None:
 def patch_page_68(page: fitz.Page) -> None:
     redact(page, [(80, 425, 523, 538)])
     lines = [
-        (105, 438.96, "实验证据方面，医疗交付场景在32条部署验证样本上的平均时延为48.69秒/样本，"),
-        (81, 462.36, "批次通信量为68.38 GiB；阈值精度为93.75%，AUC为0.96484。服务端不接收明"),
+        (105, 438.96, "实验证据方面，医疗交付场景在32条部署验证样本上的平均时延为28.54秒/样本，"),
+        (81, 462.36, "批次通信量为40.49 GiB；阈值精度为93.75%，AUC为0.98438。服务端不接收明"),
         (81, 485.76, "文像素值、模型参数不以明文暴露，对外仅返回最终分类结果；金融边界压力样本"),
-        (81, 509.16, "8/8与明文参考逐样本一致，平均时延为106.16秒/样本，双向通信量为25.30 GiB。"),
+        (81, 509.16, "8/8与明文参考逐样本一致，平均时延为47.23秒/样本，双向通信量为15.45 GiB。"),
         (81, 532.56, "该层内容由第2.1、2.5、3.2、4.4与4.6节共同支撑。"),
     ]
     for x, baseline, value in lines:

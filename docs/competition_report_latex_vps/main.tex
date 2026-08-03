@@ -1,0 +1,9 @@
+\documentclass[a4paper]{article}
+\usepackage{pdfpages}
+\pagestyle{empty}
+
+% Strict-format edition: every page is taken from the submitted PDF after
+% in-place text replacement.  No paragraph, table or page is re-typeset here.
+\begin{document}
+\includepdf[pages=-,fitpaper=true,pagecommand={}]{source/report_strict_vps.pdf}
+\end{document}

@@ -1,0 +1,5 @@
+output/pdf/*.aux
+output/pdf/*.log
+output/pdf/*.synctex.gz
+output/pdf/main.pdf
+output/intermediate/
